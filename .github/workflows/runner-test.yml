@@ -1,0 +1,22 @@
+name: Test Milo staging runner
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  controle:
+    runs-on: [self-hosted, Linux, dg-nxttrack-01, milobingo, staging]
+    environment: staging
+    timeout-minutes: 5
+
+    steps:
+      - name: Controleer server en gebruiker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = "dg-nxttrack-01"
+          test "$(id -un)" = "run-mil-stg"
+          echo "Milo staging runner werkt op de juiste server."
