@@ -20,9 +20,10 @@
   },
   "scripts": {
     "dev": "node scripts/prepare-next.mjs && MILO_LOCAL_AUTH=true WATCHPACK_POLLING=true next dev --webpack --hostname 127.0.0.1 --port ${PORT:-4173}",
-    "build": "node scripts/prepare-next.mjs && next build --webpack",
+    "build": "node scripts/prepare-next.mjs && next build --webpack && node scripts/package-standalone.mjs",
     "start": "next start --hostname 127.0.0.1 --port ${PORT:-4173}",
-    "lint": "eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/run-checks.mjs",
+    "start:standalone": "HOSTNAME=127.0.0.1 PORT=${PORT:-4173} node .next/standalone/server.js",
+    "lint": "eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/package-standalone.mjs scripts/deploy scripts/run-checks.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node scripts/run-checks.mjs",
     "test:browser": "playwright test",

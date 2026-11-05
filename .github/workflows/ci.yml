@@ -51,6 +51,8 @@ jobs:
       - name: Lint
         run: pnpm lint
       - name: Offline contract tests
+        env:
+          MILO_TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
         run: pnpm test
       - name: Build Next.js
         run: pnpm build

@@ -1,6 +1,6 @@
-# Lokaal draaien en later releasen
+# Lokaal draaien en staging releasen
 
-Dit runbook hoort bij de lokale port. Het actuele projectprofiel staat in `PROJECTPROFIEL.json` in de root; de oorspronkelijke documenten staan onder `docs/overdracht/`. Het DG-masterdocument is `docs/DG-Webservices-Masterprompt-Bouw-en-Deploy.txt`. De afgesproken scope omvat de lokale bouw en synchronisatie naar `main` van `milobingo/platform`; staging en productie volgen na inrichting van de doelomgeving.
+Dit runbook hoort bij de lokale port. Het actuele projectprofiel staat in `PROJECTPROFIEL.json` in de root; de oorspronkelijke documenten staan onder `docs/overdracht/`. Het DG-masterdocument is `docs/DG-Webservices-Masterprompt-Bouw-en-Deploy.txt`. De afgesproken scope omvat de lokale bouw, synchronisatie naar `main` van `milobingo/platform` en deployment naar staging. De gebruiker heeft staging op 5 november 2026 expliciet opgedragen. Productie valt buiten deze opdracht.
 
 ## Lokaal
 
@@ -54,22 +54,15 @@ De Canvaschecks laden nu de vastgelegde repositorydependency `@napi-rs/canvas` v
 
 `server/node-provider-fetch.js` vervangt het uitgaande Cloudflare-WebSockettransport voor GPT-Live door een Node-adapter. Zeven lokale loopback-WebSockettests dekken onder meer audio, bevestigde/onbevestigde afsluiting, handshakefouten, redirects, abort en timeout. Ze doen geen echte providerverzoeken. De OpenAI-status onderscheidt `transportReady: true`, `transportStatus: local_contract_tested` en `liveVerified: false`: echte modeltoegang en de volledige stem-/uitzendketen blijven te verifiëren. Inkomende browser-WebSocket-upgrades op `/api/` zijn niet ondersteund; het GPT-Live-transport loopt server-side naar de provider. Het DG-mailgateway-/outboxcontract moet nog worden aangeleverd en geïmplementeerd.
 
-## Voorbereiding van staging
+## Staging uitrollen
 
-Voer dit pas uit nadat de ontbrekende gegevens zijn bevestigd en de releasescope is uitgebreid. Maak een concreet releaseplan vanuit de werkelijk aanwezige DG-wrapper; onderstaand proces introduceert geen verzonnen wrapperargumenten of deployhost.
+De uitvoerbare procedure staat in [STAGING-DEPLOY.md](STAGING-DEPLOY.md), de eenmalige hostinrichting in [STAGING-HOST.md](STAGING-HOST.md) en de databaseprocedure in [STAGING-DATABASE.md](STAGING-DATABASE.md). De workflows `staging-preflight.yml` en `deploy-staging.yml` gebruiken de aangetroffen Milo-runner op `dg-nxttrack-01` en GitHub environment `staging`.
 
-1. Vul repository, domeinen, site-ID’s, runners, Linux-gebruikers, paden, poorten, wrapperversie en Supabaseprojectrefs in het projectprofiel in. Inspecteer bestaande workflows en de geïnstalleerde `dg-site-deploy --help`/beheerhandleiding. Controleer startcommando, healthcontract, build-lock en herstelpad.
-2. Integreer op `main`, leg één volledige release-SHA vast en laat vereiste CI op precies die SHA slagen. Controleer branch-SHA en workflow-SHA afzonderlijk. Promoveer later dezelfde broncommit naar productie, zonder nieuwe mergecommit.
-3. Maak environment `staging` met de bevestigde variabelen/secrets en exacte selfhosted runnerlabels. Leg de allowlist voor build, runtime en deploy vast. Deploycredentials gaan niet naar de app. Voor deze app zijn geen browser-buildsecrets nodig.
-4. Controleer runnernaam, labels, gebruiker, workspace, checkout-SHA, vrije bytes/inodes en capaciteit voor backup, dependencies, nieuwe build en bestaande app. Gebruik de bestaande gedeelde build-lock en het vastgelegde bewaarbeleid. Verwijder geen actieve of onbekende bestanden.
-5. Maak vóór migraties een versleutelde databasebackup en bewijs herstel. Bewaar oorspronkelijke ID’s, eigenaarschap, kaarten/tokens, revisies en encryptiesleutel bij een data-import. Vergelijk aantallen en checksums op een proefimport. Gebruik geen reset om migratieverschillen te maskeren.
-6. Pas de geaccordeerde PostgreSQL-migratie toe via het gecontroleerde migratiepad. Test transactiegedrag, RLS/grants en rollen. Hou schema en providercontracten compatibel met de actieve app als appactivatie mislukt. Sluit mailgateway/outbox pas aan op het bevestigde DG-contract.
-7. Laat de runner de bestaande `dg-site-deploy` aanroepen met de gedocumenteerde interface: site-ID, workspace, volledige SHA en een run-ID met pogingnummer. De wrapper maakt een nieuwe native release, installeert het lockfile, bouwt en activeert via het bestaande serverpad achter Caddy.
-8. Bewijs na activatie de volledige runtime-SHA, actieve release, configuratieversie, migratiegeschiedenis, relevante backendversies, Auth en echte gebruikersflows. Een health-200 bewijst alleen het healthcontract.
+De hostinspectie van 5 november bevestigt de runner, maar vond nog geen deploywrapper, appservice, Milo-Caddy-site of benodigde deploymenttoolchain. De runner heeft geen sudo-bevoegdheid voor het releasepad. Daardoor is nog geen release geactiveerd en zijn geen hosted migraties toegepast. Een groene infrastructuurinspectie betekent dat de inspectie draaide; de afzonderlijke deploycontrole moet alle voorwaarden bevestigen.
 
-Er is bewust alleen een CI-workflow meegeleverd. Een deployworkflow wordt pas concreet ingevuld op basis van de bevestigde infrastructuur; staging of productie is nu niet uitgerold.
+De PostgreSQL-migratie blijft ongewijzigd in `supabase/migrations/20261104115830_milo_friends_server_schema.sql`. Het nieuwe migratiecommando inventariseert standaard alleen. Toepassen vereist eerst een versleutelde databasebackup en een echte herstelproef op een afzonderlijke lege lokale database. Een bestaande applicatiedatabase zonder bekende migratiehistorie wordt geblokkeerd en niet gereset.
 
-De nieuwe PostgreSQL-migratie is `supabase/migrations/20261104115830_milo_friends_server_schema.sql`. Hij is door de storageadapter getest op een afzonderlijke tijdelijke PostgreSQL-database; dat is geen Supabase-projecttest. De lokale SQLite-adapter gebruikt bewust de oorspronkelijke `drizzle/`-migraties en eigen checksums. Na backups en review kan de beheerder het PostgreSQL-bestand met `psql` toepassen op de bevestigde databaseverbinding, of het afgesproken Supabase-releasepad gebruiken. Ontdek eerst de CLI via `--help`: het vastgelegde CLI-contract is versie `3.0.0` en vereist een expliciete remote-keuze voor hosted operaties. Draai geen `db reset` op een bestaande of remote omgeving.
+`pnpm build` maakt een native `.next/standalone`-release met server, getraceerde dependencies, `public`, `.next/static` en lokale SQLite-migraties. De start op de host gebruikt Node met `server.js`, `HOSTNAME=127.0.0.1` en de door de beheerder bevestigde `PORT`. Omgevingsbestanden horen buiten de build; de packager weigert ze in het standalonepakket.
 
 ## Acceptatie en productie
 

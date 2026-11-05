@@ -1,0 +1,211 @@
+name: Deploy Milo staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Full 40-character main commit with successful CI
+        required: true
+        type: string
+      apply_database:
+        description: Apply only the separately reviewed migration after encrypted backup and restore proof
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: milobingo-staging
+  cancel-in-progress: false
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      release_sha: ${{ steps.gate.outputs.release_sha }}
+      workflow_sha: ${{ steps.gate.outputs.workflow_sha }}
+      ci_run_url: ${{ steps.gate.outputs.ci_run_url }}
+    steps:
+      - name: Read the trusted dispatch workflow revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Use the pinned validation toolchain
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - name: Require successful own main CI on the exact release SHA
+        id: gate
+        env:
+          RELEASE_SHA: ${{ inputs.release_sha }}
+          GITHUB_TOKEN: ${{ github.token }}
+          APPLY_DATABASE: ${{ inputs.apply_database }}
+        run: node scripts/deploy/release-preflight.mjs ci
+
+  deploy:
+    needs: release-gate
+    environment:
+      name: staging
+      url: https://milo-staging.dgwebservices.nl
+    runs-on: [self-hosted, Linux, X64, dg-nxttrack-01, milobingo, staging]
+    timeout-minutes: 30
+    env:
+      RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+      RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      CONFIG_VERSION: ${{ vars.DG_CONFIG_VERSION }}
+      DG_STAGING_PORT: ${{ vars.DG_STAGING_PORT }}
+      DG_DEPLOY_WRAPPER_SHA256: ${{ vars.DG_DEPLOY_WRAPPER_SHA256 }}
+    steps:
+      - name: Fail before checkout or runtime secrets when host bootstrap is absent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = dg-nxttrack-01
+          test "$(id -un)" = run-mil-stg
+          test "$RUNNER_NAME" = dg-nxttrack-01-nxttrack-staging
+          test "$GITHUB_WORKSPACE" = /home/run-mil-stg/_work/platform/platform
+          blocked=0
+          for binary in /usr/local/bin/dg-site-deploy; do
+            if ! test -f "$binary" || ! test -x "$binary" || ! test -r "$binary"; then
+              echo "::error::Host bootstrap ontbreekt: beoordeelde rootwrapper $binary."
+              blocked=1
+            fi
+          done
+          for binary in node pnpm psql pg_dump pg_restore flock sudo curl; do
+            if ! command -v "$binary" >/dev/null 2>&1; then
+              echo "::error::Host bootstrap ontbreekt: $binary."
+              blocked=1
+            fi
+          done
+          if ! sudo -n -l >/dev/null 2>&1; then
+            echo '::error::Host bootstrap ontbreekt: beoordeelde niet-interactieve wrapperbevoegdheid.'
+            blocked=1
+          fi
+          if ! [[ "$DG_DEPLOY_WRAPPER_SHA256" =~ ^[a-f0-9]{64}$ ]]; then
+            echo '::error::Beoordeel de bestaande wrapper op de host en stel DG_DEPLOY_WRAPPER_SHA256 in.'
+            blocked=1
+          fi
+          if ! [[ "$DG_STAGING_PORT" =~ ^[0-9]+$ ]] || test -z "$CONFIG_VERSION"; then
+            echo '::error::Bevestig DG_STAGING_PORT en DG_CONFIG_VERSION in environment staging.'
+            blocked=1
+          fi
+          if test "$blocked" != 0; then
+            echo '::error::Staging is niet geactiveerd. Een bevoegde hostbeheerder moet de Milo-bootstrap afronden.'
+            exit 1
+          fi
+      - name: Check out only the CI-approved release
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify checkout, rootwrapper hash, service contract and capacity
+        run: node scripts/deploy/release-preflight.mjs host
+      - name: Install locked dependencies without application or deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -i HOME="$HOME" PATH="$PATH" CI=true NEXT_TELEMETRY_DISABLED=1 pnpm install --frozen-lockfile
+          env -i HOME="$HOME" PATH="$PATH" CI=true NEXT_TELEMETRY_DISABLED=1 node scripts/check-config.mjs --phase=build
+          env -i HOME="$HOME" PATH="$PATH" CI=true NEXT_TELEMETRY_DISABLED=1 pnpm lint
+      - name: Validate all runtime names before any requested database mutation
+        env:
+          NODE_ENV: production
+          HOSTNAME: 127.0.0.1
+          MILO_LOCAL_AUTH: 'false'
+          APP_URL: ${{ vars.APP_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VLAMPIE_SETTINGS_KEY: ${{ secrets.VLAMPIE_SETTINGS_KEY }}
+          OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
+          OPENAI_SPEECH_MODEL: ${{ vars.OPENAI_SPEECH_MODEL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIVEKIT_URL: ${{ vars.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        run: node scripts/deploy/release-preflight.mjs runtime
+      - name: Apply only explicitly reviewed database changes with backup and restore proof
+        if: ${{ inputs.apply_database }}
+        env:
+          DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+          RESTORE_TEST_DATABASE_URL: ${{ secrets.RESTORE_TEST_DATABASE_URL }}
+          DATABASE_BACKUP_DIRECTORY: /srv/sites/milobingo-staging/shared/backups
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest_sha=$(node --input-type=module -e "import {loadManifest} from './scripts/deploy/database.mjs'; console.log((await loadManifest()).digest)")
+          node scripts/deploy/database.mjs \
+            --expected-project-ref=lfsdgxcpdyghidzkzzvn \
+            --apply \
+            "--reviewed-manifest-sha256=$manifest_sha"
+      - name: Audit ready database and deploy through the reviewed four-argument DG interface
+        # The hash-reviewed wrapper must isolate next build from runtime secrets,
+        # honor DG_RUNTIME_ENV_KEYS, lock the shared build and retain rollback.
+        # The helper strips GitHub/deploy/backup credentials before executing:
+        # dg-site-deploy milobingo-staging WORKSPACE FULL_SHA RUN_ID-ATTEMPT
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NODE_ENV: production
+          HOSTNAME: 127.0.0.1
+          MILO_LOCAL_AUTH: 'false'
+          APP_URL: ${{ vars.APP_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VLAMPIE_SETTINGS_KEY: ${{ secrets.VLAMPIE_SETTINGS_KEY }}
+          OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
+          OPENAI_SPEECH_MODEL: ${{ vars.OPENAI_SPEECH_MODEL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIVEKIT_URL: ${{ vars.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        run: node scripts/deploy/release-preflight.mjs deploy
+
+  verify-public:
+    needs: [release-gate, deploy]
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 5
+    steps:
+      - name: Read release-bound verification and asset checksums
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          persist-credentials: false
+      - name: Use the pinned validation toolchain
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - name: Verify exact public release, demo assets and anonymous access boundaries
+        env:
+          RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+          RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          CONFIG_VERSION: ${{ vars.DG_CONFIG_VERSION }}
+        run: node scripts/deploy/release-preflight.mjs verify
+      - name: Record scoped staging evidence
+        env:
+          RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+          WORKFLOW_SHA: ${{ needs.release-gate.outputs.workflow_sha }}
+          CI_RUN_URL: ${{ needs.release-gate.outputs.ci_run_url }}
+        shell: bash
+        run: |
+          {
+            echo 'Milo staging public checks passed.'
+            printf 'Release SHA: %s\nWorkflow SHA: %s\nCI: %s\n' "$RELEASE_SHA" "$WORKFLOW_SHA" "$CI_RUN_URL"
+            echo 'Real OTP/email, Google account login, paid provider access and live broadcast audio remain separate acceptance checks.'
+          } >> "$GITHUB_STEP_SUMMARY"

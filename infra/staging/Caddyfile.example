@@ -1,0 +1,13 @@
+# Alleen dit Milo-sitefragment integreren via de bestaande Caddystructuur.
+# Niet geïnstalleerd. Kies/reserveer eerst de poort; valideer daarna de gehele
+# actieve Caddyconfiguratie. Verander geen andere hosts of globale TLS-instelling.
+milo-staging.dgwebservices.nl {
+    encode zstd gzip
+
+    reverse_proxy 127.0.0.1:__MILO_STAGING_PORT__ {
+        header_up -oai-authenticated-user-id
+        header_up -oai-authenticated-user-email
+        header_up -x-milo-user
+        header_up -x-milo-role
+    }
+}

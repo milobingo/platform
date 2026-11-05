@@ -1,0 +1,75 @@
+name: Audit Milo staging database
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Full main commit with successful CI; audit only, no migrations
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: milobingo-staging
+  cancel-in-progress: false
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      release_sha: ${{ steps.gate.outputs.release_sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - name: Require successful own main CI for the exact audit source
+        id: gate
+        env:
+          RELEASE_SHA: ${{ inputs.release_sha }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/deploy/release-preflight.mjs ci
+
+  audit:
+    needs: release-gate
+    environment: staging
+    runs-on: [self-hosted, Linux, X64, dg-nxttrack-01, milobingo, staging]
+    timeout-minutes: 10
+    steps:
+      - name: Verify the dedicated staging runner before receiving credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = dg-nxttrack-01
+          test "$(id -un)" = run-mil-stg
+          test "$RUNNER_NAME" = dg-nxttrack-01-nxttrack-staging
+          test "$GITHUB_WORKSPACE" = /home/run-mil-stg/_work/platform/platform
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          persist-credentials: false
+      # Diagnostic tools in the runner cache only. This does not install the
+      # root-controlled native release toolchain or start an application.
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - name: Install locked dependencies without project credentials
+        shell: bash
+        run: env -i HOME="$HOME" PATH="$PATH" CI=true pnpm install --frozen-lockfile
+      - name: Read schema, history and private bucket without changing them
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+        run: node scripts/deploy/database.mjs --expected-project-ref=lfsdgxcpdyghidzkzzvn

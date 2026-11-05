@@ -1,7 +1,7 @@
 {
   "project": "Milo & Friends BingoShow",
   "updated_at": "2026-11-05",
-  "authorized_scope": "local_build_and_repository_sync",
+  "authorized_scope": "local_build_repository_sync_and_staging_deployment",
   "source": {
     "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
     "sites_version": 63,
@@ -28,18 +28,40 @@
     "integration_branch": "main",
     "development_host": null,
     "development_checkout": null,
-    "staging_url": null,
-    "staging_site_id": null,
+    "staging_url": "https://milo-staging.dgwebservices.nl",
+    "staging_site_id": "milobingo-staging",
     "production_url": null,
     "production_site_id": null,
-    "deploy_host": null,
-    "project_paths": null,
-    "runner_labels": null,
-    "runner_names": null,
-    "linux_users": null,
-    "ports": null,
+    "deploy_host": "dg-nxttrack-01",
+    "project_paths": {
+      "staging_root": "/srv/sites/milobingo-staging",
+      "staging_current": "/srv/sites/milobingo-staging/current",
+      "staging_releases": "/srv/sites/milobingo-staging/releases",
+      "staging_shared": "/srv/sites/milobingo-staging/shared",
+      "staging_workspace": "/home/run-mil-stg/_work/platform/platform"
+    },
+    "runner_labels": {
+      "staging": [
+        "self-hosted",
+        "Linux",
+        "X64",
+        "dg-nxttrack-01",
+        "milobingo",
+        "staging"
+      ]
+    },
+    "runner_names": {
+      "staging": "dg-nxttrack-01-nxttrack-staging"
+    },
+    "linux_users": {
+      "staging_runner": "run-mil-stg",
+      "staging_app": "app-mil-stg"
+    },
+    "ports": {
+      "staging": null
+    },
     "deploy_wrapper_version": null,
-    "supabase_staging_ref": null,
+    "supabase_staging_ref": "lfsdgxcpdyghidzkzzvn",
     "supabase_production_ref": null,
     "mail_gateway_contract": null,
     "github_environments": [
@@ -50,7 +72,23 @@
     "production_release": null,
     "github_repository_url": "https://github.com/milobingo/platform",
     "git_remote": "origin",
-    "git_remote_url": "https://github.com/milobingo/platform.git"
+    "git_remote_url": "https://github.com/milobingo/platform.git",
+    "staging_status": {
+      "deployed": false,
+      "host_preflight": "https://github.com/milobingo/platform/actions/runs/42051941726",
+      "observed_at": "2026-11-05",
+      "runner_verified": true,
+      "secrets_names_present": true,
+      "missing_host_prerequisites": [
+        "Node 24.18.0 and pnpm 11.25.0 deployment toolchain",
+        "PostgreSQL client and isolated restore-test database",
+        "reviewed dg-site-deploy wrapper and verified rollback interface",
+        "restricted non-interactive deployment privilege",
+        "Milo app service and loopback port",
+        "Milo Caddy vhost and HTTPS"
+      ],
+      "acceptance": "not_run"
+    }
   },
   "configuration": {
     "inventory": "docs/PROJECTGEGEVENS-EN-SECRETS.md",
@@ -58,6 +96,7 @@
     "validation": "scripts/check-config.mjs",
     "required_public_build_configuration": [],
     "server_runtime_variables": [
+      "HOSTNAME",
       "APP_URL",
       "MILO_LOCAL_AUTH",
       "SQLITE_PATH",
@@ -82,12 +121,24 @@
       "LIVEKIT_API_SECRET"
     ],
     "livekit": "LIVEKIT_URL/API_KEY/API_SECRET, or separate encrypted server settings when no environment values are set",
-    "deploy_secrets": "Names unresolved until the existing DG wrapper and gateway contracts are inspected"
+    "deploy_secrets": "GitHub staging: MIGRATION_DATABASE_URL, BACKUP_ENCRYPTION_KEY, RESTORE_TEST_DATABASE_URL, only for database audit/migration/backup/restore; DATABASE_URL is a separate least-privilege app connection.",
+    "deployment_variables": [
+      "DG_DEPLOY_WRAPPER_SHA256",
+      "DG_STAGING_PORT",
+      "DG_CONFIG_VERSION"
+    ],
+    "database_storage_bucket": {
+      "staging": "milo-staging",
+      "original_migration_bucket": "milo-private",
+      "procedure": "scripts/deploy/database.mjs"
+    }
   },
   "notes": [
     "Null target fields are unresolved project information; they are not deploy-ready defaults.",
     "CI does not create accounts, apply remote migrations, send mail or deploy.",
-    "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
-    "The agreed scope covers the local build and synchronization to GitHub main; staging and production releases are not yet configured."
+    "The user authorized staging deployment on 2026-11-05. Production is outside the current scope.",
+    "The staging runner identity, GitHub environment variable values and secret names were inspected. Secret values were not retrieved.",
+    "The host preflight found an incomplete deployment host; no app release or remote migration was activated.",
+    "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio."
   ]
 }

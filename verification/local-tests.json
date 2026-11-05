@@ -4,47 +4,47 @@
     {
       "name": "check-family-demo",
       "exitCode": 0,
-      "ms": 4224
+      "ms": 4187
     },
     {
       "name": "check-family-extras",
       "exitCode": 0,
-      "ms": 11135
+      "ms": 11116
     },
     {
       "name": "check-family-brand",
       "exitCode": 0,
-      "ms": 47
+      "ms": 50
     },
     {
       "name": "check-player-auth",
       "exitCode": 0,
-      "ms": 1503
+      "ms": 1502
     },
     {
       "name": "check-bingo",
       "exitCode": 0,
-      "ms": 9615
+      "ms": 9651
     },
     {
       "name": "check-live-chat",
       "exitCode": 0,
-      "ms": 638
+      "ms": 698
     },
     {
       "name": "check-chat-client",
       "exitCode": 0,
-      "ms": 2609
+      "ms": 2628
     },
     {
       "name": "check-milo-print",
       "exitCode": 0,
-      "ms": 2046
+      "ms": 2014
     },
     {
       "name": "check-characters",
       "exitCode": 0,
-      "ms": 128
+      "ms": 135
     },
     {
       "name": "check-cast-runner",
@@ -54,7 +54,7 @@
     {
       "name": "check-milo-motion",
       "exitCode": 0,
-      "ms": 460
+      "ms": 476
     },
     {
       "name": "check-milo-life",
@@ -64,7 +64,7 @@
     {
       "name": "check-milo-minigame-catalog",
       "exitCode": 0,
-      "ms": 856
+      "ms": 973
     },
     {
       "name": "check-milo-minigame-server",
@@ -74,22 +74,22 @@
     {
       "name": "check-milo-game-clock",
       "exitCode": 0,
-      "ms": 191
+      "ms": 183
     },
     {
       "name": "check-call-draw-hold",
       "exitCode": 0,
-      "ms": 74
+      "ms": 84
     },
     {
       "name": "check-live-call-audio",
       "exitCode": 0,
-      "ms": 50
+      "ms": 60
     },
     {
       "name": "check-live-calls",
       "exitCode": 0,
-      "ms": 346
+      "ms": 334
     },
     {
       "name": "check-player-live-call",
@@ -99,82 +99,92 @@
     {
       "name": "check-regie-workspace",
       "exitCode": 0,
-      "ms": 2822
+      "ms": 2820
     },
     {
       "name": "check-regie-panels",
       "exitCode": 0,
-      "ms": 587
+      "ms": 547
     },
     {
       "name": "check-brand-contract",
       "exitCode": 0,
-      "ms": 1942
+      "ms": 1997
     },
     {
       "name": "check-secrets",
       "exitCode": 0,
-      "ms": 90
+      "ms": 113
     },
     {
       "name": "check-youtube-player",
       "exitCode": 0,
-      "ms": 145
+      "ms": 147
     },
     {
       "name": "check-startup-recovery",
       "exitCode": 0,
-      "ms": 52
+      "ms": 45
     },
     {
       "name": "check-gpt-live",
       "exitCode": 0,
-      "ms": 195
-    },
-    {
-      "name": "check-node-storage",
-      "exitCode": 0,
-      "ms": 943
-    },
-    {
-      "name": "check-node-provider-fetch",
-      "exitCode": 0,
-      "ms": 217
+      "ms": 187
     },
     {
       "name": "check-calls",
       "exitCode": 0,
-      "ms": 347
+      "ms": 332
     },
     {
       "name": "check-planner-api",
       "exitCode": 0,
-      "ms": 94
+      "ms": 91
     },
     {
       "name": "check-planner-ui",
       "exitCode": 0,
-      "ms": 386
+      "ms": 365
     },
     {
       "name": "check-openai",
       "exitCode": 0,
-      "ms": 99
+      "ms": 95
     },
     {
       "name": "check-production",
       "exitCode": 0,
-      "ms": 553
+      "ms": 547
     },
     {
       "name": "check-milo-brand-isolation",
       "exitCode": 0,
-      "ms": 242
+      "ms": 228
     },
     {
       "name": "check-presentation",
       "exitCode": 0,
-      "ms": 297
+      "ms": 294
+    },
+    {
+      "name": "check-node-storage",
+      "exitCode": 0,
+      "ms": 1101
+    },
+    {
+      "name": "check-node-provider-fetch",
+      "exitCode": 0,
+      "ms": 215
+    },
+    {
+      "name": "check-deploy-contract",
+      "exitCode": 0,
+      "ms": 61
+    },
+    {
+      "name": "check-deploy-database",
+      "exitCode": 0,
+      "ms": 2099
     }
   ]
 }

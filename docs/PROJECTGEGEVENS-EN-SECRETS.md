@@ -1,14 +1,14 @@
 # Projectgegevens, accounts en configuratie
 
-Deze lijst hoort bij de lokale Next.js-overzetting van 4 november 2026. De lokale bouw en inventaris zijn opgeleverd. Op 5 november 2026 is repository `milobingo/platform` aangeleverd voor synchronisatie naar `main`. De staging- en productieopdrachten in de meegeleverde documenten beschrijven het toekomstige DG-releasepad; er is nu geen externe omgeving aangemaakt of uitgerold.
+Deze lijst hoort bij de lokale Next.js-overzetting van 4 november 2026. De lokale bouw en inventaris zijn opgeleverd. Op 5 november 2026 is repository `milobingo/platform` aangeleverd voor synchronisatie naar `main`. Op 5 november is ook stagingdeployment opgedragen. GitHub bevat inmiddels de stagingvariabelen, runtime-secrets en een werkende runner; de host mist nog het releasepad. Er is geen stagingrelease geactiveerd. Zie [STAGING-DEPLOY.md](STAGING-DEPLOY.md) en [STAGING-HOST.md](STAGING-HOST.md).
 
 ## Eerst aanleveren
 
 | Onderdeel | Benodigde gegevens |
 | --- | --- |
-| GitHub | Bevestigd: [milobingo/platform](https://github.com/milobingo/platform), integratiebranch `main`, remote `origin`. Reviewbeleid, environments en runners volgen bij de release-inrichting. |
+| GitHub | Bevestigd: [milobingo/platform](https://github.com/milobingo/platform), integratiebranch `main`, remote `origin`. Environments `staging` en `production` bestaan; de Milo-stagingrunner is online. |
 | Development | VPS-host, checkoutpad en Linux-gebruiker. De huidige werkmap is `/home/codex/repos/milobingo`; dat bewijst geen DG-developmenthost. |
-| Staging | Domein/URL, site-ID, deployhost, project-/release-/sharedpaden, servicegebruiker, poort, runnernaam en exacte labels. |
+| Staging | Bevestigd: `https://milo-staging.dgwebservices.nl`, `milobingo-staging`, host `dg-nxttrack-01`, root `/srv/sites/milobingo-staging`, runner `run-mil-stg`, app `app-mil-stg`. Exacte labels/workspace staan in het projectprofiel. Lokale servicepoort en root-releasepad nog inrichten. |
 | Productie | Dezelfde gegevens afzonderlijk, plus de toegestane releasescope. |
 | DG-wrapper | Geïnstalleerde `dg-site-deploy`-versie, CLI-contract, build-lock, start-/activatie-/rollbackcommando en Caddy-configuratie. |
 | Supabase | Organisatie/eigenaar, apart staging- en productieproject, projectrefs, regio, databaseverbinding en Auth-/Storageinstellingen. |
@@ -46,11 +46,11 @@ Kopieer `.env.example` naar `.env.local` voor lokaal gebruik. Vul nooit echte se
 | `MILO_LOCAL_AUTH` | Runtimevariabele | Alleen `true` voor expliciete lokale repetitielogin in development op `localhost`, `127.0.0.1` of `::1`, zonder remote projectconfiguratie of proxy. In staging/productie uit. |
 | `SQLITE_PATH` | Runtimepad | Lokale database; standaard `.data/milobingo.sqlite`. Geen productie-databasekeuze. |
 | `OBJECT_STORAGE_PATH` | Runtimepad | Lokale private bestanden; standaard `.data/objects`. Buiten een wegwerp-release bewaren als dit later bewust wordt gebruikt. |
-| `DATABASE_URL` | **Serversecret**, runtime | PostgreSQL-verbinding van het eigen Supabase-project; activeert de PostgreSQL-adapter. Gebruik de bevestigde verbinding uit dat project. |
+| `DATABASE_URL` | **Serversecret**, runtime | Beperkte PostgreSQL-login van het eigen Supabase-project, lid van `milo_backend`, zonder superuser/rolbeheer/RLS-bypass; activeert de PostgreSQL-adapter. De beheerverbinding `MIGRATION_DATABASE_URL` blijft uitsluitend in het releasepad. |
 | `SUPABASE_URL` | Publieke project-URL, serverruntime | Eigen Supabase-project voor Auth en optionele Storage. |
 | `SUPABASE_PUBLISHABLE_KEY` | Publieke sleutel, serverruntime | Supabase Auth-client. Gebruik de publishable key van dezelfde omgeving. Deze sleutel is geen regiebevoegdheid. |
 | `SUPABASE_SECRET_KEY` | **Serversecret**, runtime | Alleen voor expliciet gekozen private Supabase Storage; blijft buiten browserbundels. |
-| `SUPABASE_STORAGE_BUCKET` | Runtimevariabele | Leeg voor lokale objecten. `milo-private` activeert remote Storage en vereist `DATABASE_URL`, `SUPABASE_URL` en `SUPABASE_SECRET_KEY`. De migratie maakt deze private bucket als het Storage-schema bestaat. |
+| `SUPABASE_STORAGE_BUCKET` | Runtimevariabele | Leeg voor lokale objecten. Staging gebruikt de bevestigde private bucket `milo-staging` en vereist `DATABASE_URL`, `SUPABASE_URL` en `SUPABASE_SECRET_KEY`. De oorspronkelijke SQL noemt `milo-private`; de deployprocedure controleert en configureert daarom afzonderlijk de gekozen stagingbucket. |
 | `VLAMPIE_SETTINGS_KEY` | **Serversecret**, runtime | 64 hextekens voor AES-encryptie van private instellingen. Historische naam bewust behouden. Bewaar dezelfde sleutel wanneer bestaande versleutelde instellingen meegaan. |
 | `OPENAI_API_KEY` | **Serversecret**, runtime, optioneel | Eén centrale providerkey, alleen als echte AI-functies worden aangesloten. Anders blijven die functies ongeconfigureerd. |
 | `OPENAI_TEXT_MODEL` | Runtimevariabele, optioneel | Bestaande tekstmodelkeuze; bronstandaard `gpt-4.1-mini`. Werkelijke accounttoegang nog verifiëren. |
@@ -75,7 +75,7 @@ Zodra één `LIVEKIT_*`-waarde is ingevuld, hebben de omgevingswaarden voorrang 
 
 Gebruik voor staging en productie aparte waarden voor `APP_URL`, Supabase URL/key/projectref, databaseverbinding, encryptiesleutel, Storagebucket en eventuele providerconfiguratie. De encryptiesleutel kan alleen worden gedeeld wanneer dat voor een expliciete datamigratie nodig is; documenteer die keuze.
 
-De huidige CI heeft geen secrets nodig. Het deployworkflow bestaat nog niet: runnerlabels, site-ID’s, paden en wrapperinterface zijn onbekend. Na inventarisatie horen Supabase-beheertoegang, databasebackup-/restorecredentials, backup-encryptie, DG-deploybevoegdheden en mailgateway-/webhooksigning uitsluitend in het juiste release- of gatewayproces. Hun exacte variabelenamen volgen uit die bestaande contracten, niet uit gegokte voorbeeldnamen. Geef deze credentials niet door aan `next start`.
+De huidige CI heeft geen secrets nodig. De stagingworkflow gebruikt uitsluitend environment `staging` en de bevestigde Milo-runner. De aanvullende namen voor het releasepad staan in [STAGING-DEPLOY.md](STAGING-DEPLOY.md): `DG_DEPLOY_WRAPPER_SHA256`, `DG_STAGING_PORT`, `DG_CONFIG_VERSION`, `MIGRATION_DATABASE_URL`, `BACKUP_ENCRYPTION_KEY` en `RESTORE_TEST_DATABASE_URL`. De laatste drie horen uitsluitend bij databasebeheer/backup/herstel en gaan niet naar de app-runtime. De beheerder moet eerst de rootwrapper en beperkte deploybevoegdheid installeren. Mailgateway-/webhooksigning hoort bij het nog te leveren gatewaycontract.
 
 Op dit moment leest de browser geen `NEXT_PUBLIC_*`-waarden. Worden die later toegevoegd, bouw iedere omgeving met haar eigen publieke configuratie: Next.js bakt deze tijdens `next build` in. Een gelijke bron-SHA bewijst geen byte-identieke staging-/productiebuild.
 

@@ -1,0 +1,41 @@
+# Voorbeeld voor /etc/systemd/system/milobingo-staging.service.
+# Niet geïnstalleerd. Kies eerst de loopbackpoort in runtime.env.example en
+# vervang __ABSOLUTE_NODE_24_18_0_BINARY__ door het beoordeelde systeembinarypad.
+# Stem EnvironmentFile af met de bestaande DG-wrapper; het voorgestelde bestand
+# hieronder is root:root 0600 en wordt door de systemd-manager gelezen.
+[Unit]
+Description=Milo & Friends BingoShow staging
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/srv/sites/milobingo-staging/shared
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=app-mil-stg
+Group=app-mil-stg
+WorkingDirectory=/srv/sites/milobingo-staging/current/.next/standalone
+Environment=NODE_ENV=production
+Environment=HOSTNAME=127.0.0.1
+Environment=NEXT_TELEMETRY_DISABLED=1
+EnvironmentFile=/etc/dg-sites/milobingo-staging.runtime.env
+ExecStart=__ABSOLUTE_NODE_24_18_0_BINARY__ /srv/sites/milobingo-staging/current/.next/standalone/server.js
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/srv/sites/milobingo-staging/shared
+CapabilityBoundingSet=
+AmbientCapabilities=
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=milobingo-staging
+
+[Install]
+WantedBy=multi-user.target
