@@ -1,0 +1,58 @@
+name: Inspect Milo staging
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: milobingo-staging
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    environment: staging
+    runs-on: [self-hosted, Linux, X64, dg-nxttrack-01, milobingo, staging]
+    timeout-minutes: 5
+    steps:
+      - name: Verify dedicated runner identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = dg-nxttrack-01
+          test "$(id -un)" = run-mil-stg
+          test "$RUNNER_NAME" = dg-nxttrack-01-nxttrack-staging
+          printf 'hostname=%s\nuser=%s\nrunner=%s\nworkspace=%s\n' "$(hostname)" "$(id -un)" "$RUNNER_NAME" "$GITHUB_WORKSPACE"
+          printf 'runner_directory=%s\n' "${RUNNER_TEMP%/_temp}"
+          df -B1 "$GITHUB_WORKSPACE" /srv
+          df -Pi "$GITHUB_WORKSPACE" /srv
+      - name: Inspect available deployment interfaces without activating a release
+        shell: bash
+        run: |
+          set -euo pipefail
+          for binary in dg-site-deploy dg-site-rollback node pnpm psql pg_dump pg_restore caddy; do
+            if command -v "$binary" >/dev/null 2>&1; then
+              printf '%s=%s\n' "$binary" "$(command -v "$binary")"
+            fi
+          done
+          for binary in /usr/local/bin/dg-site-deploy /usr/local/bin/dg-site-rollback; do
+            if test -f "$binary"; then
+              ls -l "$binary"
+              sha256sum "$binary"
+              "$binary" --help 2>&1 || true
+            fi
+          done
+          sudo -n -l 2>&1 || true
+          for directory in /srv/sites /etc/dg-sites /etc/dg-site-deploy /etc/caddy /etc/caddy/sites; do
+            if test -d "$directory"; then
+              ls -ld "$directory"
+              find "$directory" -maxdepth 2 -iname '*milo*' -print 2>/dev/null || true
+            fi
+          done
+          for directory in /srv/sites/*milo* /srv/sites/*mil-*; do
+            if test -d "$directory"; then
+              ls -ld "$directory" "$directory/current" "$directory/shared" "$directory/releases" 2>/dev/null || true
+              find "$directory" -maxdepth 2 -type f -name '*.json' -printf '%p\n' 2>/dev/null || true
+            fi
+          done
