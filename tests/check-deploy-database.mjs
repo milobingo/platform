@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
-import { mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, stat, writeFile, open } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { Readable, Writable } from 'node:stream';
@@ -11,6 +11,7 @@ import { createServer as createTlsServer, connect as connectTls } from 'node:tls
 import { Socket } from 'node:net';
 import { Pool } from 'pg';
 import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls, readExtensionMetadata, restoreExtensionOwners } from '../scripts/deploy/database.mjs';
+import { validateRestoreProof } from '../scripts/deploy/provision-runtime.mjs';
 
 const projectRef = 'lfsdgxcpdyghidzkzzvn';
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -266,10 +267,11 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   const adminUrl = new URL(testDatabase);
   assert.ok(['localhost', '127.0.0.1', '[::1]'].includes(adminUrl.hostname)); assert.match(adminUrl.pathname, /test/i);
   const container = process.env.MILO_TEST_POSTGRES_CONTAINER;
+  let scratchContainer;
   const spawnTool = container ? (executable, args, options) => {
     const pg = Object.fromEntries(Object.entries(options.env).filter(([name, value]) => name.startsWith('PG') && value !== undefined));
     if (pg.PGHOST) { pg.PGHOST = '127.0.0.1'; pg.PGPORT = '5432'; }
-    const dockerArgs = ['exec', '-i', ...Object.entries(pg).flatMap(([name, value]) => ['-e', `${name}=${value}`]), container, executable, ...args];
+    const dockerArgs = ['exec', '-i', ...Object.entries(pg).flatMap(([name, value]) => ['-e', `${name}=${value}`]), executable === 'pg_restore' && scratchContainer ? scratchContainer : container, executable, ...args];
     return spawn('docker', dockerArgs, { ...options, env: { PATH: process.env.PATH } });
   } : spawn;
   const failures = [], admin = fixturePool({ connectionString: testDatabase }, failures);
@@ -284,24 +286,43 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   }
   const sourceName = `milo_backup_source_test_${randomUUID().replaceAll('-', '')}`, restoreName = `milo_restore_test_${randomUUID().replaceAll('-', '')}`;
   const corruptRestoreName = `milo_restore_test_acl_${randomUUID().replaceAll('-', '')}`;
-  const ownerRole = `milo_backup_owner_${randomUUID().replaceAll('-', '')}`, readerRole = `milo_backup_reader_${randomUUID().replaceAll('-', '')}`, restoreRole = `milo_restore_owner_${randomUUID().replaceAll('-', '')}`;
+  const ownerRole = `milo_backup_owner_${randomUUID().replaceAll('-', '')}`, readerRole = `pgbouncer_milo_${randomUUID().replaceAll('-', '')}`, restoreRole = `milo_restore_owner_${randomUUID().replaceAll('-', '')}`;
   const directory = await mkdtemp(join(tmpdir(), 'milo-actual-backup-'));
-  await admin.query(`CREATE DATABASE "${sourceName}"`); await admin.query(`CREATE DATABASE "${restoreName}"`); await admin.query(`CREATE DATABASE "${corruptRestoreName}"`);
+  let scratchAdmin = admin, scratchAdminUrl = adminUrl;
+  if (container) {
+    const run = promisify(execFile), image = (await run('docker', ['inspect', '--format', '{{.Image}}', container])).stdout.trim();
+    scratchContainer = (await run('docker', ['run', '--detach', '--rm', '--publish', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=milo-restore-test-only', '-e', 'POSTGRES_DB=milo_restore_admin_test', image])).stdout.trim();
+    try {
+      const ports = JSON.parse((await run('docker', ['inspect', '--format', '{{json .NetworkSettings.Ports}}', scratchContainer])).stdout);
+      scratchAdminUrl = new URL(`postgresql://postgres:milo-restore-test-only@127.0.0.1:${ports['5432/tcp'][0].HostPort}/milo_restore_admin_test`);
+      scratchAdmin = fixturePool({ connectionString: scratchAdminUrl.toString() }, failures);
+      for (let attempt = 0;; attempt++) {
+        try { await scratchAdmin.query('SELECT 1'); break; }
+        catch { if (attempt === 99) throw new Error('The isolated PostgreSQL restore fixture did not become ready.'); await new Promise(done => setTimeout(done, 100)); }
+      }
+    } catch (error) { await scratchAdmin.end(); await run('docker', ['rm', '--force', scratchContainer]); await admin.end(); throw error; }
+  }
+  await admin.query(`CREATE DATABASE "${sourceName}"`); await scratchAdmin.query(`CREATE DATABASE "${restoreName}"`); await scratchAdmin.query(`CREATE DATABASE "${corruptRestoreName}"`);
   await admin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
-  const sourceUrl = new URL(adminUrl), restoreUrl = new URL(adminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`; restoreUrl.username = restoreRole; restoreUrl.password = 'milo-local-test-only';
+  if (scratchAdmin !== admin) await scratchAdmin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
+  const sourceUrl = new URL(adminUrl), restoreUrl = new URL(scratchAdminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`; restoreUrl.username = restoreRole; restoreUrl.password = 'milo-local-test-only';
   const sourcePool = fixturePool({ connectionString: sourceUrl.toString() }, failures), restoredPool = fixturePool({ connectionString: restoreUrl.toString() }, failures), restorePools = [];
   const poolFactory = connectionString => { const pool = fixturePool({ connectionString }, failures); restorePools.push(pool); return pool; };
   const sourceClient = await sourcePool.connect();
   t.after(async () => {
     const unclosedRestorePools = restorePools.filter(pool => !pool.ending).length;
     sourceClient.release(); await Promise.all([sourcePool, restoredPool, ...restorePools].map(pool => pool.end()));
-    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(admin, restoreName); await dropFixtureDatabase(admin, corruptRestoreName); }
-    finally { await admin.end(); }
+    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(scratchAdmin, restoreName); await dropFixtureDatabase(scratchAdmin, corruptRestoreName); }
+    finally {
+      await admin.end(); if (scratchAdmin !== admin) await scratchAdmin.end();
+      if (scratchContainer) await promisify(execFile)('docker', ['rm', '--force', scratchContainer]);
+    }
     await rm(directory, { recursive: true, force: true });
     assert.equal(unclosedRestorePools, 0, 'backup operations must close their own scratch connections');
     assert.deepEqual(failures, [], 'no unexpected idle PostgreSQL errors');
   });
-  await admin.query(`CREATE ROLE "${ownerRole}" NOLOGIN; CREATE ROLE "${readerRole}" NOLOGIN`);
+  await admin.query(`CREATE ROLE "${ownerRole}" NOLOGIN; CREATE ROLE "${readerRole}" LOGIN CREATEROLE CREATEDB`);
+  if (scratchAdmin !== admin) assert.equal((await scratchAdmin.query('SELECT 1 FROM pg_roles WHERE rolname=$1', [readerRole])).rowCount, 0, 'the pg-prefixed ACL role must not exist in the independent restore cluster');
   t.after(async () => {
     const cleanup = fixturePool({ connectionString: testDatabase }, failures);
     try { await cleanup.query(`DROP ROLE IF EXISTS "${ownerRole}"; DROP ROLE IF EXISTS "${readerRole}"; DROP ROLE IF EXISTS "${restoreRole}"`); } finally { await cleanup.end(); }
@@ -314,6 +335,9 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   const env = configuration({ DATABASE_URL: sourceUrl.toString(), RESTORE_TEST_DATABASE_URL: restoreUrl.toString(), DATABASE_BACKUP_DIRECTORY: directory });
   const prerequisites = validateApplyPrerequisites(env);
   const proof = await backupAndRestore({ env, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites, spawnTool, poolFactory });
+  const proofDirectory = await open(directory, 'r');
+  try { assert.equal((await validateRestoreProof(proofDirectory, proof.backupId, env.RELEASE_SHA)).backupId, proof.backupId, 'the runtime consumer accepts the real backup producer identity, encrypted dump and extension sidecar'); }
+  finally { await proofDirectory.close(); }
   assert.equal(proof.restoreVerified, true); assert.equal(proof.sourceProof.tables, 1);
   assert.deepEqual(proof.sourceProof, proof.restoredProof);
   assert.deepEqual(proof.sourceSecurity, proof.restoredSecurity);
@@ -322,6 +346,7 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   assert.equal((await restoredPool.query("SELECT pg_get_userbyid(relowner) AS owner FROM pg_class WHERE oid='public.backup_identity'::regclass")).rows[0].owner, ownerRole);
   const grants = (await restoredPool.query("SELECT has_table_privilege($1,'public.backup_identity','SELECT') AS read,has_table_privilege($1,'public.backup_identity','UPDATE') AS write", [readerRole])).rows[0];
   assert.deepEqual(grants, { read: true, write: false });
+  if (scratchAdmin !== admin) assert.deepEqual((await restoredPool.query('SELECT rolcanlogin AS login,rolsuper AS superuser,rolcreaterole AS createrole,rolcreatedb AS createdb FROM pg_roles WHERE rolname=$1', [readerRole])).rows[0], { login: false, superuser: false, createrole: false, createdb: false }, 'pgbouncer-style ACL grantees are restored as unprivileged NOLOGIN scaffolding');
   const extensionOwners = (await restoredPool.query("SELECT c.relname AS name,pg_get_userbyid(c.relowner) AS owner FROM pg_class c WHERE c.oid IN ('public.pg_stat_statements'::regclass,'public.pg_stat_statements_info'::regclass) ORDER BY name")).rows;
   assert.deepEqual(extensionOwners, [{ name: 'pg_stat_statements', owner: decodeURIComponent(adminUrl.username) }, { name: 'pg_stat_statements_info', owner: ownerRole }], 'individual source extension owners survive a full restore by a different superuser');
   const files = await readdir(directory); assert.equal(files.length, 3);

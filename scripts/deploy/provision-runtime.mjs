@@ -49,7 +49,7 @@ async function privateFile(parent, name, maxBytes) {
 }
 
 export async function validateRestoreProof(parent, backupId, releaseSha, now = Date.now()) {
-  if (!new RegExp(`^milo-${projectRef}-[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$`).test(backupId || '') || !/^[a-f0-9]{40}$/.test(releaseSha || '')) fail('backup_identity', 'Geef de exacte backupidentiteit en broncommit op.');
+  if (!new RegExp(`^milo-${projectRef}-[0-9]{8}T[0-9]{9}Z-[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$`).test(backupId || '') || !/^[a-f0-9]{40}$/.test(releaseSha || '')) fail('backup_identity', 'Geef de exacte backupidentiteit en broncommit op.');
   const proofFile = await privateFile(parent, `${backupId}.proof.json`, 65536);
   let proof;
   try { proof = JSON.parse(await proofFile.readFile('utf8')); }

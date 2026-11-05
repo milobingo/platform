@@ -13,7 +13,7 @@ import { scramVerifier, deriveRuntimeUrl, validateRestoreProof, provisionRuntime
 import { applyDatabase, loadManifest, encryptBackup } from '../scripts/deploy/database.mjs';
 
 const ref = 'lfsdgxcpdyghidzkzzvn', releaseSha = 'a'.repeat(40), role = 'milo_staging_runtime';
-const backupId = `milo-${ref}-20261105T160000Z-${randomUUID()}`;
+const backupId = `milo-${ref}-20261105T160000000Z-${randomUUID()}`;
 const configuration = () => ({ DATABASE_URL: `postgresql://migration:test-only@db.${ref}.supabase.co:5432/postgres?sslmode=verify-full`, SUPABASE_URL: `https://${ref}.supabase.co`, SUPABASE_SECRET_KEY: 'sb_secret_test_only', SUPABASE_STORAGE_BUCKET: 'milo-staging', RELEASE_SHA: releaseSha, BACKUP_ENCRYPTION_KEY: 'ab'.repeat(32), RESTORE_TEST_DATABASE_URL: 'postgresql://fixture:test-only@127.0.0.1/milo_restore_test_runtime', DATABASE_BACKUP_DIRECTORY: '/tmp/runtime-proof-contract' });
 async function proofFixture(t, major = 17) {
   const directory = await mkdtemp(join(tmpdir(), 'milo-runtime-proof-'));

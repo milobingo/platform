@@ -408,7 +408,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     } catch (error) { await sourceClient.query('ROLLBACK'); throw error; }
     // Authenticate the whole file before any restore command receives bytes.
     await decryptBackup(encryptedPath, new Writable({ write(chunk, encoding, callback) { callback(); } }), env.BACKUP_ENCRYPTION_KEY);
-    const roles = (await sourceClient.query("SELECT rolname AS name FROM pg_roles WHERE rolname NOT LIKE 'pg_%' ORDER BY rolname")).rows;
+    const roles = (await sourceClient.query("SELECT rolname AS name FROM pg_roles WHERE left(rolname,3)<>'pg_' ORDER BY rolname")).rows;
     for (const role of roles) if (role.name !== 'public' && !(await restoreClient.query('SELECT 1 FROM pg_roles WHERE rolname=$1', [role.name])).rows.length) await restoreClient.query(`CREATE ROLE ${quote(role.name)} NOLOGIN`);
     const restore = startTool('pg_restore', [`--dbname=${decodeURIComponent(prerequisites.restore.pathname.slice(1))}`, '--exit-on-error', '--single-transaction'], pgEnvironment(env.RESTORE_TEST_DATABASE_URL), spawnTool);
     restore.child.stdout.resume();

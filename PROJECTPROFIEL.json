@@ -87,7 +87,7 @@
       ],
       "acceptance": "not_run",
       "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42063259923",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42065193147",
       "ci_result": "success",
       "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
       "deploy_result": "blocked_before_checkout_by_host_bootstrap",
@@ -119,7 +119,9 @@
       "credential_handoff": "https://github.com/milobingo/platform/actions/runs/42062776243",
       "migration_connection_configured": true,
       "backup_key_configured": true,
-      "scratch_restore_connection": "temporary private loopback relay; authenticated empty PG17.11; must clean after restore"
+      "scratch_restore_connection": "temporary private loopback relay; authenticated empty PG17.11; must clean after restore",
+      "database_apply_attempt": "https://github.com/milobingo/platform/actions/runs/42065993828",
+      "database_apply_result": "restore blocked before migration; missing scratch pgbouncer role; literal role-prefix fix and cross-cluster regression added"
     }
   },
   "configuration": {
