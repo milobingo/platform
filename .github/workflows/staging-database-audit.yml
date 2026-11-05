@@ -72,4 +72,5 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          SUPABASE_DB_CA_BASE64: ${{ vars.SUPABASE_DB_CA_BASE64 }}
         run: node scripts/deploy/database.mjs --expected-project-ref=lfsdgxcpdyghidzkzzvn

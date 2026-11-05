@@ -11,6 +11,7 @@ De bevestigde stagingconfiguratie wijst naar Supabase-project **`lfsdgxcpdyghidz
 | `DATABASE_URL` | Applicatieruntime: een afzonderlijke login met de groep `milo_backend`, zonder superuser-, rolbeheer-, databasebeheer- of RLS-bypassrechten. |
 | `MIGRATION_DATABASE_URL` | Nieuwe **deployment-only secret** in GitHub environment `staging`: geautoriseerde beheerverbinding voor inventarisatie, backup en migraties. Nooit aan de Next-runtime of browser doorgeven. |
 | `SUPABASE_URL` | Stagingvariabele: `https://lfsdgxcpdyghidzkzzvn.supabase.co`. |
+| `SUPABASE_DB_CA_BASE64` | Publieke GitHub-environmentvariabele: de geldige Supabase-database-CA als één regel base64 van PEM. Alleen server-/deployconfiguratie; geen browsersleutel. |
 | `SUPABASE_SECRET_KEY` | Bestaande serversecret voor de privébucket. |
 | `SUPABASE_STORAGE_BUCKET` | Stagingvariabele: `milo-staging`. |
 
@@ -27,6 +28,12 @@ node scripts/deploy/database.mjs --expected-project-ref=lfsdgxcpdyghidzkzzvn
 ```
 
 De job levert `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY` en `SUPABASE_STORAGE_BUCKET` via de procesomgeving. Zet geen verbindingswaarden in CLI-argumenten, shelltrace, workflowuitvoer of een artifact. De tool laadt bewust geen `.env`-bestand automatisch.
+
+Als de databaseketen niet onder de standaard Node-truststore valt, levert de job ook `SUPABASE_DB_CA_BASE64`. De gedeelde helper `server/node-postgres-tls.js` valideert het publieke X509-CA-certificaat, behoudt `rejectUnauthorized: true`, verwijdert TLS-overrides en weigert query-overrides van de verbindingsautoriteit. De databasehost blijft via zijn certificaat gecontroleerd. Een `SELF_SIGNED_CERT_IN_CHAIN`-fout wordt opgelost door de juiste CA aan te leveren; zet certificaatcontrole niet uit.
+
+De actuele Supabase-dashboardbron noemt als hosted download [prod-ca-2021.crt](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt). De URL komt uit [de officiële dashboardconfiguratie](https://github.com/supabase/supabase/blob/6d08d66b7d784220ec149fd77e0ba940c6067464/apps/studio/hooks/custom-content/custom-content.json), sleutel `ssl:certificate_url`. `prod` verwijst hier naar het gehoste Supabase-dashboard, ook wanneer onze appomgeving staging heet. Gecontroleerd op 5 november 2026: **Supabase Root 2021 CA**, geldig tot 26 april 2031, SHA256-certificaatfingerprint `807025AD50D4ED219D2C9C7D299C004F824EB00CF7F65AFEF607D07B72E6CAFA`. Download en controleer de CA opnieuw bij rotatie; een geslaagde geverifieerde projectverbinding moet aantonen dat dit certificaat bij de daadwerkelijke keten hoort.
+
+Gebruik bijvoorbeeld een gecontroleerd gedownload PEM-bestand en `base64 -w0` om de publieke environmentvariabele te vullen. Een CA bevat geen private key. De variabele gaat uitsluitend naar de serverconfiguratie, de databasegate en de backuplaag; er is geen `NEXT_PUBLIC_*`-variant nodig.
 
 De preflight:
 
@@ -71,7 +78,7 @@ Deze opdracht:
 
 1. Controleert configuratie, reviewhash, rechten en het bestaande schema. Als er al applicatietabellen zijn zonder bewezen bijpassende historie, stopt hij. Gedeeltelijke schema's en onbekende upgrades worden niet geadopteerd of gereset.
 2. Verkrijgt een PostgreSQL-advisory lock op de migratieverbinding en herhaalt de preflight. Een tweede deployment kan zo niet tegelijk dezelfde bootstrap uitvoeren.
-3. Meet `pg_database_size` en de werkelijk beschikbare bytes van het backupfilesystem. Minder dan tweemaal die databaseomvang plus 512 MiB reserve blokkeert de dump. Maakt daarna een volledige databasebackup met `pg_dump` vanuit een geëxporteerde consistente snapshot. Alleen versleutelde bytes gaan naar schijf, via AES-256-GCM met een willekeurige nonce. Credentials worden via een afgebakende subprocessomgeving doorgegeven, niet via procesargumenten. Toolstderr wordt niet in Actions afgedrukt.
+3. Meet `pg_database_size` en de werkelijk beschikbare bytes van het backupfilesystem. Minder dan tweemaal die databaseomvang plus 512 MiB reserve blokkeert de dump. Maakt daarna een volledige databasebackup met `pg_dump` vanuit een geëxporteerde consistente snapshot. Een aangeleverde gevalideerde CA wordt tijdelijk als PEM met rechten `0600` beschikbaar gemaakt voor `PGSSLROOTCERT`; `pg_dump` gebruikt `verify-full`. Het tijdelijke bestand wordt na afloop verwijderd. Alleen versleutelde dumpbytes gaan naar schijf, via AES-256-GCM met een willekeurige nonce. Credentials worden via een afgebakende subprocessomgeving doorgegeven, niet via procesargumenten. Toolstderr wordt niet in Actions afgedrukt.
 4. Authenticeert het volledige versleutelde bestand en herstelt het met `pg_restore --single-transaction --exit-on-error` in de afzonderlijke lege lokale hersteltestdatabase. Dump en restore behouden eigenaarschap en ACLs; de tool gebruikt geen `--no-owner` of `--no-privileges`. Ontbrekende bronrolnamen worden op de scratchserver uitsluitend zonder login aangemaakt; wachtwoorden en verhoogde clusterrolattributen worden niet gekopieerd. Bestaande scratchtabellen blokkeren de procedure; hij maakt de scratchdatabase niet leeg.
 5. Vergelijkt tabeltotalen, aantallen rijen per tabel en inhoudschecksums van de bron-snapshot met de herstelde database. Vergelijkt daarnaast tabel-/schema-eigenaarschap, tabel-/schemagrants, default privileges, RLS en policies via een eigen beveiligingsfingerprint. Een verschil blokkeert de migratie. Alleen bij gelijkheid wordt een apart bewijsbestand geschreven met de versleutelde bestands-SHA256, release-SHA, projectref en `restoreVerified: true`.
 6. Past uitsluitend bij nul bestaande app-tabellen de gecommitte migratie toe, samen met de private checksumhistorie, in één transactie. Een ontbrekende RLS-policy, verkeerde grant of ander onjuist eindcontract draait die transactie volledig terug.

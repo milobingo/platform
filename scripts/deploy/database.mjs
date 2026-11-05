@@ -1,12 +1,14 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from 'node:crypto';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { mkdir, readFile, readdir, stat, statfs, writeFile, open, unlink } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, statfs, writeFile, open, unlink } from 'node:fs/promises';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
 import { pipeline } from 'node:stream/promises';
 import { Transform, Writable } from 'node:stream';
 import { Pool } from 'pg';
+import { postgresTlsOptions } from '../../server/node-postgres-tls.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const quote = value => `"${value.replaceAll('"', '""')}"`;
@@ -17,6 +19,7 @@ const historySchema = 'milo_deploy';
 const historyTable = `${historySchema}.migrations`;
 const envelopeMagic = Buffer.from('MILOBAK1');
 const minimumObjectLimit = 104857600;
+const connectionAuthorityKeys = new Set(['host', 'hostaddr', 'port', 'user', 'password', 'database', 'dbname', 'service', 'servicefile']);
 
 export class DatabaseGateError extends Error {
   constructor(code, message) { super(message); this.name = 'DatabaseGateError'; this.code = code; }
@@ -30,6 +33,7 @@ export function validateTarget(env, expectedProjectRef) {
   catch { fail('target_configuration', 'SUPABASE_URL en DATABASE_URL moeten geldige, afzonderlijk aangeleverde verbindingen zijn.'); }
   if (api.protocol !== 'https:' || api.hostname !== `${expectedProjectRef}.supabase.co` || api.port || api.username || api.password || api.pathname !== '/' || api.search || api.hash) fail('project_mismatch', 'SUPABASE_URL hoort niet bij de expliciet bevestigde projectref.');
   if (!['postgres:', 'postgresql:'].includes(database.protocol) || !database.username || !database.password || database.pathname === '/') fail('database_configuration', 'DATABASE_URL mist verplichte PostgreSQL-verbindingsvelden.');
+  if ([...database.searchParams.keys()].some(key => connectionAuthorityKeys.has(key.toLowerCase()))) fail('database_authority_override', 'DATABASE_URL bevat een verboden query-override van de bevestigde verbindingsautoriteit.');
   const user = decodeURIComponent(database.username);
   const direct = database.hostname === `db.${expectedProjectRef}.supabase.co`;
   const pooler = database.hostname.endsWith('.pooler.supabase.com') && user.endsWith(`.${expectedProjectRef}`);
@@ -70,12 +74,9 @@ export async function loadManifest(directory = join(root, 'supabase/migrations')
   return { migrations, tables, indexes, digest: hash(stable(migrations.map(({ filename, checksum }) => ({ filename, checksum })))) };
 }
 
-function defaultPoolFactory(connectionString, { verifiedTls = false } = {}) {
-  const url = new URL(connectionString);
-  // pg otherwise lets sslmode query parameters replace the explicit TLS policy.
-  for (const name of ['sslmode', 'ssl', 'sslcert', 'sslkey', 'sslrootcert']) url.searchParams.delete(name);
-  const pool = new Pool({ connectionString: url.toString(), max: 2, connectionTimeoutMillis: 10_000,
-    statement_timeout: 60_000, ssl: verifiedTls ? { rejectUnauthorized: true } : undefined });
+function defaultPoolFactory(connectionString, { verifiedTls = false, caBase64 } = {}) {
+  const tls = postgresTlsOptions(connectionString, { caBase64, allowLoopback: !verifiedTls });
+  const pool = new Pool({ ...tls, max: 2, connectionTimeoutMillis: 10_000, statement_timeout: 60_000 });
   pool.on('error', () => {}); // Query failures are handled without raw credential-bearing diagnostics.
   return pool;
 }
@@ -153,7 +154,7 @@ async function bucketStatus(target, env, fetcher) {
 export async function auditDatabase({ env = process.env, expectedProjectRef, manifest, poolFactory = defaultPoolFactory, fetcher = fetch } = {}) {
   const target = validateTarget(env, expectedProjectRef);
   manifest ??= await loadManifest();
-  const pool = poolFactory(env.DATABASE_URL, { verifiedTls: true });
+  const pool = poolFactory(env.DATABASE_URL, { verifiedTls: true, caBase64: env.SUPABASE_DB_CA_BASE64 });
   try {
     const client = await pool.connect();
     try {
@@ -197,17 +198,18 @@ export function validateApplyPrerequisites(env) {
   let restore;
   try { restore = new URL(env.RESTORE_TEST_DATABASE_URL); } catch { fail('restore_database_missing', 'RESTORE_TEST_DATABASE_URL moet een afzonderlijke lege lokale hersteltestdatabase aanwijzen.'); }
   if (!['postgres:', 'postgresql:'].includes(restore.protocol) || !loopback(restore.hostname) || !/^\/milo_restore_test_[a-z0-9_]+$/.test(restore.pathname) || !restore.username || !restore.password) fail('restore_database_unsafe', 'De hersteltest vereist loopback en een afzonderlijke database met naam milo_restore_test_*.');
+  if ([...restore.searchParams.keys()].some(key => connectionAuthorityKeys.has(key.toLowerCase()))) fail('restore_database_authority_override', 'De lokale herstelverbinding mag geen query-overrides van host, gebruiker of database bevatten.');
   if (!env.DATABASE_BACKUP_DIRECTORY || !isAbsolute(env.DATABASE_BACKUP_DIRECTORY)) fail('backup_directory_missing', 'DATABASE_BACKUP_DIRECTORY moet de bevestigde absolute private backuplocatie buiten de release aanwijzen.');
   const directory = resolve(env.DATABASE_BACKUP_DIRECTORY);
   if (directory === root || directory.startsWith(`${root}/`)) fail('backup_directory_in_checkout', 'Bewaar databasebackups buiten de checkout en wegwerp-release.');
   return { restore, directory };
 }
 
-function pgEnvironment(connectionString) {
+function pgEnvironment(connectionString, rootCertFile) {
   const url = new URL(connectionString);
   return { PATH: process.env.PATH, LANG: 'C.UTF-8', PGHOST: url.hostname.replace(/^\[|\]$/g, ''), PGPORT: url.port || '5432',
     PGDATABASE: decodeURIComponent(url.pathname.slice(1)), PGUSER: decodeURIComponent(url.username), PGPASSWORD: decodeURIComponent(url.password),
-    PGSSLMODE: loopback(url.hostname) ? 'disable' : 'verify-full', ...(!loopback(url.hostname) ? { PGSSLROOTCERT: 'system' } : {}), PGCONNECT_TIMEOUT: '10', PGAPPNAME: 'milo-controlled-backup' };
+    PGSSLMODE: loopback(url.hostname) ? 'disable' : 'verify-full', ...(!loopback(url.hostname) ? { PGSSLROOTCERT: rootCertFile || 'system' } : {}), PGCONNECT_TIMEOUT: '10', PGAPPNAME: 'milo-controlled-backup' };
 }
 function startTool(executable, args, env, spawnTool = spawn) {
   const child = spawnTool(executable, args, { env, stdio: ['pipe', 'pipe', 'pipe'] });
@@ -298,7 +300,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
   const backupId = `milo-${target.projectRef}-${new Date().toISOString().replaceAll(/[^0-9TZ]/g, '')}-${randomUUID()}`;
   const encryptedPath = join(prerequisites.directory, `${backupId}.dump.aesgcm`);
   const proofPath = join(prerequisites.directory, `${backupId}.proof.json`);
-  let restored = false;
+  let restored = false, caDirectory;
   try {
     const scratch = (await restoreClient.query(`SELECT current_database() AS database,current_setting('server_version_num')::int AS version,
       (SELECT count(*)::int FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p','v','m','f','S') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema') AS objects`)).rows[0];
@@ -307,11 +309,18 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     if ((await stat(prerequisites.directory)).mode & 0o077) fail('backup_directory_permissions', 'De backuplocatie moet uitsluitend voor de deploygebruiker toegankelijk zijn (0700).');
     const sourceBytes = (await sourceClient.query('SELECT pg_database_size(current_database())::text AS bytes')).rows[0].bytes;
     const capacity = await assertBackupCapacity(prerequisites.directory, sourceBytes);
+    let rootCertFile;
+    if (env.SUPABASE_DB_CA_BASE64 && !loopback(new URL(env.DATABASE_URL).hostname)) {
+      const pem = postgresTlsOptions(env.DATABASE_URL, { caBase64: env.SUPABASE_DB_CA_BASE64 }).ssl.ca;
+      caDirectory = await mkdtemp(join(tmpdir(), 'milo-postgres-ca-'));
+      rootCertFile = join(caDirectory, 'supabase-root-ca.pem');
+      await writeFile(rootCertFile, pem, { mode: 0o600, flag: 'wx' });
+    }
     await sourceClient.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
     let sourceProof, sourceSecurity;
     try {
       const snapshot = (await sourceClient.query('SELECT pg_export_snapshot() AS id')).rows[0].id;
-      const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL), spawnTool);
+      const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL, rootCertFile), spawnTool);
       dump.child.stdin.end();
       try { await Promise.all([encryptBackup(dump.child.stdout, encryptedPath, env.BACKUP_ENCRYPTION_KEY), dump.done]); }
       catch (error) { dump.child.kill('SIGTERM'); throw error; }
@@ -338,8 +347,11 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     await writeFile(proofPath, `${JSON.stringify(proof, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
     return proof;
   } finally {
-    restoreClient.release(); await restorePool.end();
-    if (!restored) await unlink(proofPath).catch(() => {});
+    try { restoreClient.release(); await restorePool.end(); }
+    finally {
+      if (caDirectory) await rm(caDirectory, { recursive: true, force: true });
+      if (!restored) await unlink(proofPath).catch(() => {});
+    }
   }
 }
 
@@ -364,7 +376,7 @@ export async function applyDatabase({ env = process.env, expectedProjectRef, rev
   if (!allowed) fail('apply_preflight_blocked', 'Preflight vindt unmanaged tabellen, schema-/historiedrift of een ongeschikte bestaande bucket. Geen migratie toegepast.');
   if (before.pending.length && before.applicationTables.length) fail('existing_database_upgrade_review', 'Dit bootstrapcommando past geen nieuwe migratie toe op een bestaande appdatabase. Laat de upgrade en compatibiliteit afzonderlijk beoordelen.');
   if ((!before.connection.superuser && !before.connection.createrole) || !before.connection.schema_create || !before.connection.bypassrls && !before.connection.superuser) fail('migration_privileges', 'Gebruik een geautoriseerde migratieverbinding met schema-/rolbeheer en volledige backupleestoegang.');
-  const pool = poolFactory(env.DATABASE_URL, { verifiedTls: true }), client = await pool.connect();
+  const pool = poolFactory(env.DATABASE_URL, { verifiedTls: true, caBase64: env.SUPABASE_DB_CA_BASE64 }), client = await pool.connect();
   let committed = false, backup;
   try {
     await client.query("SELECT pg_advisory_lock(hashtextextended('milo-controlled-schema-bootstrap',0))");

@@ -26,7 +26,7 @@ De uitgebreide read-only runnerinspectie is [GitHub Actions-run 42051941726](htt
 | Private Storagebucket | `milo-staging` |
 | Apppoort | **Nog door de hostbeheerder te kiezen en te reserveren.** Er is geen poort afgeleid uit een ander project. |
 
-De runner heeft geen `sudo`-bevoegdheid voor de noodzakelijke hostinrichting. Een root- of `dgadmin`-SSH-identiteit is in deze werkomgeving niet beschikbaar. De inspectie vond geen inzetbare `dg-site-deploy`, Node-/pnpm-deploytoolchain of PostgreSQL-backupclients. De interne Node van GitHub Actions is geen app- of buildtoolchain. Caddy is actief via zijn bestaande systemd-unit, maar luisterde alleen op poort 80; er is geen Milo-appservice of Milo-sitefragment aangetroffen. `/etc/dg-sites` is `root:root`, mode `0700`; de inhoud is niet door de runner geïnspecteerd.
+De runner heeft geen `sudo`-bevoegdheid voor de noodzakelijke hostinrichting. Sleuteltoegang als `dgadmin` is inmiddels getest; diens sudo is interactief. Root-SSH is uitgeschakeld door de bestaande hosthardening. Een tijdelijke adresgebonden beheerverbinding kan pas na de geautoriseerde sudo-stap van de beheerder worden gebruikt. De inspectie vond geen inzetbare `dg-site-deploy`, Node-/pnpm-deploytoolchain of PostgreSQL-backupclients. De interne Node van GitHub Actions is geen app- of buildtoolchain. Caddy is actief via zijn bestaande systemd-unit, maar luisterde alleen op poort 80; er is geen Milo-appservice of Milo-sitefragment aangetroffen. `/etc/dg-sites` is `root:root`, mode `0700`; de inhoud is niet door de runner geïnspecteerd.
 
 ## Inrichting door de bestaande beheerconsole
 

@@ -9,7 +9,7 @@ const legacyChecks=[
   'check-youtube-player','check-startup-recovery','check-gpt-live',
   'check-calls','check-planner-api','check-planner-ui','check-openai','check-production','check-milo-brand-isolation','check-presentation',
 ];
-const checks=[...legacyChecks.map(name=>`scripts/${name}.mjs`),'tests/check-node-storage.mjs','tests/check-node-provider-fetch.mjs','tests/check-deploy-contract.mjs','tests/check-deploy-database.mjs'];
+const checks=[...legacyChecks.map(name=>`scripts/${name}.mjs`),'tests/check-node-storage.mjs','tests/check-node-provider-fetch.mjs','tests/check-node-postgres-tls.mjs','tests/check-deploy-contract.mjs','tests/check-deploy-database.mjs'];
 await mkdir('verification/local-testlogs',{recursive:true});
 const results=[];
 for(const path of checks){

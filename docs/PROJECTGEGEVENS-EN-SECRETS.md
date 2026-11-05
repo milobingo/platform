@@ -48,6 +48,7 @@ Kopieer `.env.example` naar `.env.local` voor lokaal gebruik. Vul nooit echte se
 | `OBJECT_STORAGE_PATH` | Runtimepad | Lokale private bestanden; standaard `.data/objects`. Buiten een wegwerp-release bewaren als dit later bewust wordt gebruikt. |
 | `DATABASE_URL` | **Serversecret**, runtime | Beperkte PostgreSQL-login van het eigen Supabase-project, lid van `milo_backend`, zonder superuser/rolbeheer/RLS-bypass; activeert de PostgreSQL-adapter. De beheerverbinding `MIGRATION_DATABASE_URL` blijft uitsluitend in het releasepad. |
 | `SUPABASE_URL` | Publieke project-URL, serverruntime | Eigen Supabase-project voor Auth en optionele Storage. |
+| `SUPABASE_DB_CA_BASE64` | Publieke CA, serverruntime en databasebeheer | Officieel Supabase-rootcertificaat als base64-PEM; peer- en hostnaamverificatie blijven aan. In GitHub staging geplaatst na de echte TLS-fout; geen private key. |
 | `SUPABASE_PUBLISHABLE_KEY` | Publieke sleutel, serverruntime | Supabase Auth-client. Gebruik de publishable key van dezelfde omgeving. Deze sleutel is geen regiebevoegdheid. |
 | `SUPABASE_SECRET_KEY` | **Serversecret**, runtime | Alleen voor expliciet gekozen private Supabase Storage; blijft buiten browserbundels. |
 | `SUPABASE_STORAGE_BUCKET` | Runtimevariabele | Leeg voor lokale objecten. Staging gebruikt de bevestigde private bucket `milo-staging` en vereist `DATABASE_URL`, `SUPABASE_URL` en `SUPABASE_SECRET_KEY`. De oorspronkelijke SQL noemt `milo-private`; de deployprocedure controleert en configureert daarom afzonderlijk de gekozen stagingbucket. |

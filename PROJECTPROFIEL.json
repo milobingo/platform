@@ -87,7 +87,20 @@
         "Milo app service and loopback port",
         "Milo Caddy vhost and HTTPS"
       ],
-      "acceptance": "not_run"
+      "acceptance": "not_run",
+      "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42055666740",
+      "ci_result": "success",
+      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
+      "deploy_result": "blocked_before_checkout_by_host_bootstrap",
+      "database_audit": "https://github.com/milobingo/platform/actions/runs/42056451922",
+      "database_audit_result": "SELF_SIGNED_CERT_IN_CHAIN; explicit official Supabase CA being configured",
+      "ssh_admin": {
+        "user": "dgadmin",
+        "key_login_verified": true,
+        "noninteractive_sudo": false,
+        "root_login": "disabled by /etc/ssh/sshd_config.d/00-dg-hardening.conf"
+      }
     }
   },
   "configuration": {
@@ -102,6 +115,7 @@
       "SQLITE_PATH",
       "OBJECT_STORAGE_PATH",
       "SUPABASE_URL",
+      "SUPABASE_DB_CA_BASE64",
       "SUPABASE_PUBLISHABLE_KEY",
       "SUPABASE_STORAGE_BUCKET",
       "OPENAI_TEXT_MODEL",
@@ -131,6 +145,13 @@
       "staging": "milo-staging",
       "original_migration_bucket": "milo-private",
       "procedure": "scripts/deploy/database.mjs"
+    },
+    "database_tls": {
+      "ca_variable": "SUPABASE_DB_CA_BASE64",
+      "ca_public": true,
+      "sha256_fingerprint": "807025AD50D4ED219D2C9C7D299C004F824EB00CF7F65AFEF607D07B72E6CAFA",
+      "ca_source": "https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt",
+      "verify_peer_and_hostname": true
     }
   },
   "notes": [

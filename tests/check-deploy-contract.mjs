@@ -1,12 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {X509Certificate} from 'node:crypto';
+import {rootCertificates} from 'node:tls';
 import {STAGING,RUNTIME_KEYS,BUILD_KEYS,validateReleaseSha,validateCiRun,selectCiRun,validateIdentity,validateDeploymentConfiguration,validateRuntimeConfiguration,wrapperEnvironment,validateRuntimeDatabaseRole,verifyRuntimeDatabase} from '../scripts/deploy/release-preflight.mjs';
 
 const releaseSha='a'.repeat(40),otherSha='b'.repeat(40),wrapperHash='c'.repeat(64);
 const metadata={releaseSha,releaseId:'42000000001-1',configVersion:'staging-2026-11-05-v1',port:4190};
 const goodRun=(overrides={})=>({id:41951694175,run_attempt:1,path:'.github/workflows/ci.yml',head_sha:releaseSha,head_branch:'main',event:'push',status:'completed',conclusion:'success',repository:{full_name:STAGING.repository},head_repository:{full_name:STAGING.repository},html_url:'https://github.com/milobingo/platform/actions/runs/41951694175',...overrides});
-const values=()=>({APP_URL:STAGING.appUrl,SUPABASE_URL:`https://${STAGING.supabaseRef}.supabase.co`,SUPABASE_STORAGE_BUCKET:STAGING.bucket,SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test_only',SUPABASE_SECRET_KEY:'sb_secret_test_only',DATABASE_URL:`postgresql://postgres.${STAGING.supabaseRef}:test-only@db.${STAGING.supabaseRef}.supabase.co:5432/postgres?sslmode=verify-full`,VLAMPIE_SETTINGS_KEY:'01'.repeat(32)});
+const testCa=new X509Certificate(rootCertificates.find(pem=>{const ca=new X509Certificate(pem);return ca.ca&&Date.parse(ca.validFrom)<=Date.now()&&Date.parse(ca.validTo)>Date.now();})).toString();
+const testCaBase64=Buffer.from(testCa).toString('base64');
+const values=()=>({APP_URL:STAGING.appUrl,SUPABASE_URL:`https://${STAGING.supabaseRef}.supabase.co`,SUPABASE_STORAGE_BUCKET:STAGING.bucket,SUPABASE_DB_CA_BASE64:testCaBase64,SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test_only',SUPABASE_SECRET_KEY:'sb_secret_test_only',DATABASE_URL:`postgresql://postgres.${STAGING.supabaseRef}:test-only@db.${STAGING.supabaseRef}.supabase.co:5432/postgres?sslmode=verify-full`,VLAMPIE_SETTINGS_KEY:'01'.repeat(32)});
 
 test('release selection accepts only a complete immutable source SHA',()=>{
  assert.equal(validateReleaseSha(releaseSha),releaseSha);
@@ -54,6 +58,8 @@ test('runtime configuration is staging-only, keeps all privileged keys server-si
   {DATABASE_URL:values().DATABASE_URL.replace('sslmode=verify-full','sslmode=disable')},
   {DATABASE_URL:values().DATABASE_URL.replace('sslmode=verify-full','sslmode=require')},
   {DATABASE_URL:values().DATABASE_URL.replace(`db.${STAGING.supabaseRef}.supabase.co`,'db.other-project.supabase.co')},
+  {DATABASE_URL:values().DATABASE_URL+'&host=other-project.supabase.co'},
+  {SUPABASE_DB_CA_BASE64:''},{SUPABASE_DB_CA_BASE64:'invalid-root-cert'},
   {SUPABASE_PUBLISHABLE_KEY:'sb_secret_wrong_key'},
   {OPENAI_API_KEY:'test-only\nSECOND_ENV=leak'},
   {LIVEKIT_URL:'wss://test.livekit.cloud'},
@@ -87,8 +93,12 @@ test('workflow keeps deployment manual, gates host mutation on CI, and isolates 
  assert.match(apply,/if: \$\{\{ inputs.apply_database \}\}/);assert.match(apply,/loadManifest/);assert.match(apply,/--reviewed-manifest-sha256=/);
  assert.match(apply,/secrets.BACKUP_ENCRYPTION_KEY/);assert.match(apply,/secrets.RESTORE_TEST_DATABASE_URL/);
  assert.match(apply,/DATABASE_URL: \$\{\{ secrets.MIGRATION_DATABASE_URL \}\}/);
+ assert.match(apply,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
  const deploy=workflow.slice(workflow.indexOf('      - name: Audit ready'),workflow.indexOf('\n  verify-public:'));
  assert.doesNotMatch(deploy,/BACKUP_ENCRYPTION_KEY|RESTORE_TEST_DATABASE_URL/);
+ assert.match(deploy,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
+ const audit=readFileSync(new URL('../.github/workflows/staging-database-audit.yml',import.meta.url),'utf8');
+ assert.match(audit,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
  assert.match(workflow,/CONFIG_VERSION: \$\{\{ vars.DG_CONFIG_VERSION \}\}/);
 });
 
@@ -106,8 +116,8 @@ test('runtime database verification uses verified TLS and read-only role/table c
  const queries=[];let options,released=false,ended=false;
  t.mock.method(console,'log',()=>{});
  const poolFactory=input=>{options=input;return {on(){},connect:async()=>({query:async sql=>{queries.push(sql);return {rows:sql.startsWith('SELECT current_user')?[properRole()]:[]};},release(){released=true;}}),end:async()=>{ended=true;}};};
- await verifyRuntimeDatabase(values().DATABASE_URL,{poolFactory,tableNames:['app_user_roles','bingo_games']});
- assert.deepEqual(options.ssl,{rejectUnauthorized:true});assert(!new URL(options.connectionString).searchParams.has('sslmode'));
+ await verifyRuntimeDatabase(values().DATABASE_URL,{poolFactory,tableNames:['app_user_roles','bingo_games'],caBase64:testCaBase64});
+ assert.deepEqual(options.ssl,{rejectUnauthorized:true,ca:testCa.trim()+'\n'});assert.equal(options.sslnegotiation,'postgres');assert(!new URL(options.connectionString).searchParams.has('sslmode'));
  assert.equal(queries[0],'BEGIN READ ONLY');assert.match(queries[1],/pg_has_role/);assert(queries.includes('SELECT 1 FROM public."app_user_roles" LIMIT 0'));assert(queries.includes('SELECT 1 FROM public."bingo_games" LIMIT 0'));
  assert.equal(queries.at(-1),'ROLLBACK');assert(released&&ended);
  assert(!queries.some(sql=>/^(?:INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b/.test(sql)));

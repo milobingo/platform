@@ -4,6 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {hostname,userInfo} from 'node:os';
 import {resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {postgresTlsOptions} from '../../server/node-postgres-tls.js';
 
 export const STAGING=Object.freeze({
  repository:'milobingo/platform',branch:'main',siteId:'milobingo-staging',siteRoot:'/srv/sites/milobingo-staging',
@@ -13,7 +14,7 @@ export const STAGING=Object.freeze({
  deployWrapper:'/usr/local/bin/dg-site-deploy',
  node:'24.18.0',pnpm:'11.25.0',minFreeBytes:4*1024**3,minFreeInodes:50000,
 });
-export const RUNTIME_KEYS=Object.freeze(['NODE_ENV','HOSTNAME','APP_URL','MILO_LOCAL_AUTH','PORT','SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','SUPABASE_STORAGE_BUCKET','DATABASE_URL','SUPABASE_SECRET_KEY','VLAMPIE_SETTINGS_KEY','OPENAI_TEXT_MODEL','OPENAI_SPEECH_MODEL','OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','RELEASE_SHA','RELEASE_ID','CONFIG_VERSION']);
+export const RUNTIME_KEYS=Object.freeze(['NODE_ENV','HOSTNAME','APP_URL','MILO_LOCAL_AUTH','PORT','SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','SUPABASE_STORAGE_BUCKET','SUPABASE_DB_CA_BASE64','DATABASE_URL','SUPABASE_SECRET_KEY','VLAMPIE_SETTINGS_KEY','OPENAI_TEXT_MODEL','OPENAI_SPEECH_MODEL','OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','RELEASE_SHA','RELEASE_ID','CONFIG_VERSION']);
 export const BUILD_KEYS=Object.freeze([]);
 class ReleaseError extends Error {}
 const fail=message=>{throw new ReleaseError(message);};
@@ -60,13 +61,14 @@ export function validateRuntimeConfiguration(values,{releaseSha,releaseId,config
  const runtime={...values,...forced};
  for(const name of RUNTIME_KEYS)if(runtime[name]!==undefined&&(typeof runtime[name]!=='string'||/[\u0000\r\n]/.test(runtime[name])))fail(`Runtime: ${name} moet één geldige regel zijn.`);
  if(runtime.APP_URL!==STAGING.appUrl||runtime.SUPABASE_URL!==`https://${STAGING.supabaseRef}.supabase.co`||runtime.SUPABASE_STORAGE_BUCKET!==STAGING.bucket)fail('Runtime: staging-origin, Supabase-project of private bucket wijkt af.');
- for(const name of ['SUPABASE_PUBLISHABLE_KEY','DATABASE_URL','SUPABASE_SECRET_KEY','VLAMPIE_SETTINGS_KEY'])if(!runtime[name]?.trim())fail(`Runtime: ${name} ontbreekt.`);
+ for(const name of ['SUPABASE_PUBLISHABLE_KEY','SUPABASE_DB_CA_BASE64','DATABASE_URL','SUPABASE_SECRET_KEY','VLAMPIE_SETTINGS_KEY'])if(!runtime[name]?.trim())fail(`Runtime: ${name} ontbreekt.`);
  if(!runtime.SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_')||!runtime.SUPABASE_SECRET_KEY.startsWith('sb_secret_')||!/^[a-f0-9]{64}$/i.test(runtime.VLAMPIE_SETTINGS_KEY))fail('Runtime: sleuteltype of encryptiesleutelformaat is ongeldig.');
  let database;try{database=new URL(runtime.DATABASE_URL);}catch{fail('Runtime: DATABASE_URL heeft geen geldig formaat.');}
  if(!['postgres:','postgresql:'].includes(database.protocol)||!database.hostname||!database.username||!database.password||database.pathname==='/')fail('Runtime: DATABASE_URL is onvolledig.');
  const direct=database.hostname===`db.${STAGING.supabaseRef}.supabase.co`,pooler=database.hostname.endsWith('.pooler.supabase.com')&&decodeURIComponent(database.username).endsWith(`.${STAGING.supabaseRef}`);
  if(!direct&&!pooler)fail('Runtime: DATABASE_URL hoort niet bij het bevestigde stagingproject.');
- if(database.searchParams.get('sslmode')!=='verify-full'||database.searchParams.has('ssl')||database.searchParams.has('sslrootcert')||database.searchParams.has('sslcert')||database.searchParams.has('sslkey'))fail('Runtime: DATABASE_URL moet sslmode=verify-full gebruiken zonder afwijkende TLS-overrides.');
+ if(database.searchParams.getAll('sslmode').length!==1||database.searchParams.get('sslmode')!=='verify-full'||[...database.searchParams.keys()].some(key=>(/^ssl/i.test(key)||key.toLowerCase()==='uselibpqcompat')&&key!=='sslmode'))fail('Runtime: DATABASE_URL moet sslmode=verify-full gebruiken zonder afwijkende TLS-overrides.');
+ try{postgresTlsOptions(runtime.DATABASE_URL,{caBase64:runtime.SUPABASE_DB_CA_BASE64});}catch{fail('Runtime: DATABASE_URL of SUPABASE_DB_CA_BASE64 voldoet niet aan het geverifieerde TLS-contract.');}
  if(!Number.isInteger(Number(runtime.PORT))||Number(runtime.PORT)<1024||Number(runtime.PORT)>65535)fail('Runtime: servicepoort is ongeldig.');
  const livekit=['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'];
  if(livekit.some(name=>runtime[name])&&!livekit.every(name=>runtime[name]))fail('Runtime: LiveKit-configuratie is onvolledig.');
@@ -82,12 +84,11 @@ export function validateRuntimeDatabaseRole(role){
  if(!role||role.user!==role.session_user||role.login!==true||role.backend_member!==true||role.superuser!==false||role.createdb!==false||role.createrole!==false||role.bypassrls!==false||role.elevated_membership!==false||role.unexpected_membership!==false)fail('Runtime-databaseaccount moet een afzonderlijke least-privilege LOGIN met alleen de beoordeelde backendbevoegdheid zijn.');
  return true;
 }
-export async function verifyRuntimeDatabase(connectionString,{poolFactory,tableNames}={}){
+export async function verifyRuntimeDatabase(connectionString,{poolFactory,tableNames,caBase64}={}){
  if(!poolFactory){const {Pool}=await import('pg');poolFactory=options=>new Pool(options);}
  if(!tableNames){const {loadManifest}=await import('./database.mjs');tableNames=[...(await loadManifest()).tables.keys()];}
- const url=new URL(connectionString);
- for(const key of ['sslmode','ssl','sslrootcert','sslcert','sslkey'])url.searchParams.delete(key);
- const pool=poolFactory({connectionString:url.toString(),max:1,connectionTimeoutMillis:10000,statement_timeout:10000,ssl:{rejectUnauthorized:true}});
+ const tls=postgresTlsOptions(connectionString,{caBase64});
+ const pool=poolFactory({...tls,max:1,connectionTimeoutMillis:10000,statement_timeout:10000});
  pool.on?.('error',()=>{});let client;
  try{
   client=await pool.connect();await client.query('BEGIN READ ONLY');
@@ -180,13 +181,13 @@ async function main(){
    await ciGate(environment);
    if(!/^\d+$/.test(environment.GITHUB_RUN_ID||'')||!/^\d+$/.test(environment.GITHUB_RUN_ATTEMPT||'')||runtime.RELEASE_ID!==`${environment.GITHUB_RUN_ID}-${environment.GITHUB_RUN_ATTEMPT}`)fail('Release-ID wijkt af van de eigen workflowpoging.');
    if(!environment.MIGRATION_DATABASE_URL)fail('MIGRATION_DATABASE_URL ontbreekt: een beheerdersverbinding mag niet als app-runtime worden gebruikt.');
-   const databaseKeys=['PATH','HOME','SUPABASE_URL','SUPABASE_SECRET_KEY','SUPABASE_STORAGE_BUCKET'];
+   const databaseKeys=['PATH','HOME','SUPABASE_URL','SUPABASE_SECRET_KEY','SUPABASE_STORAGE_BUCKET','SUPABASE_DB_CA_BASE64'];
    const databaseEnvironment=Object.fromEntries(databaseKeys.filter(key=>environment[key]!==undefined).map(key=>[key,environment[key]]));
    databaseEnvironment.DATABASE_URL=environment.MIGRATION_DATABASE_URL;
    // Audit only: pending migrations or drift stop before the release wrapper.
    // --apply, backup secrets and restore-database credentials are never passed.
    execFileSync(process.execPath,['scripts/deploy/database.mjs',`--expected-project-ref=${STAGING.supabaseRef}`],{env:databaseEnvironment,stdio:'inherit'});
-   await verifyRuntimeDatabase(runtime.DATABASE_URL);
+   await verifyRuntimeDatabase(runtime.DATABASE_URL,{caBase64:runtime.SUPABASE_DB_CA_BASE64});
    execFileSync(STAGING.deployWrapper,[STAGING.siteId,STAGING.workspace,runtime.RELEASE_SHA,runtime.RELEASE_ID],{env:wrapperEnvironment(runtime,environment),stdio:'inherit'});
   }
  }

@@ -10,11 +10,11 @@ Dezelfde inspectie vindt geen geïnstalleerde `dg-site-deploy`/`dg-site-rollback
 
 De groene inspectierun bewijst dat de runner opdrachten uitvoert; hij keurt de host niet automatisch goed voor deployment. De releaseworkflow stopt op ontbrekende voorwaarden vóór backup, migratie, build of activatie.
 
-Lokaal zijn de 37 contractcheck-scripts geslaagd, inclusief tien releasecontroles en zeven database-deploytests op PostgreSQL 17.11. De laatste omvatten een echte versleutelde dump/restore met gegevens-, eigenaarschap-, ACL- en RLS-vergelijking. De standalonebuild, typecheck, lint, workflowvalidatie met actionlint 1.7.12 en acht browsertests zijn geslaagd. Dit zijn lokale procedurebewijzen; het zijn geen stagingacceptatie of hosted herstelbewijs.
+Lokaal zijn de 38 contractcheck-scripts geslaagd, inclusief acht TLS-contracttests, tien releasecontroles en zeven database-deploytests op PostgreSQL 17.11. De laatste omvatten een echte versleutelde dump/restore met gegevens-, eigenaarschap-, ACL- en RLS-vergelijking. De standalonebuild, typecheck, lint, workflowvalidatie met actionlint 1.7.12 en acht browsertests zijn geslaagd. Dit zijn lokale procedurebewijzen; het zijn geen stagingacceptatie of hosted herstelbewijs.
 
 ## Eenmalige inrichting
 
-Laat een beheerder met sudo op de doelhost de stappen in [STAGING-HOST.md](STAGING-HOST.md) afronden. De huidige Codex-sessie heeft geen SSH-beheersleutel voor `root` of `dgadmin` op deze host. De repo bevat service-/Caddyvoorbeelden om dit gericht voor Milo af te maken; geen scripts die andere sites herconfigureren.
+Laat een beheerder met sudo op de doelhost de stappen in [STAGING-HOST.md](STAGING-HOST.md) afronden. De huidige Codex-sessie heeft sleuteltoegang als `dgadmin`, maar sudo vereist een wachtwoord en root-SSH staat uit. Een tijdelijk toegangsscript voor uitsluitend de Codex-Tailscale-peer is klaargezet in `/home/dgadmin/milobingo-codex-access.py`; de beheerder moet dit met sudo uitvoeren voordat Codex de rootinrichting kan afronden. De repo bevat service-/Caddyvoorbeelden om dit gericht voor Milo af te maken; geen scripts die andere sites herconfigureren.
 
 In [GitHub environment staging](https://github.com/milobingo/platform/settings/environments) zijn de onderstaande runtimeconfiguratienamen al aanwezig. Alleen namen en publieke projectidentiteiten zijn geïnspecteerd; secretwaarden zijn niet opgehaald.
 
@@ -29,6 +29,7 @@ Voeg na hostinrichting toe:
 
 | Naam | Soort | Invulling |
 | --- | --- | --- |
+| `SUPABASE_DB_CA_BASE64` | Environment variable | Publiek Supabase-CA-certificaat als base64-PEM, voor geverifieerde database-TLS. Officiële CA en fingerprint zijn gecontroleerd en de variabele is geplaatst. |
 | `DG_DEPLOY_WRAPPER_SHA256` | Environment variable | SHA-256 van de daadwerkelijk geïnstalleerde en beoordeelde rootwrapper. Geen hash van een willekeurig bestand of fictieve versie. |
 | `DG_STAGING_PORT` | Environment variable | Door de beheerder gecontroleerde vrije loopbackpoort, gelijk aan service en Caddy. |
 | `DG_CONFIG_VERSION` | Environment variable | Niet-geheime configuratieversie; verhoog bij relevante omgevingswijzigingen. |
@@ -41,7 +42,7 @@ Gebruik voor migraties een projectgebonden directe PostgreSQL- of sessiepoolerve
 ## Release uitvoeren
 
 1. Integreer bron en lockfile op `main`. Kies één volledige 40-teken commit. Laat de workflow **CI** op die exacte commit slagen; browseracceptatie draait tegen het gebouwde standalonepakket.
-2. Start **Inspect Milo staging infrastructure** indien hostinrichting is veranderd. Beoordeel de gevonden hostinformatie; de muterende deploy heeft daarnaast eigen harde voorcontroles.
+2. Start **Inspect Milo staging** indien hostinrichting is veranderd. Beoordeel de gevonden hostinformatie; de muterende deploy heeft daarnaast eigen harde voorcontroles.
    **Audit Milo staging database** is een afzonderlijke read-only diagnose. Deze kan met tijdelijk gecachete Actions-tools al draaien vóór de native hosttoolchain is ingericht. Hij gebruikt de bestaande databaseverbinding alleen voor inventarisatie en verandert geen schema, bucket of app. Ontbrekende migraties of andere blokkades geven een rode audit met concrete redenen.
 3. Start **Deploy Milo staging** vanuit `main`, met de gekozen `release_sha`. Kies database toepassen uitsluitend als de read-only audit aangeeft dat migraties of de bevestigde private bucket ontbreken en backup/herstel volledig is ingericht. Bestaande onbeheerde applicatietabellen of schemadrift vereisen eerst afzonderlijke vergelijking en review.
 4. De workflow controleert de eigen groene CI en main-afkomst, exact runneraccount/host/workspace/checkout, wrapperhash, toolchain, configuratienamen en vrije bytes/inodes. De wrapper verzorgt de hostbrede build-lock, installatie uit het lockfile, native build en activatie. Runtime-secrets blijven buiten het buildproces.
@@ -68,3 +69,9 @@ De rootwrapper moet de vorige compatibele release bewaren en bij mislukte activa
 Een approllback draait database, bucket, Auth- of providerinstellingen niet terug. Als de databasewijziging al is toegepast, noteer dat als gedeeltelijke uitrol en controleer compatibiliteit met de vorige applicatie. Gebruik databaseherstel alleen via het bewaarde backup-/herstelbewijs en een apart beoordeeld herstelplan. Reset nooit een omgeving om historieverschillen te verbergen.
 
 Bewaar per release bron-SHA, workflow-SHA, CI-run, deploy-run, wrapperhash, Node/pnpm-versies, configuratieversie, backup-/herstelbewijs, migratiechecksums, actieve health-identiteit en resterende acceptatiestappen. `PROJECTPROFIEL.json` houdt onbekende gegevens op `null` totdat ze op de doelhost zijn bevestigd.
+
+## Eerste uitvoering op 5 november
+
+Procedurecommit `cad5c82e95c72141313cb9cdf4882cf594421dea` heeft [groene CI](https://github.com/milobingo/platform/actions/runs/42055666740). De [eerste deploypoging](https://github.com/milobingo/platform/actions/runs/42056457151) bevestigt de CI-koppeling en stopt op de ontbrekende hostbootstrap, vóór checkout/runtime-secrets/migraties/activatie. Er is geen app geactiveerd.
+
+De [eerste database-audit](https://github.com/milobingo/platform/actions/runs/42056451922) bereikt de TLS-controle maar meldt `SELF_SIGNED_CERT_IN_CHAIN`. Hiervoor wordt de officiële publieke Supabase-CA expliciet ondersteund; certificaat- en hostnaamcontrole blijven aan. Een nieuwe geslaagde audit moet de werkelijke projectverbinding nog bevestigen.

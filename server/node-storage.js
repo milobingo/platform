@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { readFileSync, readdirSync, mkdirSync, chmodSync, writeFileSync, renameSync, unlinkSync, openSync, fsyncSync, closeSync } from 'node:fs';
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve, join } from 'node:path';
+import { postgresTlsOptions } from './node-postgres-tls.js';
 
 // next start/dev run from the project root; webpack must not treat this path
 // as a directory asset when bundling the server route.
@@ -169,9 +170,10 @@ export function postgresSql(sql) {
   return output;
 }
 
-export async function createPostgresDatabase(connectionString) {
+export async function createPostgresDatabase(connectionString, { caBase64, allowLoopback = false } = {}) {
+  const tls = postgresTlsOptions(connectionString, { caBase64, allowLoopback });
   const { Pool, types } = await import('pg');
-  const pool = new Pool({ connectionString, max: 10, connectionTimeoutMillis: 10_000,
+  const pool = new Pool({ ...tls, max: 10, connectionTimeoutMillis: 10_000,
     idleTimeoutMillis: 30_000, statement_timeout: 15_000, lock_timeout: 10_000, idle_in_transaction_session_timeout: 45_000,
     types: { getTypeParser(oid, format) {
       if (oid === 20 && format !== 'binary') return value => {
@@ -347,7 +349,7 @@ export function createSupabaseObjectStore({ url, secretKey, bucket, database, fe
 }
 
 export async function createStorageEnvironment(config = process.env) {
-  const DB = config.DATABASE_URL ? await createPostgresDatabase(config.DATABASE_URL) : createSqliteDatabase(config.SQLITE_PATH || '.data/milobingo.sqlite');
+  const DB = config.DATABASE_URL ? await createPostgresDatabase(config.DATABASE_URL, { caBase64: config.SUPABASE_DB_CA_BASE64, allowLoopback: (config.NODE_ENV || process.env.NODE_ENV) !== 'production' }) : createSqliteDatabase(config.SQLITE_PATH || '.data/milobingo.sqlite');
   try {
     const remote = Boolean(config.SUPABASE_STORAGE_BUCKET);
     if (remote && (!config.SUPABASE_URL || !config.SUPABASE_SECRET_KEY)) throw new Error('Supabase Storage vereist SUPABASE_URL en SUPABASE_SECRET_KEY.');

@@ -55,6 +55,7 @@ test('database preflight binds API and TLS database to the explicitly confirmed 
     configuration({ DATABASE_URL: `postgresql://postgres.wrong:secret@aws-0-eu-central-1.pooler.supabase.com:5432/postgres` }),
     configuration({ DATABASE_URL: `postgresql://test:secret@db.${projectRef}.supabase.co:6543/postgres` }),
     configuration({ DATABASE_URL: `postgresql://test:secret@db.${projectRef}.supabase.co/postgres?sslmode=no-verify` }),
+    configuration({ DATABASE_URL: `postgresql://test:secret@db.${projectRef}.supabase.co/postgres?host=another.example` }),
     configuration({ SUPABASE_STORAGE_BUCKET: '../another' }),
   ]) assert.throws(() => validateTarget(env, projectRef));
   assert.throws(() => validateTarget(configuration(), undefined), error => error.code === 'expected_project_required');
@@ -67,6 +68,7 @@ test('apply fails before any connection when backup, scratch restore or reviewed
     { BACKUP_ENCRYPTION_KEY: '' }, { RESTORE_TEST_DATABASE_URL: '' },
     { RESTORE_TEST_DATABASE_URL: 'postgresql://x:y@production.example/milo_restore_test_x' },
     { RESTORE_TEST_DATABASE_URL: 'postgresql://x:y@127.0.0.1/production' },
+    { RESTORE_TEST_DATABASE_URL: 'postgresql://x:y@127.0.0.1/milo_restore_test_x?host=remote.example' },
     { DATABASE_BACKUP_DIRECTORY: process.cwd() }, { DATABASE_BACKUP_DIRECTORY: 'relative' }, { RELEASE_SHA: 'short' },
   ]) await assert.rejects(applyDatabase({ env: configuration(overrides), expectedProjectRef: projectRef, poolFactory: never }));
   const manifest = await loadManifest();
@@ -136,7 +138,9 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
     fixturePools.push(pool);
     // Production always requires verified remote TLS. Only this dependency
     // injection substitutes the local test server's transport attestation.
-    const poolFactory = () => {
+    const seenTls = [];
+    const poolFactory = (connectionString, options) => {
+      seenTls.push(options);
       const real = fixturePool({ connectionString: url.toString() }, failures); factoryPools.push(real);
       return { end: () => real.end(), async connect() {
         const client = await real.connect();
@@ -155,9 +159,9 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
       const name = url.split('/').at(-1);
       return buckets.has(name) ? Response.json(buckets.get(name)) : new Response('{}', { status: 404 });
     };
-    return { pool, poolFactory, buckets, requests, fetcher };
+    return { pool, poolFactory, buckets, requests, fetcher, seenTls };
   }
-  const manifest = await loadManifest(), env = configuration();
+  const manifest = await loadManifest(), env = configuration({ SUPABASE_DB_CA_BASE64: 'fixture-public-ca-plumbing-only' });
   const unmanaged = await fixture();
   await unmanaged.pool.query('CREATE TABLE public.bingo_games (id text PRIMARY KEY)');
   const unmanagedAudit = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, ...unmanaged });
@@ -171,6 +175,7 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
   const initial = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, ...fresh });
   assert.equal(initial.ok, false); assert.equal(initial.applicationTables.length, 0); assert.equal(initial.pending.length, 1);
   assert.ok(fresh.requests.every(request => request.method === 'GET'));
+  assert.ok(fresh.seenTls.every(options => options.verifiedTls === true && options.caBase64 === env.SUPABASE_DB_CA_BASE64), 'verified source pools receive the configured public CA');
   let backups = 0;
   const backupProvider = async ({ sourceClient }) => {
     backups++; assert.equal((await sourceClient.query('SELECT value FROM public.preexisting_context')).rows[0].value, 'original-context');

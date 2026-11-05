@@ -1,5 +1,6 @@
 import {existsSync} from 'node:fs';
 import {resolve} from 'node:path';
+import {decodePostgresCa} from '../server/node-postgres-tls.js';
 
 // Validate names/presence and formats only. Never print configuration values.
 const options=Object.fromEntries(process.argv.slice(2).map(argument=>{
@@ -17,7 +18,7 @@ for(const file of options['env-file']?[options['env-file']]:['.env.local','.env'
 
 const environment=process.env;
 const has=name=>!!environment[name]?.trim();
-const remoteNames=['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','SUPABASE_SECRET_KEY','SUPABASE_STORAGE_BUCKET','DATABASE_URL'];
+const remoteNames=['SUPABASE_URL','SUPABASE_DB_CA_BASE64','SUPABASE_PUBLISHABLE_KEY','SUPABASE_SECRET_KEY','SUPABASE_STORAGE_BUCKET','DATABASE_URL'];
 const providerNames=['OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'];
 const profile=options.profile||(remoteNames.some(has)?'supabase':'local');
 if(!['local','supabase'].includes(profile))throw new Error('Onbekend configuratieprofiel.');
@@ -76,6 +77,10 @@ if(has('DATABASE_URL')){
     errors.push('DATABASE_URL: verwacht een volledige PostgreSQL-verbindingsstring.');
   }
 }
+if(has('SUPABASE_DB_CA_BASE64')){
+  try{decodePostgresCa(environment.SUPABASE_DB_CA_BASE64);}
+  catch{errors.push('SUPABASE_DB_CA_BASE64: verwacht geldige, actuele publieke CA-certificaten als base64-PEM.');}
+}
 
 if(environment.MILO_LOCAL_AUTH==='true'){
   if(environment.NODE_ENV==='production')errors.push('MILO_LOCAL_AUTH: niet toegestaan in productie-runtime.');
@@ -87,6 +92,12 @@ if(phase==='runtime'&&profile==='supabase'){
   requireNames(['APP_URL','SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','DATABASE_URL']);
   if(has('SUPABASE_SECRET_KEY')&&!has('SUPABASE_STORAGE_BUCKET'))errors.push('SUPABASE_STORAGE_BUCKET: vereist bij remote private Storage.');
   if(has('SUPABASE_STORAGE_BUCKET'))requireNames(['SUPABASE_SECRET_KEY']);
+  if(has('DATABASE_URL')){
+    try{
+      const host=new URL(environment.DATABASE_URL).hostname;
+      if(host.endsWith('.supabase.co')||host.endsWith('.pooler.supabase.com'))requireNames(['SUPABASE_DB_CA_BASE64']);
+    }catch{ /* DATABASE_URL format errors are reported above. */ }
+  }
 }
 if(phase==='runtime'&&['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'].some(has)){
   requireNames(['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET']);

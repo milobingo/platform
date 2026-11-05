@@ -1,0 +1,16 @@
+✔ public CA configuration decodes a currently valid certificate without a network request (2.440706ms)
+✔ malformed or non-certificate CA values fail without disclosing their input (0.708694ms)
+✔ remote connections always verify TLS, including when the loopback exception is enabled (1.090452ms)
+✔ unencrypted loopback connections require the explicit local exception and no CA (2.215126ms)
+✔ URL TLS overrides cannot replace explicit certificate verification or read certificate paths (2.917829ms)
+✔ pg environment TLS settings cannot weaken the explicit connection configuration (1.022399ms)
+✔ query parameters cannot redirect validated database hosts or credentials (0.694953ms)
+✔ invalid database URLs fail with a sanitized error (0.264321ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16.738252
