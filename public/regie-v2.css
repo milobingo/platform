@@ -1,0 +1,5 @@
+/* Shared V2 palette; live production and show-admin layouts remain component-owned. */
+body.studio-ui:not(.show-mode){--ui-bg:#f4f5ef;--ui-panel:#fff;--ui-raised:#f8f9f4;--ui-line:#dde4d5;--ui-line-strong:#bbcbb0;--ui-text:#263b32;--ui-muted:#60715e;--ui-gold:#b8924d;--ui-blue:#536d4a;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ui-bg)}
+.studio-ui:not(.show-mode) .dashboard-sidebar .hub-return,.studio-ui:not(.show-mode) .dashboard-sidebar .hub-dossier{color:#e6d09d;border:1px solid #ffffff19;margin-bottom:5px;background:#ffffff06}
+.studio-ui.sidebar-collapsed:not(.show-mode) .dashboard-sidebar :is(.hub-return,.hub-dossier)>span{display:none}
+@media(max-width:720px){.studio-ui.sidebar-collapsed:not(.show-mode) .dashboard-sidebar :is(.hub-return,.hub-dossier)>span{display:block}}

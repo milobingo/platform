@@ -1,0 +1,15 @@
+✔ native REST fetch stays native, upgrade allowlist never forwards secrets to another origin (25.983361ms)
+✔ upgrade resolves only once open, buffers early messages and supports listener removal and close (14.751351ms)
+✔ rejected and redirected handshakes return bounded safe status without leaking key or following redirects (5.180817ms)
+✔ abort before or during handshake and handshake timeout close pending sockets (65.889268ms)
+✔ synthesis runs the transferred voice/session protocol and caches only complete confirmed PCM (15.6157ms)
+✔ request cancellation after socket open closes synthesis and never returns partial audio (4.035932ms)
+✔ session teardown confirms session.closed; rejected close stays unconfirmed (8.499743ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.701088

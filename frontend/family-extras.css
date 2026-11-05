@@ -1,0 +1,127 @@
+@import '../public/calls.css' layer(family-call-base);
+
+/* The family experience uses its own illustrated surfaces, not the regie shell. */
+.family-app .fam-extra-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px}
+.family-app .fam-extra-actions .fam-text-button{margin:0}
+.family-app .fam-extra-alert{border:1px solid #e4b7bb;background:#fff1ee;color:#9d4450;border-radius:16px;padding:16px 18px;line-height:1.65;font-size:14px;margin:20px 0}
+.family-app .fam-extra-title-icon{width:94px;height:94px;display:grid;place-items:center;flex-shrink:0;border-radius:32px 32px 32px 12px;color:var(--fam-purple,#6a3bb2);background:linear-gradient(140deg,#fff8e3,#eadcf6 72%);border:1px solid #dfc8eb;box-shadow:inset 0 2px 0 #fff,0 12px 28px #35164c0c;transform:rotate(5deg)}
+.family-app .fam-participation-person{padding:20px 24px;border:1px solid var(--fam-border,#e4d6ec);border-radius:22px;background:linear-gradient(120deg,#fffdf8,#f6eefb);display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:26px;box-shadow:0 8px 25px #39174505}
+.family-app .fam-participation-person>span{display:flex;gap:12px;align-items:center;color:var(--fam-deep,#29163d);font-size:15px}
+.family-app .fam-participation-person>span>svg{color:var(--fam-purple,#6a3bb2)}
+.family-app .fam-participation-person>select{width:280px;max-width:100%;padding:13px 17px;border:1px solid #d9c8e3;border-radius:14px;color:var(--fam-deep,#29163d);background:#fffdfa;font:inherit;font-size:15px;box-shadow:inset 0 1px 0 #fff,0 3px 9px #32124206}
+.family-app .fam-participation-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:26px;align-items:start}
+.family-app .fam-participation-card{padding:34px;display:flex;flex-direction:column;align-items:flex-start;position:relative;overflow:hidden;border:1px solid var(--fam-border,#e4d6ec);border-radius:28px;background:linear-gradient(150deg,#fffdf7,#fcf7ff);box-shadow:0 12px 34px #36194808,inset 0 1px 0 #fff}
+.family-app .fam-participation-card:before{content:'';position:absolute;right:-75px;top:-110px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,#ebcc8c28,#d3afe915 52%,transparent 73%);pointer-events:none}
+.family-app .fam-participation-card.calling{border-color:#dccaa6;background:linear-gradient(155deg,#fffdf5,#fcf7ff 66%)}
+.family-app .fam-participation-card h2{font-size:clamp(27px,2.6vw,35px);line-height:1.13;margin:2px 0 18px;color:var(--fam-deep,#29163d);letter-spacing:-.04em;max-width:470px}
+.family-app .fam-participation-card>p{font-size:15px;line-height:1.75;color:#76627f;margin:0 0 22px;max-width:570px}
+.family-app .fam-extra-symbol{display:grid;place-items:center;width:72px;height:72px;flex-shrink:0;margin-bottom:24px;border:1px solid #d9c4e7;border-radius:24px 24px 24px 10px;background:linear-gradient(145deg,#faf0ff,#e4d1f1);color:var(--fam-purple,#6a3bb2);box-shadow:inset 0 2px 0 #ffffffd9,0 7px 17px #4b21630b}
+.family-app .calling .fam-extra-symbol{background:linear-gradient(145deg,#fff8e6,#efcf8f);color:#875c20;border-color:#e3c485;box-shadow:inset 0 2px 0 #fff9,0 7px 17px #a378260d}
+.family-app .fam-extra-check{display:flex;flex-direction:row;align-items:flex-start;gap:13px;width:100%;padding:14px 0;color:#685372;font-size:14px;line-height:1.7;margin:0 0 5px;font-weight:450;cursor:pointer}
+.family-app .fam-extra-check>input{width:22px;height:22px;min-height:22px;margin:2px 0 0;padding:0;flex-shrink:0;accent-color:var(--fam-purple,#6a3bb2);cursor:pointer}
+.family-app .fam-extra-check>span{display:block;min-width:0}
+.family-app .fam-extra-check>span>svg{vertical-align:middle;margin-right:6px;color:var(--fam-purple,#6a3bb2)}
+.family-app .fam-participation-card>.fam-button{margin-top:22px;min-height:48px;font-size:14px;white-space:normal;text-align:left}
+.family-app .fam-extra-state{display:flex;align-items:center;gap:10px;width:100%;padding:13px 15px;background:#f0e7f7;border:1px solid #dfcdea;border-radius:14px;font-size:13px;line-height:1.6;color:#71498b;margin-bottom:20px}
+.family-app .fam-extra-state>i{width:8px;height:8px;flex-shrink:0;background:#4b9f8e;border-radius:50%;box-shadow:0 0 0 4px #64b3a31c}
+.family-app .fam-participation-assurance{display:flex;align-items:flex-start;gap:14px;padding:26px 7px;color:#a07c3c}
+.family-app .fam-participation-assurance>svg{flex-shrink:0;margin-top:3px}
+.family-app .fam-participation-assurance p{margin:0;max-width:840px;font-size:14px;line-height:1.75;color:#827087}
+.family-app .fam-extra-empty{padding:50px 30px;text-align:center;background:radial-gradient(ellipse at 50% 0,#efddfa60,transparent 72%),#fffdf8}
+.family-app .fam-extra-empty .fam-extra-symbol{margin:0 auto 22px}
+.family-app .fam-extra-empty h2{font-size:31px;color:var(--fam-deep,#29163d)}
+.family-app .fam-extra-empty p{max-width:500px;margin:17px auto 0;font-size:15px;line-height:1.8;color:#7d6888}
+.family-app .fam-invitation{position:relative;isolation:isolate;width:100%;padding:24px;margin:18px 0 7px;border:1px solid #d8c8e6;border-radius:22px;background:linear-gradient(140deg,#f2e9fa,#fffaf0);box-shadow:inset 0 1px 0 #fff}
+.family-app .fam-invitation h3{font-size:20px;margin:0 0 12px;color:var(--fam-deep,#29163d);letter-spacing:-.025em}
+.family-app .fam-invitation p{font-size:14px;line-height:1.75;color:#7b6687;margin:0 0 19px}
+.family-app .fam-invitation .fam-button{font-size:14px;min-height:46px;white-space:normal}
+.family-app .fam-invitation meter{width:100%;height:16px;accent-color:#55aa9d;display:block;margin:20px 0 9px;border-radius:20px;overflow:hidden}
+.family-app .fam-invitation meter::-webkit-meter-bar{background:#e6daee;border:0;border-radius:20px}
+.family-app .fam-invitation meter::-webkit-meter-optimum-value{background:linear-gradient(90deg,#72d5c5,#3e9d91);border-radius:20px}
+.family-app .fam-invitation .fam-mic-feedback{font-size:13px;line-height:1.7;margin:0;color:#6e5a7c}
+.family-app .fam-live-call-banner{position:relative;display:flex;align-items:center;gap:17px;padding:21px 24px;margin:22px 0;background:radial-gradient(ellipse at 0 0,#8455a34d,transparent 70%),linear-gradient(110deg,var(--fam-deep,#29163d),#34234c);border:1px solid #e8c882b3;border-radius:23px;box-shadow:0 10px 28px #24112f15;color:#fff1d3}
+.family-app .fam-live-call-banner>svg{color:#edcc8d;flex-shrink:0}
+.family-app .fam-live-call-banner>div{flex:1;min-width:0}
+.family-app .fam-live-call-banner strong{display:block;font-size:17px;line-height:1.4;letter-spacing:-.025em}
+.family-app .fam-live-call-banner small{display:block;font-size:13px;line-height:1.6;color:#d8c8e4;margin-top:5px}
+.family-app .fam-live-call-banner>button{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#fff0bf,#e7be72);color:#4c3225;border:1px solid #f7dfaa;padding:12px 17px;border-radius:14px;box-shadow:inset 0 1px #fff9;font-family:inherit;font-weight:750;font-size:14px;line-height:1.4;min-height:48px;cursor:pointer}
+.family-app .fam-memory-card{padding:34px;display:flex;align-items:flex-start;gap:28px;margin-top:28px;background:radial-gradient(ellipse at 0 0,#f2d79730,transparent 65%),linear-gradient(150deg,#fffcf2,#faf4ff);border-color:#dfccaa}
+.family-app .fam-memory-card>.fam-extra-symbol{flex-shrink:0;margin:0;background:linear-gradient(145deg,#fff5d7,#e8c782);border-color:#dfc18a;color:#8a6129}
+.family-app .fam-memory-copy{flex:1;min-width:0}
+.family-app .fam-memory-copy>h2{font-size:32px;color:var(--fam-deep,#29163d);margin:5px 0 14px;letter-spacing:-.04em}
+.family-app .fam-memory-copy>p{font-size:15px;line-height:1.75;color:#7b6785;margin-bottom:23px;max-width:700px}
+.family-app .fam-memory-copy>label:not(.fam-extra-check){display:flex;flex-direction:row;align-items:center;gap:15px;margin-bottom:19px;font-size:14px;color:#6f587e}
+.family-app .fam-memory-copy select{min-width:185px;border:1px solid #dbcbe3;border-radius:13px;background:#fffdfa;color:var(--fam-ink,#30233d);padding:12px 15px;font:inherit}
+.family-app .fam-memory-card .fam-button{min-height:48px;font-size:14px}
+.family-app .fam-qr-scanner>p{font-size:15px;line-height:1.75;color:#7c6888}
+.family-app .fam-qr-view{position:relative;aspect-ratio:1.2;background:radial-gradient(ellipse at 50% 25%,#653e82,#20152f 70%);border:1px solid #c5a46e;border-radius:24px;overflow:hidden;isolation:isolate;margin:24px 0;box-shadow:inset 0 0 0 7px #ffffff05,0 12px 27px #2e133114}
+.family-app .fam-qr-view>video{display:none;width:100%;height:100%;object-fit:cover}
+.family-app .fam-qr-view.active>video{display:block}
+.family-app .fam-qr-view>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;color:#e9c889}
+.family-app .fam-qr-view>div>strong{font-size:21px;line-height:1.35;color:#fff3d8;letter-spacing:-.025em}
+.family-app .fam-qr-view>div>span{font-size:13px;color:#cdb8dd}
+.family-app .fam-qr-view>i{position:absolute;inset:17%;border:2px solid #f2d291;border-radius:24px;box-shadow:0 0 0 150px #140c2526,inset 0 0 18px #eed19b0c;pointer-events:none}
+.family-app .fam-qr-photo{position:relative;overflow:hidden;display:inline-flex;flex-direction:row;cursor:pointer;min-height:48px}
+.family-app .fam-qr-photo:focus-within{outline:3px solid var(--fam-gold,#e9bc6d);outline-offset:4px}
+.family-app .fam-qr-photo input{position:absolute;opacity:0;inset:0;min-height:100%;width:100%;cursor:pointer}
+.family-app .fam-footer>button{border:0;background:none;padding:0;font:inherit;color:inherit;display:flex;align-items:center;gap:6px;cursor:pointer}
+.family-app .fam-book-tip>button{border:0;background:none;font-family:inherit;font-weight:700;font-size:14px;line-height:1.5;color:var(--fam-purple,#6a3bb2);display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px}
+.family-app .fam-extra-rule{padding:21px 0;border-bottom:1px solid var(--fam-border,#e4d6ec)}
+.family-app .fam-extra-rule h3{font-size:19px;margin:0 0 11px;color:var(--fam-deep,#29163d)}
+.family-app .fam-extra-rule p{font-size:14px;line-height:1.75;margin:0;color:#7e688a}
+.fam-call-presenter{display:block;color:#edcc8e;font-size:14px;letter-spacing:.02em;margin:0 0 18px}
+
+/* Legacy call surface remains supported for older routed links. */
+.fam-live-call{background:radial-gradient(ellipse at 50% -15%,#6c2780 0%,transparent 58%),linear-gradient(165deg,#281342,#0c1832 80%);border:1px solid #edc67d}
+.fam-live-call .call-brand{width:230px;height:155px;margin-bottom:10px}
+.fam-live-call .call-brand img{max-width:100%}
+.fam-live-call .bingo-button{border:1px solid #b28cca66;border-radius:14px;background:#ffffff0a;color:#f5e6fb;font-family:inherit;font-weight:600;font-size:15px;line-height:1.5;padding:12px 17px;min-height:46px}
+.fam-live-call .bingo-button.primary{background:linear-gradient(130deg,#f6dc9e,#deb566);color:#493224;border-color:#f4d795}
+.fam-live-call[data-brand=vlampie]{background:radial-gradient(ellipse at 50% -15%,#28599a 0%,transparent 58%),linear-gradient(165deg,#122842,#071326 80%)}
+
+@media(max-width:950px){
+ .family-app .fam-participation-grid{grid-template-columns:1fr;gap:22px}
+ .family-app .fam-participation-card{padding:30px}
+ .family-app .fam-participation-card h2{max-width:none}
+}
+@media(max-width:600px){
+ .family-app .fam-extra-title-icon{display:none}
+ .family-app .fam-participation-person{padding:18px;align-items:stretch;flex-direction:column;gap:14px;border-radius:19px}
+ .family-app .fam-participation-person>span{font-size:14px}
+ .family-app .fam-participation-person>select{width:100%;font-size:15px}
+ .family-app .fam-participation-card{padding:25px 22px;border-radius:23px}
+ .family-app .fam-participation-card h2{font-size:29px}
+ .family-app .fam-participation-card>p{font-size:14px}
+ .family-app .fam-extra-symbol{width:64px;height:64px;border-radius:22px 22px 22px 9px;margin-bottom:22px}
+ .family-app .fam-extra-check{font-size:14px;gap:12px}
+ .family-app .fam-participation-card .fam-button{width:100%;justify-content:center;text-align:center}
+ .family-app .fam-participation-assurance{padding:22px 3px;gap:11px}
+ .family-app .fam-participation-assurance p{font-size:13px}
+ .family-app .fam-invitation{padding:20px;border-radius:18px}
+ .family-app .fam-invitation h3{font-size:18px}
+ .family-app .fam-invitation .fam-button{width:100%;font-size:13px}
+ .family-app .fam-memory-card{padding:26px 22px;gap:18px;flex-direction:column}
+ .family-app .fam-memory-card>.fam-extra-symbol{width:60px;height:60px;margin-bottom:0}
+ .family-app .fam-memory-copy>h2{font-size:29px}
+ .family-app .fam-memory-copy>p{font-size:14px}
+ .family-app .fam-memory-copy>label:not(.fam-extra-check){align-items:flex-start;flex-direction:column;gap:9px}
+ .family-app .fam-memory-copy select{width:100%}
+ .family-app .fam-memory-card .fam-button{font-size:14px;white-space:normal;width:100%}
+ .family-app .fam-extra-actions{align-items:stretch;gap:10px;width:100%}
+ .family-app .fam-extra-actions>.fam-button{flex:1;justify-content:center}
+ .family-app .fam-live-call-banner{padding:19px;gap:13px;flex-wrap:wrap;border-radius:20px}
+ .family-app .fam-live-call-banner strong{font-size:16px}
+ .family-app .fam-live-call-banner small{font-size:12px}
+ .family-app .fam-live-call-banner>button{width:100%}
+ .family-app .fam-extra-empty{padding:36px 23px}
+ .family-app .fam-extra-empty h2{font-size:28px}
+ .family-app .fam-extra-empty p{font-size:14px}
+ .family-app .fam-qr-view>div>strong{font-size:18px}
+ .family-app .fam-qr-view>i{inset:16%;border-radius:18px}
+ .family-app .fam-qr-view>div>span{font-size:12px}
+ .family-app .fam-qr-scanner .fam-button{font-size:14px}
+ .family-app .fam-book-tip>button{font-size:13px}
+ .fam-live-call .call-brand{width:190px;height:126px}
+ .fam-live-call h2{font-size:29px}
+ .fam-live-call>p{font-size:15px}
+}

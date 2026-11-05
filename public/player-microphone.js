@@ -1,0 +1,8 @@
+let activeTest=null;
+export async function microphoneTest({meter,onStatus=()=>{}}={}){
+ if(activeTest)throw new Error('Er loopt al een microfoontest. Wacht tot die klaar is.');
+ if(!navigator.mediaDevices?.getUserMedia)throw new Error('Deze browser biedt geen microfoontoegang.');
+ let stream,context,frame,timer,finish,stopped=false,peak=0;const stop=()=>{stopped=true;clearTimeout(timer);cancelAnimationFrame(frame);stream?.getTracks().forEach(t=>t.stop());finish?.();};activeTest=stop;window.addEventListener('pagehide',stop);document.addEventListener('vlampie-call-connect',stop);
+ try{onStatus('Geef toestemming en zeg een paar woorden. De test blijft op dit apparaat.');stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true},video:false});if(stopped)throw new Error('De microfoontest is afgebroken.');context=new AudioContext();await context.resume();const source=context.createMediaStreamSource(stream),analyser=context.createAnalyser();analyser.fftSize=256;source.connect(analyser);const values=new Float32Array(analyser.fftSize);await new Promise(resolve=>{finish=resolve;timer=setTimeout(stop,6000);const sample=()=>{if(stopped)return;analyser.getFloatTimeDomainData(values);const level=Math.sqrt(values.reduce((sum,v)=>sum+v*v,0)/values.length);peak=Math.max(peak,level);if(meter)meter.value=Math.min(1,level*4);frame=requestAnimationFrame(sample);};sample();});return peak>.005;
+ }finally{stop();window.removeEventListener('pagehide',stop);document.removeEventListener('vlampie-call-connect',stop);await context?.close();if(meter)meter.value=0;activeTest=null;}
+}

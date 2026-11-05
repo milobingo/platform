@@ -1,0 +1,110 @@
+/* The call dialog is a deliberate private/live handoff, kept above every app layer. */
+.family-app .fam-call-backdrop{position:fixed;inset:0;z-index:1500;background:#170c29ba;backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto;isolation:isolate}
+.family-app .fam-call-panel{position:relative;width:min(690px,100%);max-height:calc(100dvh - 48px);overflow:auto;overscroll-behavior:contain;background:radial-gradient(ellipse at 100% 0,#efd89f30,transparent 40%),linear-gradient(150deg,#fffdf6,#faf4ff);color:var(--fam-ink,#30233d);border:1px solid #f3ddaf;border-radius:32px;box-shadow:inset 0 1px 0 #fff,0 32px 100px #10041b70;padding:32px 34px;font-family:inherit;font-size:15px;line-height:1.75;scrollbar-color:#c6add5 transparent}
+.family-app .fam-call-panel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:25px}
+.family-app .fam-call-panel h2{font-size:30px;line-height:1.15;letter-spacing:-.04em;color:var(--fam-deep,#29163d);margin:12px 0 0;max-width:500px}
+.family-app .fam-call-panel .fam-icon-button{width:40px;height:40px;flex-shrink:0;border-radius:14px;background:#fff9;border-color:#e3d4ec;color:#8a739b}
+.family-app .fam-call-kicker{display:inline-flex;align-items:center;gap:9px;color:var(--fam-purple,#6a3bb2);font-size:11px;letter-spacing:.13em;font-weight:850;line-height:1.5}
+.family-app .fam-call-kicker i{width:8px;height:8px;border-radius:50%;background:#9670b7;box-shadow:0 0 0 4px #b297c719}
+.family-app .phase-backstage .fam-call-kicker,.family-app .phase-staged .fam-call-kicker{color:#33877c}
+.family-app .phase-backstage .fam-call-kicker i,.family-app .phase-staged .fam-call-kicker i{background:#4ba99a;box-shadow:0 0 0 4px #5cb7a920}
+.family-app .phase-live .fam-call-kicker{color:#b34b78}
+.family-app .phase-live .fam-call-kicker i{background:#ce608b;box-shadow:0 0 0 4px #d96d9623}
+.family-app .fam-call-person{display:flex;align-items:center;gap:15px;border:1px solid #dfcde9;background:linear-gradient(115deg,#eee0f9,#fffaf2);border-radius:21px;padding:18px;margin-bottom:20px;box-shadow:inset 0 1px 0 #fff9}
+.family-app .fam-call-person>span{width:55px;height:55px;flex-shrink:0;display:grid;place-items:center;background:linear-gradient(135deg,#986bc0,var(--fam-purple,#6a3bb2));color:#fff1c8;border-radius:18px 18px 18px 8px;box-shadow:inset 0 1px 0 #fff5,0 4px 10px #65358913}
+.family-app .fam-call-person>div{flex:1;min-width:0}
+.family-app .fam-call-person strong{display:block;font-size:23px;line-height:1.35;color:var(--fam-deep,#29163d);letter-spacing:-.025em;overflow-wrap:anywhere}
+.family-app .fam-call-person small{display:block;font-size:13px;line-height:1.5;color:#796187;margin-top:4px}
+.family-app .fam-call-real{font-size:10px;line-height:1.5;border:1px solid #baded4;background:#e8f5ee;color:#408477;border-radius:9px;padding:7px 9px;font-weight:750;text-align:center;max-width:104px}
+.family-app .fam-call-panel>p{font-size:14px;line-height:1.8;color:#7b6687;margin:19px 0}
+.family-app .fam-call-hold{display:flex;align-items:flex-start;gap:12px;background:linear-gradient(125deg,#fff3d5,#fff9e9);border:1px solid #e9cf96;border-radius:17px;padding:17px 18px;color:#a57d35;margin-bottom:23px;box-shadow:inset 0 1px 0 #fff9}
+.family-app .fam-call-hold>svg{flex-shrink:0;margin-top:3px}
+.family-app .fam-call-hold p{margin:0;font-size:13px;line-height:1.7;color:#8d744e}
+.family-app .fam-call-hold strong{color:#785a29}
+.family-app .fam-call-checkpoint{position:relative;display:flex;align-items:center;flex-direction:column;background:radial-gradient(ellipse at 50% 0,#80529e55,transparent 70%),linear-gradient(145deg,var(--fam-deep,#29163d),#38214f);border:1px solid #b893ce;border-radius:24px;padding:23px;margin:24px 0;color:#f6e9ff;box-shadow:inset 0 1px #ffffff24,0 10px 22px #35133c14}
+.family-app .fam-call-checkpoint>span{font-size:11px;font-weight:850;letter-spacing:.12em;color:#ddc9ec;line-height:1.6;text-align:center}
+.family-app .fam-call-checkpoint>strong{font-size:64px;line-height:1.3;font-weight:900;color:#ffe5aa;text-shadow:0 3px 16px #e5b54d2c;letter-spacing:-.06em;margin:3px 0}
+.family-app .fam-call-checkpoint>small{font-size:12px;color:#c8afd9;line-height:1.6;text-align:center}
+.family-app .fam-call-check{display:flex;flex-direction:row;align-items:flex-start;gap:13px;padding:16px 17px;margin:13px 0;background:#f3ebf9;border:1px solid #e0d0ea;border-radius:15px;cursor:pointer;font-size:14px;font-weight:550;color:#70577f;line-height:1.7}
+.family-app .fam-call-check input{width:23px;height:23px;min-height:23px;margin:1px 0 0;padding:0;accent-color:var(--fam-purple,#6a3bb2);flex-shrink:0;cursor:pointer}
+.family-app .fam-call-check>span{min-width:0}
+.family-app .fam-call-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.family-app .fam-call-actions>.fam-button{min-height:50px;font-size:15px}
+.family-app .fam-call-actions>.fam-button:first-child{flex:1}
+.family-app .fam-call-text-actions{display:flex;flex-wrap:wrap;gap:10px 19px;margin:17px 0}
+.family-app .fam-call-text-actions button{border:0;background:transparent;padding:8px 0;min-height:42px;color:var(--fam-purple,#6a3bb2);font-family:inherit;font-weight:700;font-size:13px;line-height:1.5;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.family-app .fam-call-playback{display:grid;gap:5px;margin:21px 0;border:1px dashed #d6c3e0;border-radius:15px;padding:15px 17px;background:#fffbf6;color:#8b719b;font-size:12px;line-height:1.65}
+.family-app .fam-call-playback small{font-size:12px;line-height:1.7;color:#806b8b}
+.family-app .fam-call-playback span:first-child{font-weight:800;color:#705483}
+.family-app .fam-call-panel .fam-call-error{display:flex;align-items:flex-start;gap:10px;padding:15px 17px;border:1px solid #e5bcc9;background:#fff0f0;color:#a04861;border-radius:15px;font-size:14px;line-height:1.7}
+.family-app .fam-call-error>svg{flex-shrink:0;margin-top:3px}
+.family-app .fam-call-panel .fam-call-warning{background:#fff4da;border:1px solid #e7d29f;color:#937137;border-radius:15px;padding:15px 17px;font-size:13px;line-height:1.75}
+.family-app .fam-call-panel .fam-call-privacy{display:flex;align-items:flex-start;gap:11px;background:#eaf6f0;border:1px solid #bcdfd2;color:#4c8a7b;border-radius:15px;padding:15px 17px;font-size:13px;line-height:1.75}
+.family-app .fam-call-privacy svg{flex-shrink:0;margin-top:3px}
+.family-app .fam-call-connection{display:flex;align-items:center;gap:18px;background:linear-gradient(120deg,#f0e6f9,#f9f1fd);border:1px solid #decee9;border-radius:20px;padding:23px;margin:23px 0}
+.family-app .fam-call-connection>svg{color:var(--fam-purple,#6a3bb2);flex-shrink:0}
+.family-app .fam-call-connection strong{font-size:17px;color:#65417d;line-height:1.5}
+.family-app .fam-call-connection p{font-size:14px;color:#8b709c;line-height:1.75;margin:8px 0 0}
+.family-app .fam-call-panel>.fam-button{margin:7px 9px 7px 0;min-height:48px;font-size:14px;white-space:normal}
+.family-app .fam-call-live{display:flex;flex-direction:column;align-items:center;gap:13px;padding:34px 23px;margin:25px 0;background:radial-gradient(ellipse at 50% 0,#ae74a038,transparent 70%),linear-gradient(150deg,#54316c,var(--fam-deep,#29163d));border:1px solid #b28bbd;border-radius:24px;color:#efbcd3;box-shadow:inset 0 1px #f1b9d136}
+.family-app .fam-call-live>strong{font-size:27px;color:#fff0cf;line-height:1.35;text-align:center;letter-spacing:-.025em}
+.family-app .fam-call-live>span{font-size:13px;line-height:1.6;color:#d5bddf;text-align:center}
+.family-app .fam-call-return-steps{padding:20px 22px 20px 42px;background:#f3edf8;border:1px solid #e1d6e8;border-radius:18px;color:#7b628c;font-size:14px;line-height:1.8;margin:21px 0}
+.family-app .fam-call-return-steps li{padding-left:5px;margin:7px 0}
+.family-app .fam-call-return-steps li::marker{font-weight:850;color:var(--fam-purple,#6a3bb2)}
+.family-app .fam-call-panel>footer{margin-top:27px;padding-top:20px;border-top:1px solid var(--fam-border,#e4d6ec);display:flex;align-items:flex-start;gap:10px;color:#816d8e;font-size:12px;line-height:1.7}
+.family-app .fam-call-panel>footer svg{flex-shrink:0;margin-top:2px}
+.family-app .fam-call-open-warning{font-size:13px;line-height:1.75;background:#f1e9f7;border:1px solid #e1d0eb;border-radius:15px;padding:16px 17px;color:#8a6e9a;margin-top:23px}
+.family-app .fam-call-open-warning svg{vertical-align:middle;margin-right:7px;color:#a07a48}
+.family-app .fam-call-open-warning strong{color:#725286}
+.family-app .fam-draw-hold-notice{display:flex;align-items:center;gap:13px;border:1px solid #e6ce9b;border-radius:17px;padding:16px 19px;background:linear-gradient(110deg,#fff5dc,#fff9ed);color:#8c7448;font-size:13px;line-height:1.7;margin:18px 0}
+.family-app .fam-draw-hold-notice>svg{flex-shrink:0;color:#ad8439}
+.family-app .fam-draw-hold-notice strong{color:#816026}
+
+/* Keep the same player node alive when changing tabs, without covering navigation. */
+.family-app .fam-broadcast-persistent{margin-bottom:27px}
+.family-app .fam-broadcast-persistent.is-mini{position:fixed;right:24px;bottom:24px;z-index:50;display:block;width:min(320px,calc(100vw - 36px));margin:0;filter:drop-shadow(0 14px 32px #1e0d3045)}
+.family-app .fam-broadcast-persistent.is-mini .fam-game-focus{display:none}
+.family-app .fam-broadcast-persistent.is-mini .fam-show-stage{border-radius:19px;overflow:hidden;border-color:#a287b0}
+.family-app .fam-broadcast-persistent.is-mini .fam-video-caption{padding:9px 13px;min-height:35px;font-size:11px}
+.family-app .fam-broadcast-persistent.is-mini .fam-waiting-stage{display:none}
+.family-app .fam-broadcast-persistent.is-mini:has(.fam-waiting-stage){display:none}
+.family-app .fam-youtube-controller,.family-app .fam-youtube-frame{position:absolute;inset:0;width:100%;height:100%;min-height:100%}
+.family-app .fam-youtube-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.family-app .fam-youtube-suspended{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 20%,#6b438d,#231431 75%);color:#e2d3ef;padding:28px;text-align:center}
+.family-app .fam-youtube-suspended strong{font-size:23px;color:#fff0d7;letter-spacing:-.025em;line-height:1.35}
+.family-app .fam-youtube-suspended p{font-size:14px;line-height:1.75;color:#c3aed4;max-width:340px;margin:0}
+.family-app .fam-youtube-feedback{position:absolute;left:13px;right:13px;bottom:12px;display:flex;align-items:flex-start;gap:9px;margin:0;border:1px solid #d5bb8d;background:#22152fe8;border-radius:12px;padding:12px 14px;color:#f1ddba;font-size:12px;line-height:1.6}
+.family-app .fam-youtube-feedback svg{flex-shrink:0;margin-top:2px}
+.family-app .fam-youtube-retry{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:calc(100% - 40px)}
+.family-app .fam-youtube-retry:hover:not(:disabled){transform:translate(-50%,-50%)}
+
+@media(max-width:720px){
+ .family-app .fam-call-backdrop{padding:12px;align-items:flex-end}
+ .family-app .fam-call-panel{padding:26px 23px;border-radius:28px 28px 20px 20px;max-height:calc(100dvh - 24px);padding-bottom:max(26px,env(safe-area-inset-bottom))}
+ .family-app .fam-call-panel h2{font-size:27px}
+ .family-app .fam-call-panel>header{gap:13px;margin-bottom:23px}
+ .family-app .fam-call-person{padding:15px;gap:12px;flex-wrap:wrap}
+ .family-app .fam-call-person>span{width:48px;height:48px;border-radius:16px 16px 16px 7px}
+ .family-app .fam-call-person strong{font-size:21px}
+ .family-app .fam-call-person small{font-size:12px}
+ .family-app .fam-call-real{font-size:10px;margin-left:60px;max-width:none;padding:5px 8px}
+ .family-app .fam-call-actions>.fam-button{flex:1;white-space:normal;font-size:14px}
+ .family-app .fam-call-checkpoint>strong{font-size:57px}
+ .family-app .fam-call-panel>p{font-size:14px}
+ .family-app .fam-call-check{font-size:13px;padding:14px;gap:11px}
+ .family-app .fam-call-live>strong{font-size:24px}
+ .family-app .fam-call-live>span{font-size:12px}
+ .family-app .fam-call-connection{padding:19px;gap:13px}
+ .family-app .fam-call-connection p{font-size:13px}
+ .family-app .fam-call-connection strong{font-size:16px}
+ .family-app .fam-call-return-steps{font-size:13px;padding-left:37px}
+ .family-app .fam-broadcast-persistent.is-mini{width:210px;right:13px;bottom:calc(91px + env(safe-area-inset-bottom))}
+ .family-app .fam-broadcast-persistent.is-mini .fam-video-caption{display:none}
+ .family-app .fam-draw-hold-notice{font-size:12px;align-items:flex-start;padding:15px 16px}
+ .family-app .fam-youtube-suspended strong{font-size:18px}
+ .family-app .fam-youtube-suspended p{font-size:12px}
+ .family-app .fam-youtube-suspended{padding:18px;gap:10px}
+ .family-app .fam-youtube-feedback{font-size:12px;padding:9px 11px;left:9px;right:9px;bottom:9px}
+}
+@media(prefers-reduced-motion:reduce){.family-app .fam-call-backdrop{backdrop-filter:none}}

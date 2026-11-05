@@ -1,0 +1,438 @@
+{
+  "baseUrl": "http://127.0.0.1:4175",
+  "mode": "production build, actual demo UI; long-text DOM substitution and reduced viewport simulate layout stress, not a physical keyboard",
+  "results": [
+    {
+      "width": 320,
+      "height": 844,
+      "view": "initial",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "Boekjes",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "Gezin",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "Meedoen",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "Prijzen",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "Kijken",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "long-family-text",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "long-account-modal",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "view": "profile-form-short-viewport",
+      "viewport": 320,
+      "scroll": 320,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "initial",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "Boekjes",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "Gezin",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "Meedoen",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "Prijzen",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "Kijken",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "long-family-text",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "long-account-modal",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "profile-form-short-viewport",
+      "viewport": 390,
+      "scroll": 390,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "initial",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "Boekjes",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "Gezin",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "Meedoen",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "Prijzen",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "Kijken",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "long-family-text",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "long-account-modal",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 430,
+      "height": 844,
+      "view": "profile-form-short-viewport",
+      "viewport": 430,
+      "scroll": 430,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "initial",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "Boekjes",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "Gezin",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "Meedoen",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "Prijzen",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "Kijken",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "long-family-text",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "long-account-modal",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 768,
+      "height": 844,
+      "view": "profile-form-short-viewport",
+      "viewport": 768,
+      "scroll": 768,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "initial",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "Boekjes",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "Gezin",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "Meedoen",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "Prijzen",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "Kijken",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "long-family-text",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "long-account-modal",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "view": "profile-form-short-viewport",
+      "viewport": 1280,
+      "scroll": 1280,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "initial",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "Boekjes",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "Gezin",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "Meedoen",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "Prijzen",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "Kijken",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "long-family-text",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "long-account-modal",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "view": "profile-form-short-viewport",
+      "viewport": 1024,
+      "scroll": 1024,
+      "sheets": 3
+    }
+  ]
+}

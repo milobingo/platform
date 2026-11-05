@@ -1,0 +1,23 @@
+$ playwright test
+[WebServer] (node:1672225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ next start --hostname 127.0.0.1 --port ${PORT:-4173}
+[WebServer] (node:1672433) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 2 workers
+
+(node:1672721) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1672720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓  1 tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓  3 tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (3.0s)
+  ✓  4 tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (3.3s)
+  ✓  6 tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (103ms)
+  ✓  7 tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (23ms)
+  ✓  8 tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (562ms)
+  ✓  5 tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (3.4s)
+
+  8 passed (10.9s)

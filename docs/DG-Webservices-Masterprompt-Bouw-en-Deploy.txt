@@ -1,0 +1,46 @@
+MASTERPROMPT DG WEBSERVICES BOUW EN DEPLOY
+
+Gebruik onze vaste werkwijze voor Next.js-webapps. We ontwikkelen op de development-VPS en releasen via GitHub naar staging en productie. Selfhosted runners bouwen en activeren op iedere doelomgeving een eigen native release via dg-site-deploy. Dezelfde volledige broncommit gaat van staging naar productie. Voer de afgesproken opdracht volledig uit en bewijs wat werkelijk werkt.
+
+PROJECTGEGEVENS
+Project: <naam>
+GitHub repository: <owner/repository>
+Development-VPS en checkout: <host en pad>
+Staging-URL en site-ID: <URL en ID>
+Productie-URL en site-ID: <URL en ID>
+Deployhost en projectpaden: <host en paden>
+Selfhosted runners en Linux-gebruikers: <per omgeving>
+GitHub environments: staging en production
+Supabase staging en productie: <projectrefs>
+Opdracht en releasescope: <bouwen / staging / staging en productie>
+
+1. CONTEXT EN PROJECTPROFIEL
+Lees AGENTS.md, package.json, lockfile, CI- en deployworkflows, deployscripts en het bestaande runbook. Vul ontbrekende projectgegevens vanuit die bronnen in. Controleer branch-SHA, workflow-SHA, actieve health-revision en migratiegeschiedenis afzonderlijk. Raad geen hosts, paden, secrets of succesresultaten. Gebruik de vastgelegde toolchain en actuele primaire documentatie voor gewijzigde APIs. Houd één actueel projectprofiel bij met repository, domeinen, site-ID’s, runners, gebruikers, paden, poorten, Supabase-projecten, configuratienamen en de versie van de deploywrapper. Neem alleen projectfuncties over die werkelijk nodig zijn.
+
+2. BRONCODE EN INTEGRATIE
+Ontwikkel en voer gerichte voorcontroles uit op de development-VPS. GitHub is leidend voor broncode, review, CI en releasebewijs. Main is de integratiebranch. Kies na integratie één volledige release-SHA en laat de vereiste lint-, type-, unit-, database- en gebruikersflowcontroles op die exacte commit slagen. Commit de lockfile en leg Node, pnpm en dependencies vast. Promoveer dezelfde commit naar staging en later production zonder een nieuwe mergecommit. Los bestaande branchafwijkingen gecontroleerd op; gebruik geen forcepush om de releasehistorie passend te maken.
+
+3. CONFIGURATIE EN UITVOERGRENZEN
+Gebruik de GitHub environments staging en production voor omgevingsspecifieke secrets en variabelen. Leg vaste workflowwaarden en eventuele noodzakelijke repositoryvariabelen expliciet vast. Laat omgevingsgebonden jobs het juiste environment refereren en verifieer de exacte runnerlabels, runnernaam, Linux-gebruiker, workspace en checkout-SHA. Geef build- en runtimeconfiguratie uitsluitend via gecontroleerde sleutellijsten door. Controleer verplichte namen en aanwezigheid zonder waarden te tonen. Deploycredentials blijven buiten de app-runtime. Privileged serverkeys staan nooit onder NEXT_PUBLIC en nooit in browserbestanden, Git of logs.
+
+NEXT_PUBLIC-waarden worden tijdens next build ingebakken. Bouw staging met stagingconfiguratie en productie met productieconfiguratie. Controleer vooral de publieke Supabase-URL en key. Een gelijke bron-SHA betekent geen byte-identieke build; noteer ook toolchain, configuratieversie en release-ID.
+
+4. STAGING EN RELEASEBUILD
+Vereis groene CI op de exacte SHA vóór muterende releasestappen. Controleer vrije bytes en inodes en voldoende capaciteit voor backup, dependencies, build en de bestaande app. Gebruik de vaste build-lock op gedeelde hosts en een gecontroleerd bewaarbeleid voor caches, releases en backups. Verwijder geen actieve release, herstelpunt of onbekende bestanden om ruimte te maken.
+
+Laat de stagingrunner de exacte commit uitchecken, configuratie valideren en de vereiste controles uitvoeren. Maak een versleutelde databasebackup met herstelbewijs vóór migraties. Gebruik het bestaande migratiepad en vergelijk het vereiste gegevensbehoud. Werk Edge Functions en bijbehorende configuratie via het gecontroleerde releasepad bij. Roep dg-site-deploy aan met site-ID, workspace, volledige SHA en run-ID met pogingnummer. De wrapper maakt een nieuwe release-directory, installeert uit het lockfile, voert next build uit en activeert via het gedocumenteerde serverpad. Gebruik Caddy als reverse proxy. Controleer wrapperversie, startcommando en rollbackpad voordat je daar wijzigingen aan doet.
+
+5. SUPABASE AUTH EN RESEND
+Gebruik Supabase voor PostgreSQL en Auth met gescheiden staging- en productieconfiguratie. Bewaar schemawijzigingen als migraties en behoud bestaande gegevens en toegangsrechten. Migraties en Edge-contracten moeten bij een mislukte appactivatie compatibel blijven met de actieve app. Reset geen omgeving om migratieverschillen te verbergen. Gebruik grants, RLS en gecontroleerde serverrechten; vertrouw voor beheermachtigingen niet op user-editable metadata.
+
+Ondersteun e-mail-OTP en Google via dezelfde Supabase Auth. Supabase genereert en valideert de OTP. Configureer Google naar de juiste Supabase-providercallback en Supabase naar de appcallback van dezelfde omgeving. Controleer cookies, sessieherstel, veilige retourpaden en serverautorisatie.
+
+Gebruik Resend via de vaste gesigneerde Supabase-mailgateway en duurzame outbox voor applicatiemail. Configureer afzender, worker, aparte signing secrets, ontvangerbeleid en providerwebhooks. Houd Auth-mail, transactionele mail en nieuwsbrieven apart in beleid. Maak retries idempotent en bewaar onzekere verzenduitkomsten voor reconciliatie. Provideracceptatie, mailserveraflevering en echte postbusontvangst zijn afzonderlijke bewijzen. Behoud historische providercontracten zolang lopende pogingen of late webhooks daarvan afhangen. Verstuur echte testmails alleen binnen de afgesproken opdracht.
+
+6. ACCEPTATIE EN PRODUCTIE
+Controleer op staging de actieve volledige SHA, relevante backendversies en de echte gebruikersflows met passende accounts en rollen. Controleer rechten, Auth, noodzakelijke mailverwerking en herstelgedrag. Een health-200 bewijst alleen het contract van dat endpoint. Een overgeslagen controle telt niet als geslaagd; leg een expliciete releasegebonden uitzondering vast waar die is afgesproken.
+
+Productie mag alleen binnen de afgesproken releasescope en na geslaagde CI en volledige stagingacceptatie van precies dezelfde SHA. Reeds gegeven toestemming blijft gelden. De productierunner bouwt opnieuw met productieconfiguratie via dezelfde deployinterface en voert de afgesproken controles uit. Controleer na activatie runtime-SHA, migraties, Edge-contracten, Auth, relevante workers en gebruikersflow. Als backendwijzigingen al toegepast zijn maar appactivatie faalt, rapporteer de gedeeltelijke uitrol en controleer compatibiliteit. Een approllback draait database, Edge Functions en providerconfiguratie niet automatisch terug.
+
+7. OPLEVERING EN ONDERHOUD
+Lever de werkende wijziging met bijgewerkt projectprofiel en runbook. Vermeld de volledige commit, CI- en stagingresultaten, actieve release, toolchain, deploywrapperversie, migraties, relevante testresultaten, overgeslagen controles en het concrete herstelpad. Leg terugkerende workflowverbeteringen zo vast dat andere projecten dezelfde afspraken kunnen gebruiken. Claim geen geslaagde uitrol op basis van alleen een push of build. Vraag alleen om ontbrekende informatie die je na onderzoek werkelijk nodig hebt en werk ondertussen door aan onafhankelijke onderdelen.

@@ -1,0 +1,12 @@
+✔ private/unknown sources cannot reach programme or AI; live graph is strictly mix-minus (1.281501ms)
+✔ mute, failed phase and changing guest close audio synchronously without mutating game state (0.267666ms)
+✔ canvas programme stream contains explicit mix and isolated video; unsupported capture stays unavailable (0.308948ms)
+✔ existing show sound exposes its actual effects/music export and disposes its tracks (0.3564ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11.187623

@@ -1,0 +1,170 @@
+{
+  "milo": {
+    "mouth": [
+      0.45357,
+      0.31488,
+      0.15612,
+      0.07497
+    ],
+    "eyes": [
+      [
+        0.42127,
+        0.21453,
+        0.09152,
+        0.07036
+      ],
+      [
+        0.55451,
+        0.24798,
+        0.09152,
+        0.07497
+      ]
+    ],
+    "head": 0.41176,
+    "shouldersY": 0.45905,
+    "hipsY": 0.68858,
+    "armReach": 0.46,
+    "neutral": "/assets/milo-friends/characters/milo.png",
+    "talk": "/assets/milo-friends/characters/milo-talk.png"
+  },
+  "stella": {
+    "mouth": [
+      0.49512,
+      0.22659,
+      0.11158,
+      0.06936
+    ],
+    "eyes": [
+      [
+        0.42817,
+        0.18382,
+        0.08089,
+        0.05202
+      ],
+      [
+        0.56346,
+        0.16416,
+        0.04742,
+        0.0578
+      ]
+    ],
+    "head": 0.34798,
+    "shouldersY": 0.37919,
+    "hipsY": 0.49827,
+    "armReach": 0.44,
+    "neutral": "/assets/milo-friends/characters/stella.png",
+    "talk": "/assets/milo-friends/characters/stella-talk.png"
+  },
+  "otto": {
+    "mouth": [
+      0.47811,
+      0.31073,
+      0.16568,
+      0.10358
+    ],
+    "eyes": [
+      [
+        0.40118,
+        0.22688,
+        0.11834,
+        0.11837
+      ],
+      [
+        0.57633,
+        0.17139,
+        0.10769,
+        0.12577
+      ]
+    ],
+    "head": 0.47102,
+    "shouldersY": 0.53884,
+    "hipsY": 0.77065,
+    "armReach": 0.48,
+    "neutral": "/assets/milo-friends/characters/otto.png",
+    "talk": "/assets/milo-friends/characters/otto-talk.png"
+  },
+  "pip": {
+    "mouth": [
+      0.36999,
+      0.20881,
+      0.24666,
+      0.09444
+    ],
+    "eyes": [
+      [
+        0.31055,
+        0.1469,
+        0.11144,
+        0.07135
+      ],
+      [
+        0.51709,
+        0.09024,
+        0.11144,
+        0.07555
+      ]
+    ],
+    "head": 0.34103,
+    "shouldersY": 0.39874,
+    "hipsY": 0.67681,
+    "armReach": 0.44,
+    "neutral": "/assets/milo-friends/characters/pip.png",
+    "talk": "/assets/milo-friends/characters/pip-talk.png"
+  },
+  "lola": {
+    "mouth": [
+      0.50395,
+      0.24324,
+      0.17852,
+      0.07407
+    ],
+    "eyes": [
+      [
+        0.47867,
+        0.16517,
+        0.08847,
+        0.04505
+      ],
+      [
+        0.64613,
+        0.19019,
+        0.07899,
+        0.04204
+      ]
+    ],
+    "head": 0.33233,
+    "shouldersY": 0.37738,
+    "hipsY": 0.60961,
+    "armReach": 0.43,
+    "neutral": "/assets/milo-friends/characters/lola.png",
+    "talk": "/assets/milo-friends/characters/lola-talk.png"
+  },
+  "bella": {
+    "mouth": [
+      0.48096,
+      0.11361,
+      0.22003,
+      0.14023
+    ],
+    "eyes": [
+      [
+        0.44993,
+        0.06858,
+        0.09168,
+        0.06244
+      ],
+      [
+        0.57123,
+        0.08188,
+        0.06065,
+        0.04811
+      ]
+    ],
+    "head": 0.35517,
+    "shouldersY": 0.40942,
+    "hipsY": 0.65916,
+    "armReach": 0.49,
+    "neutral": "/assets/milo-friends/characters/bella.png",
+    "talk": "/assets/milo-friends/characters/bella-talk.png"
+  }
+}

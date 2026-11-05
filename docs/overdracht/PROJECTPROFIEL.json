@@ -1,0 +1,59 @@
+{
+  "project": "Milo & Friends BingoShow",
+  "source": {
+    "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
+    "sites_version": 63,
+    "commit": "08e1a652a78586d2e791179eead388acad8a3266",
+    "url": "https://vlampie-studio.dgwebserv.chatgpt.site",
+    "family_demo_url": "https://vlampie-studio.dgwebserv.chatgpt.site/spelen?demo=1",
+    "audience": "owner-private",
+    "runtime": "Cloudflare Worker",
+    "frontend": "React 19.3.1 / Motion 14.4.0 / esbuild",
+    "database": "D1 (SQLite), DB binding",
+    "objects": "R2 SETTINGS binding",
+    "schema_directory": "source/drizzle",
+    "runtime_verified": "Node v24.22.1 / npm 11.9.0"
+  },
+  "target": {
+    "workflow": "DG native releases via dg-site-deploy, selfhosted GitHub runners and Caddy",
+    "framework": "Next.js according to the discovered target project",
+    "database_auth": "Supabase, separated staging/production",
+    "mail": "DG signed Supabase mail gateway / Resend / durable outbox",
+    "release_scope": "Build and verify staging; production only within the agreed scope",
+    "github_repository": null,
+    "development_host": null,
+    "development_checkout": null,
+    "staging_url": null,
+    "staging_site_id": null,
+    "production_url": null,
+    "production_site_id": null,
+    "deploy_host": null,
+    "project_paths": null,
+    "runner_labels": null,
+    "linux_users": null,
+    "ports": null,
+    "deploy_wrapper_version": null,
+    "supabase_staging_ref": null,
+    "supabase_production_ref": null
+  },
+  "configuration": {
+    "current_source_names": [
+      "OPENAI_API_KEY",
+      "OPENAI_TEXT_MODEL",
+      "OPENAI_SPEECH_MODEL",
+      "VLAMPIE_ADMIN_EMAIL",
+      "VLAMPIE_SETTINGS_KEY",
+      "RESEND_API_KEY",
+      "PLAYER_MAIL_FROM"
+    ],
+    "livekit": "Independent server-side Cloud URL/API key/API secret through livekit settings; see architecture document",
+    "secrets_included": false,
+    "target_configuration_names": "Discover and document names from the target repository, workflows, environment contracts and runtime; do not guess values"
+  },
+  "notes": [
+    "Null target fields are unresolved configuration, not deploy-ready defaults.",
+    "The source is not a completed Next.js/Supabase migration.",
+    "No runtime D1/R2 data export or provider credentials are included.",
+    "The sample family, show and book tokens are fictitious."
+  ]
+}

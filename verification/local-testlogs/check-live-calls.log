@@ -1,0 +1,14 @@
+✔ prepare atomically blocks every draw before ringing; private call and explicit return never close bingo windows early (52.808096ms)
+✔ child selection, explicit catchup and two isolated rooms enforce backstage privacy before on-air (24.818677ms)
+✔ failure, no answer and reload preserve hold; next caller receives fresh context and only server-confirmed facts (18.553508ms)
+✔ one AI session starts only live; role snapshots hide secrets and old call API cannot mutate LiveKit (21.249151ms)
+✔ a stale host can recover explicitly from a new regie client without releasing the hold early (12.439869ms)
+✔ output meter is bounded and a lost output lease still permits its bound AI teardown (15.281162ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.433462

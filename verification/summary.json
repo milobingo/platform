@@ -1,0 +1,15 @@
+{
+  "offlineScripts": 35,
+  "offlineFailed": 0,
+  "browserPassed": 8,
+  "browserFailed": 0,
+  "browserSkipped": 0,
+  "responsiveAssertions": 54,
+  "assetsVerified": 133,
+  "sourceAssetsVerified": 8,
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "externalProviders": "not_connected",
+  "deployment": "local_only"
+}

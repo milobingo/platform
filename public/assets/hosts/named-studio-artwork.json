@@ -1,0 +1,68 @@
+[
+  {
+    "name": "rocco-studio-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-c972eaac-0ff6-4870-9e21-93e361924280.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/rocco-studio-named.png",
+    "prompt": "Use case: precise-object-edit. Production asset: empty premium virtual bingo studio background plate, exact 16:9 landscape, render at highest available resolution, ideally 3840 x 2160. Image 1 is the edit target; Image 2 is supporting typography/material reference ONLY. Preserve the entire original camera composition, perspective, architecture, floor, stairs, desk, desk-front blank dark rectangle and object proportions/locations with very high fidelity. No crop. Add physically mounted branded illuminated signage to upper back wall, not a floating title or screen overlay. Matte and brushed material sophistication, controlled glow, luxurious refined theatre lighting. No characters, people, mascot, fire, flames, Vlampie, Sinterklaas, balls, or extra props. Do not put text on the desk front; the blank rectangle is reserved for a digital 75-ball grid. Primary request: polish the gold and midnight-navy art deco Rocco theatre. Add one beautifully integrated narrow physical navy-and-brushed-gold marquee high on the central sunburst backwall ABOVE the desk, leaving its sculptural rays visible. Its name is the dominant line, exactly \"ROCCO ROYALE\"; optional small second line \"BINGO\". Use the logo reference's classical beveled Roman serif lettering but restrained architectural proportions; all capitals, clear gold letters, subtle warm halo lighting, navy contrast. Keep its lower edge comfortably above desk countertop and leave foreground floor completely untouched. Preserve all original architecture. Text must read R-O-C-C-O R-O-Y-A-L-E.",
+    "nativeWidth": 1672,
+    "nativeHeight": 941,
+    "nativeAspectRatio": 1.776833156,
+    "exact16by9": false
+  },
+  {
+    "name": "milo-studio-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-2d3017be-39fa-4b34-a79f-741994dbb717.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/milo-studio-named.png",
+    "prompt": "Use case: precise-object-edit. Production asset: empty premium virtual bingo studio background plate, exact 16:9 landscape, render at highest available resolution, ideally 3840 x 2160. Image 1 is the edit target; Image 2 is supporting typography/material reference ONLY. Preserve the entire original camera composition, perspective, architecture, floor, stairs, desk, desk-front blank dark rectangle and object proportions/locations with very high fidelity. No crop. Add physically mounted branded illuminated signage to upper back wall, not a floating title or screen overlay. Matte and brushed material sophistication, controlled glow, luxurious refined theatre lighting. No characters, people, mascot, fire, flames, Vlampie, Sinterklaas, balls, or extra props. Do not put text on the desk front; the blank rectangle is reserved for a digital 75-ball grid. Primary request: polish the rich purple, gold and teal enchanted-observatory Milo stage. Add one beautifully integrated physical deep-purple-and-brushed-gold marquee high on the central rear arch ABOVE the desk; preserve the armillary/chandelier above and the panorama. Its name is the dominant line, exactly \"MILO MAGICO\"; optional small second line \"BINGO\". Use the logo reference's elegant beveled Roman serif lettering but restrained architectural proportions; all capitals, clear champagne-gold letters, tiny teal diamond accents and subtle magical violet/teal edge halo. Keep its lower edge comfortably above desk countertop and leave foreground floor completely untouched. Text must read M-I-L-O M-A-G-I-C-O.",
+    "nativeWidth": 1672,
+    "nativeHeight": 941,
+    "nativeAspectRatio": 1.776833156,
+    "exact16by9": false
+  },
+  {
+    "name": "rocco-desk-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-f55149b8-634a-49f3-b23a-35d62e57cb6b.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/rocco-desk-named.png",
+    "prompt": "Use case: precise-object-edit. Asset: premium empty virtual bingo studio background plate. Exact 16:9 landscape, highest available resolution, ideally 3840 x 2160. Image 1 is the EDIT TARGET. Image 2 shows this studio's already approved nameplate design: use it ONLY to match that physical marquee's lettering and materials, not its camera or composition. Keep image 1 camera, architecture, perspective, floor, stairs, all proportions and all foreground object positions almost exactly unchanged. Primary edit is one professionally integrated illuminated physical nameplate on upper LEFT wall. Sign should feel mounted into architecture with real thickness, reflections and shadows, not a flat title overlay. Whole name and decorative crest must be inside frame and readable. Premium tasteful restrained lighting. No people, characters, host, mascot, fire, flames, Vlampie, Sinterklaas, balls or other new props. Preserve original luxurious colour palette and all background detail. Match navy and brushed gold refined art deco sign of Image 2, lettering exactly \"ROCCO ROYALE\" with optional tiny \"BINGO\" subtitle. Place sign only across upper-left quadrant, around x=8%..38%, y=6%..27%. It must NOT extend into the center x=42%..62% where the animated host will stand above the desk. Keep central fan-shaped backdrop visible. Preserve desk and its FRONT blank dark rectangle completely untouched, clear, empty, same location, shape and dimensions as Image 1: this will hold a digital 75-ball grid. Do not add any text to desk or change the camera.",
+    "nativeWidth": 1672,
+    "nativeHeight": 940,
+    "nativeAspectRatio": 1.778723404,
+    "exact16by9": false
+  },
+  {
+    "name": "milo-desk-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-6d4ecdcd-3fcc-4caa-961c-7ae94c36a054.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/milo-desk-named.png",
+    "prompt": "Use case: precise-object-edit. Asset: premium empty virtual bingo studio background plate. Exact 16:9 landscape, highest available resolution, ideally 3840 x 2160. Image 1 is the EDIT TARGET. Image 2 shows this studio's already approved nameplate design: use it ONLY to match that physical marquee's lettering and materials, not its camera or composition. Keep image 1 camera, architecture, perspective, floor, stairs, all proportions and all foreground object positions almost exactly unchanged. Primary edit is one professionally integrated illuminated physical nameplate on upper LEFT wall. Sign should feel mounted into architecture with real thickness, reflections and shadows, not a flat title overlay. Whole name and decorative crest must be inside frame and readable. Premium tasteful restrained lighting. No people, characters, host, mascot, fire, flames, Vlampie, Sinterklaas, balls or other new props. Preserve original luxurious colour palette and all background detail. Match deep-purple and champagne gold observatory sign of Image 2 with tiny teal diamonds and tasteful purple jewel crest, lettering exactly \"MILO MAGICO\" (no extra subtitle needed). Place sign only in upper-left quadrant, around x=8%..38%, y=6%..29%, mounted to upper-left arch. It must NOT extend into the center x=42%..62% where the animated host will stand above the desk. Keep original celestial armillary at upper center and magical panorama. Preserve desk and its FRONT blank dark rectangle completely untouched, clear, empty, same location, shape and dimensions as Image 1: this will hold a digital 75-ball grid. Do not add any text to desk or change the camera.",
+    "nativeWidth": 1672,
+    "nativeHeight": 941,
+    "nativeAspectRatio": 1.776833156,
+    "exact16by9": false
+  },
+  {
+    "name": "rocco-machine-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-076a678c-3188-4b03-8085-8a2ec66d5ca6.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/rocco-machine-named.png",
+    "prompt": "Use case: precise-object-edit. Asset: premium empty virtual bingo studio background plate. Exact 16:9 landscape, highest available resolution, ideally 3840 x 2160. Image 1 is the EDIT TARGET. Image 2 shows this studio's already approved nameplate design: use it ONLY to match that physical marquee's lettering and materials, not its camera or composition. Keep image 1 camera, architecture, perspective, floor, stairs, all proportions and all foreground object positions almost exactly unchanged. Primary edit is one professionally integrated illuminated physical nameplate on upper LEFT wall. Sign should feel mounted into architecture with real thickness, reflections and shadows, not a flat title overlay. Whole name and decorative crest must be inside frame and readable. Premium tasteful restrained lighting. No people, characters, host, mascot, fire, flames, Vlampie, Sinterklaas, balls or other new props. Preserve original luxurious colour palette and all background detail. Match navy and brushed gold refined art deco sign of Image 2, lettering exactly \"ROCCO ROYALE\" with optional tiny \"BINGO\" subtitle. Place this one sign only on the upper-left wall, around x=5%..39%, y=5%..28%, entirely left of the globe. The transparent glass globe and machine in Image 1 are strict invariants: absolutely preserve their size, position, transparency, roundness, reflections, pedestal and supports. The globe remains EMPTY. Do not overlap the globe silhouette with any letters/signage. Keep all original floor reflections, stage and lighting.",
+    "nativeWidth": 1672,
+    "nativeHeight": 941,
+    "nativeAspectRatio": 1.776833156,
+    "exact16by9": false
+  },
+  {
+    "name": "milo-machine-named",
+    "tool": "built-in image_gen.imagegen",
+    "generatedSource": "/workspace/scratch/3168b87d0f33/generated_images/exec-54016b5c-6e74-4086-90c6-cf25bcb4da66.png",
+    "destination": "/workspace/scratch/3168b87d0f33/polish-art/milo-machine-named.png",
+    "prompt": "Use case: precise-object-edit. Asset: premium empty virtual bingo studio background plate. Exact 16:9 landscape, highest available resolution, ideally 3840 x 2160. Image 1 is the EDIT TARGET. Image 2 shows this studio's already approved nameplate design: use it ONLY to match that physical marquee's lettering and materials, not its camera or composition. Keep image 1 camera, architecture, perspective, floor, stairs, all proportions and all foreground object positions almost exactly unchanged. Primary edit is one professionally integrated illuminated physical nameplate on upper LEFT wall. Sign should feel mounted into architecture with real thickness, reflections and shadows, not a flat title overlay. Whole name and decorative crest must be inside frame and readable. Premium tasteful restrained lighting. No people, characters, host, mascot, fire, flames, Vlampie, Sinterklaas, balls or other new props. Preserve original luxurious colour palette and all background detail. Match deep-purple and champagne gold observatory sign of Image 2 with tiny teal diamonds and tasteful purple jewel crest, lettering exactly \"MILO MAGICO\" (no extra subtitle needed). Place this one sign only on the upper-left wall, around x=5%..39%, y=5%..28%, entirely left of the globe. The transparent glass globe and machine in Image 1 are strict invariants: absolutely preserve their size, position, transparency, roundness, reflections, pedestal and supports. The globe remains EMPTY. Do not overlap the globe silhouette with any letters/signage. Keep all original floor reflections, stage and magical panorama.",
+    "nativeWidth": 1672,
+    "nativeHeight": 941,
+    "nativeAspectRatio": 1.776833156,
+    "exact16by9": false
+  }
+]

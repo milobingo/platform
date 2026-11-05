@@ -1,0 +1,1380 @@
+{
+  "summary": {
+    "count": 133,
+    "bytes": 216545402,
+    "extensions": {
+      ".png": 60,
+      ".pdf": 12,
+      ".jpg": 8,
+      ".json": 7,
+      ".zip": 2,
+      ".webp": 41,
+      ".mp4": 1,
+      ".glb": 2
+    },
+    "milo_friends_count": 67,
+    "duplicates": [
+      [
+        "public/assets/bingo-print/logo-color.jpg",
+        "public/assets/studio-logo.png"
+      ],
+      [
+        "public/assets/hosts/milo-template-color.pdf",
+        "public/assets/milo-friends/template-color.pdf"
+      ],
+      [
+        "public/assets/hosts/milo-template-mono.pdf",
+        "public/assets/milo-friends/template-mono.pdf"
+      ],
+      [
+        "public/assets/milo-friends/bingo-preview-color.jpg",
+        "public/assets/milo-friends/bingo-preview.jpg"
+      ]
+    ]
+  },
+  "assets": [
+    {
+      "path": "public/assets/audience-atlas-v10.png",
+      "bytes": 1912976,
+      "extension": ".png",
+      "sha256": "817fb1692fcbd17c4ed4e30a22b9b770385c1d69c8827380364bd09752e491b1",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/bingo-print/example-color.pdf",
+      "bytes": 2929354,
+      "extension": ".pdf",
+      "sha256": "44cbcf9c553a84c1fc635648326c128c0da71b3abcdaadaac3a37ec89eb902d3"
+    },
+    {
+      "path": "public/assets/bingo-print/example-mono.pdf",
+      "bytes": 420260,
+      "extension": ".pdf",
+      "sha256": "9b126ef15817bf27ad6d43b1fde76a165b76b7188b3b5ea2e781270f2cef1356"
+    },
+    {
+      "path": "public/assets/bingo-print/logo-color.jpg",
+      "bytes": 342290,
+      "extension": ".jpg",
+      "sha256": "1ba7d7ee8599ab7f0f0ac68813da5ea74bc4a3b7249b049e7e4b14bb39252e31",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/bingo-print/logo-mono.jpg",
+      "bytes": 390248,
+      "extension": ".jpg",
+      "sha256": "211c1d7f03576723c7fbb000bf2ee532934404913c8626cdfb64cd0873122371",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/bingo-print/show-backdrop-v2.png",
+      "bytes": 1700796,
+      "extension": ".png",
+      "sha256": "df2aedf40cc6634e1161749a99e712cd3093e8a75898008a9f7361f50f982019",
+      "width": 1052,
+      "height": 1495,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/bingo-print/template-color.pdf",
+      "bytes": 2899133,
+      "extension": ".pdf",
+      "sha256": "a7a70aa5d3062d298a07e86f31bbf91a5ba29995fb5a4e604ec03842df3f6dcf"
+    },
+    {
+      "path": "public/assets/bingo-print/template-mono.pdf",
+      "bytes": 402698,
+      "extension": ".pdf",
+      "sha256": "2318a3dc7553a01246dcdb690f2efb85fe6c36ddf1f9c15e92dd7a3e9e1138ec"
+    },
+    {
+      "path": "public/assets/expressions.png",
+      "bytes": 2339065,
+      "extension": ".png",
+      "sha256": "7054dba3d44c5e650617cfc9ea7ec1628b84a7af40feaa77e274e55934b79f5d",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/game-sprites.png",
+      "bytes": 1428772,
+      "extension": ".png",
+      "sha256": "7ffd5c783f506d18a5e2649327312ef462b971f8147d25121d8f73422ee2c665",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/gift-components-atlas.png",
+      "bytes": 1934374,
+      "extension": ".png",
+      "sha256": "8827608b7a4fe5f944c34294536af3d35ae9387131a8012d09dab88f0cdc7f8e",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/horse-gallop-atlas.png",
+      "bytes": 2134978,
+      "extension": ".png",
+      "sha256": "98b9992d18fa40036ebd736a3ec8d995a2e6e7e9c5a2b5ba4ef632ef0afb88ed",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/delivery-manifest.json",
+      "bytes": 4888,
+      "extension": ".json",
+      "sha256": "f20e5ad103cbc8387fdc5dd3e66b881733508fea9045a671fe0da03f57e59052"
+    },
+    {
+      "path": "public/assets/hosts/milo-archive-manifest.json",
+      "bytes": 3084,
+      "extension": ".json",
+      "sha256": "48cf2405782f78a764e76909cd3a447cedd1bf80b36a338a2e7e6fa89e9b0142"
+    },
+    {
+      "path": "public/assets/hosts/milo-artwork.zip",
+      "bytes": 25467280,
+      "extension": ".zip",
+      "sha256": "cb5fb07a225eec705d3a43064702b9ba5e8337f5fc897da78fea90cc4f9b76c8"
+    },
+    {
+      "path": "public/assets/hosts/milo-desk-v36.webp",
+      "bytes": 475044,
+      "extension": ".webp",
+      "sha256": "8c3650e43c282dd91d215b5a3726e12222b1fc107303ceecc532cbad93129fe1",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-games.webp",
+      "bytes": 536728,
+      "extension": ".webp",
+      "sha256": "0f6e8466151392da0a150a9e64bf340b7c2bae1b51ec7c7828b7dae0d214e3cf",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-logo.png",
+      "bytes": 657171,
+      "extension": ".png",
+      "sha256": "848bfed223171e3c0ab4c4b3ea29131aaf3b299abc11beae6517e146f4d458f9",
+      "width": 888,
+      "height": 444,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/milo-logo.webp",
+      "bytes": 455504,
+      "extension": ".webp",
+      "sha256": "764aa73919ce8ce8b892d1798801cabcd807d87aa7dfc04e2412c3558e033a7f",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-machine-v36.webp",
+      "bytes": 451558,
+      "extension": ".webp",
+      "sha256": "87007ddcd68ad29b6b4e0f500bdf8bfdce42c106e731ca488bef7d2831837614",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-mascot.png",
+      "bytes": 2240986,
+      "extension": ".png",
+      "sha256": "eb48958335697583f50b058481fa61a445b794677f941269ec5968cdaacb0c35",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/milo-mascot.webp",
+      "bytes": 271000,
+      "extension": ".webp",
+      "sha256": "8a8fc251efad785ae8d7ab11b8757fa754acd5e9b62374c72c8373f8ba8c72b0",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-master-v36.webp",
+      "bytes": 511594,
+      "extension": ".webp",
+      "sha256": "8e1e0d952a74a293e997d291f216e078576276b58975f1c56fa049870efd788c",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-talking.png",
+      "bytes": 2162041,
+      "extension": ".png",
+      "sha256": "4f2ffe07cc20b4b969c529dfff57dc4d5edcf84b67dd583bc185eda801ea5cc8",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/milo-talking.webp",
+      "bytes": 240446,
+      "extension": ".webp",
+      "sha256": "d23c997a9bb2d5fcac113eb2783e2aca3662216fe824d6480a67fc2b2a5c69f7",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/milo-template-color.pdf",
+      "bytes": 4803840,
+      "extension": ".pdf",
+      "sha256": "5405b51eac1a2519aa156906d3679806258a433e5c91db2e82837eba704db987"
+    },
+    {
+      "path": "public/assets/hosts/milo-template-mono.pdf",
+      "bytes": 2113444,
+      "extension": ".pdf",
+      "sha256": "9089d950c5d19230e8814a854f8dd4ac61ce9cdfe4d090dedbff6dc5cd8ea89c"
+    },
+    {
+      "path": "public/assets/hosts/named-studio-artwork.json",
+      "bytes": 12028,
+      "extension": ".json",
+      "sha256": "190d50579dd860fe40260ae5059622f17c96d7b8d4cd65626495d4e5bb1d00c9"
+    },
+    {
+      "path": "public/assets/hosts/rocco-archive-manifest.json",
+      "bytes": 3098,
+      "extension": ".json",
+      "sha256": "3f6210a95ec444b50d9bd3a8dd4ec82d527a981499afdc22f61523e5dab59eda"
+    },
+    {
+      "path": "public/assets/hosts/rocco-artwork.zip",
+      "bytes": 22338116,
+      "extension": ".zip",
+      "sha256": "3ef1a7b548df1f6017255b77da4a2b8e8a098ea268e4f1acef21d2ff3ebd972b"
+    },
+    {
+      "path": "public/assets/hosts/rocco-desk-v36.webp",
+      "bytes": 320320,
+      "extension": ".webp",
+      "sha256": "34e2cc20ba4b8e7d15a8fab47fad376d9238361e586e3baf797a47aaac3d9712",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-games.webp",
+      "bytes": 367836,
+      "extension": ".webp",
+      "sha256": "157af95e05907eaa18c4dd9b665b22f5d7bb1711249326e1fb84fd04762a7931",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-logo.png",
+      "bytes": 614326,
+      "extension": ".png",
+      "sha256": "8092f69b29cc47efc67ffe8012f9252277d0b9f26d9fba2fa75e30597a58a209",
+      "width": 888,
+      "height": 444,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/rocco-logo.webp",
+      "bytes": 377216,
+      "extension": ".webp",
+      "sha256": "80a8db1560c0f50f3943c35e80a5a5ad9fdec4980d684d07d4666352f80ec7b1",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-machine-v36.webp",
+      "bytes": 322078,
+      "extension": ".webp",
+      "sha256": "c42e0c42153a685d8f93ea5eba6b378080a62fd2a5cc33d69d638659da36c064",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-mascot.png",
+      "bytes": 1958751,
+      "extension": ".png",
+      "sha256": "6a0ed7f3a435891b315f54744745ef44dedfd6ff4424286a8b4e24e9a86304f1",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/rocco-mascot.webp",
+      "bytes": 218092,
+      "extension": ".webp",
+      "sha256": "cd0524aa70519741f049d00d21d33731a293d105e2af037f3efc34f099a026a4",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-master-v36.webp",
+      "bytes": 343170,
+      "extension": ".webp",
+      "sha256": "6726f4a3b99b8392b380d5e15e239c2cdcb630b2c7fb3993b04f260f1c033f8d",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-talking.png",
+      "bytes": 1894172,
+      "extension": ".png",
+      "sha256": "53d194cec44bc11690d78281bf953efaec8c1343b7d07fb7b4ed425754d26781",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/hosts/rocco-talking.webp",
+      "bytes": 198072,
+      "extension": ".webp",
+      "sha256": "2e9097d58740b662ae05f7731001be9c804d38a376eb566d6724b18a634809d9",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/hosts/rocco-template-color.pdf",
+      "bytes": 667124,
+      "extension": ".pdf",
+      "sha256": "66fe2253e4aa86c0621aecd776f2aca85ea9c31d3d7082d63bc323d274fa34ea"
+    },
+    {
+      "path": "public/assets/hosts/rocco-template-mono.pdf",
+      "bytes": 233090,
+      "extension": ".pdf",
+      "sha256": "53cf1806df2b6547f93fdd769213e8a8a2fc3aa24622cbeb45c1186856b04a67"
+    },
+    {
+      "path": "public/assets/milo-friends/bingo-preview-color.jpg",
+      "bytes": 442725,
+      "extension": ".jpg",
+      "sha256": "2d90c73983ec28f32a1594abb57d7c01bce76923d895c2386c7949701c314332",
+      "width": 1049,
+      "height": 1489,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/bingo-preview-mono.jpg",
+      "bytes": 302063,
+      "extension": ".jpg",
+      "sha256": "a7f376f3605e288e9c2c68aa9d16ccf69275e09ea854e01e58597ecda2847bf5",
+      "width": 1049,
+      "height": 1489,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/bingo-preview.jpg",
+      "bytes": 442725,
+      "extension": ".jpg",
+      "sha256": "2d90c73983ec28f32a1594abb57d7c01bce76923d895c2386c7949701c314332",
+      "width": 1049,
+      "height": 1489,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/assets-a.json",
+      "bytes": 3211,
+      "extension": ".json",
+      "sha256": "5b00ed13ef5940a4ab338cc620e6fa9d3bdafeef3e0f022788833351624d6b8d"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/bella-talk.png",
+      "bytes": 766299,
+      "extension": ".png",
+      "sha256": "bbdc85f464d23ef07046c5014b95132d73bb1ff57d679833627bd4b4bedf96ac",
+      "width": 757,
+      "height": 1025,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/bella.png",
+      "bytes": 743538,
+      "extension": ".png",
+      "sha256": "4c7869c849d9d16d80e16e53025a3aa6ab59a43081c678b92da5ca61791b633f",
+      "width": 757,
+      "height": 1025,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/benny-talk.png",
+      "bytes": 1091890,
+      "extension": ".png",
+      "sha256": "5732a74b19b276c4779a1ed8cbd9a2297c7462cb0e78bb16fa1d03c2ac80e89e",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/benny.png",
+      "bytes": 1082702,
+      "extension": ".png",
+      "sha256": "fb599e31b7e1b51002aad4ed788ad8b9b246319ae09b7be83d021b71dab55ac0",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/bruno-talk.png",
+      "bytes": 1310769,
+      "extension": ".png",
+      "sha256": "b3804fb936930431d24945dcb5f7249186edf9eac45b74797ec556aab783690c",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/bruno.png",
+      "bytes": 1308166,
+      "extension": ".png",
+      "sha256": "d8f9c3d92486d068c662b527100ce1c86fca7ed911fa5ff17953df5ddd694dc7",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/coco-talk.png",
+      "bytes": 1101378,
+      "extension": ".png",
+      "sha256": "692600bb579dada949be8c79ae580b6757f1414960da41fbf1913102d668623b",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/coco.png",
+      "bytes": 1091805,
+      "extension": ".png",
+      "sha256": "6f48903941e1c2182f81beb84a3b58e8c79e686000ec6881240b88e0b7071756",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/kora-talk.png",
+      "bytes": 1195369,
+      "extension": ".png",
+      "sha256": "01ab366d57a0eea54ab104f0911114af63e2cf266f0cd4f61d1ca3b537189748",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/kora.png",
+      "bytes": 1189337,
+      "extension": ".png",
+      "sha256": "0c9f296d2d4462d79b102045fdc7e2378d6398c8864a972e2ac7f0613add7fe2",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/lola-talk.png",
+      "bytes": 663576,
+      "extension": ".png",
+      "sha256": "26c3410599333946e5fe8e948b8b56a707658cc0fe7af6f49ce6e12d58508296",
+      "width": 684,
+      "height": 1048,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/lola.png",
+      "bytes": 659985,
+      "extension": ".png",
+      "sha256": "48359d8fd44771508fcbe986891fe6d6db9c019d3b85a48649582f5980ea8094",
+      "width": 684,
+      "height": 1048,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/milo-talk.png",
+      "bytes": 820241,
+      "extension": ".png",
+      "sha256": "94e4094d08cea9d04c156376eab2c35e9b28f35dccf5d10784d7d053ef90d3e8",
+      "width": 799,
+      "height": 916,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/milo.png",
+      "bytes": 808059,
+      "extension": ".png",
+      "sha256": "c6e111a7853c4f16decd6dc5601c45740e841eb9f8063ed83b541b611ba49e1b",
+      "width": 799,
+      "height": 916,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/nino-talk.png",
+      "bytes": 1221529,
+      "extension": ".png",
+      "sha256": "3bab3087cc93d683e224c0c3437a033ae404482cde314216202aa309a34467b9",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/nino.png",
+      "bytes": 1228283,
+      "extension": ".png",
+      "sha256": "57d5e1d77ee9c8057968a84102443f1743cc059b409880bc2e02ffdcf8238a19",
+      "width": 768,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/otto-talk.png",
+      "bytes": 970938,
+      "extension": ".png",
+      "sha256": "d76e288b58d0034a8fcf8a98167d60cd647a7f01b9916e9e9190c9bf10ca5d61",
+      "width": 895,
+      "height": 860,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/otto.png",
+      "bytes": 965222,
+      "extension": ".png",
+      "sha256": "c5bf99f6f26f5aecc625b996e4949f26340e4c273eb687db6127fbea33406972",
+      "width": 895,
+      "height": 860,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/piko-talk.png",
+      "bytes": 914509,
+      "extension": ".png",
+      "sha256": "d06cda358d2602e36ad007de57cc428572042237dbe440f5f097613a02aca9d5",
+      "width": 887,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/piko.png",
+      "bytes": 915432,
+      "extension": ".png",
+      "sha256": "c58ab88cb611ba0b172ffc9393afda02be701fb1dd2b79aee4ccdd08319ac3ab",
+      "width": 887,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/pip-talk.png",
+      "bytes": 790113,
+      "extension": ".png",
+      "sha256": "db4ba28336c105139c7c4302b5ce26be7efec945529518c428cf04d0b1fd0e25",
+      "width": 776,
+      "height": 1004,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/pip.png",
+      "bytes": 779512,
+      "extension": ".png",
+      "sha256": "90b13b44b2ee34004b140214ffa951028751835f40fabdac8e7a618b1b8dabf4",
+      "width": 776,
+      "height": 1004,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/profiles-b.json",
+      "bytes": 4275,
+      "extension": ".json",
+      "sha256": "ab0c1829dd595d42f0f8fc59199af3486255289f3d525d79aa25a23a9e5665c3"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/rigs-a.json",
+      "bytes": 2988,
+      "extension": ".json",
+      "sha256": "6997ad6d4599537caeff43f546b04ada9daaa71a361ce13fd76824bb1ebf0555"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/stella-talk.png",
+      "bytes": 804489,
+      "extension": ".png",
+      "sha256": "6ab0f7d1b96e1bc5cd45d88b9f5c29b1deb9fae1939389ddb79817c2541791d1",
+      "width": 767,
+      "height": 913,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/characters/stella.png",
+      "bytes": 809471,
+      "extension": ".png",
+      "sha256": "05b8d0461c368b57594faf2a7913f0ea50885c094c2f377dccf7b4365537584c",
+      "width": 767,
+      "height": 913,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/example-color.pdf",
+      "bytes": 4819228,
+      "extension": ".pdf",
+      "sha256": "afd3187a62f79546a8efa75e4589eb3129ad72b66e72af8eae070614cc5f7a21"
+    },
+    {
+      "path": "public/assets/milo-friends/example-mono.pdf",
+      "bytes": 2125390,
+      "extension": ".pdf",
+      "sha256": "118ec62e3fd2c8bf00d1b265abd1d25d36084ac7ab0442ecc12337a31f5c348d"
+    },
+    {
+      "path": "public/assets/milo-friends/logo-print-ink.png",
+      "bytes": 2392777,
+      "extension": ".png",
+      "sha256": "df3aa6cf53ca614f8093654cfcbeeeec623295b7d9af95957b9b7790f94dae2d",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/logo-print-mono.jpg",
+      "bytes": 519545,
+      "extension": ".jpg",
+      "sha256": "e3eafb19bbabd8fc9b33419cb5e3d6316b49a8ae028e9b03f1a79da86d5c3929",
+      "width": 1536,
+      "height": 1024,
+      "mode": "L",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/logo-print.jpg",
+      "bytes": 964618,
+      "extension": ".jpg",
+      "sha256": "3baf56a944467ecf8385a6d3fad6be280d2e6b7e7e0c187abf7d742f681567af",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/logo.png",
+      "bytes": 3333687,
+      "extension": ".png",
+      "sha256": "4cc0a3c85a8e926b457d76e3d456a0eb27744978281b6eb87e5c54d6ce1bbc8b",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/print-waves.png",
+      "bytes": 582285,
+      "extension": ".png",
+      "sha256": "b8467cc28ece8ec180e03e3925b91944b942647406c1339462a11a1e1510ba37",
+      "width": 1776,
+      "height": 2520,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/broadcast-arena-preview.webp",
+      "bytes": 156338,
+      "extension": ".webp",
+      "sha256": "e77cdad8c04c6194e37f1c3b69fb55c5696c6b6e0f2a4ffed276e9c3d9e6032e",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/board.webp",
+      "bytes": 62988,
+      "extension": ".webp",
+      "sha256": "8347c9e138da90e831b3e17c48b15953ff6b8ccd72352f5abaac4799970ae8f8",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/crane.webp",
+      "bytes": 97536,
+      "extension": ".webp",
+      "sha256": "05766ec6ae341071d1831defa978c9565e41c07163ac723c07fe34aa716d6e86",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/dolly.webp",
+      "bytes": 96048,
+      "extension": ".webp",
+      "sha256": "6383d6104d7a5995c35fb3a84be6d36a36026bef84f47a40c53a62b9b8782037",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/duo.webp",
+      "bytes": 91014,
+      "extension": ".webp",
+      "sha256": "a79a24ee2454bf962e49d5386e0db14d2918ea528b3344164607c9257b545de3",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/establish.webp",
+      "bytes": 102526,
+      "extension": ".webp",
+      "sha256": "1055341ec390440e49af186ad1e2cb5883b942c9ec419e2300c41b162d8718c5",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/guest.webp",
+      "bytes": 86856,
+      "extension": ".webp",
+      "sha256": "29b0c3c8b6225e6d209288073ca98eedd83c26a1aa414dff724afe6d932fd066",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/host.webp",
+      "bytes": 85694,
+      "extension": ".webp",
+      "sha256": "5672cb58652118cf2cb694c5b76b833ee8b228e11f144ea810acd91db3c91f25",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/magic.webp",
+      "bytes": 97712,
+      "extension": ".webp",
+      "sha256": "60ac1431cda16c6e0b97d81a18d6d16df2a8c57e02641f7ae9d84549f458a86b",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/orbit.webp",
+      "bytes": 93796,
+      "extension": ".webp",
+      "sha256": "57a3a4781efb22a7d20c61db4d7d40bc9504daee8a6a4d50f5d0a5cae6d424c8",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/portrait.webp",
+      "bytes": 81040,
+      "extension": ".webp",
+      "sha256": "6695969eae302676ef39068c500556d8664b4f0f6f40a9c72523cfecbb63af0b",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/shots/wide.webp",
+      "bytes": 99492,
+      "extension": ".webp",
+      "sha256": "e744f2874cc6b5283e1b089a132180cf61b55041397dfaf977143fab02a92bc6",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/applause.webp",
+      "bytes": 93558,
+      "extension": ".webp",
+      "sha256": "5bc6b4a4ed66fbe2e4bf518070d975fc6ac9d73b3ab663b68af66845181016ee",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/curtain-call.webp",
+      "bytes": 95058,
+      "extension": ".webp",
+      "sha256": "d728c61b946912dd6f07ce195d6d22a510140b80ed2ceb731e7d861cc6b17181",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/dance.webp",
+      "bytes": 84404,
+      "extension": ".webp",
+      "sha256": "c6f3a038a9e3f1efbfbe503ee48942f5cfedf8ae80e94fd5e08b563b750dc647",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/magic-orbit.webp",
+      "bytes": 91180,
+      "extension": ".webp",
+      "sha256": "df2204a35203575766b4bcaf233197b8cd5cd730f182408757c35b8c274440d4",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/portal-arrival.webp",
+      "bytes": 80680,
+      "extension": ".webp",
+      "sha256": "84f877ea474e4d9aa1d94a446a9c8a562c460029a11735f318e3d196f9b34fd0",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/silk-stars.webp",
+      "bytes": 92322,
+      "extension": ".webp",
+      "sha256": "0a1aa780065507a7fae94056dd2037eab39f75abbac078b386cfab70bdfac99a",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/star-hat.webp",
+      "bytes": 90644,
+      "extension": ".webp",
+      "sha256": "ae28969d22e0d75e17ec44e1bf16152c60e9ed9efbfc53cd48a81d3a7e8b484d",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/star-shower.webp",
+      "bytes": 94622,
+      "extension": ".webp",
+      "sha256": "0194d73e142b43b34cd4db9f1fafe964894452ab4ffd12b732b92bda042c506b",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/welcome-wave.webp",
+      "bytes": 81500,
+      "extension": ".webp",
+      "sha256": "367b1bb169b5e0b16104e2eec3af246c69dcdd183a2d9746d6856929d16a8c75",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/wonder.webp",
+      "bytes": 81956,
+      "extension": ".webp",
+      "sha256": "4346f029bf244b21315d1eef2ad7dac7fbcfec2265b10edc9640c107bb267cc9",
+      "width": 640,
+      "height": 360,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenplein-grand-desk.webp",
+      "bytes": 501472,
+      "extension": ".webp",
+      "sha256": "c8061c76b84ee17a96089e0bb1e349b8a5915ee614eb9c2b5e61a07f7bc75274",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenplein-grand-preview.webp",
+      "bytes": 479812,
+      "extension": ".webp",
+      "sha256": "0f280edb6e4d25ab1a8ad76be1469de02ec7cd98dfe02438487d5a6eb0227267",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenplein-grand-room.webp",
+      "bytes": 583814,
+      "extension": ".webp",
+      "sha256": "620f6d76b2587115a6a046ae3c8e6b24e29193090e15fd6c0f7a790dfb91fd29",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenplein-magic-props.webp",
+      "bytes": 1294250,
+      "extension": ".webp",
+      "sha256": "fb35b4e4579fe07132e8c6f001142edd7d6f20648fa9f0581929cf40daf1e03b",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenplein.jpg",
+      "bytes": 927284,
+      "extension": ".jpg",
+      "sha256": "4c115a292d1c090927d93ad42211886f9986318121aae135a13063e78a610ebc",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/sterrenwervel-preview.mp4",
+      "bytes": 2708040,
+      "extension": ".mp4",
+      "sha256": "a5d81f17fb78be90a5fa59082885ee096fea0046b774ea08deb07a0b469742a4"
+    },
+    {
+      "path": "public/assets/milo-friends/template-color.pdf",
+      "bytes": 4803840,
+      "extension": ".pdf",
+      "sha256": "5405b51eac1a2519aa156906d3679806258a433e5c91db2e82837eba704db987"
+    },
+    {
+      "path": "public/assets/milo-friends/template-mono.pdf",
+      "bytes": 2113444,
+      "extension": ".pdf",
+      "sha256": "9089d950c5d19230e8814a854f8dd4ac61ce9cdfe4d090dedbff6dc5cd8ea89c"
+    },
+    {
+      "path": "public/assets/puppet-parts.png",
+      "bytes": 1909954,
+      "extension": ".png",
+      "sha256": "b2621b748b582b5d62d3ebb1d7fa72765003671b023b1aee5222314ffaa6393d",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/race-environments.png",
+      "bytes": 2859419,
+      "extension": ".png",
+      "sha256": "c5bef22f777dba10e8aac23cc844ad71c7788ed50fdec1c4ce141a63ec6a641a",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/show-environments.png",
+      "bytes": 2458098,
+      "extension": ".png",
+      "sha256": "cf720d1418eae8c6c0c540eebe1c6fef16540325e990897cb599bc706602f92c",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/showtime-set.glb",
+      "bytes": 5996260,
+      "extension": ".glb",
+      "sha256": "1464d57f58bee4eabf2c6c7ee5f458457cfffdf173d5b614ec414f81100a8d07"
+    },
+    {
+      "path": "public/assets/showtime-star-backdrop.webp",
+      "bytes": 628874,
+      "extension": ".webp",
+      "sha256": "624572888a564a1025775bd20e96467773ec029254550e48a74e182ab51e948f",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "WEBP"
+    },
+    {
+      "path": "public/assets/sinterklaas-desk-v12.png",
+      "bytes": 2349099,
+      "extension": ".png",
+      "sha256": "b670dfbe42689be95a897dbecac369c2a124bbb2fff34d350150fde139f16ab8",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-desk-v14.png",
+      "bytes": 2184949,
+      "extension": ".png",
+      "sha256": "65c7b36442d1730b325b4913c5c72c7857e1576399b7fda52c943d69bb3ae832",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-desk-v17.png",
+      "bytes": 2262575,
+      "extension": ".png",
+      "sha256": "815a036e8daaa8baa472a0da1e4a1e6b542344e162c3245a0244d251da4168ef",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-kruidnoten-v13.png",
+      "bytes": 1126827,
+      "extension": ".png",
+      "sha256": "ee52893f452d91abb97e79b59fc32690e7d245adeb83d91903d21e703a91e296",
+      "width": 2072,
+      "height": 759,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-machine-v12.png",
+      "bytes": 2566346,
+      "extension": ".png",
+      "sha256": "ce9d5f63bfe27e1df500af4a470e14a8c62ab98d884aa0d8a828dc8a2016ad11",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-master-v12.png",
+      "bytes": 2659619,
+      "extension": ".png",
+      "sha256": "0974666234b205b17fd0a905c9bb3182647d307bfee84b4ac2992b5da6a2cebc",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-master-v14.png",
+      "bytes": 2561069,
+      "extension": ".png",
+      "sha256": "185db0ab5ab25ac86978d9f6758e106c12cb8320eebf5035034e4434c2919a6e",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/sinterklaas-presents-v13.png",
+      "bytes": 1880320,
+      "extension": ".png",
+      "sha256": "691eaba9ed2a70841763c618ad694d1706b46771bb325b920d25df89284cf1ea",
+      "width": 1464,
+      "height": 1075,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-desk-v11.png",
+      "bytes": 2385427,
+      "extension": ".png",
+      "sha256": "29428cacaf8a4ee9b3f645a3c118d3db759708f6035618cad849a61d5ec29b22",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-desk-v14.png",
+      "bytes": 2170699,
+      "extension": ".png",
+      "sha256": "fb911b407e6dbbe656da62f11c2ff190cafc8afe4b6d943c1a1cb01904dfd219",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-desk-v17.png",
+      "bytes": 2243103,
+      "extension": ".png",
+      "sha256": "aeb3883aef03d7299aa7979f076a7ceb8a99c9aee7bf95d34f797cad69058e9d",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-logo.png",
+      "bytes": 342290,
+      "extension": ".png",
+      "sha256": "1ba7d7ee8599ab7f0f0ac68813da5ea74bc4a3b7249b049e7e4b14bb39252e31",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "JPEG"
+    },
+    {
+      "path": "public/assets/studio-machine-v11.png",
+      "bytes": 2467255,
+      "extension": ".png",
+      "sha256": "856e672a1da4444f47eb23b99f1bad53034406d0698ff8f353e23ce7a98bd020",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-master-v11.png",
+      "bytes": 2672776,
+      "extension": ".png",
+      "sha256": "11e1d78b74f3d0798c14680051c8d3c427220fa3e75ce5594972a96fca72ab51",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/studio-master-v14.png",
+      "bytes": 2492874,
+      "extension": ".png",
+      "sha256": "186b1c79f8caadf99322b0ed9a441cc22624377782ed70f697320744544d5033",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparency": false,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/vlampie-blink-v18.png",
+      "bytes": 1832624,
+      "extension": ".png",
+      "sha256": "2af737b93b9df3aba0db496a1ba1889f6c146767a6e13554c1b0a995a5ae124c",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/vlampie-illustrated-v10.png",
+      "bytes": 1377487,
+      "extension": ".png",
+      "sha256": "4085f8eca6df2324fdf19417c54d955f3cabe053599a14e6122108860bddfd01",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/vlampie-mouth-open-v12.png",
+      "bytes": 1838624,
+      "extension": ".png",
+      "sha256": "fb4c471fb7eb63a3440a7abf1f8fb0e9dd7f1692ae1293ea4a0ce98328246d48",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "transparency": true,
+      "image_format": "PNG"
+    },
+    {
+      "path": "public/assets/vlampie-presenter-v9-animated.glb",
+      "bytes": 21564744,
+      "extension": ".glb",
+      "sha256": "72553c089893b67ad34537599242671b5f2b99dc8ecbcc2ae783088dc5647eae"
+    }
+  ]
+}

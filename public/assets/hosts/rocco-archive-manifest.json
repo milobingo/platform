@@ -1,0 +1,99 @@
+{
+  "brand": "rocco",
+  "generator": "Built-in image_gen",
+  "native_resolution_notice": "These are the exact original generated PNG sources at their true dimensions. The 8K JPEG plates are explicitly upscaled derivatives, not native 8K generation.",
+  "originals": [
+    {
+      "filename": "originals/rocco-desk.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGB",
+      "bytes": 2058921,
+      "sha256": "2509a2ff269fb803ed58693ce07c59feeec494a70b1db52dd4cf2f605d9f7549"
+    },
+    {
+      "filename": "originals/rocco-games.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2826222,
+      "sha256": "06ebca26195ac129e2b9000c5711b7a8050ef03fb4bd6be755c3cf9e90eae7b8"
+    },
+    {
+      "filename": "originals/rocco-logo.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "bytes": 2358355,
+      "sha256": "dbc1aaea5704cd4c9e9591dd8566f4e3c73b2d4f9f3b468e9d2504e24e01f602"
+    },
+    {
+      "filename": "originals/rocco-machine.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 2101385,
+      "sha256": "c063dd5dd6764b2002a8d28de51b63ab4753d982ded062d5ece0e1400d2ba1f2"
+    },
+    {
+      "filename": "originals/rocco-mascot.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "bytes": 2099073,
+      "sha256": "06268a1d29f2a675b2c2674d8deb3facd9cac33b4e6773666c8ea4febbab6047"
+    },
+    {
+      "filename": "originals/rocco-studio.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 2131769,
+      "sha256": "d3df0c363e033c95e76a9ec9710208bf611da9dfb46ce5b2a4fd78fbe0af4e46"
+    },
+    {
+      "filename": "originals/rocco-talking.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "bytes": 2032131,
+      "sha256": "0c79354d7c015fbe93e89fd8e519b1618f3f52310b2912dcbd5985d833989b94"
+    }
+  ],
+  "upscaled_8k": [
+    {
+      "filename": "upscaled-8k/rocco-master-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "rocco-studio.png",
+      "source_width": 1672,
+      "source_height": 941,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 80,
+      "bytes": 2493357
+    },
+    {
+      "filename": "upscaled-8k/rocco-desk-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "rocco-desk.png",
+      "source_width": 1672,
+      "source_height": 940,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 80,
+      "bytes": 2402562
+    },
+    {
+      "filename": "upscaled-8k/rocco-machine-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "rocco-machine.png",
+      "source_width": 1672,
+      "source_height": 941,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 80,
+      "bytes": 2273243
+    }
+  ],
+  "revision": "Named studio backdrops \u00b7 v36"
+}

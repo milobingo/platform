@@ -1,0 +1,176 @@
+{
+  "milo": {
+    "neutral": "/assets/milo-friends/characters/milo.png",
+    "talk": "/assets/milo-friends/characters/milo-talk.png",
+    "width": 799,
+    "height": 916,
+    "bounds": [
+      [
+        28,
+        25,
+        771,
+        892
+      ],
+      [
+        25,
+        25,
+        774,
+        892
+      ]
+    ],
+    "registration": {
+      "dx": 84,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      255
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/cast-atlases-a/milo-atlas.png"
+  },
+  "stella": {
+    "neutral": "/assets/milo-friends/characters/stella.png",
+    "talk": "/assets/milo-friends/characters/stella-talk.png",
+    "width": 767,
+    "height": 913,
+    "bounds": [
+      [
+        25,
+        24,
+        742,
+        889
+      ],
+      [
+        25,
+        24,
+        742,
+        889
+      ]
+    ],
+    "registration": {
+      "dx": 72,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      255
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/cast-atlases-a/stella-atlas.png"
+  },
+  "otto": {
+    "neutral": "/assets/milo-friends/characters/otto.png",
+    "talk": "/assets/milo-friends/characters/otto-talk.png",
+    "width": 895,
+    "height": 860,
+    "bounds": [
+      [
+        26,
+        25,
+        871,
+        836
+      ],
+      [
+        25,
+        25,
+        871,
+        836
+      ]
+    ],
+    "registration": {
+      "dx": 6,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      255
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/cast-atlases-a/otto-atlas.png"
+  },
+  "pip": {
+    "neutral": "/assets/milo-friends/characters/pip.png",
+    "talk": "/assets/milo-friends/characters/pip-talk.png",
+    "width": 776,
+    "height": 1004,
+    "bounds": [
+      [
+        51,
+        27,
+        724,
+        980
+      ],
+      [
+        24,
+        28,
+        752,
+        980
+      ]
+    ],
+    "registration": {
+      "dx": 68,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      254
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/generated_images/exec-63479421-8b67-47da-ba50-a1bd5dbd1450.png"
+  },
+  "lola": {
+    "neutral": "/assets/milo-friends/characters/lola.png",
+    "talk": "/assets/milo-friends/characters/lola-talk.png",
+    "width": 684,
+    "height": 1048,
+    "bounds": [
+      [
+        26,
+        25,
+        659,
+        1024
+      ],
+      [
+        25,
+        27,
+        659,
+        1024
+      ]
+    ],
+    "registration": {
+      "dx": 32,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      254
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/generated_images/exec-b7c14eb3-d99b-4123-99c8-394ec322ab4f.png"
+  },
+  "bella": {
+    "neutral": "/assets/milo-friends/characters/bella.png",
+    "talk": "/assets/milo-friends/characters/bella-talk.png",
+    "width": 757,
+    "height": 1025,
+    "bounds": [
+      [
+        24,
+        24,
+        733,
+        1001
+      ],
+      [
+        24,
+        25,
+        732,
+        1001
+      ]
+    ],
+    "registration": {
+      "dx": 32,
+      "dy": 0
+    },
+    "alphaRange": [
+      0,
+      254
+    ],
+    "sourceAtlas": "/workspace/scratch/8b029bb731f6/generated_images/exec-026b5cdd-f940-4f83-a82e-2a683446c2b4.png"
+  }
+}

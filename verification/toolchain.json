@@ -1,0 +1,6 @@
+{
+  "node": "v24.18.0",
+  "packageManager": "pnpm@11.25.0",
+  "next": "16.4.5",
+  "sourceCommit": "08e1a652a78586d2e791179eead388acad8a3266"
+}

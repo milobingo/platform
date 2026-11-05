@@ -1,0 +1,341 @@
+/* Shared responsive rules for every family tab, loaded after the show layout. */
+.family-app .fam-watch-workspace,
+.family-app .fam-content,
+.family-app .fam-page-heading > div,
+.family-app .fam-book-grid > *,
+.family-app .fam-family-grid > *,
+.family-app .fam-prize-grid > *,
+.family-app .fam-profile-books,
+.family-app .fam-book-top > div,
+.family-app .fam-account-summary > div {
+  min-width: 0;
+}
+.family-app .fam-family-account h2,
+.family-app .fam-family-account p,
+.family-app .fam-family-account small,
+.family-app .fam-book-top h2,
+.family-app .fam-profile-card h2,
+.family-app .fam-account-summary h3,
+.family-app .fam-account-summary p,
+.family-app .fam-results strong,
+.family-app .fam-results b,
+.family-app .fam-prize h2 {
+  overflow-wrap: anywhere;
+}
+.family-app .fam-family-account small {
+  display: block;
+  margin-top: 10px;
+  color: var(--fam-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.family-app .fam-family-account > .fam-auth-symbol {
+  flex-shrink: 0;
+  margin: 0;
+}
+.family-app .fam-prize > img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  max-width: 100%;
+  padding: 18px;
+  object-fit: contain;
+  background: radial-gradient(ellipse at center, #fff7e4, #eee3f3);
+}
+.family-app .fam-prize > .fam-eyebrow {
+  margin: 20px 20px 9px;
+}
+.family-app .fam-prize > h2,
+.family-app .fam-prize > p,
+.family-app .fam-prize > small {
+  display: block;
+  padding: 0 20px;
+}
+.family-app .fam-prize > small {
+  color: var(--fam-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.family-app .fam-prize > .fam-prize-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 17px 20px 21px;
+  line-height: 1.5;
+}
+.family-app .fam-results > div {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(90px, .7fr) 18px;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--fam-border);
+}
+.family-app .fam-results > div:last-child { border-bottom: 0; }
+.family-app .fam-results > div > span:not(.fam-avatar) {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+.family-app .fam-results > div strong { font-size: 14px; line-height: 1.45; }
+.family-app .fam-results > div small { font-size: 11px; color: var(--fam-muted); }
+.family-app .fam-results > div > b { font-size: 12px; color: var(--fam-purple); line-height: 1.5; }
+.family-app .fam-results > div > svg { color: #b28c45; }
+.family-app .fam-demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  min-width: 0;
+  padding: 10px 14px;
+  margin: 0 0 14px;
+  border: 1px solid #dbc293;
+  border-radius: 14px;
+  background: linear-gradient(120deg, #fff3d7, #fff9ed);
+  color: #795c2d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.family-app .fam-demo-banner > div,
+.family-app .fam-demo-banner > span { min-width: 0; }
+.family-app .fam-demo-banner strong { font-weight: 800; }
+.family-app .fam-demo-banner a,
+.family-app .fam-demo-banner button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 6px 11px;
+  flex-shrink: 0;
+  border: 1px solid #d4b87b;
+  border-radius: 10px;
+  background: #fffdf6;
+  color: #795c2d;
+  font-size: 11px;
+  font-weight: 700;
+}
+.family-app .fam-demo-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+@media (max-width: 850px) {
+  .family-app .fam-family-account {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px 17px;
+  }
+  .family-app .fam-family-account > .fam-auth-symbol {
+    width: 54px;
+    height: 54px;
+    border-radius: 19px;
+  }
+  .family-app .fam-family-account > .fam-button {
+    grid-column: 2;
+    justify-self: start;
+    margin: 0;
+    min-height: 44px;
+  }
+  .family-app .fam-family-account h2 { font-size: 24px; line-height: 1.2; }
+  .family-app .fam-page-heading { align-items: flex-start; gap: 16px; }
+  .family-app .fam-page-heading > .fam-button { flex-shrink: 0; }
+  .family-app .fam-family-extras { gap: 18px; padding: 22px; }
+  .family-app .fam-family-extras > div { min-width: 0; }
+  .family-app .fam-family-extras .fam-button { white-space: normal; }
+  .family-app .fam-book-brand { gap: 12px; }
+  .family-app .fam-book-brand > span { max-width: 58%; line-height: 1.6; }
+}
+
+@media (max-width: 650px) {
+  .family-app .fam-header {
+    padding: 7px 14px;
+    gap: 12px;
+    min-height: 78px;
+  }
+  .family-app .fam-header .fam-brand { flex: 0 0 96px; min-width: 0; }
+  .family-app .fam-header .fam-brand > img { width: 96px; height: 62px; }
+  .family-app .fam-header .fam-account {
+    min-width: 0;
+    max-width: 190px;
+    flex: 0 1 190px;
+    padding: 7px 9px;
+  }
+  .family-app .fam-header .fam-account > span:not(.fam-avatar) { min-width: 0; }
+  .family-app .fam-header .fam-account strong {
+    max-width: min(130px, 34vw);
+    font-size: 12px;
+  }
+  .family-app .fam-header .fam-account small { font-size: 10px; }
+  .family-app.fam-show-view .fam-header { min-height: 62px; padding-block: 3px; }
+  .family-app.fam-show-view .fam-header .fam-brand { flex-basis: 85px; }
+  .family-app.fam-show-view .fam-header .fam-brand > img { width: 85px; height: 56px; }
+  .family-app .fam-main-wrap { padding-inline: 12px; padding-bottom: calc(106px + env(safe-area-inset-bottom)); }
+  .family-app .fam-show-selector { min-width: 0; gap: 9px; }
+  .family-app .fam-show-selector > div { flex: 1; min-width: 0; }
+  .family-app .fam-show-selector select { width: 100%; max-width: 100%; font-size: 13px; padding-right: 20px; }
+  .family-app.fam-show-view .fam-show-selector select { font-size: 11px; }
+  .family-app .fam-show-state { flex: 0 1 110px; }
+  .family-app .fam-tabs { padding-bottom: 6px; bottom: calc(8px + env(safe-area-inset-bottom)); }
+  .family-app .fam-tabs > button { min-height: 54px; min-width: 0; }
+  .family-app.fam-show-view .fam-tabs > button { font-size: 10px; }
+  .family-app .fam-page-heading { margin: 18px 0 21px; }
+  .family-app .fam-page-heading h1 { font-size: clamp(27px, 7.3vw, 32px); line-height: 1.15; }
+  .family-app .fam-page-heading p { font-size: 14px; line-height: 1.7; }
+  .family-app .fam-page-heading > .fam-button { min-height: 46px; margin-top: 17px; }
+  .family-app .fam-title-icon { display: none; }
+  .family-app .fam-button { min-height: 46px; max-width: 100%; font-size: 14px; white-space: normal; }
+  .family-app .fam-icon-button { width: 44px; height: 44px; }
+  .family-app .fam-text-button { min-height: 44px; }
+  .family-app input:not([type=checkbox]):not([type=radio]):not([type=file]),
+  .family-app select,
+  .family-app textarea { font-size: 16px; scroll-margin-block: 100px; }
+  .family-app .fam-book-grid,
+  .family-app .fam-family-grid,
+  .family-app .fam-prize-grid { gap: 20px; }
+  .family-app .fam-book { padding: 17px; border-radius: 22px; }
+  .family-app .fam-book-brand img { width: 90px; height: 58px; }
+  .family-app .fam-book-brand > span { font-size: 8px; letter-spacing: .08em; }
+  .family-app .fam-book-top { gap: 10px; margin-bottom: 17px; }
+  .family-app .fam-book-top h2 { font-size: 24px; }
+  .family-app .fam-book-star { font-size: 22px; }
+  .family-app .fam-card-heading { flex-wrap: wrap; }
+  .family-app .fam-card-heading small { font-size: 10px; }
+  .family-app .fam-card-numbers { gap: 6px; }
+  .family-app .fam-card-numbers button { min-height: 40px; font-size: clamp(21px, 6.2vw, 28px); padding: 0; }
+  .family-app .fam-book > p { font-size: 11px; line-height: 1.6; }
+  .family-app .fam-book-actions a { min-height: 44px; font-size: 12px; }
+  .family-app .fam-round-tabs { scrollbar-width: thin; padding-bottom: 10px; margin-bottom: 12px; }
+  .family-app .fam-round-tabs button { min-height: 44px; }
+  .family-app .fam-book-tip { display: grid; grid-template-columns: 21px minmax(0, 1fr); align-items: start; gap: 9px 12px; padding: 18px 2px; }
+  .family-app .fam-book-tip p { font-size: 13px; }
+  .family-app .fam-book-tip > button { grid-column: 2; min-width: 0; margin: 0; white-space: normal; text-align: left; }
+  .family-app .fam-profile-card { padding: 21px; }
+  .family-app .fam-profile-card h2 { font-size: 27px; line-height: 1.2; }
+  .family-app .fam-profile-card > .fam-button { margin-top: 12px; width: 100%; }
+  .family-app .fam-family-account { padding: 20px; grid-template-columns: 48px minmax(0, 1fr); gap: 13px 14px; }
+  .family-app .fam-family-account > .fam-auth-symbol { width: 48px; height: 48px; border-radius: 17px; }
+  .family-app .fam-family-account h2 { font-size: 22px; line-height: 1.2; letter-spacing: -.035em; }
+  .family-app .fam-family-account p { font-size: 13px; line-height: 1.6; margin-top: 8px; }
+  .family-app .fam-family-account small { margin-top: 10px; font-size: 13px; line-height: 1.75; }
+  .family-app .fam-family-account > .fam-button { grid-column: 1 / -1; justify-self: stretch; margin: 3px 0 0; width: 100%; }
+  .family-app .fam-family-extras { grid-template-columns: minmax(0, 1fr); padding: 22px 20px; }
+  .family-app .fam-family-extras h2 { font-size: 25px; }
+  .family-app .fam-family-extras p { font-size: 14px; line-height: 1.7; margin: 12px 0 0; }
+  .family-app .fam-family-extras > .fam-button { width: 100%; }
+  .family-app .fam-participation-person { flex-direction: column; align-items: stretch; gap: 13px; padding: 18px; }
+  .family-app .fam-participation-person > select { width: 100%; font-size: 16px; }
+  .family-app .fam-participation-card { padding: 24px 20px; min-width: 0; }
+  .family-app .fam-participation-card h2 { font-size: 28px; overflow-wrap: anywhere; }
+  .family-app .fam-participation-card > p { font-size: 14px; line-height: 1.75; }
+  .family-app .fam-participation-card > .fam-button,
+  .family-app .fam-participation-card .fam-extra-actions,
+  .family-app .fam-invitation { width: 100%; min-width: 0; }
+  .family-app .fam-extra-actions { flex-direction: column; align-items: stretch; }
+  .family-app .fam-extra-actions > .fam-button { width: 100%; }
+  .family-app .fam-invitation { padding: 18px; }
+  .family-app .fam-memory-copy { width: 100%; min-width: 0; }
+  .family-app .fam-memory-copy select { min-width: 0; max-width: 100%; }
+  .family-app .fam-extra-check { font-size: 14px; line-height: 1.7; gap: 11px; }
+  .family-app .fam-extra-state { overflow-wrap: anywhere; }
+  .family-app .fam-prize > img { height: 180px; }
+  .family-app .fam-results { padding: 22px 20px; }
+  .family-app .fam-results h2 { font-size: 24px; }
+  .family-app .fam-results > div { grid-template-columns: 40px minmax(0, 1fr) 18px; gap: 4px 11px; }
+  .family-app .fam-results > div > .fam-avatar { grid-column: 1; grid-row: 1 / span 2; }
+  .family-app .fam-results > div > span:not(.fam-avatar) { grid-column: 2; grid-row: 1; }
+  .family-app .fam-results > div > b { grid-column: 2; grid-row: 2; margin-top: 4px; }
+  .family-app .fam-results > div > svg { grid-column: 3; grid-row: 1; }
+  .family-app .fam-modal-backdrop { padding: max(12px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom)); align-items: center; }
+  .family-app .fam-modal { width: 100%; min-width: 0; max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - env(safe-area-inset-bottom)); padding: 22px 20px; border-radius: 23px; }
+  .family-app .fam-modal-top { gap: 12px; }
+  .family-app .fam-modal-top > .fam-eyebrow { min-width: 0; font-size: 9px; overflow-wrap: anywhere; }
+  .family-app .fam-modal > h2 { font-size: 26px; line-height: 1.18; }
+  .family-app .fam-modal > p { font-size: 14px; line-height: 1.7; }
+  .family-app .fam-modal .fam-button { width: 100%; }
+  .family-app .fam-account-summary { gap: 13px; }
+  .family-app .fam-account-summary > .fam-avatar { width: 56px; height: 56px; border-radius: 20px; font-size: 27px; }
+  .family-app .fam-account-summary h3 { font-size: 21px; }
+  .family-app .fam-modal-pattern { gap: 13px; padding: 14px; }
+  .family-app .fam-modal-pattern .fam-pattern { width: 56px; height: 56px; flex-basis: 56px; }
+  .family-app .fam-modal-pattern strong { min-width: 0; overflow-wrap: anywhere; font-size: 16px; }
+  .family-app .fam-extra-rule { padding: 18px 0; }
+  .family-app .fam-extra-rule h3 { font-size: 20px; }
+  .family-app .fam-rules { padding: 22px 20px; }
+  .family-app .fam-notice { gap: 10px; align-items: flex-start; padding: 13px; font-size: 13px; }
+  .family-app .fam-notice > span { min-width: 0; overflow-wrap: anywhere; }
+  .family-app .fam-notice > .fam-icon-button { width: 36px; height: 36px; flex-shrink: 0; }
+  .family-app .fam-call-panel { width: 100%; min-width: 0; padding: 24px 20px; }
+  .family-app .fam-call-panel h2,
+  .family-app .fam-call-person strong { overflow-wrap: anywhere; }
+  .family-app .fam-call-actions { flex-wrap: wrap; }
+  .family-app .fam-call-actions > .fam-button { flex: 1 1 150px; min-width: 0; }
+  .family-app .fam-broadcast-persistent.is-mini { width: clamp(130px, 42vw, 180px); right: 12px; bottom: calc(94px + env(safe-area-inset-bottom)); }
+  .family-app.fam-show-view .lc-emoji-button { width: 42px; height: 46px; }
+  .family-app.fam-show-view .lc-send { width: 44px; height: 46px; min-height: 46px; }
+  .family-app.fam-show-view .lc-composer { grid-template-columns: 42px minmax(0, 1fr) 44px; gap: 7px; }
+  .family-app.fam-show-view .live-chat textarea { font-size: 16px; height: 46px; min-height: 46px; }
+  .family-app .lc-input-wrap { min-width: 0; }
+  .family-app .lc-person-label { min-width: 0; }
+  .family-app .lc-person-label select { min-width: 0; max-width: 140px; }
+  .family-app .fam-show-tools { column-gap: 16px; }
+  .family-app .fam-footer { align-items: center; justify-content: space-between; }
+  .family-app .fam-footer > p { flex-basis: 100%; font-size: 10px; }
+  .family-app .fam-demo-banner { flex-wrap: wrap; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; gap: 7px 10px; }
+  .family-app .fam-demo-banner a,
+  .family-app .fam-demo-banner button { min-height: 40px; }
+}
+
+@media (max-width: 360px) {
+  .family-app .fam-main-wrap { padding-inline: 10px; }
+  .family-app .fam-family-account { padding: 18px 16px; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; }
+  .family-app .fam-family-account > .fam-auth-symbol { width: 42px; height: 42px; border-radius: 15px; }
+  .family-app .fam-family-account h2 { font-size: 21px; }
+  .family-app .fam-book { padding: 15px; }
+  .family-app .fam-card-numbers { gap: 5px; }
+  .family-app .fam-card-numbers button { min-height: 40px; font-size: 22px; }
+  .family-app .fam-book-brand { gap: 9px; }
+  .family-app .fam-book-brand img { width: 79px; height: 51px; }
+  .family-app .fam-book-brand > span { font-size: 7px; }
+  .family-app .fam-participation-card { padding: 21px 17px; }
+  .family-app .fam-participation-card h2 { font-size: 26px; }
+  .family-app .fam-modal { padding: 20px 17px; }
+  .family-app .fam-modal > h2 { font-size: 24px; }
+  .family-app .fam-show-selector select { font-size: 12px; }
+  .family-app .fam-show-state { max-width: 100px; }
+  .family-app .fam-empty { padding: 33px 18px; }
+}
+.family-app .fam-demo-banner>span{display:flex;align-items:center;gap:5px}
+.family-app .fam-demo-banner>span small{font-size:inherit}
+@media(max-width:650px){
+ .family-app .fam-demo-banner{min-height:42px;flex-wrap:nowrap;margin:0;padding:2px 12px;gap:8px;border-width:0 0 1px;border-radius:0;box-shadow:none}
+ .family-app .fam-demo-banner>span small,.family-app .fam-demo-actions button>span,.family-app .fam-demo-actions a>span{display:none}
+ .family-app .fam-demo-actions{margin-left:auto;gap:5px;flex-wrap:nowrap}
+ .family-app .fam-demo-actions button,.family-app .fam-demo-actions a{display:grid;place-items:center;width:40px;height:40px;min-height:40px;padding:0;border:0;background:transparent;box-shadow:none}
+ .family-app .fam-family-account>div{display:contents}
+ .family-app .fam-family-account>div>h2{grid-column:2;grid-row:1}
+ .family-app .fam-family-account>div>p{grid-column:1/-1;grid-row:2;margin-top:0}
+ .family-app .fam-family-account>.fam-auth-symbol{grid-column:1;grid-row:1;align-self:start}
+ .family-app .fam-family-account>div>small{grid-column:1/-1;grid-row:3;margin-top:0}
+ .family-app .fam-family-account>.fam-button{grid-column:1/-1;grid-row:4}
+}
+
+.family-app .fam-broadcast-persistent.is-mini.is-collapsed{opacity:0;visibility:hidden;pointer-events:none}
+.family-app .fam-mini-close{position:absolute;top:5px;right:5px;z-index:5;display:grid;place-items:center;width:32px;height:32px;min-height:32px;padding:0;border:1px solid #e4c38a55;border-radius:50%;background:#2b153de8;color:#fff2db}
+@media(max-width:650px){.family-app .fam-mini-close{width:40px;height:40px;min-height:40px}}
+@media(max-width:650px){
+ .family-app .fam-round-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:visible}
+ .family-app .fam-round-tabs button{min-width:0;min-height:44px;padding:8px 2px;font-size:10.5px;white-space:nowrap;justify-content:center}
+}
+@media(min-width:651px){
+ .family-app .fam-demo-banner{min-height:40px;padding:4px max(20px,calc((100vw - 1220px)/2));margin:0;border-radius:0;border-width:0 0 1px;font-size:11px}
+ .family-app .fam-demo-banner button,.family-app .fam-demo-banner a{min-height:30px;padding:5px 9px}
+}
+@media(min-width:901px){
+ .family-app .fam-watch-workspace.is-show>.fam-tab-show>.fam-chat{contain:size;overflow:hidden}
+}

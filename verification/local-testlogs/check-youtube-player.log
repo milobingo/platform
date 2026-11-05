@@ -1,0 +1,12 @@
+✔ YouTube uses enablejsapi+origin and mute proof without inferring stream catchup from video clocks (2.902726ms)
+✔ an unavailable/blocked API physically removes the iframe before a direct call can begin (0.414508ms)
+✔ autoplay failure after restoration stays unconfirmed instead of reporting successful playback (100.908505ms)
+✔ remount during an accepted call keeps the new iframe suspended until explicit restoration (0.61441ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 108.976233

@@ -1,0 +1,15 @@
+.sites-runtime/
+.env
+node_modules/
+*.log
+dist/
+.env.*
+!.env.example
+.next/
+.local/
+.data/
+playwright-report/
+test-results/
+*.tsbuildinfo
+public/vendor/
+!verification/**/*.log

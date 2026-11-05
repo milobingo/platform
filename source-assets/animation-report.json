@@ -1,0 +1,202 @@
+{
+  "source": "/workspace/scratch/159666656eb7/model-v9/character-base.glb",
+  "locomotionSource": "/workspace/sites/vlampie-studio/dist/assets/vlampie-animated.glb",
+  "output": "/workspace/scratch/159666656eb7/model-v9/vlampie-presenter-animated.glb",
+  "modulePath": "/workspace/scratch/159666656eb7/model-v9/character-3d.mjs",
+  "fps": 30,
+  "retargetSettings": {
+    "verticalScale": 0.75,
+    "runningArmWeight": 1,
+    "walkingArmWeight": 1,
+    "loopBlendSeconds": 0.03333333333333333,
+    "floorCorrection": "upward only from target foot mesh minimum; preserve positive source airborne clearance at 0.75 scale"
+  },
+  "boneCount": 29,
+  "vertexCount": 30603,
+  "normalizationScale": 1.588235507565976,
+  "sourceGeometryTextureAndBindBytesPreserved": true,
+  "sourceBinarySha256": "4b5cb151e6317b1b08297c3717407ead4218ba6117d847c627f329104f958dde",
+  "outputBytes": 21564744,
+  "outputSha256": "72553c089893b67ad34537599242671b5f2b99dc8ecbcc2ae783088dc5647eae",
+  "rigProfile": "smart-rig-29",
+  "staticFaceBones": [],
+  "clips": [
+    {
+      "name": "Idle",
+      "duration": 6,
+      "samples": 181,
+      "sampleRate": 30,
+      "finalInterval": 0.033333333333333215,
+      "allFinite": true,
+      "quaternionNormMaxError": 3.3306690738754696e-16,
+      "minimumAdjacentQuaternionDot": 0.9999999174179214,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Wave",
+      "duration": 4.4,
+      "samples": 133,
+      "sampleRate": 30,
+      "finalInterval": 0.0333333333333341,
+      "allFinite": true,
+      "quaternionNormMaxError": 3.3306690738754696e-16,
+      "minimumAdjacentQuaternionDot": 0.9958370200083735,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Welcome",
+      "duration": 3.6,
+      "samples": 109,
+      "sampleRate": 30,
+      "finalInterval": 0.033333333333333215,
+      "allFinite": true,
+      "quaternionNormMaxError": 2.220446049250313e-16,
+      "minimumAdjacentQuaternionDot": 0.9994121668525537,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Cheer",
+      "duration": 5,
+      "samples": 151,
+      "sampleRate": 30,
+      "finalInterval": 0.033333333333333215,
+      "allFinite": true,
+      "quaternionNormMaxError": 4.440892098500626e-16,
+      "minimumAdjacentQuaternionDot": 0.9967594029575675,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Think",
+      "duration": 4.1,
+      "samples": 124,
+      "sampleRate": 30,
+      "finalInterval": 0.033333333333333215,
+      "allFinite": true,
+      "quaternionNormMaxError": 2.220446049250313e-16,
+      "minimumAdjacentQuaternionDot": 0.9962117271726001,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Bow",
+      "duration": 3.6,
+      "samples": 109,
+      "sampleRate": 30,
+      "finalInterval": 0.033333333333333215,
+      "allFinite": true,
+      "quaternionNormMaxError": 4.440892098500626e-16,
+      "minimumAdjacentQuaternionDot": 0.99997347245442,
+      "seamMaxQuaternionAngleDegrees": 0.0000024148365394514667,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 0
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": 5.992281645791344e-18,
+        "maxLowestFootY": 5.992281645791344e-18
+      }
+    },
+    {
+      "name": "Walking",
+      "duration": 1.0416666269302368,
+      "samples": 33,
+      "sampleRate": 30,
+      "finalInterval": 0.00833329359690338,
+      "allFinite": true,
+      "quaternionNormMaxError": 4.440892098500626e-16,
+      "minimumAdjacentQuaternionDot": 0.9820036301834233,
+      "seamMaxQuaternionAngleDegrees": 0,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 2.0122792321330962e-16
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": -9.811305771729312e-10,
+        "maxLowestFootY": 3.5971067022374723e-9
+      }
+    },
+    {
+      "name": "Running",
+      "duration": 0.6666666865348816,
+      "samples": 21,
+      "sampleRate": 30,
+      "finalInterval": 0.03333335320154829,
+      "allFinite": true,
+      "quaternionNormMaxError": 4.440892098500626e-16,
+      "minimumAdjacentQuaternionDot": 0.9420466859314615,
+      "seamMaxQuaternionAngleDegrees": 0.0000017075472925031877,
+      "seamPelvisPositionDistance": 0,
+      "worldHipsHorizontalRange": {
+        "x": 0,
+        "z": 1.6653345369377348e-16
+      },
+      "nonPelvisTranslationMaxDelta": 0,
+      "floor": {
+        "minFootY": -6.354592464209718e-10,
+        "maxLowestFootY": 0.11127397415196721
+      }
+    }
+  ],
+  "serializedValidation": {
+    "allChannelValuesFinite": true,
+    "maximumQuaternionNormErrorFloat32": 4.473189385567622e-8,
+    "maximumLoopSeamComponentDeltaFloat32": 1.7524123197859473e-18,
+    "faceBoneMaximumLocalRotationVariation": 0,
+    "channelsPerClip": 30,
+    "allEightClipsHaveAllBoneRotationsAndOnePelvisTranslation": true,
+    "KHR_materials_unlit": true
+  }
+}

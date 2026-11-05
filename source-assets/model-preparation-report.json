@@ -1,0 +1,102 @@
+{
+  "source": "/workspace/scratch/159666656eb7/upload/Meshy_AI_Character_output (1).glb",
+  "output": "/workspace/scratch/159666656eb7/model-v9/character-base.glb",
+  "source_bytes": 29801692,
+  "output_bytes": 21095784,
+  "source_sha256": "99fa98cd226eb705aa8af2ff61bd99f220cd74068391a84f96eb1f81388ba7b9",
+  "output_sha256": "8eba52684e9691bc32dd1dc354f45cffb19417d10daa12e2dd0b3288665a2627",
+  "sourceStats": {
+    "vertices": 30603,
+    "triangles": 31050,
+    "bones": 29,
+    "bounds": [
+      [
+        -0.45364418625831604,
+        -2.5225402211503933e-08,
+        -0.21913644671440125
+      ],
+      [
+        0.4527370035648346,
+        1.7000000476837158,
+        0.21890287101268768
+      ]
+    ],
+    "weightsSumRange": [
+      0.9999998211860657,
+      1.0000001192092896
+    ],
+    "nonfiniteValues": 0,
+    "invalidJointIndices": 0,
+    "zeroWeightVertices": 0,
+    "inverseBindMaxIdentityError": 7.212291797531689e-06
+  },
+  "previousStats": {
+    "vertices": 133439,
+    "triangles": 198136,
+    "bones": 46,
+    "bounds": [
+      [
+        -0.41421645879745483,
+        2.905772955585917e-09,
+        -0.2880287170410156
+      ],
+      [
+        0.4134136438369751,
+        1.7000000476837158,
+        0.28542712330818176
+      ]
+    ],
+    "weightsSumRange": [
+      0.9999998211860657,
+      1.0000001192092896
+    ],
+    "nonfiniteValues": 0,
+    "invalidJointIndices": 0,
+    "zeroWeightVertices": 0,
+    "inverseBindMaxIdentityError": 1.610687972261604e-06
+  },
+  "checks": {
+    "meshes": {
+      "unchanged": true
+    },
+    "skins": {
+      "unchanged": true
+    },
+    "nodes": {
+      "unchanged": true
+    },
+    "scenes": {
+      "unchanged": true
+    },
+    "scene": {
+      "unchanged": true
+    },
+    "geometrySkinAndBindAccessorsByteIdentical": true,
+    "baseColorEmbeddedBytesUnchanged": true
+  },
+  "textures": {
+    "base_color": {
+      "dimensions": [
+        4096,
+        4096
+      ],
+      "mime": "image/png",
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "embeddedBytes": 19307627,
+      "embeddedSha256": "8779795d2ca230af7c6c9a872a000b54386b85f428ded65b6a11b3e09f0e7eb9",
+      "unchanged": true
+    },
+    "metallicRoughness_removed": true,
+    "normal_present_in_source": false,
+    "image_count": 1,
+    "texture_count": 1
+  },
+  "notes": [
+    "Already 4096 texture preserved as PNG including alpha; no downscaling needed.",
+    "New 29-bone rig needs its own semantic mapping; original mesh, positions, normals, UVs, weights, joints, indices, inverse bind matrices and node transforms preserved."
+  ]
+}

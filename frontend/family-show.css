@@ -1,0 +1,380 @@
+/* The show is a player: picture first, the complete number board, then the chat. */
+.family-app.fam-show-view {
+  background: radial-gradient(ellipse at 95% 6%, #d7c1e733, transparent 38%),
+    radial-gradient(ellipse at 0 70%, #ead5aa22, transparent 43%), #f6f2ee;
+}
+.family-app .fam-footer img {
+  display: block;
+  width: 72px;
+  max-width: 72px;
+  height: 46px;
+  max-height: 46px;
+  object-fit: contain;
+  flex: 0 0 72px;
+}
+.family-app .fam-footer {
+  min-width: 0;
+  min-height: 60px;
+  padding: 14px 0 0;
+  margin-top: 24px;
+}
+.family-app .fam-footer p { margin: 0; }
+.family-app .fam-footer > span { min-width: 0; }
+
+.fam-show-view .fam-header {
+  min-height: 66px;
+  padding: 4px max(24px, calc((100vw - 1100px) / 2));
+  gap: 18px;
+  background: radial-gradient(ellipse at 12% -40%, #76459166, transparent 55%),
+    linear-gradient(110deg, #2e183d, #20132c 72%, #372443);
+}
+.fam-show-view .fam-brand { gap: 12px; }
+.fam-show-view .fam-brand > img { width: 89px; height: 58px; }
+.fam-show-view .fam-header-wordmark { padding-left: 14px; gap: 2px; }
+.fam-show-view .fam-header-wordmark strong { font-size: 15px; }
+.fam-show-view .fam-header-wordmark small { font-size: 10px; }
+.fam-show-view .fam-header-kicker { max-width: 205px; font-size: 9px; }
+.fam-show-view .fam-account { padding: 5px 9px; gap: 9px; border-radius: 13px; }
+.fam-show-view .fam-account > .fam-avatar { width: 32px; height: 32px; border-radius: 11px; font-size: 16px; }
+.fam-show-view .fam-account strong { font-size: 12px; }
+.fam-show-view .fam-account small { font-size: 10px; }
+.fam-show-view .fam-main-wrap { max-width: 1160px; padding: 0 30px 20px; }
+.fam-show-view .fam-navigation { padding: 7px 0 5px; gap: 16px; }
+.fam-show-view .fam-tabs { padding: 3px; gap: 2px; border-radius: 14px; box-shadow: 0 3px 12px #32134503; }
+.fam-show-view .fam-tabs > button { min-height: 33px; padding: 6px 15px; gap: 7px; border-radius: 10px; font-size: 12px; }
+.fam-show-view .fam-tabs > button svg { width: 16px; height: 16px; }
+.fam-show-view .fam-tabs > button b { width: 17px; min-width: 17px; height: 17px; font-size: 9px; }
+.fam-show-view .fam-connection { font-size: 10px; }
+.fam-show-view .fam-show-selector { min-height: 34px; padding: 0 2px 9px; gap: 15px; }
+.fam-show-view .fam-show-selector .fam-eyebrow { display: none; }
+.fam-show-view .fam-show-selector select { min-height: 24px; max-width: min(650px, 67vw); font-size: 12px; font-weight: 700; }
+.fam-show-view .fam-show-state { font-size: 9px; padding: 4px 9px; }
+.fam-show-view .fam-live-grid:not(.is-mini) { display: block; grid-template-columns: minmax(0, 1fr); }
+.fam-show-view .fam-show-stage { border-radius: 17px; border-color: #533562; box-shadow: 0 12px 30px #28133218, 0 2px 0 #fff; }
+.fam-show-view .fam-video { aspect-ratio: 16 / 9; }
+.fam-show-view .fam-video-caption { min-height: 31px; padding: 7px 14px; font-size: 9px; }
+.fam-show-view .fam-video-caption svg { width: 12px; height: 12px; }
+.fam-show-view .fam-waiting-inner { padding: 24px 38px; }
+.fam-show-view .fam-waiting-copy h2 { max-width: 400px; font-size: clamp(25px, 2.9vw, 40px); }
+.fam-show-view .fam-waiting-logo { width: 180px; max-height: 121px; }
+.fam-show-view .fam-waiting-milo { width: 36%; height: 84%; right: 3%; bottom: -7%; }
+.fam-show-view .fam-content.fam-tab-show { margin-top: 16px; }
+
+/* A quiet, dimensional tray: no flashing or repeatedly animated number balls. */
+.fam-play-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 194px;
+  align-items: center;
+  gap: 22px;
+  padding: 19px 22px;
+  margin-bottom: 18px;
+  border: 1px solid #ded1e5;
+  border-radius: 22px;
+  background: radial-gradient(ellipse at 100% 0, #ead6f05c, transparent 45%),
+    linear-gradient(135deg, #fffcf6, #f5eef9);
+  box-shadow: inset 0 1px 0 #fff, 0 5px 0 #e5dce9, 0 12px 28px #29133b08;
+}
+.fam-number-panel { min-width: 0; }
+.fam-console-top { display: flex; align-items: center; justify-content: space-between; gap: 15px; min-height: 26px; margin-bottom: 11px; }
+.fam-console-top h2 { font-size: 15px; letter-spacing: -.025em; }
+.fam-console-top .fam-eyebrow { margin: 0; font-size: 10px; letter-spacing: .09em; }
+.fam-console-top > span, .fam-console-top > small { font-size: 11px; color: #8a7395; white-space: nowrap; }
+.fam-console-top strong { color: #653885; font-variant-numeric: tabular-nums; }
+.fam-console-top .fam-console-latest { display: inline-flex; align-items: center; gap: 6px; }
+.fam-console-top .fam-console-latest b { color: #956726; }
+.fam-number-grid { display: grid; gap: 7px; padding: 12px; border: 1px solid #e0d3e6; border-radius: 17px; background: linear-gradient(145deg, #e7ddec, #f3ebf5); box-shadow: inset 0 2px 6px #4122520a, inset 0 -1px 0 #fff; }
+.fam-number-row { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 6px; align-items: center; justify-items: center; }
+.fam-number-ball {
+  display: grid;
+  place-items: center;
+  width: min(100%, 34px);
+  aspect-ratio: 1;
+  border: 1px solid #d9cde0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 33% 23%, #fffdfd, #eee7f0 64%, #ddd1e5);
+  color: #98889f;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 2px #4120520a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.fam-number-ball.is-drawn { border-color: #479c8e; color: #fafff2; background: radial-gradient(circle at 31% 22%, #9ae6d0, #4eae99 43%, #2b806f 83%); box-shadow: inset 0 1px 1px #d0fff0, inset 0 -2px 3px #155a4f55, 0 2px 3px #1f6d5c20; }
+.fam-number-ball.is-latest { color: #654319; border-color: #d4a34c; background: radial-gradient(circle at 30% 20%, #fffbdc, #f4d285 48%, #d1a149 95%); box-shadow: inset 0 1px 1px #fffbe8, 0 0 0 2px #e6c88744, 0 3px 7px #b7862822; }
+.fam-console-meta { display: flex; align-items: center; gap: 13px; min-height: 37px; padding: 10px 2px 0; color: #7e638e; font-size: 11px; line-height: 1.5; }
+.fam-console-meta > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.fam-console-meta strong { color: #513163; font-weight: 800; }
+.fam-console-meta small { color: #947e9d; font-size: 10px; }
+.fam-console-meta .fam-pattern { width: 34px; height: 34px; padding: 0; gap: 2px; flex: 0 0 34px; }
+.fam-console-meta .fam-pattern i { border-radius: 2px; }
+.fam-console-meta .fam-pattern .on { background: #8151a4; }
+.fam-console-meta .fam-text-button { margin-left: auto; font-size: 11px; }
+.fam-bingo-action { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding-left: 10px; border-left: 1px solid #ddcde4; }
+.family-app .fam-bingo-sphere {
+  display: flex;
+  position: relative;
+  isolation: isolate;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 156px;
+  height: 156px;
+  min-height: 156px;
+  padding: 18px 10px;
+  border: 5px solid #f2dba2;
+  border-radius: 50%;
+  background: radial-gradient(circle at 33% 23%, #fffef1 0, #fff2bf 24%, #edc877 58%, #b98b39 100%);
+  color: #61431e;
+  box-shadow: inset 0 3px 5px #fffbea, inset -5px -9px 12px #a8792945, 0 6px 0 #c29b55, 0 14px 22px #6f4c2525;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+  overflow: hidden;
+}
+.family-app .fam-bingo-sphere:before { content: ''; position: absolute; inset: 12px; z-index: -1; border: 1px solid #fff5cc; border-radius: 50%; box-shadow: 0 0 0 1px #cfaa6355; }
+.family-app .fam-bingo-sphere:after { content: ''; position: absolute; width: 64%; height: 35%; left: 12%; top: 6%; z-index: -1; border-radius: 50%; transform: rotate(-24deg); background: linear-gradient(#fff9b8, #fff4b000); opacity: .6; }
+.family-app .fam-bingo-sphere strong { color: #694319; font-size: 29px; font-weight: 900; line-height: 1.1; letter-spacing: -.035em; text-shadow: 0 1px 0 #fff4cb; }
+.family-app .fam-bingo-sphere small { color: #8e6a32; font-size: 9px; font-weight: 700; }
+.family-app .fam-bingo-sphere > svg { width: 19px; height: 19px; color: #b28a42; margin-bottom: 3px; }
+.family-app .fam-bingo-sphere:hover:not(:disabled) { transform: translateY(-3px); box-shadow: inset 0 3px 5px #fffbea, inset -5px -9px 12px #a8792945, 0 9px 0 #c29b55, 0 18px 27px #6f4c2528; }
+.family-app .fam-bingo-sphere:active:not(:disabled) { transform: translateY(4px); box-shadow: inset 0 3px 5px #fffbea, inset -5px -9px 12px #a8792945, 0 2px 0 #c29b55, 0 5px 12px #6f4c2520; }
+.family-app .fam-bingo-sphere:disabled { opacity: .67; filter: saturate(.5); box-shadow: inset 0 3px 5px #fffbea, inset -5px -9px 12px #a8792945, 0 4px 0 #c8b18c, 0 8px 18px #6f4c2511; }
+.fam-bingo-orbit { position: absolute; inset: 4px; border: 1px solid #b58e4533; border-radius: 50%; pointer-events: none; }
+.fam-bingo-action .fam-bingo-helper { max-width: 170px; margin: 17px 0 0 !important; color: #8b7296; font-size: 10px; line-height: 1.6; text-align: center; }
+.fam-bingo-action .fam-text-button { justify-content: center; padding: 7px 0 0; font-size: 11px; }
+
+/* A single chat surface with a real bottom composer, not nested empty cards. */
+.fam-show-view .fam-chat { width: 100%; padding: 0; overflow: hidden; border-radius: 20px; border-color: #dfd2e6; background: #fffcf8; box-shadow: 0 7px 20px #38234706; }
+.fam-show-view .fam-chat > .fam-section-heading { display: none; }
+.family-app.fam-show-view .live-chat { height: 365px; min-height: 320px; border-radius: 20px; background: transparent; box-shadow: none; }
+.family-app.fam-show-view .lc-header { padding: 17px 21px 15px; border-color: #e9dfee; background: linear-gradient(110deg, #faf4fe, #fffcf7); }
+.family-app.fam-show-view .lc-eyebrow { display: none; }
+.family-app.fam-show-view .lc-heading h2 { margin: 0 !important; font-size: 18px !important; letter-spacing: -.025em; }
+.family-app.fam-show-view .lc-status { font-size: 10px; margin-left: 5px; }
+.family-app.fam-show-view .lc-messages { padding: 15px 20px; }
+.family-app.fam-show-view .lc-message { border: 0; background: #f5eff8; padding: 10px 13px; margin-bottom: 9px; }
+.family-app.fam-show-view .lc-message-host { border: 1px solid #ead5ac; background: #fcf4e1; }
+.family-app.fam-show-view .lc-message-text { color: #644e70 !important; font-size: 14px !important; }
+.family-app.fam-show-view .lc-message-name { font-size: 12px; }
+.family-app.fam-show-view .lc-message-time { font-size: 10px; }
+.family-app.fam-show-view .lc-empty { gap: 5px; }
+.family-app.fam-show-view .lc-empty-icon { width: 40px; height: 40px; font-size: 21px; border-radius: 14px; margin-bottom: 4px; }
+.family-app.fam-show-view .lc-empty strong { font-size: 15px; }
+.family-app.fam-show-view .lc-empty p { color: #9a84a6 !important; font-size: 12px !important; max-width: 300px; }
+.family-app.fam-show-view .lc-composer { display: grid; grid-template-columns: 43px minmax(0, 1fr) 46px; grid-template-rows: auto minmax(46px, auto); gap: 8px; padding: 11px 17px 16px; border-color: #e6d9ed; background: #faf5fc; }
+.family-app.fam-show-view .lc-compose-meta { grid-column: 1 / -1; grid-row: 1; min-height: 24px; }
+.family-app.fam-show-view .lc-person-label { flex-direction: row; align-items: center; gap: 7px; font-size: 10px !important; }
+.family-app.fam-show-view .lc-person-label select { min-height: 26px; height: 26px; padding: 2px 21px 2px 8px; border-radius: 8px; font-size: 12px; }
+.family-app.fam-show-view .lc-char-count { font-size: 9px; }
+.family-app.fam-show-view .lc-input-wrap { grid-column: 2; grid-row: 2; align-self: stretch; border: 1px solid #ded0e8; border-radius: 13px; background: #fffdfd; }
+.family-app.fam-show-view .live-chat textarea { height: 46px; min-height: 46px; max-height: 95px; resize: none; padding: 12px 13px; color: #634476; border-radius: 13px; font-size: 14px; line-height: 1.5; }
+.family-app.fam-show-view .lc-compose-footer { display: contents; }
+.family-app.fam-show-view .lc-compose-hint { display: none; }
+.family-app.fam-show-view .lc-emoji-button { grid-column: 1; grid-row: 2; display: grid; place-items: center; width: 43px; height: 46px; padding: 0; align-self: end; border: 1px solid #e1d4e9; border-radius: 13px; background: #f1e7f7; color: #8d62a5 !important; }
+.family-app.fam-show-view .lc-emoji-button > span:first-child { font-size: 25px; color: #9a6bab; }
+.family-app.fam-show-view .lc-emoji-button > span:last-child { display: none; }
+.family-app.fam-show-view .lc-send { grid-column: 3; grid-row: 2; display: grid; place-items: center; width: 46px; height: 46px; min-height: 46px; padding: 0; align-self: end; border: 1px solid #75459c; border-radius: 13px; color: #fff5df !important; background: linear-gradient(135deg, #9160ba, #63328c); box-shadow: inset 0 1px 0 #ffffff40, 0 3px 0 #472260; }
+.family-app.fam-show-view .lc-send svg { width: 20px; height: 20px; }
+.family-app.fam-show-view .lc-send > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.family-app.fam-show-view .lc-emoji-picker { left: 17px; bottom: calc(100% - 33px); background: #fffaf5; border-color: #dac8e5; }
+.fam-show-tools { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px 27px; padding: 15px 0 1px; }
+.fam-show-tools .fam-text-button { min-height: 36px; padding: 5px 0; font-size: 11px; font-weight: 700; color: #8a7197; }
+.fam-show-view .fam-live-call-banner { margin: 0 0 12px; padding: 15px 18px; }
+.fam-show-view .fam-draw-hold-notice { margin-bottom: 12px; }
+
+@media (max-width: 960px) {
+  .fam-show-view .fam-header { padding: 4px 23px; }
+  .fam-show-view .fam-main-wrap { padding-left: 23px; padding-right: 23px; }
+  .fam-show-view .fam-tabs { width: auto; }
+  .fam-show-view .fam-tabs > button { flex: initial; }
+  .fam-show-view .fam-header-center { display: none; }
+  .fam-play-console { grid-template-columns: minmax(0, 1fr) 160px; gap: 16px; padding: 17px; }
+  .fam-number-grid { padding: 10px; gap: 6px; }
+  .fam-number-row { gap: 4px; }
+  .fam-number-ball { font-size: 11px; }
+  .family-app .fam-bingo-sphere { width: 134px; height: 134px; min-height: 134px; }
+  .family-app .fam-bingo-sphere strong { font-size: 26px; }
+  .fam-bingo-action .fam-bingo-helper { max-width: 142px; font-size: 9px; }
+  .fam-console-meta { flex-wrap: wrap; gap: 5px 10px; }
+}
+@media (max-width: 650px) {
+  .fam-show-view .fam-header { min-height: 62px; padding: 3px 13px; gap: 10px; }
+  .fam-show-view .fam-brand > img { width: 87px; height: 56px; }
+  .fam-show-view .fam-account { max-width: 180px; }
+  .fam-show-view .fam-account strong { font-size: 11px; }
+  .fam-show-view .fam-account small { font-size: 9px; }
+  .fam-show-view .fam-main-wrap { padding: 0 12px 100px; }
+  .fam-show-view .fam-navigation { padding: 0; min-height: 0; }
+  .fam-show-view .fam-tabs { left: 10px; right: 10px; bottom: calc(8px + env(safe-area-inset-bottom)); padding: 5px; border-radius: 20px; gap: 1px; }
+  .fam-show-view .fam-tabs > button { flex: 1; min-height: 53px; padding: 7px 3px; font-size: 9px; border-radius: 15px; gap: 4px; }
+  .fam-show-view .fam-tabs > button svg { width: 18px; height: 18px; }
+  .fam-show-view .fam-tabs > button b { width: 14px; min-width: 14px; height: 14px; font-size: 8px; }
+  .fam-show-view .fam-show-selector { min-height: 37px; padding: 7px 1px 8px; gap: 8px; align-items: center; }
+  .fam-show-view .fam-show-selector select { max-width: 61vw; font-size: 11px; min-height: 22px; }
+  .fam-show-view .fam-show-state { max-width: 110px; padding: 4px 7px; font-size: 8px; }
+  .fam-show-view .fam-show-stage { border-radius: 14px; }
+  .fam-show-view .fam-video-caption { min-height: 27px; padding: 6px 9px; font-size: 7px; }
+  .fam-show-view .fam-video-caption > span:last-child { max-width: 43%; text-align: right; }
+  .fam-show-view .fam-waiting-inner { padding: 14px 19px; }
+  .fam-show-view .fam-waiting-logo { width: 91px; max-height: 61px; }
+  .fam-show-view .fam-waiting-copy h2 { font-size: 19px; line-height: 1.15; max-width: 205px; margin-top: 10px; }
+  .fam-show-view .fam-waiting-milo { width: 37%; height: 81%; right: 1%; bottom: -5%; }
+  .fam-show-view .fam-content.fam-tab-show { margin-top: 13px; }
+  .fam-play-console { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 13px 12px 15px; border-radius: 18px; margin-bottom: 16px; }
+  .fam-console-top { min-height: 25px; margin-bottom: 8px; gap: 9px; }
+  .fam-console-top h2 { font-size: 13px; }
+  .fam-console-top .fam-eyebrow { font-size: 8px; }
+  .fam-console-top > span, .fam-console-top > small { font-size: 9px; }
+  .fam-number-grid { padding: 8px 6px; gap: 5px; border-radius: 12px; }
+  .fam-number-row { gap: 2px; }
+  .fam-number-ball { width: 100%; max-width: 24px; font-size: 9px; border-width: 1px; }
+  .fam-number-ball.is-latest { box-shadow: inset 0 1px 1px #fffbe8, 0 0 0 1px #e6c88788; }
+  .fam-console-meta { min-height: 36px; padding: 10px 1px 0; font-size: 10px; line-height: 1.5; gap: 6px 9px; }
+  .fam-console-meta small { font-size: 9px; }
+  .fam-console-meta .fam-pattern { width: 29px; height: 29px; flex-basis: 29px; gap: 1px; }
+  .fam-bingo-action { flex-direction: row-reverse; justify-content: space-between; gap: 20px; border-left: 0; border-top: 1px solid #e1d4e9; padding: 13px 2px 0; margin-top: 11px; }
+  .family-app .fam-bingo-sphere { width: 94px; height: 94px; min-height: 94px; flex: 0 0 94px; border-width: 3px; padding: 11px 6px; box-shadow: inset 0 2px 3px #fffbea, inset -4px -6px 9px #a8792945, 0 4px 0 #c29b55, 0 9px 15px #6f4c251c; }
+  .family-app .fam-bingo-sphere:before { inset: 7px; }
+  .family-app .fam-bingo-sphere strong { font-size: 21px; }
+  .family-app .fam-bingo-sphere small { font-size: 7px; }
+  .family-app .fam-bingo-sphere > svg { width: 12px; height: 12px; margin-bottom: 0; }
+  .fam-bingo-action .fam-bingo-helper { max-width: 210px; margin: 0 !important; text-align: left; font-size: 11px; }
+  .fam-bingo-action .fam-text-button { padding-top: 5px; font-size: 10px; }
+  .fam-show-view .fam-chat { border-radius: 17px; }
+  .family-app.fam-show-view .live-chat { height: 390px; min-height: 340px; border-radius: 17px; }
+  .family-app.fam-show-view .lc-header { padding: 14px 15px 12px; }
+  .family-app.fam-show-view .lc-heading h2 { font-size: 17px !important; }
+  .family-app.fam-show-view .lc-status { font-size: 9px; }
+  .family-app.fam-show-view .lc-messages { padding: 12px; }
+  .family-app.fam-show-view .lc-message-text { font-size: 13px !important; }
+  .family-app.fam-show-view .lc-composer { grid-template-columns: 38px minmax(0, 1fr) 42px; gap: 7px; padding: 10px 11px 14px; }
+  .family-app.fam-show-view .lc-person-label { font-size: 10px !important; }
+  .family-app.fam-show-view .lc-person-label select { font-size: 13px; min-height: 26px; }
+  .family-app.fam-show-view .lc-emoji-button { width: 38px; height: 44px; border-radius: 12px; }
+  .family-app.fam-show-view .lc-send { width: 42px; height: 44px; min-height: 44px; border-radius: 12px; }
+  .family-app.fam-show-view .live-chat textarea { height: 44px; min-height: 44px; padding: 10px; font-size: 16px; line-height: 1.4; }
+  .family-app.fam-show-view .lc-empty p { max-width: 250px; font-size: 11px !important; }
+  .fam-show-tools { gap: 0 19px; padding-top: 9px; }
+  .fam-show-tools .fam-text-button { font-size: 10px; min-height: 37px; }
+  .family-app .fam-footer { gap: 10px; margin-top: 16px; font-size: 9px; }
+  .family-app .fam-footer img { width: 61px; max-width: 61px; height: 40px; max-height: 40px; flex-basis: 61px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .family-app .fam-bingo-sphere { transition: none; }
+}
+
+/* Broadcast standby has the same 16:9 frame as the live player. */
+.family-app .fam-waiting-screen { align-items: center; justify-content: center; background: #24102f; }
+.family-app .fam-waiting-screen .fam-waiting-backdrop { opacity: .55; filter: saturate(.82); }
+.family-app .fam-waiting-screen:after { z-index: 0; background: radial-gradient(ellipse at 50% 44%, #29113a69, #180b2ac9 75%); }
+.fam-waiting-screen-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; width: 100%; height: 100%; }
+.fam-waiting-screen-logo { display: block; width: clamp(130px, 15vw, 184px); max-width: 38%; max-height: 36%; height: auto; object-fit: contain; margin: 0 0 17px; filter: drop-shadow(0 7px 16px #12051b66); }
+.fam-waiting-status { display: inline-flex; align-items: center; justify-content: center; gap: 7px; color: #edce94; font-size: 9px; font-weight: 800; letter-spacing: .1em; line-height: 1.6; }
+.family-app .fam-waiting-screen-content h2 { color: #fff6e9; margin: 12px 0 10px; font-size: clamp(24px, 3.1vw, 39px); font-weight: 900; letter-spacing: -.045em; line-height: 1.15; }
+.family-app .fam-waiting-screen-content p { color: #d5bfdc; font-size: 12px; margin: 0; max-width: 80%; line-height: 1.6; }
+.fam-console-top h1 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.03em; line-height: 1.4; }
+.fam-console-top > div { display: flex; align-items: center; gap: 14px; font-size: 10px; color: #947c9f; }
+.fam-console-latest { display: inline-flex; align-items: center; gap: 6px; }
+.fam-console-latest strong { min-width: 25px; padding: 2px 5px; border: 1px solid #e5c792; border-radius: 7px; color: #835c29; text-align: center; background: #fcf1d8; }
+.fam-current-pattern > div:not(.fam-pattern) { display: flex; flex-direction: column; gap: 1px; }
+.fam-console-meta .fam-pattern { display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); margin: 0; }
+.fam-current-prize { margin-left: auto; max-width: 47%; color: #94703f; }
+.fam-current-prize span { overflow-wrap: anywhere; }
+.fam-footer-brand { color: #72567f; font-weight: 800; }
+.family-app.fam-show-view[data-brand=vlampie] .fam-header { background: radial-gradient(ellipse at 12% -40%, #386ca266, transparent 55%), linear-gradient(110deg, #183149, #111f32 72%, #244361); }
+.family-app.fam-show-view[data-brand=vlampie] .fam-play-console { background: radial-gradient(ellipse at 100% 0, #d6e3f05c, transparent 45%), linear-gradient(135deg, #fffcf6, #edf3f8); border-color: #ccdae6; }
+.family-app.fam-show-view[data-brand=vlampie] .fam-number-grid { border-color: #d2dce6; background: linear-gradient(145deg, #dfe8ef, #eff4f7); }
+@media(max-width:650px) {
+  .fam-waiting-screen-content { padding: 14px; }
+  .fam-waiting-screen-logo { max-width: 35%; max-height: 35%; width: 110px; margin-bottom: 8px; }
+  .fam-waiting-status { font-size: 6px; letter-spacing: .07em; gap: 5px; }
+  .fam-waiting-status svg { width: 10px; height: 10px; }
+  .family-app .fam-waiting-screen-content h2 { font-size: 20px; margin: 6px 0 5px; }
+  .family-app .fam-waiting-screen-content p { font-size: 9px; line-height: 1.4; max-width: 90%; }
+  .fam-console-top h1 { font-size: 12px; }
+  .fam-console-top > div { gap: 8px; font-size: 8px; }
+  .fam-console-latest { gap: 4px; }
+  .fam-console-latest strong { min-width: 20px; border-radius: 5px; padding: 1px 3px; }
+  .fam-current-prize { max-width: 47%; font-size: 9px; gap: 6px !important; }
+}
+
+/* On a desktop the conversation sits beside the show; phones use one column. */
+@media (min-width: 901px) {
+  .fam-show-view .fam-main-wrap { max-width: min(1280px, calc(100dvh + 250px)); }
+  .fam-show-view .fam-header { min-height: 60px; padding: 3px max(30px, calc((100vw - min(1220px, calc(100dvh + 190px))) / 2)); }
+  .fam-show-view .fam-brand > img { width: 82px; height: 54px; }
+  .fam-show-view .fam-navigation { padding: 4px 0; }
+  .fam-show-view .fam-tabs > button { min-height: 30px; padding-top: 5px; padding-bottom: 5px; }
+  .fam-show-view .fam-show-selector { min-height: 29px; padding-bottom: 6px; }
+  .fam-watch-workspace.is-show { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 340px); grid-template-rows: auto auto auto; gap: 16px 22px; align-items: start; }
+  .fam-watch-workspace.is-show > .fam-broadcast-persistent { grid-column: 1; grid-row: 1; min-width: 0; margin: 0; }
+  .fam-watch-workspace.is-show > .fam-content.fam-tab-show { display: contents; }
+  .fam-watch-workspace.is-show .fam-play-console { grid-column: 1; grid-row: 2; margin: 0; grid-template-columns: minmax(0, 1fr) 145px; gap: 15px; padding: 13px 16px; border-radius: 20px; }
+  .fam-watch-workspace.is-show .fam-number-grid { padding: 8px; gap: 4px; }
+  .fam-watch-workspace.is-show .fam-number-row { gap: 4px; }
+  .fam-watch-workspace.is-show .fam-number-ball { max-width: 25px; font-size: 11px; }
+  .fam-watch-workspace.is-show .fam-bingo-action { padding-left: 9px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere { width: 128px; height: 128px; min-height: 128px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere strong { font-size: 25px; }
+  .fam-watch-workspace.is-show .fam-console-top { min-height: 23px; margin-bottom: 8px; }
+  .fam-watch-workspace.is-show .fam-console-top h1 { font-size: 14px; }
+  .fam-watch-workspace.is-show .fam-console-top > div { gap: 9px; font-size: 9px; }
+  .fam-watch-workspace.is-show .fam-console-meta { gap: 7px 11px; font-size: 10px; min-height: 32px; padding-top: 8px; }
+  .fam-watch-workspace.is-show .fam-console-meta .fam-pattern { width: 26px; height: 26px; flex-basis: 26px; gap: 1px; }
+  .fam-watch-workspace.is-show .fam-bingo-action .fam-bingo-helper { margin-top: 12px !important; font-size: 9px; }
+  .fam-watch-workspace.is-show > .fam-tab-show > .fam-chat { grid-column: 2; grid-row: 1 / span 2; align-self: stretch; min-width: 0; min-height: 0; height: 100%; border-radius: 20px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .fam-chat > .live-chat { height: 100%; min-height: 0; border-radius: 20px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-header { padding: 17px 17px 15px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-heading h2 { font-size: 17px !important; gap: 6px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-status { font-size: 9px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-messages { padding: 13px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-message-text { font-size: 13px !important; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-composer { grid-template-columns: 36px minmax(0, 1fr) 39px; gap: 6px; padding: 10px 11px 13px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-emoji-button { width: 36px; border-radius: 11px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-send { width: 39px; border-radius: 11px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .live-chat textarea { padding-left: 10px; padding-right: 10px; font-size: 13px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-person-label { font-size: 9px !important; gap: 5px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-person-label select { max-width: 115px; font-size: 11px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .lc-empty p { max-width: 230px; font-size: 12px !important; }
+  .fam-watch-workspace.is-show .fam-show-tools { grid-column: 1; grid-row: 3; padding-top: 0; gap: 8px 25px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .fam-show-view .fam-main-wrap { padding-left: 20px; padding-right: 20px; }
+  .fam-show-view .fam-header { padding-left: 20px; padding-right: 20px; }
+  .fam-watch-workspace.is-show { grid-template-columns: minmax(0, 1fr) 300px; column-gap: 16px; }
+  .fam-watch-workspace.is-show .fam-play-console { grid-template-columns: minmax(0, 1fr) 116px; gap: 11px; padding: 13px; }
+  .fam-watch-workspace.is-show .fam-console-top { flex-wrap: wrap; gap: 4px 9px; margin-bottom: 8px; }
+  .fam-watch-workspace.is-show .fam-console-top h1 { font-size: 12px; }
+  .fam-watch-workspace.is-show .fam-number-grid { padding: 7px 5px; gap: 5px; }
+  .fam-watch-workspace.is-show .fam-number-row { gap: 2px; }
+  .fam-watch-workspace.is-show .fam-number-ball { font-size: 9px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere { width: 105px; height: 105px; min-height: 105px; border-width: 3px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere strong { font-size: 21px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere small { font-size: 7px; }
+  .fam-watch-workspace.is-show .fam-bingo-sphere > svg { width: 14px; height: 14px; }
+  .fam-watch-workspace.is-show .fam-bingo-action .fam-bingo-helper { font-size: 9px; margin-top: 12px !important; }
+  .fam-watch-workspace.is-show .fam-current-prize { margin-left: 0; max-width: none; }
+  .fam-watch-workspace.is-show .fam-console-meta { flex-wrap: wrap; }
+}
+@media (max-width: 900px) {
+  .fam-watch-workspace.is-show { display: block; }
+  .fam-watch-workspace.is-show > .fam-content.fam-tab-show { display: block; }
+  .fam-watch-workspace.is-show .fam-play-console { margin-bottom: 18px; }
+  .family-app.fam-show-view .fam-watch-workspace.is-show .fam-chat > .live-chat { height: 390px; min-height: 340px; }
+}
+/* Keep the requested BINGO ball beside the five rows on typical phone screens. */
+@media (min-width: 361px) and (max-width: 650px) {
+  .fam-play-console { grid-template-columns: minmax(0, 1fr) 82px; column-gap: 8px; padding: 12px 10px; }
+  .fam-number-panel { display: contents; }
+  .fam-console-top { grid-column: 1 / -1; grid-row: 1; }
+  .fam-number-grid { grid-column: 1; grid-row: 1; padding: 7px 5px; gap: 5px; }
+  .fam-number-row { gap: 1.5px; }
+  .fam-number-ball { font-size: 8.5px; }
+  .fam-console-meta { grid-column: 1 / -1; grid-row: 2; padding-top: 12px; }
+  .fam-bingo-action { grid-column: 2; grid-row: 1; flex-direction: column; justify-content: center; gap: 0; border: 0; padding: 0; margin: 0; }
+  .family-app .fam-bingo-sphere { width: 78px; height: 78px; min-height: 78px; flex-basis: 78px; padding: 8px 3px; }
+  .family-app .fam-bingo-sphere strong { font-size: 18px; }
+  .family-app .fam-bingo-sphere small { font-size: 6px; }
+  .fam-bingo-action .fam-bingo-helper { font-size: 8px; line-height: 1.35; text-align: center; margin-top: 9px !important; }
+  .fam-bingo-action .fam-text-button { font-size: 8px; }
+}

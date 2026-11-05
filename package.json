@@ -1,0 +1,55 @@
+{
+  "name": "milo-friends-bingoshow",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
+    "lit": "3.3.3",
+    "livekit-client": "2.23.0",
+    "lucide-react": "0.468.0",
+    "motion": "14.4.0",
+    "next": "16.4.5",
+    "pdf-lib": "1.17.1",
+    "pg": "8.23.1",
+    "qrcode-generator": "2.0.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "three": "0.180.0",
+    "ws": "8.22.1"
+  },
+  "scripts": {
+    "dev": "node scripts/prepare-next.mjs && MILO_LOCAL_AUTH=true WATCHPACK_POLLING=true next dev --webpack --hostname 127.0.0.1 --port ${PORT:-4173}",
+    "build": "node scripts/prepare-next.mjs && next build --webpack",
+    "start": "next start --hostname 127.0.0.1 --port ${PORT:-4173}",
+    "lint": "eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/run-checks.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/run-checks.mjs",
+    "test:browser": "playwright test",
+    "check:config": "node scripts/check-config.mjs"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.1.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@typescript-eslint/parser": "8.72.1",
+    "drizzle-kit": "0.31.11",
+    "drizzle-orm": "0.45.3",
+    "esbuild": "0.28.2",
+    "eslint": "10.14.0",
+    "jsqr": "1.4.0",
+    "linkedom": "0.18.13",
+    "typescript": "5.9.3"
+  },
+  "version": "0.1.0",
+  "engines": {
+    "node": "24.18.0"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milobingo/platform.git"
+  }
+}

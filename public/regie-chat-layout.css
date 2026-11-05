@@ -1,0 +1,144 @@
+/* One live chat beside a native 16:9 program monitor. The broadcast output is untouched. */
+.studio-ui:not(.show-mode) .controlroom-layout > .regie-broadcast {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) var(--program-width, minmax(0, 1.8fr));
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+}
+.studio-ui:not(.show-mode) #regie-live-chat {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+}
+.studio-ui:not(.show-mode) .regie-broadcast > .program-monitor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: auto;
+  align-self: center;
+}
+.studio-ui:not(.show-mode) .regie-broadcast .program-monitor .stage:not(:fullscreen) {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  flex: 0 0 auto;
+  min-height: 0 !important;
+  max-height: none;
+}
+.studio-ui:not(.show-mode) .regie-broadcast .program-monitor .monitor-heading {
+  padding-inline: 10px;
+  gap: 7px;
+}
+.studio-ui:not(.show-mode) .regie-broadcast .program-monitor .monitor-heading strong {
+  flex: 1;
+}
+.studio-ui:not(.show-mode) .regie-broadcast .program-monitor .program-badge {
+  display: none;
+}
+.studio-ui:not(.show-mode) .regie-broadcast .program-monitor .program-footer {
+  padding-inline: 10px;
+}
+.studio-ui:not(.show-mode) .compact-monitor-tabs { display: none; }
+.studio-ui #page-chat .page-card-grid {
+  grid-template-columns: minmax(320px, 1.1fr) minmax(300px, 1fr);
+  align-items: start;
+}
+.studio-ui #chat-page-live {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  min-width: 0;
+  min-height: 430px;
+  height: min(740px, calc(100dvh - 250px));
+  position: sticky;
+  top: 0;
+}
+.studio-ui #page-chat :is(.chat-card, .chat-help) { grid-column: 2; }
+
+/* Keep every show action visible on laptops. A compact switch trades horizontal panes. */
+@media (min-width: 721px) and (max-width: 1200px) {
+  .studio-ui:not(.show-mode) .compact-monitor-tabs {
+    display: flex !important;
+    gap: 5px;
+    height: 33px;
+    min-height: 33px;
+    width: calc(100% - 342px);
+  }
+  .studio-ui:not(.show-mode) .compact-monitor-tabs button {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--ui-line-strong);
+    border-radius: 7px;
+    background: #141f2f;
+    color: #aebbd0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .studio-ui:not(.show-mode) .compact-monitor-tabs button[aria-pressed=true] {
+    color: #f0d5a9;
+    background: #2c3038;
+    border-color: #e4bd7c55;
+  }
+  .studio-ui:not(.show-mode) .controlroom-layout > .regie-broadcast {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .studio-ui:not(.show-mode) .regie-broadcast > .program-monitor {
+    width: var(--program-width, 100%);
+    max-width: 100%;
+    flex: none;
+  }
+  .studio-ui:not(.show-mode)[data-monitor=program] #regie-live-chat { display: none; }
+  .studio-ui:not(.show-mode)[data-monitor=chat] .regie-broadcast > .program-monitor { display: none; }
+  .studio-ui:not(.show-mode)[data-monitor=chat] #regie-live-chat { width: 100%; }
+}
+@media (max-width: 920px) {
+  .studio-ui #page-chat .page-card-grid { grid-template-columns: minmax(0, 1fr); }
+  .studio-ui #chat-page-live {
+    grid-column: 1;
+    grid-row: auto;
+    position: static;
+    height: min(660px, 75dvh);
+  }
+  .studio-ui #page-chat :is(.chat-card, .chat-help) { grid-column: 1; }
+}
+@media (max-width: 720px) {
+  .studio-ui:not(.show-mode) .controlroom-layout > .regie-broadcast {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: none;
+    order: 0;
+  }
+  .studio-ui:not(.show-mode) .regie-broadcast > .program-monitor {
+    display: flex !important;
+    order: 0;
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    flex: none;
+    visibility: visible;
+  }
+  .studio-ui:not(.show-mode) #regie-live-chat {
+    order: 1;
+    width: 100%;
+    height: clamp(350px, 58dvh, 520px);
+    min-height: 350px;
+    flex: none;
+  }
+}
+.studio-ui.show-mode #regie-live-chat,
+.studio-ui.show-mode #chat-page-live { display: none !important; }
+.studio-ui.show-mode .regie-broadcast {
+  display: block !important;
+  width: 100%;
+  height: 100dvh;
+}

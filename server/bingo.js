@@ -1,0 +1,114 @@
+import {brandId,validBrand,brandProfile,showBrand,switchPlanBrand,repairLegacyPlanBrand} from './show-brands.js';
+import {playerIdentity,birthAge,refreshAges} from './player-identity.js';
+import {productionAction} from './production.js';
+import {productionEvent,productionSettings} from './production-model.js';
+import {BingoStore} from './bingo-store.js';
+import {BingoError,minigamesForBrand,enabledMinigameIds,assertDrawAvailable,makeGame,gameSettings,integer,cleanText,bingoPrintMode,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook,settleWindow,playerGame,randomIndex,checkAccount} from './bingo-model.js';
+import {normalizePlan,planIssues} from './plan-model.js';
+import {PresentationStore} from './presentation-store.js';
+import {presentationSelection,freezePresentation} from './presentation-model.js';
+import {bookPdf,PRINT_VERSION,printVersion} from './bingo-pdf.js';
+const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
+const json=(data,status=200)=>Response.json(data,{status,headers});
+const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);delete copy.state.deck;delete copy.chat;return copy;};
+function presentationValue(fn){try{return fn();}catch(error){throw new BingoError(error.message,400,'presentation_choice');}}
+async function creationId(ownerId,requestId){
+ // A repeated creation request must target the same primary key, including when
+ // both requests arrive before either insert has committed. Scope it per host.
+ const bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(['bingo-show-v1',ownerId,requestId]))));
+ bytes[6]=(bytes[6]&15)|128;bytes[8]=(bytes[8]&63)|128;
+ const hex=Array.from(bytes.slice(0,16),v=>v.toString(16).padStart(2,'0')).join('');
+ return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+}
+async function bodyOf(request){const raw=await request.text();if(new TextEncoder().encode(raw).length>300000)throw new BingoError('De aanvraag is te groot.',413);try{return JSON.parse(raw||'{}');}catch{throw new BingoError('De aanvraag kon niet worden gelezen.');}}
+export async function handleBingo(request,env={}){
+ const {user,email,admin}=await playerIdentity(request,env),url=new URL(request.url),path=url.pathname.slice('/api/bingo'.length),write=!['GET','HEAD'].includes(request.method);
+ if(!user)return json({error:{code:'sign_in',message:'Log in om jouw boekjes te beheren.'}},401);
+ if(request.headers.get('sec-fetch-site')==='cross-site'||request.headers.get('origin')&&request.headers.get('origin')!==url.origin||write&&(request.headers.get('origin')!==url.origin||request.headers.get('x-vlampie-bingo')!=='1'))return json({error:{code:'origin',message:'Gebruik deze functie vanuit de showstudio of spelersapp.'}},403);
+ if(!env.DB?.prepare)return json({error:{code:'unavailable',message:'De speladministratie is tijdelijk niet beschikbaar.'}},503);
+ const store=new BingoStore(env.DB),now=Date.now();
+ try{
+  const body=write?await bodyOf(request):{},requestId=typeof body.requestId==='string'&&/^[a-zA-Z0-9_-]{8,100}$/.test(body.requestId)?body.requestId:crypto.randomUUID();
+  const requireHost=()=>{if(!admin)throw new BingoError('Alleen de host kan deze functie gebruiken.',403);};
+  if(path==='/me'&&request.method==='GET'){const row=await store.family(user,email);return json({accountId:user,host:admin,family:refreshAges(row.data),serverTime:now,minigames:minigamesForBrand(url.searchParams.get('brand'))});}
+  if(path==='/profiles'&&request.method==='POST'){
+   const saved=await store.editFamily(user,email,family=>{const prior=family.profiles.find(p=>p.createRequestId===requestId);if(prior)return prior;if(family.profiles.length>=30)throw new BingoError('Een account kan maximaal 30 personen beheren.');const profile={id:crypto.randomUUID(),createRequestId:requestId,name:cleanText(body.name,40,'voornaam'),age:body.dateOfBirth?birthAge(body.dateOfBirth):integer(body.age,0,120,'Leeftijd'),...(body.dateOfBirth?{dateOfBirth:body.dateOfBirth}:{})};family.profiles.push(profile);return profile;});return json(saved,201);
+  }
+  if(path==='/games'&&request.method==='GET'){const rows=await store.games();return json({games:rows.filter(r=>!admin||r.owner_id===user).map(r=>({id:r.data.id,brandId:brandId(r.data),title:r.data.title,date:r.data.date,status:r.data.status,roundCount:r.data.plan.blocks.filter(b=>b.type==='round').length,bookCount:r.data.books.length,linked:r.data.books.filter(b=>b.accountId).length,createdAt:r.data.createdAt})),serverTime:now});}
+  if(path==='/games'&&request.method==='POST'){
+   requireHost();const id=await creationId(user,requestId);
+   // Keep retries of shows created before stable IDs working as well.
+   const existing=await store.game(id)||(await store.games()).find(r=>r.data.createRequestId===requestId&&r.owner_id===user);
+   if(existing&&existing.owner_id===user&&existing.data.createRequestId===requestId)return json({game:hostGame(existing.data)});
+   const game=makeGame(body,user,url.origin,now);game.id=id;game.createRequestId=requestId;
+   const presentation=await new PresentationStore(env.DB).read(user);game.presentationSelection=presentationValue(()=>presentationSelection(body.presentationSelection,presentation.document));
+   try{await store.create(game);}catch(error){
+    // An identical in-flight request may have won the insert. Never report a
+    // successful retry unless the persisted row belongs to this exact request.
+    const winner=await store.game(id);
+    if(winner?.owner_id===user&&winner.data.createRequestId===requestId)return json({game:hostGame(winner.data)});
+    throw error;
+   }
+   return json({game:hostGame(game)},201);
+  }
+  if(path==='/families'&&request.method==='GET'){requireHost();return json({families:(await store.families()).map(r=>({accountId:r.account_id,...r.data}))});}
+  const match=path.match(/^\/games\/([a-f0-9-]{36})(?:\/(.*))?$/);
+  if(match){
+   const id=match[1],action=match[2]||'',row=await store.game(id);if(!row)throw new BingoError('Dit spel bestaat niet.',404);if(admin&&row.owner_id!==user)throw new BingoError('Dit spel hoort bij een andere host.',403);
+   const scopedId=`${user}:${request.method}:${path}:${requestId}`,options={requestId:scopedId},ownOptions={requestId:scopedId,accountId:user,email};
+   const control=game=>{const client=cleanText(body.regieId,100,'regievenster');if(game.state.control&&game.state.control.id!==client&&game.state.control.until>now)throw new BingoError('Dit spel wordt al vanuit een ander regievenster bestuurd. Sluit dat venster of wacht 15 seconden.',409,'control_busy');game.state.control={id:client,until:now+15000};};
+   if(!action&&request.method==='GET'){
+    let game=row.data;if(game.state.window?.status==='open'&&now>=game.state.window.endsAt)game=(await store.mutate(id,{},g=>settleWindow(g,now))).game;
+    return json({game:admin&&url.searchParams.get('player')!=='1'?hostGame(game):playerGame(game,user),serverTime:Date.now()});
+   }
+   if(action==='brand'&&request.method==='POST'){
+    requireHost();const next=validBrand(body.brandId);const result=await store.mutate(id,options,g=>{control(g);assertDrawAvailable(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af voordat je de showhost wisselt.',409,'call_active');if(g.status==='finished')throw new BingoError('Deze show is afgelopen. De opgeslagen showidentiteit blijft bewaard.',409);const previous=showBrand(g);g.plan=switchPlanBrand(g.plan,previous,next);g.brandId=next;g.settings={...g.settings,minigames:enabledMinigameIds(g)};if(g.title===previous.title)g.title=showBrand(g).title;if(g.presentationSnapshot){g.presentationSnapshot.profile=brandProfile(g.presentationSnapshot.profile,g);g.presentationSnapshot.frozenAt=now;} });return json({game:hostGame(result.game)});
+   }
+   if(!action&&request.method==='PUT'){
+    requireHost();const presentation=body.presentationSelection?await new PresentationStore(env.DB).read(user):null;const result=await store.mutate(id,options,g=>{if(g.status!=='draft')throw new BingoError('Spelregels staan vast nadat de show is gestart.',409);const plan=normalizePlan(body.plan||g.plan),rounds=plan.blocks.filter(b=>b.type==='round'),old=g.plan.blocks.filter(b=>b.type==='round');if(g.books.length&&(rounds.length!==old.length||rounds.some((r,i)=>r.title!==old[i].title)||body.title&&body.title!==g.title||body.date&&body.date!==g.date))throw new BingoError('De geprinte spelnaam, datum en ronde-indeling staan vast na het genereren van boekjes.');const issues=planIssues(plan);if(issues.length)throw new BingoError(issues[0]);plan.patterns.forEach(p=>p.freeCenter=true);rounds.forEach(r=>r.newBoard=true);g.plan=plan;g.title=cleanText(body.title||g.title,60,'spelnaam');g.date=cleanText(body.date||g.date,40,'datum');g.settings=gameSettings(body.settings||g.settings,g);if(presentation)g.presentationSelection=presentationValue(()=>presentationSelection(body.presentationSelection,presentation.document));});return json({game:hostGame(result.game)});
+   }
+   if(action==='generate'&&request.method==='POST'){requireHost();const result=await store.mutate(id,options,g=>generateBooks(g,body.count,requestId,now,{mode:body.printMode}));const batch=result.result||result.game.batches.find(b=>b.requestId===requestId);return json({game:hostGame(result.game),batch,pdf:`/api/bingo/games/${id}/batches/${batch.id}/pdf`},201);}
+   const batchMatch=action.match(/^batches\/([a-f0-9-]{36})\/pdf$/),bookMatch=action.match(/^books\/([a-f0-9-]{36})\/pdf$/);
+   if((batchMatch||bookMatch)&&request.method==='GET'){
+    const game=row.data;let bookIds,fileId,batch;
+    if(batchMatch){requireHost();batch=game.batches.find(b=>b.id===batchMatch[1]);if(!batch)throw new BingoError('Deze PDF bestaat niet.',404);bookIds=batch.bookIds;fileId=batch.id;}
+    else{const book=game.books.find(b=>b.id===bookMatch[1]&&(admin||b.accountId===user));if(!book)throw new BingoError('Dit boekje hoort niet bij jouw account.',403);bookIds=[book.id];fileId=`boek-${book.id}`;batch=game.batches.find(b=>b.id===book.batchId);}
+    // Appearance only affects this rendering; existing cards, codes and batch metadata stay intact.
+    const format=url.searchParams.get('format')||'a5';if(!['a5','a4'].includes(format))throw new BingoError('Kies A5 of A4 als afdrukformaat.');
+    const mode=bingoPrintMode(url.searchParams.has('mode')?url.searchParams.get('mode'):batch?.print?.mode??'mono'),key=`bingo-pdfs/${printVersion(game)}/${brandId(game)}/${format.toUpperCase()}/${mode}/${id}/${fileId}`,pdfHeaders={...headers,'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${showBrand(game).name.replace(/ /g,'-')}-${format.toUpperCase()}-${mode==='color'?'kleur':'zwart-wit'}-${bookIds.length}-${bookIds.length===1?'boekje':'boekjes'}.pdf"`};
+    const file=await env.SETTINGS?.get(key);if(file)return new Response(file.body,{headers:pdfHeaders});
+    const bytes=await bookPdf(game,bookIds,{mode,format});await env.SETTINGS?.put(key,bytes,{httpMetadata:{contentType:'application/pdf'}});return new Response(bytes,{headers:pdfHeaders});
+   }
+   if(action==='register'&&request.method==='POST'){
+    const result=await store.mutate(id,ownOptions,(g,f)=>{checkAccount(f,g,now);if(g.status!=='draft')throw new BingoError('Deze show is gestart of afgelopen. Nieuwe boekjes koppelen is gesloten.',409);const profile=f.profiles.find(p=>p.id===body.profileId);if(!profile)throw new BingoError('Kies eerst een persoon binnen jouw account.');f.codeAttempts=f.codeAttempts?.until>now?f.codeAttempts:{count:0,until:now+600000};if(f.codeAttempts.count>=10)throw new BingoError('Te veel onjuiste codes. Probeer over tien minuten opnieuw.',429);const code=String(body.code||'').toUpperCase().replace(/[^A-Z0-9]/g,''),book=g.books.find(b=>body.token?b.token===body.token:b.code===code);if(!book){f.codeAttempts.count++;return {error:'Deze code hoort niet bij dit spel.'};}if(book.revokedAt)throw new BingoError('Dit boekje is ingetrokken. Vraag de host om hulp.',409);if(book.accountId&&(book.accountId!==user||book.profileId!==profile.id))throw new BingoError('Dit boekje is al aan een persoon gekoppeld.',409);book.accountId=user;book.profileId=profile.id;book.name=profile.name;book.age=profile.dateOfBirth?birthAge(profile.dateOfBirth):profile.age;f.codeAttempts.count=0;return {bookId:book.id};});if(result.result?.error)throw new BingoError(result.result.error);return json({game:playerGame(result.game,user),family:result.family});
+   }
+   const productionResponse=await productionAction({action,request,body,url,row,store,id,user,email,admin,options,ownOptions,now,control,hostGame,playerGame,json});if(productionResponse)return productionResponse;
+   if(action==='begin'&&request.method==='POST'){const result=await store.mutate(id,ownOptions,(g,f)=>{if(body.epoch!==g.state.epoch)throw new BingoError('Het spel is naar een ander patroon gegaan. Controleer je kaart opnieuw.',409,'stale_goal');return beginBingo(g,f,user,requestId,now);});return json({game:playerGame(result.game,user),family:result.family,serverTime:now});}
+   if(action==='claim'&&request.method==='POST'){const result=await store.mutate(id,ownOptions,(g,f)=>{if(!body.windowId||g.state.window?.id!==body.windowId)throw new BingoError('Deze melding hoort bij een eerder meldvenster.',409,'closed');return claimBook(g,f,user,body.bookId,now);});return json({game:playerGame(result.game,user),family:result.family,claim:result.result||result.game.state.window?.claims.find(c=>c.bookId===body.bookId),serverTime:now});}
+
+   requireHost();
+   if(row.data.state.callId&&['activate','reserve','commit','raffle','finish'].includes(action))throw new BingoError('Rond eerst het belmoment af.',409,'call_active');
+   if(row.data.state.callId&&action==='pause'&&body.paused!==true)throw new BingoError('Rond eerst het belmoment af voordat je de show hervat.',409,'call_active');
+   if(action==='heartbeat'&&request.method==='POST'){const result=await store.mutate(id,options,g=>control(g));return json({ok:true});}
+   if(action==='start'&&request.method==='POST'){const presentation=await new PresentationStore(env.DB).read(user);const result=await store.mutate(id,options,g=>{control(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af voordat je de showhost wisselt.',409,'call_active');if(g.status==='finished')throw new BingoError('Dit spel is afgelopen. Maak een nieuwe show.');if(g.status==='draft'){if(!g.books.some(b=>b.accountId&&b.admitted&&!b.revokedAt))throw new BingoError('Koppel minstens één boekje voordat de show begint.');g.presentationSnapshot=presentationValue(()=>freezePresentation(g,presentation,now));g.status='running';g.startedAt=now;productionEvent(g,'show-started',{},now);g.state.phase='interlude';g.state.paused=false;}});return json({game:hostGame(result.game)});}
+   if(action==='activate'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af.',409);if(g.status!=='running')throw new BingoError('Start eerst dit spel.');activateBlock(g,body.blockIndex,body.goalIndex||0,now);});return json({game:hostGame(result.game)});}
+   if(action==='reserve'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af.',409);return reserveBall(g);});return json({pending:result.result||result.game.state.pending});}
+   if(action==='commit'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af.',409);return commitBall(g,body.token,now);});return json({commit:result.result||result.game.state.lastCommit,game:hostGame(result.game)});}
+   if(action==='pause'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);if(g.state.callId&&body.paused!==true)throw new BingoError('Rond eerst het belmoment af.',409);g.state.paused=!!body.paused;productionEvent(g,g.state.paused?'paused':'resumed',{},now);});return json({game:hostGame(result.game)});}
+   if(action==='extend'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);const w=g.state.window;if(w?.status!=='open'||now>=w.endsAt)throw new BingoError('Het meldvenster is al gesloten.');w.endsAt+=integer(body.seconds,1,300,'Extra seconden')*1000;});return json({game:hostGame(result.game)});}
+   if(action==='unblock'&&request.method==='POST'){const accountId=cleanText(body.accountId,150,'account'),result=await store.mutate(id,{requestId:scopedId,accountId},(g,f)=>{f.blocked=false;if(f.blockedGames)delete f.blockedGames[id];if(g.emptyAnnouncements)delete g.emptyAnnouncements[accountId];if(g.participationLimits)delete g.participationLimits[accountId];f.cooldowns[id]=0;if(body.reset!==false)f.falseCounts[id]=0;});return json({game:hostGame(result.game),family:result.family});}
+   if(action==='admit'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{if(g.status!=='draft')throw new BingoError('De deelnemerslijst staat vast tijdens de show.');const b=g.books.find(b=>b.id===body.bookId);if(!b)throw new BingoError('Boekje niet gevonden.');if(b.revokedAt&&body.admitted)throw new BingoError('Een ingetrokken boekje kan niet meer deelnemen.');b.admitted=!!body.admitted;});return json({game:hostGame(result.game)});}
+   if(action==='finish-result'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);const r=g.results.find(r=>r.id===body.resultId);if(!r)throw new BingoError('Uitslag niet gevonden.');const applied=!r.acknowledged;r.acknowledged=true;if(applied){r.acknowledgedAt=now;productionEvent(g,'result-announced',{resultId:r.id,name:r.winner.name,ticket:r.winner.ticket,prize:r.prize.title,minigame:r.minigame},now);}if(g.state.resultId===r.id){g.state.phase=r.type==='bingo'?'running':r.returnPhase||'interlude';g.state.resultId=null;}return applied;});return json({game:hostGame(result.game),applied:result.result===true});}
+   if(action==='raffle'&&request.method==='POST'){
+    assertDrawAvailable(row.data);
+    const blocked=new Set((await store.families()).filter(r=>r.data.blocked||r.data.blockedGames?.[id]).map(r=>r.account_id));const result=await store.mutate(id,options,g=>{control(g);assertDrawAvailable(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af.',409);if(g.status!=='running'||g.state.window?.status==='open'||g.state.phase==='result')throw new BingoError('Rond de huidige bingocontrole of uitslag eerst af.');const entrants=g.books.filter(b=>b.accountId&&b.admitted&&!b.revokedAt&&!blocked.has(b.accountId)).map(b=>({bookId:b.id,accountId:b.accountId,profileId:b.profileId,name:b.name,ticket:b.ticket}));if(!entrants.length)throw new BingoError('Er zijn geen deelnemende lotnummers.');const winner=entrants[randomIndex(entrants.length)],pool=enabledMinigameIds(g),r={id:crypto.randomUUID(),type:'lottery',prize:{title:cleanText(body.prize||'Pakjesprijs',90,'prijs'),description:'De extra lotnummerprijs tussen de rondes.',image:''},winner,entrants,minigame:pool[randomIndex(pool.length)],createdAt:now,acknowledged:false,returnPhase:g.state.phase};g.results.push(r);g.state.phase='result';g.state.resultId=r.id;});return json({game:hostGame(result.game)});
+   }
+   if(action==='delivery'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{const r=g.results.find(r=>r.id===body.resultId);if(!r)throw new BingoError('Prijs niet gevonden.');r.delivered=!!body.delivered;r.deliveredAt=r.delivered?now:null;productionEvent(g,'prize-delivery',{resultId:r.id,name:r.winner.name,prize:r.prize.title,delivered:r.delivered},now);});return json({game:hostGame(result.game)});}
+   if(action==='finish'&&request.method==='POST'){const result=await store.mutate(id,options,g=>{control(g);assertDrawAvailable(g);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af.',409);if(g.state.window?.status==='open')throw new BingoError('Laat het meldvenster eerst sluiten.');g.status='finished';g.finishedAt=now;productionEvent(g,'show-finished',{},now);g.state.phase='complete';g.state.pending=null;});return json({game:hostGame(result.game)});}
+  }
+  if(path==='/prize-image'&&request.method==='GET'){
+   const row=await store.game(url.searchParams.get('game')),id=url.searchParams.get('id');if(!row||!row.data.plan.prizes.some(p=>p.image===`/api/planner/images/${id}`))throw new BingoError('Afbeelding niet gevonden.',404);const image=await env.SETTINGS?.get(`show-prizes/${encodeURIComponent(row.owner_id)}/${id}`);if(!image)throw new BingoError('Afbeelding niet gevonden.',404);return new Response(image.body,{headers:{...headers,'Content-Type':image.httpMetadata?.contentType||'image/png'}});
+  }
+  throw new BingoError('Deze functie bestaat niet.',404);
+ }catch(error){if(error instanceof BingoError||error.status&&error.code)return json({error:{code:error.code,message:error.message}},error.status);console.error('Bingoadministratie:',error?.name||'StorageError');return json({error:{code:'unavailable',message:'De aanvraag is niet bevestigd. Probeer opnieuw; de opgeslagen spelstand blijft behouden.'}},503);}
+}

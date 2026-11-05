@@ -1,0 +1,12 @@
+✔ durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior (251.153575ms)
+✔ local data, private objects and roles survive a new storage instance (21.582606ms)
+✔ PostgreSQL translator numbers placeholders outside quoted literals and rejects unknown JSON shapes (1.679361ms)
+✔ PostgreSQL adapter executes the same persistence/concurrency contract with RLS and shared object CAS (558.090748ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 921.329396

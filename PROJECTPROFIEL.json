@@ -1,0 +1,93 @@
+{
+  "project": "Milo & Friends BingoShow",
+  "updated_at": "2026-11-05",
+  "authorized_scope": "local_build_and_repository_sync",
+  "source": {
+    "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
+    "sites_version": 63,
+    "commit": "08e1a652a78586d2e791179eead388acad8a3266",
+    "runtime": "Cloudflare Worker, D1/SQLite, R2",
+    "original_profile": "docs/overdracht/PROJECTPROFIEL.json",
+    "runtime_data_export_included": false,
+    "secrets_included": false
+  },
+  "local": {
+    "checkout": "/home/codex/repos/milobingo",
+    "framework": "Next.js, Node runtime",
+    "node": "24.18.0",
+    "package_manager": "pnpm@11.25.0",
+    "database": "SQLite when DATABASE_URL is absent; PostgreSQL when configured",
+    "private_objects": "local filesystem or explicitly configured private Supabase Storage",
+    "identity": "explicit loopback development login, or server-verified Supabase Auth",
+    "demonstration": "/spelen?demo=1",
+    "verification_report": "docs/LOKALE-VERIFICATIE.md"
+  },
+  "target": {
+    "workflow": "DG native releases via dg-site-deploy, selfhosted GitHub runners and Caddy",
+    "github_repository": "milobingo/platform",
+    "integration_branch": "main",
+    "development_host": null,
+    "development_checkout": null,
+    "staging_url": null,
+    "staging_site_id": null,
+    "production_url": null,
+    "production_site_id": null,
+    "deploy_host": null,
+    "project_paths": null,
+    "runner_labels": null,
+    "runner_names": null,
+    "linux_users": null,
+    "ports": null,
+    "deploy_wrapper_version": null,
+    "supabase_staging_ref": null,
+    "supabase_production_ref": null,
+    "mail_gateway_contract": null,
+    "github_environments": [
+      "staging",
+      "production"
+    ],
+    "staging_release": null,
+    "production_release": null,
+    "github_repository_url": "https://github.com/milobingo/platform",
+    "git_remote": "origin",
+    "git_remote_url": "https://github.com/milobingo/platform.git"
+  },
+  "configuration": {
+    "inventory": "docs/PROJECTGEGEVENS-EN-SECRETS.md",
+    "example": ".env.example",
+    "validation": "scripts/check-config.mjs",
+    "required_public_build_configuration": [],
+    "server_runtime_variables": [
+      "APP_URL",
+      "MILO_LOCAL_AUTH",
+      "SQLITE_PATH",
+      "OBJECT_STORAGE_PATH",
+      "SUPABASE_URL",
+      "SUPABASE_PUBLISHABLE_KEY",
+      "SUPABASE_STORAGE_BUCKET",
+      "OPENAI_TEXT_MODEL",
+      "OPENAI_SPEECH_MODEL",
+      "LIVEKIT_URL",
+      "PORT",
+      "RELEASE_SHA",
+      "RELEASE_ID",
+      "CONFIG_VERSION"
+    ],
+    "server_runtime_secrets": [
+      "DATABASE_URL",
+      "SUPABASE_SECRET_KEY",
+      "VLAMPIE_SETTINGS_KEY",
+      "OPENAI_API_KEY",
+      "LIVEKIT_API_KEY",
+      "LIVEKIT_API_SECRET"
+    ],
+    "livekit": "LIVEKIT_URL/API_KEY/API_SECRET, or separate encrypted server settings when no environment values are set",
+    "deploy_secrets": "Names unresolved until the existing DG wrapper and gateway contracts are inspected"
+  },
+  "notes": [
+    "Null target fields are unresolved project information; they are not deploy-ready defaults.",
+    "CI does not create accounts, apply remote migrations, send mail or deploy.",
+    "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
+    "The agreed scope covers the local build and synchronization to GitHub main; staging and production releases are not yet configured."
+  ]
+}

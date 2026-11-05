@@ -1,0 +1,77 @@
+{
+  "file": "dist/assets/vlampie-animated.glb",
+  "changedVertices": 29085,
+  "weightsSumRange": [
+    0.9999998211860657,
+    1.0000001192092896
+  ],
+  "torsoEdges": 61904,
+  "weightJumpsOver0_3": {
+    "before": 2440,
+    "after": 100
+  },
+  "weightJump99thPercentile": {
+    "before": 0.438242107629776,
+    "after": 0.1702833778038623
+  },
+  "centralChestMaxArmWeight": {
+    "before": 0.21594403684139252,
+    "after": 0.048820555210113525
+  },
+  "untouchedRegions": {
+    "head": true,
+    "hands": true,
+    "legsFeet": true
+  },
+  "source": "Original merged Meshy model before skin-weight refinement",
+  "sourceSha256": "ce80a8298484297e1212ed47d586abf35cfce83822b3395c94b610802ef8f030",
+  "repairedSha256": "dfc092447dc732d5832f5e2cdc868774b0cd2a45fceb675962b565de22b42b90",
+  "preservation": {
+    "sameFileSize": 12555816,
+    "jsonChunkByteIdentical": true,
+    "allBytesOutsideJointAndWeightBuffersIdentical": true,
+    "geometryPositionsNormalsTangentsUVsIndices": "byte-identical",
+    "imagesMaterials": "byte-identical",
+    "skeletonInverseBindMatrices": "byte-identical",
+    "walkingRunningAnimationClips": "byte-identical"
+  },
+  "method": {
+    "region": "0.81 < local Y < 1.23 and abs(local X) < 0.29, smooth fade at region borders",
+    "spatialSmoothing": "Triangle-area-weighted Gaussian averaging on unique positions; sigma 0.0175, radius 0.05 in model units",
+    "centralChest": "Up to 80% arm weight reduction in central chest, smoothly tapering across lateral ribcage; removed weight distributed proportionally to non-arm influences",
+    "format": "Four strongest influences normalized; unaffected vertices copied exactly",
+    "changedVertices": 29085
+  },
+  "diagnosis": {
+    "coincidentVerticesWithMismatchedWeights": 0,
+    "sourceVertices": 116044,
+    "uniquePositions": 99725,
+    "primaryCause": "Coarse spatially discontinuous arm/chest skin weights, accentuated by extreme shoulder rotation. Not UV seam separation."
+  },
+  "poseValidation": {
+    "sampleCount": 17,
+    "poses": [
+      "bind",
+      "idle",
+      "wave",
+      "welcome",
+      "cheer",
+      "think",
+      "bow",
+      "Walking at 5 phases",
+      "Running at 5 phases"
+    ],
+    "nonfiniteVertices": 0,
+    "maxHeadVertexDeltaAcrossAllPoses": 0,
+    "maxHandVertexDeltaAcrossAllPoses": 0,
+    "maxFeetLegVertexDeltaAcrossAllPoses": 0,
+    "cheerTorsoEdgeStretch99thPercentile": {
+      "before": 6.065491559232401,
+      "after": 2.4510816862132287
+    }
+  },
+  "visualReview": {
+    "observed": "Original maximum wave and cheer show continuous gold lapels and clean shoulder outlines after refinement; central shirt and bow tie retain shape. No head, hand, leg, or foot deformation changes.",
+    "limitations": "Some residual edge stretch remains at extreme shoulder rotations; lower-amplitude gestures further reduce it. No geometry retopology was performed."
+  }
+}

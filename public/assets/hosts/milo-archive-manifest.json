@@ -1,0 +1,99 @@
+{
+  "brand": "milo",
+  "generator": "Built-in image_gen",
+  "native_resolution_notice": "These are the exact original generated PNG sources at their true dimensions. The 8K JPEG plates are explicitly upscaled derivatives, not native 8K generation.",
+  "originals": [
+    {
+      "filename": "originals/milo-desk.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 2602511,
+      "sha256": "4b6aa5a23584f95600b4cb2fa6ee71c4dde779d3c7a72968d12e67b91cea3e56"
+    },
+    {
+      "filename": "originals/milo-games.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 3582474,
+      "sha256": "0f9e181540bd24ab614bc32fd459187e2b23e8ea886ac9d69b28c1a1155e43e4"
+    },
+    {
+      "filename": "originals/milo-logo.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "bytes": 2388171,
+      "sha256": "aa574d2efd22a5ea87436c5311b3de48c4f79b5e2bbd1840db56c034587dc76d"
+    },
+    {
+      "filename": "originals/milo-machine.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 2633120,
+      "sha256": "08f98722a21f74f092b2fbc9515ee30abfe6729eacbde0d915fa750ef12877bf"
+    },
+    {
+      "filename": "originals/milo-mascot.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "bytes": 2374652,
+      "sha256": "10178a089e97be0db3062e7cdac9d95887bc1837a278021ac357177453baf05f"
+    },
+    {
+      "filename": "originals/milo-studio.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 2753138,
+      "sha256": "08fc13a19c08c910c53a795ada936ec16d08297474fdc108e6454b999be4b8c6"
+    },
+    {
+      "filename": "originals/milo-talking.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "bytes": 2287942,
+      "sha256": "0aaede103b40eea958d8b51ac9feba9d3067f5d5cfd84c776bd72f248a8d46e5"
+    }
+  ],
+  "upscaled_8k": [
+    {
+      "filename": "upscaled-8k/milo-master-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "milo-studio.png",
+      "source_width": 1672,
+      "source_height": 941,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 72,
+      "bytes": 2475880
+    },
+    {
+      "filename": "upscaled-8k/milo-desk-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "milo-desk.png",
+      "source_width": 1672,
+      "source_height": 941,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 72,
+      "bytes": 2401199
+    },
+    {
+      "filename": "upscaled-8k/milo-machine-8k-upscaled.jpg",
+      "width": 7680,
+      "height": 4320,
+      "source": "milo-machine.png",
+      "source_width": 1672,
+      "source_height": 941,
+      "processing": "Upscaled from native source with RGB Lanczos fit/crop. This is not native 8K generated artwork.",
+      "jpeg_quality": 72,
+      "bytes": 2193961
+    }
+  ],
+  "revision": "Named studio backdrops \u00b7 v36"
+}

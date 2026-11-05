@@ -1,0 +1,239 @@
+{
+  "file": "/workspace/scratch/159666656eb7/model-v9/vlampie-presenter-animated.glb",
+  "rigProfile": "smart-rig-29",
+  "boneCount": 29,
+  "vertexCount": 30603,
+  "clips": [
+    {
+      "name": "Idle",
+      "frames": 181,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.5139479994044746,
+          -2.872938285024673e-7,
+          -0.35320162078975986
+        ],
+        [
+          0.5138427133207636,
+          2.7010417761638394,
+          0.35452111899252026
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.0588674046884148,
+        "p999": 1.238853502032773,
+        "max": 4.773206578974575
+      }
+    },
+    {
+      "name": "Wave",
+      "frames": 133,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.8693423609989928,
+          -2.872938285024673e-7,
+          -0.3478549380127804
+        ],
+        [
+          0.5138427133207636,
+          2.7000002693451046,
+          0.6639339674032706
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.0812940831826503,
+        "p999": 1.4005076088004509,
+        "max": 4.633725030605872
+      }
+    },
+    {
+      "name": "Welcome",
+      "frames": 109,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.6990365377604552,
+          -2.872938285024673e-7,
+          -0.3478549380127804
+        ],
+        [
+          0.70059095007059,
+          2.7000002693451046,
+          0.6074733640809176
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.0534276501904032,
+        "p999": 1.238958186449538,
+        "max": 4.633725030605872
+      }
+    },
+    {
+      "name": "Cheer",
+      "frames": 151,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.8584195266125333,
+          -2.872938285024673e-7,
+          -0.3478549396886184
+        ],
+        [
+          0.8634667578517113,
+          2.7027555093722113,
+          0.5910338827308
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.1018644858621747,
+        "p999": 1.5124929163636427,
+        "max": 5.522938184728087
+      }
+    },
+    {
+      "name": "Think",
+      "frames": 124,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.5139479994044746,
+          -2.872938285024673e-7,
+          -0.3478549380127804
+        ],
+        [
+          0.5138427133207636,
+          2.7000002693451046,
+          0.6244111933594718
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.080206041800005,
+        "p999": 1.3777641170494712,
+        "max": 4.633725030605872
+      }
+    },
+    {
+      "name": "Bow",
+      "frames": 109,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.5139479994044746,
+          -2.872938285024673e-7,
+          -0.3478549380127804
+        ],
+        [
+          0.5138427133207636,
+          2.70371603377986,
+          0.5472764858887346
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.872938285024673e-7,
+        -2.872938285024673e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.0718150004855589,
+        "p999": 1.341394323548805,
+        "max": 6.288448156985533
+      }
+    },
+    {
+      "name": "Walking",
+      "frames": 33,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.49840998123976493,
+          -3.578820530466881e-7,
+          -0.8224986617478676
+        ],
+        [
+          0.465037800140489,
+          2.816526806761757,
+          0.9102982115803727
+        ]
+      ],
+      "meshLowestYRange": [
+        -3.578820530466881e-7,
+        2.0549153170474482e-7
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.4736649700410933,
+        "p999": 2.473841159451626,
+        "max": 9.225427062503508
+      }
+    },
+    {
+      "name": "Running",
+      "frames": 21,
+      "nonfiniteVertices": 0,
+      "bounds": [
+        [
+          -0.5273176646800721,
+          -2.4784105299470454e-7,
+          -1.1609426206763953
+        ],
+        [
+          0.49252302959633315,
+          2.7762894873862423,
+          0.8549211109800885
+        ]
+      ],
+      "meshLowestYRange": [
+        -2.4784105299470454e-7,
+        0.11127401324664114
+      ],
+      "nonPelvisTranslationMaxDelta": 0,
+      "edgeStretch": {
+        "sampledPhases": 5,
+        "p99": 1.6685960389600396,
+        "p999": 3.0897883197822598,
+        "max": 16.19736676160579
+      }
+    }
+  ],
+  "nonfiniteVertices": 0,
+  "fullMeshPosesChecked": 861,
+  "visualReview": {
+    "file": "/workspace/scratch/159666656eb7/model-v9/animation-contact-sheet.png",
+    "method": "Offline front orthographic textured triangle render; rest plus one representative frame of each baked clip.",
+    "result": "New orange flame hair and hands, blue/gold costume, face, and geometry remain intact. Mapped body gestures and locomotion show coherent limbs, torso and head; no exploded skin or visible detached geometry. Offline triangle render has per-triangle texture approximation and is not the browser renderer."
+  }
+}

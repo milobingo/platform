@@ -1,0 +1,151 @@
+{
+  "native_notice": "No file in this delivery is native 8K. The only 8K files are explicitly marked Lanczos upscales inside artwork archives.",
+  "assets": [
+    {
+      "source": "milo-desk.png",
+      "native_width": 1672,
+      "native_height": 941,
+      "webp": "milo-desk-v36.webp",
+      "webp_bytes": 475044,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "milo-games.png",
+      "native_width": 1536,
+      "native_height": 1024,
+      "webp": "milo-games.webp",
+      "webp_bytes": 536728
+    },
+    {
+      "source": "milo-logo.png",
+      "native_width": 1774,
+      "native_height": 887,
+      "webp": "milo-logo.webp",
+      "webp_bytes": 455504,
+      "png": "milo-logo.png",
+      "png_bytes": 657171,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 888,
+      "png_height": 444
+    },
+    {
+      "source": "milo-machine.png",
+      "native_width": 1672,
+      "native_height": 941,
+      "webp": "milo-machine-v36.webp",
+      "webp_bytes": 451558,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "milo-mascot.png",
+      "native_width": 1024,
+      "native_height": 1536,
+      "webp": "milo-mascot.webp",
+      "webp_bytes": 271000,
+      "png": "milo-mascot.png",
+      "png_bytes": 2240986,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 1024,
+      "png_height": 1536
+    },
+    {
+      "source": "milo-studio.png",
+      "native_width": 1672,
+      "native_height": 941,
+      "webp": "milo-master-v36.webp",
+      "webp_bytes": 511594,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "milo-talking.png",
+      "native_width": 1024,
+      "native_height": 1536,
+      "webp": "milo-talking.webp",
+      "webp_bytes": 240446,
+      "png": "milo-talking.png",
+      "png_bytes": 2162041,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 1024,
+      "png_height": 1536
+    },
+    {
+      "source": "rocco-desk.png",
+      "native_width": 1672,
+      "native_height": 940,
+      "webp": "rocco-desk-v36.webp",
+      "webp_bytes": 320320,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "rocco-games.png",
+      "native_width": 1536,
+      "native_height": 1024,
+      "webp": "rocco-games.webp",
+      "webp_bytes": 367836
+    },
+    {
+      "source": "rocco-logo.png",
+      "native_width": 1774,
+      "native_height": 887,
+      "webp": "rocco-logo.webp",
+      "webp_bytes": 377216,
+      "png": "rocco-logo.png",
+      "png_bytes": 614326,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 888,
+      "png_height": 444
+    },
+    {
+      "source": "rocco-machine.png",
+      "native_width": 1672,
+      "native_height": 941,
+      "webp": "rocco-machine-v36.webp",
+      "webp_bytes": 322078,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "rocco-mascot.png",
+      "native_width": 1024,
+      "native_height": 1536,
+      "webp": "rocco-mascot.webp",
+      "webp_bytes": 218092,
+      "png": "rocco-mascot.png",
+      "png_bytes": 1958751,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 1024,
+      "png_height": 1536
+    },
+    {
+      "source": "rocco-studio.png",
+      "native_width": 1672,
+      "native_height": 941,
+      "webp": "rocco-master-v36.webp",
+      "webp_bytes": 343170,
+      "webp_width": 1600,
+      "webp_height": 900,
+      "note": "v36 physical name backdrop; web downsampled to exact16:9"
+    },
+    {
+      "source": "rocco-talking.png",
+      "native_width": 1024,
+      "native_height": 1536,
+      "webp": "rocco-talking.webp",
+      "webp_bytes": 198072,
+      "png": "rocco-talking.png",
+      "png_bytes": 1894172,
+      "png_note": "Full-color RGBA PNG; alpha preserved. Mascot/talking use original pixel dimensions and registration. Logos resized with Lanczos to 888x444.",
+      "png_width": 1024,
+      "png_height": 1536
+    }
+  ]
+}
