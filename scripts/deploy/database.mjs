@@ -282,7 +282,7 @@ export async function assertBackupCapacity(directory, databaseBytes, readCapacit
 }
 async function dataProof(client) {
   await client.query("SET LOCAL TIME ZONE 'UTC'");
-  const tables = (await client.query("SELECT n.nspname AS schema,c.relname AS name FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind='r' AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' ORDER BY n.nspname,c.relname")).rows;
+  const tables = (await client.query("SELECT n.nspname AS schema,c.relname AS name FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind='r' AND left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' ORDER BY n.nspname,c.relname")).rows;
   const result = [];
   for (const table of tables) {
     const values = (await client.query(`SELECT count(*)::text AS rows,
@@ -295,29 +295,36 @@ async function dataProof(client) {
 }
 async function securityProof(client) {
   const relations = (await client.query(`SELECT n.nspname AS schema,c.relname AS name,c.relkind AS kind,pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity AS rls,c.relforcerowsecurity AS force_rls
-    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f') ORDER BY n.nspname,c.relname`)).rows;
+    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f') ORDER BY n.nspname,c.relname`)).rows;
   const grants = (await client.query(`SELECT n.nspname AS schema,c.relname AS name,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
     FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace CROSS JOIN LATERAL aclexplode(coalesce(c.relacl,acldefault(CASE WHEN c.relkind='S' THEN 's'::"char" ELSE 'r'::"char" END,c.relowner))) a
-    WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f') ORDER BY n.nspname,c.relname,grantor,grantee,a.privilege_type`)).rows;
+    WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f') ORDER BY n.nspname,c.relname,grantor,grantee,a.privilege_type`)).rows;
   const policies = (await client.query("SELECT schemaname,tablename,policyname,permissive,roles::text[] AS roles,cmd,qual,with_check FROM pg_policies ORDER BY schemaname,tablename,policyname")).rows;
-  const schemas = (await client.query("SELECT nspname AS name,pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname<>'information_schema' ORDER BY nspname")).rows;
+  const schemas = (await client.query("SELECT nspname AS name,pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE left(nspname,3)<>'pg_' AND nspname<>'information_schema' ORDER BY nspname")).rows;
   const schemaGrants = (await client.query(`SELECT n.nspname AS name,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
-    FROM pg_namespace n CROSS JOIN LATERAL aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) a WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' ORDER BY n.nspname,grantor,grantee,a.privilege_type`)).rows;
+    FROM pg_namespace n CROSS JOIN LATERAL aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) a WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' ORDER BY n.nspname,grantor,grantee,a.privilege_type`)).rows;
   const defaults = (await client.query(`SELECT pg_get_userbyid(d.defaclrole) AS owner,coalesce(n.nspname,'') AS schema,d.defaclobjtype AS kind,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
     FROM pg_default_acl d LEFT JOIN pg_namespace n ON n.oid=d.defaclnamespace CROSS JOIN LATERAL aclexplode(d.defaclacl) a ORDER BY owner,schema,kind,grantor,grantee,a.privilege_type`)).rows;
-  return { relations: relations.length, digest: hash(stable({ relations, grants, policies, schemas, schemaGrants, defaults })) };
+  const eventTriggers = await eventTriggerInventory(client);
+  return { relations: relations.length, digest: hash(stable({ relations, grants, policies, schemas, schemaGrants, defaults, eventTriggers })) };
 }
 
 async function extensionOwners(client) {
   return (await client.query(`SELECT n.nspname AS schema,c.relname AS name,c.relkind AS kind,pg_get_userbyid(c.relowner) AS owner
     FROM pg_depend d JOIN pg_class c ON c.oid=d.objid JOIN pg_namespace n ON n.oid=c.relnamespace
     WHERE d.classid='pg_class'::regclass AND d.refclassid='pg_extension'::regclass AND d.deptype='e' AND d.objsubid=0
-    AND c.relkind IN ('r','p','m','v','S','f') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema'
+    AND c.relkind IN ('r','p','m','v','S','f') AND left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema'
     ORDER BY n.nspname,c.relname`)).rows;
 }
 
 async function extensionInventory(client) {
   return (await client.query('SELECT e.extname AS name,e.extversion AS version,n.nspname AS schema,pg_get_userbyid(e.extowner) AS owner FROM pg_extension e JOIN pg_namespace n ON n.oid=e.extnamespace ORDER BY e.extname')).rows;
+}
+
+async function eventTriggerInventory(client) {
+  return (await client.query(`SELECT e.evtname AS name,pg_get_userbyid(e.evtowner) AS owner,e.evtevent AS event,e.evtenabled AS enabled,e.evttags AS tags,
+    n.nspname AS function_schema,p.proname AS function_name,pg_get_function_identity_arguments(p.oid) AS function_arguments
+    FROM pg_event_trigger e JOIN pg_proc p ON p.oid=e.evtfoid JOIN pg_namespace n ON n.oid=p.pronamespace ORDER BY e.evtname`)).rows;
 }
 
 export async function readExtensionMetadata(path, key, expected) {
@@ -337,10 +344,40 @@ export async function readExtensionMetadata(path, key, expected) {
     if (metadata.format !== 1 || metadata.projectRef !== expected.projectRef || metadata.releaseSha !== expected.releaseSha || metadata.backupId !== expected.backupId || !Array.isArray(metadata.owners) || metadata.owners.length !== expected.relations || metadata.owners.some(row => !row || stable(Object.keys(row).sort()) !== stable(['kind', 'name', 'owner', 'schema']) || !kinds.includes(row.kind) || ['schema', 'name', 'owner'].some(key => !identifier(row[key]))) || !Array.isArray(metadata.extensions) || metadata.extensions.length !== expected.extensions || metadata.extensions.some(row => !row || stable(Object.keys(row).sort()) !== stable(['name', 'owner', 'schema', 'version']) || ['schema', 'name', 'owner'].some(key => !identifier(row[key])) || typeof row.version !== 'string' || !row.version || row.version.length > 512)) fail('extension_metadata_invalid', 'De extensiemetadata hoort niet bij dit herstelbewijs of heeft een onjuist contract.');
     if (new Set(metadata.owners.map(row => stable([row.schema, row.name]))).size !== metadata.owners.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele relaties.');
     if (new Set(metadata.extensions.map(row => row.name)).size !== metadata.extensions.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele extensies.');
+    if (!Array.isArray(metadata.eventTriggers) || metadata.eventTriggers.length !== expected.eventTriggers || metadata.eventTriggers.some(row => !row || ['name', 'owner', 'function_schema', 'function_name'].some(key => !identifier(row[key])) || typeof row.event !== 'string' || !row.event || !['O', 'D', 'R', 'A'].includes(row.enabled) || typeof row.function_arguments !== 'string' || row.function_arguments.length > 65536 || row.tags !== null && (!Array.isArray(row.tags) || row.tags.some(tag => typeof tag !== 'string' || tag.length > 512))) || new Set(metadata.eventTriggers.map(row => row.name)).size !== metadata.eventTriggers.length) fail('extension_metadata_invalid', 'De eventtriggermetadata heeft geen geldig, uniek contract.');
     return metadata;
   } catch (error) {
     if (error instanceof DatabaseGateError) throw error;
     fail('extension_metadata_invalid', 'De versleutelde extensiemetadata kon niet geauthenticeerd en gevalideerd worden.');
+  }
+}
+
+async function withScratchEventOwners(restoreClient, metadata, restoreUrl, operation) {
+  const actualDatabase = (await restoreClient.query('SELECT current_database() AS database')).rows[0].database;
+  if (!loopback(restoreUrl.hostname) || !/^milo_restore_test_[a-z0-9_]+$/.test(actualDatabase) || decodeURIComponent(restoreUrl.pathname.slice(1)) !== actualDatabase) fail('event_restore_target', 'Eventtriggereigenaars mogen uitsluitend op de bevestigde lokale hersteltestserver tijdelijk worden aangevuld.');
+  const owners = [...new Set(metadata.eventTriggers.map(row => row.owner))].sort();
+  const roles = (await restoreClient.query(`SELECT r.rolname AS name,r.rolname=current_user AS restore_admin,r.rolcanlogin AS login,r.rolsuper AS superuser,
+    r.rolcreatedb AS createdb,r.rolcreaterole AS createrole,r.rolreplication AS replication,r.rolbypassrls AS bypassrls,
+    NOT EXISTS(SELECT 1 FROM pg_auth_members m WHERE m.member=r.oid OR m.roleid=r.oid) AS isolated FROM pg_roles r WHERE r.rolname=ANY($1::text[]) ORDER BY r.rolname`, [owners])).rows;
+  if (roles.length !== owners.length || roles.some(row => !(row.restore_admin && row.superuser) && (row.login || row.superuser || row.createdb || row.createrole || row.replication || row.bypassrls || !row.isolated))) fail('event_restore_role', 'Tijdelijke eventtriggerbevoegdheid vereist uitsluitend beperkte NOLOGIN-scaffoldrollen; bestaande loginrollen worden niet verhoogd.');
+  const changed = [];
+  try {
+    for (const role of roles.filter(row => !row.superuser)) {
+      changed.push(role.name);
+      await restoreClient.query(`ALTER ROLE ${quote(role.name)} SUPERUSER`);
+    }
+    await operation();
+  } finally {
+    let failed = false;
+    for (const name of changed.reverse()) {
+      try { await restoreClient.query(`ALTER ROLE ${quote(name)} NOSUPERUSER`); }
+      catch { failed = true; }
+    }
+    try {
+      const remaining = (await restoreClient.query('SELECT rolcanlogin AS login,rolsuper AS superuser FROM pg_roles WHERE rolname=ANY($1::text[])', [changed])).rows;
+      if (remaining.length !== changed.length || remaining.some(row => row.login || row.superuser)) failed = true;
+    } catch { failed = true; }
+    if (failed) fail('scratch_role_cleanup_failed', 'Tijdelijke scratchbevoegdheid kon niet volledig worden teruggenomen. Stop deployment en ruim de afzonderlijke herstelserver gecontroleerd op.');
   }
 }
 
@@ -377,7 +414,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
   let restored = false, caDirectory;
   try {
     const scratch = (await restoreClient.query(`SELECT current_database() AS database,current_setting('server_version_num')::int AS version,
-      (SELECT count(*)::int FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p','v','m','f','S') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema') AS objects`)).rows[0];
+      (SELECT count(*)::int FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind IN ('r','p','v','m','f','S') AND left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema') AS objects`)).rows[0];
     if (!scratch.database.startsWith('milo_restore_test_') || scratch.objects !== 0 || Math.floor(scratch.version / 10000) !== dumpMajor) fail('restore_database_not_empty', 'De hersteltestdatabase moet leeg, lokaal, afzonderlijk en van dezelfde PostgreSQL-major zijn.');
     await mkdir(prerequisites.directory, { recursive: true, mode: 0o700 });
     if ((await stat(prerequisites.directory)).mode & 0o077) fail('backup_directory_permissions', 'De backuplocatie moet uitsluitend voor de deploygebruiker toegankelijk zijn (0700).');
@@ -394,10 +431,10 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     let sourceProof, sourceSecurity, extensionMetadata;
     try {
       const snapshot = (await sourceClient.query('SELECT pg_export_snapshot() AS id')).rows[0].id;
-      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient) };
+      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient), eventTriggers: await eventTriggerInventory(sourceClient) };
       const metadataBody = stable(metadata);
       await encryptBackup(Readable.from(metadataBody), extensionPath, env.BACKUP_ENCRYPTION_KEY);
-      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length };
+      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length, eventTriggers: metadata.eventTriggers.length };
       const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL, rootCertFile), spawnTool);
       dump.child.stdin.end();
       try { await Promise.all([encryptBackup(dump.child.stdout, encryptedPath, env.BACKUP_ENCRYPTION_KEY), dump.done]); }
@@ -410,11 +447,14 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     await decryptBackup(encryptedPath, new Writable({ write(chunk, encoding, callback) { callback(); } }), env.BACKUP_ENCRYPTION_KEY);
     const roles = (await sourceClient.query("SELECT rolname AS name FROM pg_roles WHERE left(rolname,3)<>'pg_' ORDER BY rolname")).rows;
     for (const role of roles) if (role.name !== 'public' && !(await restoreClient.query('SELECT 1 FROM pg_roles WHERE rolname=$1', [role.name])).rows.length) await restoreClient.query(`CREATE ROLE ${quote(role.name)} NOLOGIN`);
-    const restore = startTool('pg_restore', [`--dbname=${decodeURIComponent(prerequisites.restore.pathname.slice(1))}`, '--exit-on-error', '--single-transaction'], pgEnvironment(env.RESTORE_TEST_DATABASE_URL), spawnTool);
-    restore.child.stdout.resume();
-    try { await Promise.all([decryptBackup(encryptedPath, restore.child.stdin, env.BACKUP_ENCRYPTION_KEY), restore.done]); }
-    catch (error) { restore.child.kill('SIGTERM'); throw error; }
     const metadata = await readExtensionMetadata(extensionPath, env.BACKUP_ENCRYPTION_KEY, { ...extensionMetadata, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId });
+    await withScratchEventOwners(restoreClient, metadata, prerequisites.restore, async () => {
+      const restore = startTool('pg_restore', [`--dbname=${decodeURIComponent(prerequisites.restore.pathname.slice(1))}`, '--exit-on-error', '--single-transaction'], pgEnvironment(env.RESTORE_TEST_DATABASE_URL), spawnTool);
+      restore.child.stdout.resume();
+      try { await Promise.all([decryptBackup(encryptedPath, restore.child.stdin, env.BACKUP_ENCRYPTION_KEY), restore.done]); }
+      catch (error) { restore.child.kill('SIGTERM'); throw error; }
+    });
+    if (stable(await eventTriggerInventory(restoreClient)) !== stable(metadata.eventTriggers)) fail('event_restore_mismatch', 'De herstelde eventtriggers wijken af in eigenaar, functie, status of tags.');
     await restoreExtensionOwners(restoreClient, metadata);
     await restoreClient.query('BEGIN READ ONLY');
     const restoredProof = await dataProof(restoreClient), restoredSecurity = await securityProof(restoreClient); await restoreClient.query('COMMIT');

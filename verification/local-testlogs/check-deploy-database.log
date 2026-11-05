@@ -1,11 +1,11 @@
-✔ database preflight binds API and TLS database to the explicitly confirmed project (1.745713ms)
-✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (179.909287ms)
-✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (3.312966ms)
-✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (31.494467ms)
-✔ CLI failures do not echo malformed secret values (62.415839ms)
-✔ backup capacity uses measured available filesystem bytes and database size (0.529453ms)
-✔ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (1720.321453ms)
-✔ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (1442.432792ms)
+✔ database preflight binds API and TLS database to the explicitly confirmed project (2.32539ms)
+✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (139.466054ms)
+✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (3.40282ms)
+✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (32.440656ms)
+✔ CLI failures do not echo malformed secret values (63.671021ms)
+✔ backup capacity uses measured available filesystem bytes and database size (0.476472ms)
+✔ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (1524.89964ms)
+✔ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (4078.460706ms)
 ℹ tests 8
 ℹ suites 0
 ℹ pass 8
@@ -13,4 +13,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 3533.235399
+ℹ duration_ms 5939.023189

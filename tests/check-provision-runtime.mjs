@@ -19,10 +19,10 @@ async function proofFixture(t, major = 17) {
   const directory = await mkdtemp(join(tmpdir(), 'milo-runtime-proof-'));
   t.after(() => rm(directory, { force: true, recursive: true }));
   const bytes = Buffer.from('encrypted-backup-fixture-only');
-  const metadata = JSON.stringify({ format: 1, projectRef: ref, releaseSha, backupId, extensions: [], owners: [] });
+  const metadata = JSON.stringify({ format: 1, projectRef: ref, releaseSha, backupId, extensions: [], owners: [], eventTriggers: [] });
   const sidecarPath = join(directory, `${backupId}.extensions.json.aesgcm`);
   await encryptBackup(Readable.from(metadata), sidecarPath, configuration().BACKUP_ENCRYPTION_KEY);
-  const extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: createHash('sha256').update(await readFile(sidecarPath)).digest('hex'), metadataSha256: createHash('sha256').update(metadata).digest('hex'), relations: 0, extensions: 0 };
+  const extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: createHash('sha256').update(await readFile(sidecarPath)).digest('hex'), metadataSha256: createHash('sha256').update(metadata).digest('hex'), relations: 0, extensions: 0, eventTriggers: 0 };
   const sourceProof = { tables: 2, digest: 'b'.repeat(64) }, sourceSecurity = { relations: 2, digest: 'c'.repeat(64) };
   const proof = { format: 1, projectRef: ref, releaseSha, backupId, postgresMajor: major, encryptedSha256: createHash('sha256').update(bytes).digest('hex'), extensionMetadata, sourceProof, restoredProof: sourceProof, sourceSecurity, restoredSecurity: sourceSecurity, restoreVerified: true, verifiedAt: new Date().toISOString() };
   const proofPath = join(directory, `${backupId}.proof.json`), dumpPath = join(directory, `${backupId}.dump.aesgcm`);

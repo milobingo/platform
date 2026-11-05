@@ -87,7 +87,7 @@
       ],
       "acceptance": "not_run",
       "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42065193147",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42067369331",
       "ci_result": "success",
       "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
       "deploy_result": "blocked_before_checkout_by_host_bootstrap",
@@ -120,8 +120,9 @@
       "migration_connection_configured": true,
       "backup_key_configured": true,
       "scratch_restore_connection": "temporary private loopback relay; authenticated empty PG17.11; must clean after restore",
-      "database_apply_attempt": "https://github.com/milobingo/platform/actions/runs/42065993828",
-      "database_apply_result": "restore blocked before migration; missing scratch pgbouncer role; literal role-prefix fix and cross-cluster regression added"
+      "database_apply_attempt": "https://github.com/milobingo/platform/actions/runs/42068032013",
+      "database_apply_result": "restore blocked before migration on standard PostgreSQL event-trigger owner rule; bounded scratch-only compatibility fix added",
+      "wrapper_denial_evidence": "verification/staging-wrapper-denial.json"
     }
   },
   "configuration": {

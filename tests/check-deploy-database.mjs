@@ -286,6 +286,7 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   }
   const sourceName = `milo_backup_source_test_${randomUUID().replaceAll('-', '')}`, restoreName = `milo_restore_test_${randomUUID().replaceAll('-', '')}`;
   const corruptRestoreName = `milo_restore_test_acl_${randomUUID().replaceAll('-', '')}`;
+  const failedRestoreName = `milo_restore_test_fail_${randomUUID().replaceAll('-', '')}`;
   const ownerRole = `milo_backup_owner_${randomUUID().replaceAll('-', '')}`, readerRole = `pgbouncer_milo_${randomUUID().replaceAll('-', '')}`, restoreRole = `milo_restore_owner_${randomUUID().replaceAll('-', '')}`;
   const directory = await mkdtemp(join(tmpdir(), 'milo-actual-backup-'));
   let scratchAdmin = admin, scratchAdminUrl = adminUrl;
@@ -302,7 +303,7 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
       }
     } catch (error) { await scratchAdmin.end(); await run('docker', ['rm', '--force', scratchContainer]); await admin.end(); throw error; }
   }
-  await admin.query(`CREATE DATABASE "${sourceName}"`); await scratchAdmin.query(`CREATE DATABASE "${restoreName}"`); await scratchAdmin.query(`CREATE DATABASE "${corruptRestoreName}"`);
+  await admin.query(`CREATE DATABASE "${sourceName}"`); await scratchAdmin.query(`CREATE DATABASE "${restoreName}"`); await scratchAdmin.query(`CREATE DATABASE "${corruptRestoreName}"`); await scratchAdmin.query(`CREATE DATABASE "${failedRestoreName}"`);
   await admin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
   if (scratchAdmin !== admin) await scratchAdmin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
   const sourceUrl = new URL(adminUrl), restoreUrl = new URL(scratchAdminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`; restoreUrl.username = restoreRole; restoreUrl.password = 'milo-local-test-only';
@@ -312,7 +313,7 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   t.after(async () => {
     const unclosedRestorePools = restorePools.filter(pool => !pool.ending).length;
     sourceClient.release(); await Promise.all([sourcePool, restoredPool, ...restorePools].map(pool => pool.end()));
-    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(scratchAdmin, restoreName); await dropFixtureDatabase(scratchAdmin, corruptRestoreName); }
+    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(scratchAdmin, restoreName); await dropFixtureDatabase(scratchAdmin, corruptRestoreName); await dropFixtureDatabase(scratchAdmin, failedRestoreName); }
     finally {
       await admin.end(); if (scratchAdmin !== admin) await scratchAdmin.end();
       if (scratchContainer) await promisify(execFile)('docker', ['rm', '--force', scratchContainer]);
@@ -331,14 +332,25 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   const payload = { family: 'private-fixture', cards: [7, 19, 42], code: randomUUID() };
   await sourceClient.query('INSERT INTO public.backup_identity VALUES ($1,$2,$3)', ['unchanged-book-id', 17, payload]);
   await sourceClient.query(`ALTER TABLE public.backup_identity OWNER TO "${ownerRole}"; GRANT SELECT ON public.backup_identity TO "${readerRole}"; ALTER TABLE public.backup_identity ENABLE ROW LEVEL SECURITY; CREATE POLICY backup_reader ON public.backup_identity FOR SELECT TO "${readerRole}" USING (true)`);
+  await sourceClient.query(`CREATE SCHEMA pgcustom_restore AUTHORIZATION "${ownerRole}";
+    CREATE TABLE pgcustom_restore.preserved_data (id text PRIMARY KEY,document jsonb NOT NULL);
+    INSERT INTO pgcustom_restore.preserved_data VALUES ('nonreserved-pg-prefix','{"preserve":"namespace-data"}');
+    ALTER TABLE pgcustom_restore.preserved_data OWNER TO "${ownerRole}";
+    GRANT USAGE ON SCHEMA pgcustom_restore TO "${readerRole}";
+    GRANT SELECT ON pgcustom_restore.preserved_data TO "${readerRole}"`);
   await sourceClient.query(`CREATE EXTENSION pg_stat_statements; ALTER VIEW public.pg_stat_statements_info OWNER TO "${ownerRole}"`);
+  await sourceClient.query(`ALTER ROLE "${ownerRole}" SUPERUSER;
+    CREATE FUNCTION public.fixture_event_handler() RETURNS event_trigger LANGUAGE plpgsql AS $$ BEGIN NULL; END $$;
+    CREATE EVENT TRIGGER fixture_ensure_rls ON ddl_command_end WHEN TAG IN ('CREATE TABLE') EXECUTE FUNCTION public.fixture_event_handler();
+    ALTER EVENT TRIGGER fixture_ensure_rls OWNER TO "${ownerRole}";
+    ALTER ROLE "${ownerRole}" NOSUPERUSER`);
   const env = configuration({ DATABASE_URL: sourceUrl.toString(), RESTORE_TEST_DATABASE_URL: restoreUrl.toString(), DATABASE_BACKUP_DIRECTORY: directory });
   const prerequisites = validateApplyPrerequisites(env);
   const proof = await backupAndRestore({ env, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites, spawnTool, poolFactory });
   const proofDirectory = await open(directory, 'r');
   try { assert.equal((await validateRestoreProof(proofDirectory, proof.backupId, env.RELEASE_SHA)).backupId, proof.backupId, 'the runtime consumer accepts the real backup producer identity, encrypted dump and extension sidecar'); }
   finally { await proofDirectory.close(); }
-  assert.equal(proof.restoreVerified, true); assert.equal(proof.sourceProof.tables, 1);
+  assert.equal(proof.restoreVerified, true); assert.equal(proof.sourceProof.tables, 2, 'a nonreserved pg-prefixed namespace participates in the complete data proof');
   assert.deepEqual(proof.sourceProof, proof.restoredProof);
   assert.deepEqual(proof.sourceSecurity, proof.restoredSecurity);
   const restored = (await restoredPool.query('SELECT id,revision,document FROM public.backup_identity')).rows[0];
@@ -346,6 +358,9 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   assert.equal((await restoredPool.query("SELECT pg_get_userbyid(relowner) AS owner FROM pg_class WHERE oid='public.backup_identity'::regclass")).rows[0].owner, ownerRole);
   const grants = (await restoredPool.query("SELECT has_table_privilege($1,'public.backup_identity','SELECT') AS read,has_table_privilege($1,'public.backup_identity','UPDATE') AS write", [readerRole])).rows[0];
   assert.deepEqual(grants, { read: true, write: false });
+  assert.deepEqual((await restoredPool.query('SELECT id,document FROM pgcustom_restore.preserved_data')).rows, [{ id: 'nonreserved-pg-prefix', document: { preserve: 'namespace-data' } }]);
+  assert.deepEqual((await restoredPool.query("SELECT pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname='pgcustom_restore'")).rows[0], { owner: ownerRole });
+  assert.deepEqual((await restoredPool.query("SELECT has_schema_privilege($1,'pgcustom_restore','USAGE') AS usage,has_table_privilege($1,'pgcustom_restore.preserved_data','SELECT') AS read,has_table_privilege($1,'pgcustom_restore.preserved_data','UPDATE') AS write", [readerRole])).rows[0], { usage: true, read: true, write: false });
   if (scratchAdmin !== admin) assert.deepEqual((await restoredPool.query('SELECT rolcanlogin AS login,rolsuper AS superuser,rolcreaterole AS createrole,rolcreatedb AS createdb FROM pg_roles WHERE rolname=$1', [readerRole])).rows[0], { login: false, superuser: false, createrole: false, createdb: false }, 'pgbouncer-style ACL grantees are restored as unprivileged NOLOGIN scaffolding');
   const extensionOwners = (await restoredPool.query("SELECT c.relname AS name,pg_get_userbyid(c.relowner) AS owner FROM pg_class c WHERE c.oid IN ('public.pg_stat_statements'::regclass,'public.pg_stat_statements_info'::regclass) ORDER BY name")).rows;
   assert.deepEqual(extensionOwners, [{ name: 'pg_stat_statements', owner: decodeURIComponent(adminUrl.username) }, { name: 'pg_stat_statements_info', owner: ownerRole }], 'individual source extension owners survive a full restore by a different superuser');
@@ -358,6 +373,9 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   assert.equal((await stat(sidecarPath)).mode & 0o777, 0o600);
   const expectedMetadata = { ...proof.extensionMetadata, projectRef, releaseSha: env.RELEASE_SHA, backupId: proof.backupId };
   const metadata = await readExtensionMetadata(sidecarPath, env.BACKUP_ENCRYPTION_KEY, expectedMetadata);
+  assert.equal(proof.extensionMetadata.eventTriggers, 1);
+  assert.deepEqual((await restoredPool.query("SELECT pg_get_userbyid(evtowner) AS owner FROM pg_event_trigger WHERE evtname='fixture_ensure_rls'")).rows[0], { owner: ownerRole });
+  assert.deepEqual((await restoredPool.query('SELECT rolcanlogin AS login,rolsuper AS superuser FROM pg_roles WHERE rolname=$1', [ownerRole])).rows[0], { login: false, superuser: false }, 'event-trigger ownership is restored without retaining scratch SUPERUSER');
   assert.ok(metadata.extensions.some(row => row.name === 'pg_stat_statements' && row.owner === decodeURIComponent(adminUrl.username)));
   const extensionClient = await restoredPool.connect();
   try { await assert.rejects(restoreExtensionOwners(extensionClient, { ...metadata, extensions: metadata.extensions.map(row => row.name === 'pg_stat_statements' ? { ...row, version: 'wrong-version' } : row) }), error => error.code === 'extension_restore_versions'); }
@@ -376,11 +394,26 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
     return { end: () => pool.end(), async connect() {
       const client = await pool.connect();
       return { release: () => client.release(), async query(sql, values) {
-        if (sql === 'BEGIN READ ONLY') await client.query(`GRANT UPDATE ON public.backup_identity TO "${readerRole}"`);
+        if (sql === 'BEGIN READ ONLY') await client.query(`GRANT UPDATE ON pgcustom_restore.preserved_data TO "${readerRole}"`);
         return client.query(sql, values);
       } };
     } };
   };
   await assert.rejects(backupAndRestore({ env: corruptEnv, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites: validateApplyPrerequisites(corruptEnv), spawnTool, poolFactory: corruptPoolFactory }), error => error.code === 'restore_security_mismatch');
   assert.equal((await readdir(directory)).filter(name => name.endsWith('.proof.json')).length, 1, 'an unrelated ACL mismatch never receives a restore proof');
+  if (scratchAdmin !== admin) {
+    const failedUrl = new URL(restoreUrl); failedUrl.pathname = `/${failedRestoreName}`;
+    const failedEnv = { ...env, RESTORE_TEST_DATABASE_URL: failedUrl.toString() }; let attemptedRestore = false;
+    const forceFailure = (executable, args, options) => {
+      if (executable === 'pg_restore' && args.some(argument => argument.startsWith('--dbname='))) {
+        attemptedRestore = true;
+        return spawnTool(executable, [...args, '--role=deliberately_missing_fixture_role'], options);
+      }
+      return spawnTool(executable, args, options);
+    };
+    await assert.rejects(backupAndRestore({ env: failedEnv, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites: validateApplyPrerequisites(failedEnv), spawnTool: forceFailure, poolFactory }));
+    assert.equal(attemptedRestore, true, 'the failure happens after the event-owner scaffold is elevated');
+    assert.deepEqual((await scratchAdmin.query('SELECT rolcanlogin AS login,rolsuper AS superuser FROM pg_roles WHERE rolname=$1', [ownerRole])).rows[0], { login: false, superuser: false }, 'failed pg_restore still removes temporary SUPERUSER');
+    assert.equal((await readdir(directory)).filter(name => name.endsWith('.proof.json')).length, 1);
+  }
 });

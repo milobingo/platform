@@ -1,0 +1,48 @@
+{
+  "format": 1,
+  "observedAt": "2026-11-05T16:55:42.100793+00:00",
+  "site": "milobingo-staging",
+  "test": "installed native entry/sudo/helper denial with zero runtime values",
+  "caller": "run-mil-stg",
+  "siteArguments": [
+    "milobingo-staging",
+    "/home/run-mil-stg/_work/platform/platform",
+    "930d187fa4121d4d05f1b064baa94fc78dc225f3",
+    "1-1"
+  ],
+  "environmentKeys": [
+    "PATH",
+    "DG_RUNTIME_ENV_KEYS",
+    "DG_BUILD_ENV_KEYS"
+  ],
+  "runtimeKeysSupplied": [],
+  "credentialsSupplied": false,
+  "returnCode": 1,
+  "stdout": "",
+  "stderr": "Milo deployment refused or failed; no runtime secret values are logged.",
+  "expectedStderr": "Milo deployment refused or failed; no runtime secret values are logged.",
+  "expectedDenialObserved": true,
+  "before": {
+    "currentExists": false,
+    "service": {
+      "MainPID": "0",
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    }
+  },
+  "after": {
+    "currentExists": false,
+    "service": {
+      "MainPID": "0",
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    }
+  },
+  "applicationStateUnchanged": true,
+  "currentStillAbsent": true,
+  "applicationStillInactive": true,
+  "scope": "one intentionally invalid installed-wrapper invocation; no valid payload, build, release or database action requested",
+  "diagnosticLimit": "The generic helper error confirms entry-to-helper execution but does not distinguish caller/profile/runtime validation failures. Prior independent host metadata verifies the public profile and identity; no specific internal rejection stage is asserted."
+}
