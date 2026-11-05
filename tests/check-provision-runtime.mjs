@@ -8,8 +8,9 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createServer, connect } from 'node:tls';
 import { Pool } from 'pg';
+import { Readable } from 'node:stream';
 import { scramVerifier, deriveRuntimeUrl, validateRestoreProof, provisionRuntime } from '../scripts/deploy/provision-runtime.mjs';
-import { applyDatabase, loadManifest } from '../scripts/deploy/database.mjs';
+import { applyDatabase, loadManifest, encryptBackup } from '../scripts/deploy/database.mjs';
 
 const ref = 'lfsdgxcpdyghidzkzzvn', releaseSha = 'a'.repeat(40), role = 'milo_staging_runtime';
 const backupId = `milo-${ref}-20261105T160000Z-${randomUUID()}`;
@@ -18,11 +19,15 @@ async function proofFixture(t, major = 17) {
   const directory = await mkdtemp(join(tmpdir(), 'milo-runtime-proof-'));
   t.after(() => rm(directory, { force: true, recursive: true }));
   const bytes = Buffer.from('encrypted-backup-fixture-only');
+  const metadata = JSON.stringify({ format: 1, projectRef: ref, releaseSha, backupId, extensions: [], owners: [] });
+  const sidecarPath = join(directory, `${backupId}.extensions.json.aesgcm`);
+  await encryptBackup(Readable.from(metadata), sidecarPath, configuration().BACKUP_ENCRYPTION_KEY);
+  const extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: createHash('sha256').update(await readFile(sidecarPath)).digest('hex'), metadataSha256: createHash('sha256').update(metadata).digest('hex'), relations: 0, extensions: 0 };
   const sourceProof = { tables: 2, digest: 'b'.repeat(64) }, sourceSecurity = { relations: 2, digest: 'c'.repeat(64) };
-  const proof = { format: 1, projectRef: ref, releaseSha, backupId, postgresMajor: major, encryptedSha256: createHash('sha256').update(bytes).digest('hex'), sourceProof, restoredProof: sourceProof, sourceSecurity, restoredSecurity: sourceSecurity, restoreVerified: true, verifiedAt: new Date().toISOString() };
+  const proof = { format: 1, projectRef: ref, releaseSha, backupId, postgresMajor: major, encryptedSha256: createHash('sha256').update(bytes).digest('hex'), extensionMetadata, sourceProof, restoredProof: sourceProof, sourceSecurity, restoredSecurity: sourceSecurity, restoreVerified: true, verifiedAt: new Date().toISOString() };
   const proofPath = join(directory, `${backupId}.proof.json`), dumpPath = join(directory, `${backupId}.dump.aesgcm`);
   await writeFile(proofPath, JSON.stringify(proof), { mode: 0o600 }); await writeFile(dumpPath, bytes, { mode: 0o600 });
-  return { directory, proof, proofPath, dumpPath };
+  return { directory, proof, proofPath, dumpPath, sidecarPath };
 }
 
 test('derived runtime credentials preserve target, remove TLS overrides and use an ASCII SCRAM verifier', () => {
@@ -36,13 +41,19 @@ test('derived runtime credentials preserve target, remove TLS overrides and use 
 });
 
 test('runtime provisioning rejects stale, mismatched, modified and unsafe backup proof before opening a database', async t => {
-  const { directory, proof, proofPath, dumpPath } = await proofFixture(t), parent = await open(directory, 'r');
+  const { directory, proof, proofPath, dumpPath, sidecarPath } = await proofFixture(t), parent = await open(directory, 'r');
   t.after(() => parent.close());
   assert.equal((await validateRestoreProof(parent, backupId, releaseSha)).backupId, backupId);
   const reject = overrides => writeFile(proofPath, JSON.stringify({ ...proof, ...overrides })).then(() => assert.rejects(provisionRuntime({ env: configuration(), backupId, directory, poolFactory: () => assert.fail('invalid proof opened a database') })));
   await reject({ verifiedAt: new Date(Date.now() - 3600001).toISOString() });
   await reject({ restoreVerified: false }); await reject({ releaseSha: 'd'.repeat(40) }); await reject({ projectRef: 'wrong' });
   await reject({ restoredSecurity: { relations: 2, digest: 'd'.repeat(64) } });
+  await reject({ extensionMetadata: undefined });
+  await writeFile(proofPath, JSON.stringify(proof));
+  const sidecar = await readFile(sidecarPath); await writeFile(sidecarPath, 'changed-metadata');
+  await assert.rejects(validateRestoreProof(parent, backupId, releaseSha), error => error.code === 'extension_metadata_hash');
+  await rm(sidecarPath); await assert.rejects(validateRestoreProof(parent, backupId, releaseSha), error => error.code === 'ENOENT');
+  await writeFile(sidecarPath, sidecar, { mode: 0o600 });
   await writeFile(proofPath, JSON.stringify(proof)); await writeFile(dumpPath, 'changed-encrypted-bytes');
   await assert.rejects(validateRestoreProof(parent, backupId, releaseSha), error => error.code === 'backup_hash_mismatch');
   await chmod(proofPath, 0o644);
@@ -134,7 +145,7 @@ test('real PostgreSQL accepts the generated SCRAM login, enforces backend-only r
   await rm(output);
   await assert.rejects(provisionRuntime({ env, backupId, directory: fixture.directory, poolFactory, runtimePoolFactory, fetcher }), error => error.code === 'runtime_role_exists');
   assert.equal((await admin.query('SELECT rolcanlogin FROM pg_roles WHERE rolname=$1', [role])).rows[0].rolcanlogin, true);
-  await source.query(`DROP ROLE ${role}`);
+  await source.query(`REVOKE CONNECT ON DATABASE "${name}" FROM ${role}; DROP ROLE ${role}`);
   await assert.rejects(provisionRuntime({ env, backupId, directory: fixture.directory, poolFactory, runtimePoolFactory: () => { throw new Error('simulated post-commit connection outage'); }, fetcher }), error => error.code === 'partial_runtime_provision');
   assert.equal((await admin.query('SELECT 1 FROM pg_roles WHERE rolname=$1', [role])).rows.length, 1, 'post-commit failure retains the account and never silently resets it');
   const retained = JSON.parse(await readFile(output, 'utf8'));

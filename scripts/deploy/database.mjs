@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
 import { pipeline } from 'node:stream/promises';
-import { Transform, Writable } from 'node:stream';
+import { Readable, Transform, Writable } from 'node:stream';
 import { TLSSocket, checkServerIdentity } from 'node:tls';
 import { Pool } from 'pg';
 import { postgresTlsOptions } from '../../server/node-postgres-tls.js';
@@ -308,6 +308,63 @@ async function securityProof(client) {
   return { relations: relations.length, digest: hash(stable({ relations, grants, policies, schemas, schemaGrants, defaults })) };
 }
 
+async function extensionOwners(client) {
+  return (await client.query(`SELECT n.nspname AS schema,c.relname AS name,c.relkind AS kind,pg_get_userbyid(c.relowner) AS owner
+    FROM pg_depend d JOIN pg_class c ON c.oid=d.objid JOIN pg_namespace n ON n.oid=c.relnamespace
+    WHERE d.classid='pg_class'::regclass AND d.refclassid='pg_extension'::regclass AND d.deptype='e' AND d.objsubid=0
+    AND c.relkind IN ('r','p','m','v','S','f') AND n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema'
+    ORDER BY n.nspname,c.relname`)).rows;
+}
+
+async function extensionInventory(client) {
+  return (await client.query('SELECT e.extname AS name,e.extversion AS version,n.nspname AS schema,pg_get_userbyid(e.extowner) AS owner FROM pg_extension e JOIN pg_namespace n ON n.oid=e.extnamespace ORDER BY e.extname')).rows;
+}
+
+export async function readExtensionMetadata(path, key, expected) {
+  if (!expected || !/^[a-f0-9]{64}$/.test(expected.encryptedSha256 || '') || !/^[a-f0-9]{64}$/.test(expected.metadataSha256 || '') || await fileDigest(path) !== expected.encryptedSha256) fail('extension_metadata_hash', 'De versleutelde extensiemetadata wijkt af van het vastgelegde herstelbewijs.');
+  const chunks = []; let bytes = 0;
+  try {
+    await decryptBackup(path, new Writable({ write(chunk, encoding, callback) {
+      bytes += chunk.length;
+      if (bytes > 4194304) { callback(new Error('metadata size')); return; }
+      chunks.push(chunk); callback();
+    } }), key);
+    const body = Buffer.concat(chunks);
+    if (hash(body) !== expected.metadataSha256) fail('extension_metadata_hash', 'De extensiemetadata heeft niet de vastgelegde inhoudshash.');
+    const metadata = JSON.parse(body.toString('utf8'));
+    const kinds = ['r', 'p', 'm', 'v', 'S', 'f'];
+    const identifier = value => typeof value === 'string' && value && !value.includes('\0') && Buffer.byteLength(value) <= 63;
+    if (metadata.format !== 1 || metadata.projectRef !== expected.projectRef || metadata.releaseSha !== expected.releaseSha || metadata.backupId !== expected.backupId || !Array.isArray(metadata.owners) || metadata.owners.length !== expected.relations || metadata.owners.some(row => !row || stable(Object.keys(row).sort()) !== stable(['kind', 'name', 'owner', 'schema']) || !kinds.includes(row.kind) || ['schema', 'name', 'owner'].some(key => !identifier(row[key]))) || !Array.isArray(metadata.extensions) || metadata.extensions.length !== expected.extensions || metadata.extensions.some(row => !row || stable(Object.keys(row).sort()) !== stable(['name', 'owner', 'schema', 'version']) || ['schema', 'name', 'owner'].some(key => !identifier(row[key])) || typeof row.version !== 'string' || !row.version || row.version.length > 512)) fail('extension_metadata_invalid', 'De extensiemetadata hoort niet bij dit herstelbewijs of heeft een onjuist contract.');
+    if (new Set(metadata.owners.map(row => stable([row.schema, row.name]))).size !== metadata.owners.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele relaties.');
+    if (new Set(metadata.extensions.map(row => row.name)).size !== metadata.extensions.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele extensies.');
+    return metadata;
+  } catch (error) {
+    if (error instanceof DatabaseGateError) throw error;
+    fail('extension_metadata_invalid', 'De versleutelde extensiemetadata kon niet geauthenticeerd en gevalideerd worden.');
+  }
+}
+
+export async function restoreExtensionOwners(restoreClient, metadata) {
+  const database = (await restoreClient.query('SELECT current_database() AS database')).rows[0].database;
+  if (!/^milo_restore_test_[a-z0-9_]+$/.test(database)) fail('extension_restore_target', 'Extensie-eigenaarschap mag uitsluitend op de afzonderlijke hersteltestdatabase worden aangevuld.');
+  const commands = { r: 'TABLE ONLY', p: 'TABLE ONLY', m: 'MATERIALIZED VIEW', v: 'VIEW', S: 'SEQUENCE', f: 'FOREIGN TABLE' };
+  await restoreClient.query('BEGIN');
+  try {
+    const extensions = rows => rows.map(({ name, version, schema }) => ({ name, version, schema }));
+    if (stable(extensions(await extensionInventory(restoreClient))) !== stable(extensions(metadata.extensions))) fail('extension_restore_versions', 'De herstelde extensienamen, versies of namespaces wijken af van de versleutelde bronmetadata.');
+    const actual = await extensionOwners(restoreClient);
+    const identities = rows => rows.map(({ schema, name, kind }) => ({ schema, name, kind }));
+    if (stable(identities(actual)) !== stable(identities(metadata.owners))) fail('extension_restore_contract', 'De herstelde extensierelaties wijken af van de versleutelde bronmetadata.');
+    for (let index = 0; index < actual.length; index++) {
+      const row = metadata.owners[index];
+      if (!commands[row.kind]) fail('extension_restore_contract', 'Onbekend extensierelatietype.');
+      if (row.owner !== actual[index].owner) await restoreClient.query(`ALTER ${commands[row.kind]} ${quote(row.schema)}.${quote(row.name)} OWNER TO ${quote(row.owner)}`);
+    }
+    if (stable(await extensionOwners(restoreClient)) !== stable(metadata.owners)) fail('extension_restore_contract', 'Het aangevulde extensie-eigenaarschap wijkt nog af van de bron.');
+    await restoreClient.query('COMMIT');
+  } catch (error) { await restoreClient.query('ROLLBACK'); throw error; }
+}
+
 export async function backupAndRestore({ env, target, sourceClient, sourceVersion, prerequisites, poolFactory = defaultPoolFactory, spawnTool = spawn }) {
   const dumpMajor = await toolMajor('pg_dump', spawnTool), restoreMajor = await toolMajor('pg_restore', spawnTool);
   if (dumpMajor !== Math.floor(sourceVersion / 10000) || restoreMajor !== dumpMajor) fail('postgres_tool_version', 'pg_dump en pg_restore moeten dezelfde major-versie als de brondatabase hebben.');
@@ -315,6 +372,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
   const restoreClient = await restorePool.connect();
   const backupId = `milo-${target.projectRef}-${new Date().toISOString().replaceAll(/[^0-9TZ]/g, '')}-${randomUUID()}`;
   const encryptedPath = join(prerequisites.directory, `${backupId}.dump.aesgcm`);
+  const extensionPath = join(prerequisites.directory, `${backupId}.extensions.json.aesgcm`);
   const proofPath = join(prerequisites.directory, `${backupId}.proof.json`);
   let restored = false, caDirectory;
   try {
@@ -333,9 +391,13 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
       await writeFile(rootCertFile, pem, { mode: 0o600, flag: 'wx' });
     }
     await sourceClient.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
-    let sourceProof, sourceSecurity;
+    let sourceProof, sourceSecurity, extensionMetadata;
     try {
       const snapshot = (await sourceClient.query('SELECT pg_export_snapshot() AS id')).rows[0].id;
+      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient) };
+      const metadataBody = stable(metadata);
+      await encryptBackup(Readable.from(metadataBody), extensionPath, env.BACKUP_ENCRYPTION_KEY);
+      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length };
       const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL, rootCertFile), spawnTool);
       dump.child.stdin.end();
       try { await Promise.all([encryptBackup(dump.child.stdout, encryptedPath, env.BACKUP_ENCRYPTION_KEY), dump.done]); }
@@ -352,13 +414,15 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     restore.child.stdout.resume();
     try { await Promise.all([decryptBackup(encryptedPath, restore.child.stdin, env.BACKUP_ENCRYPTION_KEY), restore.done]); }
     catch (error) { restore.child.kill('SIGTERM'); throw error; }
+    const metadata = await readExtensionMetadata(extensionPath, env.BACKUP_ENCRYPTION_KEY, { ...extensionMetadata, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId });
+    await restoreExtensionOwners(restoreClient, metadata);
     await restoreClient.query('BEGIN READ ONLY');
     const restoredProof = await dataProof(restoreClient), restoredSecurity = await securityProof(restoreClient); await restoreClient.query('COMMIT');
     if (stable(sourceProof) !== stable(restoredProof)) fail('restore_proof_mismatch', 'De teruggezette database wijkt af in tabelaantallen of gegevenschecksums.');
     if (stable(sourceSecurity) !== stable(restoredSecurity)) fail('restore_security_mismatch', 'De teruggezette database wijkt af in eigenaarschap, ACLs, RLS of policies. Geen migratie toegestaan.');
     restored = true;
     const proof = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId,
-      encryptedSha256: await fileDigest(encryptedPath), postgresMajor: dumpMajor, sourceProof, restoredProof, sourceSecurity, restoredSecurity,
+      encryptedSha256: await fileDigest(encryptedPath), extensionMetadata, postgresMajor: dumpMajor, sourceProof, restoredProof, sourceSecurity, restoredSecurity,
       capacity, verifiedAt: new Date().toISOString(), restoreVerified: true };
     await writeFile(proofPath, `${JSON.stringify(proof, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
     return proof;

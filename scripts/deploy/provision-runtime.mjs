@@ -56,13 +56,20 @@ export async function validateRestoreProof(parent, backupId, releaseSha, now = D
   catch { fail('backup_proof_invalid', 'Het private herstelbewijs is niet geldig.'); }
   finally { await proofFile.close(); }
   const verifiedAt = Date.parse(proof.verifiedAt), age = now - verifiedAt;
-  if (proof.format !== 1 || proof.projectRef !== projectRef || proof.releaseSha !== releaseSha || proof.backupId !== backupId || proof.restoreVerified !== true || !/^[a-f0-9]{64}$/.test(proof.encryptedSha256 || '') || !Number.isSafeInteger(proof.postgresMajor) || !Number.isFinite(age) || age < 0 || age > 3600000 || !digestShape(proof.sourceProof) || !digestShape(proof.sourceSecurity) || stable(proof.sourceProof) !== stable(proof.restoredProof) || stable(proof.sourceSecurity) !== stable(proof.restoredSecurity)) fail('backup_proof_invalid', 'Het herstelbewijs moet recent, overeenkomend en aan dit stagingproject en deze release gebonden zijn.');
+  const extensionMetadata = proof.extensionMetadata;
+  if (proof.format !== 1 || proof.projectRef !== projectRef || proof.releaseSha !== releaseSha || proof.backupId !== backupId || proof.restoreVerified !== true || !/^[a-f0-9]{64}$/.test(proof.encryptedSha256 || '') || !Number.isSafeInteger(proof.postgresMajor) || !Number.isFinite(age) || age < 0 || age > 3600000 || !digestShape(proof.sourceProof) || !digestShape(proof.sourceSecurity) || stable(proof.sourceProof) !== stable(proof.restoredProof) || stable(proof.sourceSecurity) !== stable(proof.restoredSecurity) || extensionMetadata?.format !== 1 || extensionMetadata.filename !== `${backupId}.extensions.json.aesgcm` || !/^[a-f0-9]{64}$/.test(extensionMetadata.encryptedSha256 || '') || !/^[a-f0-9]{64}$/.test(extensionMetadata.metadataSha256 || '') || !Number.isSafeInteger(extensionMetadata.relations) || extensionMetadata.relations < 0 || !Number.isSafeInteger(extensionMetadata.extensions) || extensionMetadata.extensions < 0) fail('backup_proof_invalid', 'Het herstelbewijs moet recent, overeenkomend en aan dit stagingproject en deze release gebonden zijn.');
   const dump = await privateFile(parent, `${backupId}.dump.aesgcm`, Number.MAX_SAFE_INTEGER);
   try {
     const hash = createHash('sha256');
     for await (const chunk of dump.createReadStream({ autoClose: false })) hash.update(chunk);
     if (hash.digest('hex') !== proof.encryptedSha256) fail('backup_hash_mismatch', 'Het versleutelde backupbestand wijkt af van het herstelbewijs.');
   } finally { await dump.close(); }
+  const sidecar = await privateFile(parent, extensionMetadata.filename, 4194340);
+  try {
+    const hash = createHash('sha256');
+    for await (const chunk of sidecar.createReadStream({ autoClose: false })) hash.update(chunk);
+    if (hash.digest('hex') !== extensionMetadata.encryptedSha256) fail('extension_metadata_hash', 'De private versleutelde extensiemetadata wijkt af van het herstelbewijs.');
+  } finally { await sidecar.close(); }
   return proof;
 }
 
@@ -106,6 +113,8 @@ export async function provisionRuntime({ env = process.env, backupId, directory 
     try {
       await client.query(`CREATE ROLE ${runtimeRole} LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '${verifier}'`);
       await client.query(`GRANT milo_backend TO ${runtimeRole} WITH INHERIT TRUE, SET FALSE`);
+      const database = (await client.query('SELECT current_database() AS database')).rows[0].database;
+      await client.query(`GRANT CONNECT ON DATABASE "${database.replaceAll('"', '""')}" TO ${runtimeRole}`);
       const privileges = (await client.query("SELECT has_schema_privilege($1,'public','CREATE') AS schema_create,has_table_privilege($1,'public.app_user_roles','INSERT,UPDATE,DELETE') AS role_write", [runtimeRole])).rows[0];
       if (privileges.schema_create || privileges.role_write) fail('runtime_excess_privileges', 'De runtime-login erft ongewenste schema- of roltoekenningsrechten.');
       commitAttempted = true; await client.query('COMMIT'); committed = true;

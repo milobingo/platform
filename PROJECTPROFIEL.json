@@ -61,7 +61,7 @@
     "ports": {
       "staging": 4173
     },
-    "deploy_wrapper_version": null,
+    "deploy_wrapper_version": "milobingo-staging-native-v1",
     "supabase_staging_ref": "lfsdgxcpdyghidzkzzvn",
     "supabase_production_ref": null,
     "mail_gateway_contract": null,
@@ -81,19 +81,18 @@
       "runner_verified": true,
       "secrets_names_present": true,
       "missing_host_prerequisites": [
-        "PostgreSQL clients matching actual source major and isolated restore database",
-        "reviewed native wrapper installation and restricted sudoers",
-        "Milo app service and Caddy HTTPS activation",
-        "database backup, restore proof, migration and least-privilege runtime connection"
+        "successful full encrypted backup and matching restore proof",
+        "initial application migration and least-privilege runtime login",
+        "native release activation and public acceptance"
       ],
       "acceptance": "not_run",
       "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42058318577",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42063259923",
       "ci_result": "success",
       "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
       "deploy_result": "blocked_before_checkout_by_host_bootstrap",
-      "database_audit": "https://github.com/milobingo/platform/actions/runs/42061456116",
-      "database_audit_result": "CA-verified pooler connection established; audit stopped on backend pg_stat_ssl check; transport proof correction pending",
+      "database_audit": "https://github.com/milobingo/platform/actions/runs/42062775524",
+      "database_audit_result": "verified client TLS; PostgreSQL17.11; empty app schema; private bucket ready; only initial migration pending",
       "ssh_admin": {
         "temporary_user": "root",
         "source_tailscale_peer": "100.79.0.26",
@@ -110,8 +109,17 @@
         "port": 4173,
         "backup_directory": "/var/backups/milobingo-staging",
         "wrapper_source": "infra/staging/deploy-helper.py",
-        "wrapper_installed": false
-      }
+        "wrapper_installed": true,
+        "entry_sha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+        "helper_sha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "postgres_clients": "17.11",
+        "caddy_https": "verified certificate, HTTP502 until app activation",
+        "evidence": "verification/staging-host.json"
+      },
+      "credential_handoff": "https://github.com/milobingo/platform/actions/runs/42062776243",
+      "migration_connection_configured": true,
+      "backup_key_configured": true,
+      "scratch_restore_connection": "temporary private loopback relay; authenticated empty PG17.11; must clean after restore"
     }
   },
   "configuration": {

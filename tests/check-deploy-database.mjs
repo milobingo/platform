@@ -10,7 +10,7 @@ import { promisify } from 'node:util';
 import { createServer as createTlsServer, connect as connectTls } from 'node:tls';
 import { Socket } from 'node:net';
 import { Pool } from 'pg';
-import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls } from '../scripts/deploy/database.mjs';
+import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls, readExtensionMetadata, restoreExtensionOwners } from '../scripts/deploy/database.mjs';
 
 const projectRef = 'lfsdgxcpdyghidzkzzvn';
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -283,17 +283,19 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
     } catch { await admin.end(); t.skip('PostgreSQL dump/restore tools are not installed'); return; }
   }
   const sourceName = `milo_backup_source_test_${randomUUID().replaceAll('-', '')}`, restoreName = `milo_restore_test_${randomUUID().replaceAll('-', '')}`;
-  const ownerRole = `milo_backup_owner_${randomUUID().replaceAll('-', '')}`, readerRole = `milo_backup_reader_${randomUUID().replaceAll('-', '')}`;
+  const corruptRestoreName = `milo_restore_test_acl_${randomUUID().replaceAll('-', '')}`;
+  const ownerRole = `milo_backup_owner_${randomUUID().replaceAll('-', '')}`, readerRole = `milo_backup_reader_${randomUUID().replaceAll('-', '')}`, restoreRole = `milo_restore_owner_${randomUUID().replaceAll('-', '')}`;
   const directory = await mkdtemp(join(tmpdir(), 'milo-actual-backup-'));
-  await admin.query(`CREATE DATABASE "${sourceName}"`); await admin.query(`CREATE DATABASE "${restoreName}"`);
-  const sourceUrl = new URL(adminUrl), restoreUrl = new URL(adminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`;
+  await admin.query(`CREATE DATABASE "${sourceName}"`); await admin.query(`CREATE DATABASE "${restoreName}"`); await admin.query(`CREATE DATABASE "${corruptRestoreName}"`);
+  await admin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
+  const sourceUrl = new URL(adminUrl), restoreUrl = new URL(adminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`; restoreUrl.username = restoreRole; restoreUrl.password = 'milo-local-test-only';
   const sourcePool = fixturePool({ connectionString: sourceUrl.toString() }, failures), restoredPool = fixturePool({ connectionString: restoreUrl.toString() }, failures), restorePools = [];
   const poolFactory = connectionString => { const pool = fixturePool({ connectionString }, failures); restorePools.push(pool); return pool; };
   const sourceClient = await sourcePool.connect();
   t.after(async () => {
     const unclosedRestorePools = restorePools.filter(pool => !pool.ending).length;
     sourceClient.release(); await Promise.all([sourcePool, restoredPool, ...restorePools].map(pool => pool.end()));
-    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(admin, restoreName); }
+    try { await dropFixtureDatabase(admin, sourceName); await dropFixtureDatabase(admin, restoreName); await dropFixtureDatabase(admin, corruptRestoreName); }
     finally { await admin.end(); }
     await rm(directory, { recursive: true, force: true });
     assert.equal(unclosedRestorePools, 0, 'backup operations must close their own scratch connections');
@@ -302,12 +304,13 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   await admin.query(`CREATE ROLE "${ownerRole}" NOLOGIN; CREATE ROLE "${readerRole}" NOLOGIN`);
   t.after(async () => {
     const cleanup = fixturePool({ connectionString: testDatabase }, failures);
-    try { await cleanup.query(`DROP ROLE IF EXISTS "${ownerRole}"; DROP ROLE IF EXISTS "${readerRole}"`); } finally { await cleanup.end(); }
+    try { await cleanup.query(`DROP ROLE IF EXISTS "${ownerRole}"; DROP ROLE IF EXISTS "${readerRole}"; DROP ROLE IF EXISTS "${restoreRole}"`); } finally { await cleanup.end(); }
   });
   await sourceClient.query('CREATE TABLE public.backup_identity (id text PRIMARY KEY,revision bigint NOT NULL,document jsonb NOT NULL)');
   const payload = { family: 'private-fixture', cards: [7, 19, 42], code: randomUUID() };
   await sourceClient.query('INSERT INTO public.backup_identity VALUES ($1,$2,$3)', ['unchanged-book-id', 17, payload]);
   await sourceClient.query(`ALTER TABLE public.backup_identity OWNER TO "${ownerRole}"; GRANT SELECT ON public.backup_identity TO "${readerRole}"; ALTER TABLE public.backup_identity ENABLE ROW LEVEL SECURITY; CREATE POLICY backup_reader ON public.backup_identity FOR SELECT TO "${readerRole}" USING (true)`);
+  await sourceClient.query(`CREATE EXTENSION pg_stat_statements; ALTER VIEW public.pg_stat_statements_info OWNER TO "${ownerRole}"`);
   const env = configuration({ DATABASE_URL: sourceUrl.toString(), RESTORE_TEST_DATABASE_URL: restoreUrl.toString(), DATABASE_BACKUP_DIRECTORY: directory });
   const prerequisites = validateApplyPrerequisites(env);
   const proof = await backupAndRestore({ env, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites, spawnTool, poolFactory });
@@ -319,9 +322,40 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   assert.equal((await restoredPool.query("SELECT pg_get_userbyid(relowner) AS owner FROM pg_class WHERE oid='public.backup_identity'::regclass")).rows[0].owner, ownerRole);
   const grants = (await restoredPool.query("SELECT has_table_privilege($1,'public.backup_identity','SELECT') AS read,has_table_privilege($1,'public.backup_identity','UPDATE') AS write", [readerRole])).rows[0];
   assert.deepEqual(grants, { read: true, write: false });
-  const files = await readdir(directory); assert.equal(files.length, 2);
-  const encrypted = await readFile(join(directory, files.find(file => file.endsWith('.aesgcm'))));
+  const extensionOwners = (await restoredPool.query("SELECT c.relname AS name,pg_get_userbyid(c.relowner) AS owner FROM pg_class c WHERE c.oid IN ('public.pg_stat_statements'::regclass,'public.pg_stat_statements_info'::regclass) ORDER BY name")).rows;
+  assert.deepEqual(extensionOwners, [{ name: 'pg_stat_statements', owner: decodeURIComponent(adminUrl.username) }, { name: 'pg_stat_statements_info', owner: ownerRole }], 'individual source extension owners survive a full restore by a different superuser');
+  const files = await readdir(directory); assert.equal(files.length, 3);
+  const encrypted = await readFile(join(directory, files.find(file => file.endsWith('.dump.aesgcm'))));
   assert.equal(sha(encrypted), proof.encryptedSha256); assert.equal(encrypted.includes(Buffer.from('private-fixture')), false);
+  assert.equal(proof.extensionMetadata.relations, 2);
+  const sidecarPath = join(directory, proof.extensionMetadata.filename), encryptedMetadata = await readFile(sidecarPath);
+  assert.equal(sha(encryptedMetadata), proof.extensionMetadata.encryptedSha256); assert.equal(encryptedMetadata.includes(Buffer.from(ownerRole)), false);
+  assert.equal((await stat(sidecarPath)).mode & 0o777, 0o600);
+  const expectedMetadata = { ...proof.extensionMetadata, projectRef, releaseSha: env.RELEASE_SHA, backupId: proof.backupId };
+  const metadata = await readExtensionMetadata(sidecarPath, env.BACKUP_ENCRYPTION_KEY, expectedMetadata);
+  assert.ok(metadata.extensions.some(row => row.name === 'pg_stat_statements' && row.owner === decodeURIComponent(adminUrl.username)));
+  const extensionClient = await restoredPool.connect();
+  try { await assert.rejects(restoreExtensionOwners(extensionClient, { ...metadata, extensions: metadata.extensions.map(row => row.name === 'pg_stat_statements' ? { ...row, version: 'wrong-version' } : row) }), error => error.code === 'extension_restore_versions'); }
+  finally { extensionClient.release(); }
+  await assert.rejects(restoreExtensionOwners(sourceClient, metadata), error => error.code === 'extension_restore_target');
+  const tampered = Buffer.from(encryptedMetadata); tampered[tampered.length - 1] ^= 1; await writeFile(sidecarPath, tampered);
+  await assert.rejects(readExtensionMetadata(sidecarPath, env.BACKUP_ENCRYPTION_KEY, expectedMetadata), error => error.code === 'extension_metadata_hash');
+  await assert.rejects(readExtensionMetadata(sidecarPath, env.BACKUP_ENCRYPTION_KEY, { ...expectedMetadata, encryptedSha256: sha(tampered) }), error => error.code === 'extension_metadata_invalid');
+  await writeFile(sidecarPath, encryptedMetadata);
   await assert.rejects(backupAndRestore({ env, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites, spawnTool, poolFactory }), error => error.code === 'restore_database_not_empty');
-  assert.equal((await readdir(directory)).length, 2, 'a nonempty restore database blocks before writing a new backup');
+  assert.equal((await readdir(directory)).length, 3, 'a nonempty restore database blocks before writing a new backup');
+  const corruptUrl = new URL(restoreUrl); corruptUrl.pathname = `/${corruptRestoreName}`;
+  const corruptEnv = { ...env, RESTORE_TEST_DATABASE_URL: corruptUrl.toString() };
+  const corruptPoolFactory = connectionString => {
+    const pool = fixturePool({ connectionString }, failures); restorePools.push(pool);
+    return { end: () => pool.end(), async connect() {
+      const client = await pool.connect();
+      return { release: () => client.release(), async query(sql, values) {
+        if (sql === 'BEGIN READ ONLY') await client.query(`GRANT UPDATE ON public.backup_identity TO "${readerRole}"`);
+        return client.query(sql, values);
+      } };
+    } };
+  };
+  await assert.rejects(backupAndRestore({ env: corruptEnv, target: { projectRef }, sourceClient, sourceVersion: version, prerequisites: validateApplyPrerequisites(corruptEnv), spawnTool, poolFactory: corruptPoolFactory }), error => error.code === 'restore_security_mismatch');
+  assert.equal((await readdir(directory)).filter(name => name.endsWith('.proof.json')).length, 1, 'an unrelated ACL mismatch never receives a restore proof');
 });

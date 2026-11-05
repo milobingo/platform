@@ -1,0 +1,435 @@
+{
+  "format": 1,
+  "purpose": "Milo staging native host installation evidence; application not activated",
+  "scope": "milobingo-staging only; production excluded",
+  "observedAt": "2026-11-05T16:27:48.378888+00:00",
+  "repository": "milobingo/platform",
+  "installedWrapperVersion": "Milo-specific native v1",
+  "installedWrapperSourceCommit": "06ea22275661cb0c5edd2c1352737b377573d1b5",
+  "hostInventory": {
+    "observedAt": "2026-11-05T16:27:48.378888+00:00",
+    "host": "dg-nxttrack-01",
+    "system": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "profile": {
+      "node": "/opt/node-v24.18.0-linux-x64/bin/node",
+      "pnpm": "/opt/dg-toolchains/pnpm/11.25.0/bin/pnpm",
+      "port": 4173
+    },
+    "accounts": [
+      {
+        "name": "run-mil-stg",
+        "uid": 1001,
+        "gid": 1002,
+        "group": "run-mil-stg",
+        "groups": [
+          {
+            "gid": 1002,
+            "name": "run-mil-stg"
+          },
+          {
+            "gid": 1001,
+            "name": "dg-build"
+          }
+        ]
+      },
+      {
+        "name": "build-mil-stg",
+        "uid": 990,
+        "gid": 983,
+        "group": "build-mil-stg",
+        "groups": [
+          {
+            "gid": 983,
+            "name": "build-mil-stg"
+          }
+        ]
+      },
+      {
+        "name": "app-mil-stg",
+        "uid": 996,
+        "gid": 987,
+        "group": "app-mil-stg",
+        "groups": [
+          {
+            "gid": 987,
+            "name": "app-mil-stg"
+          }
+        ]
+      }
+    ],
+    "paths": [
+      {
+        "path": "/etc/dg-sites",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0700",
+        "type": "directory"
+      },
+      {
+        "path": "/etc/dg-sites/milobingo-staging.deploy.json",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0600",
+        "type": "regular"
+      },
+      {
+        "path": "/etc/dg-sites/milobingo-staging.runtime.d",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0700",
+        "type": "directory"
+      },
+      {
+        "path": "/srv/sites/milobingo-staging",
+        "exists": true,
+        "uid": 0,
+        "gid": 987,
+        "owner": "root",
+        "group": "app-mil-stg",
+        "mode": "0750",
+        "type": "directory"
+      },
+      {
+        "path": "/srv/sites/milobingo-staging/releases",
+        "exists": true,
+        "uid": 0,
+        "gid": 987,
+        "owner": "root",
+        "group": "app-mil-stg",
+        "mode": "0750",
+        "type": "directory"
+      },
+      {
+        "path": "/srv/sites/milobingo-staging/shared",
+        "exists": true,
+        "uid": 996,
+        "gid": 987,
+        "owner": "app-mil-stg",
+        "group": "app-mil-stg",
+        "mode": "0750",
+        "type": "directory"
+      },
+      {
+        "path": "/srv/sites/milobingo-staging/current",
+        "exists": false
+      },
+      {
+        "path": "/var/lib/dg-build",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0755",
+        "type": "directory"
+      },
+      {
+        "path": "/var/lib/dg-build/milobingo-staging",
+        "exists": true,
+        "uid": 0,
+        "gid": 983,
+        "owner": "root",
+        "group": "build-mil-stg",
+        "mode": "0710",
+        "type": "directory"
+      },
+      {
+        "path": "/var/backups/milobingo-staging",
+        "exists": true,
+        "uid": 1001,
+        "gid": 1002,
+        "owner": "run-mil-stg",
+        "group": "run-mil-stg",
+        "mode": "0700",
+        "type": "directory"
+      },
+      {
+        "path": "/run/lock/dg-build.lock",
+        "exists": true,
+        "uid": 0,
+        "gid": 1001,
+        "owner": "root",
+        "group": "dg-build",
+        "mode": "0660",
+        "type": "regular"
+      }
+    ],
+    "installedFiles": [
+      {
+        "path": "/usr/local/bin/dg-site-deploy",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0755",
+        "type": "regular",
+        "sha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7"
+      },
+      {
+        "path": "/usr/local/libexec/dg-milobingo-deploy-helper",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0755",
+        "type": "regular",
+        "sha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8"
+      },
+      {
+        "path": "/etc/sudoers.d/milobingo-staging-deploy",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0440",
+        "type": "regular",
+        "sha256": "4bb9f998c0437665c2763564cf0f81c023721e44df97e239aacd3f93876de527"
+      },
+      {
+        "path": "/etc/systemd/system/milobingo-staging.service",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0644",
+        "type": "regular",
+        "sha256": "bf87320ca8c307bf69fdd9d97511f0129348d050edd516bd38efc6ad37333402"
+      },
+      {
+        "path": "/etc/caddy/Caddyfile",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0644",
+        "type": "regular",
+        "sha256": "28478c57f4b6f5d851ef5bc9950e774909556b3b822586c9cd577009a236cdcd"
+      },
+      {
+        "path": "/etc/caddy/sites/milobingo-staging.caddy",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0644",
+        "type": "regular",
+        "sha256": "5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e"
+      },
+      {
+        "path": "/opt/node-v24.18.0-linux-x64/bin/node",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0755",
+        "type": "regular",
+        "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+      },
+      {
+        "path": "/opt/dg-toolchains/pnpm/11.25.0/bin/pnpm",
+        "exists": true,
+        "uid": 0,
+        "gid": 0,
+        "owner": "root",
+        "group": "root",
+        "mode": "0777",
+        "type": "symlink",
+        "target": "../lib/node_modules/pnpm/bin/pnpm.mjs",
+        "sha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+      }
+    ],
+    "versions": {
+      "node": "v24.18.0",
+      "pnpm": "11.25.0",
+      "psql": "psql (PostgreSQL) 17.11 (Ubuntu 17.11-1.pgdg24.04+2)",
+      "pg_dump": "pg_dump (PostgreSQL) 17.11 (Ubuntu 17.11-1.pgdg24.04+2)",
+      "pg_restore": "pg_restore (PostgreSQL) 17.11 (Ubuntu 17.11-1.pgdg24.04+2)"
+    },
+    "units": {
+      "milo": {
+        "MainPID": "0",
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "WorkingDirectory": "/srv/sites/milobingo-staging/current/.next/standalone",
+        "User": "app-mil-stg",
+        "Group": "app-mil-stg",
+        "ReadWritePaths": "/srv/sites/milobingo-staging/shared",
+        "PrivateTmp": "yes",
+        "ProtectHome": "yes",
+        "ProtectSystem": "strict",
+        "NoNewPrivileges": "yes",
+        "Id": "milobingo-staging.service",
+        "LoadState": "loaded",
+        "ActiveState": "inactive",
+        "SubState": "dead",
+        "FragmentPath": "/etc/systemd/system/milobingo-staging.service",
+        "UnitFileState": "disabled"
+      },
+      "caddy": {
+        "MainPID": "3243",
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "WorkingDirectory": "",
+        "User": "caddy",
+        "Group": "caddy",
+        "ReadWritePaths": "",
+        "PrivateTmp": "yes",
+        "ProtectHome": "no",
+        "ProtectSystem": "full",
+        "NoNewPrivileges": "no",
+        "Id": "caddy.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/usr/lib/systemd/system/caddy.service",
+        "UnitFileState": "enabled"
+      }
+    },
+    "sudoPolicyChecks": [
+      {
+        "case": "fixed_milo_helper",
+        "allowed": true,
+        "expectedAllowed": true,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "other_site",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "other_checkout",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "invalid_sha",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "extra_argument",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "root_shell",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      },
+      {
+        "case": "direct_service_restart",
+        "allowed": false,
+        "expectedAllowed": false,
+        "passed": true,
+        "operation": "sudo -l policy listing only"
+      }
+    ],
+    "listeners4173And443": [
+      "LISTEN 0      4096   *:443 *:*"
+    ],
+    "sensitiveContentRead": false,
+    "runtimeEnvironmentQueried": false,
+    "helperInvoked": false,
+    "hostMutated": false
+  },
+  "github": {
+    "environment": "staging",
+    "variableNamesOnly": [
+      "APP_URL",
+      "DG_CONFIG_VERSION",
+      "DG_DEPLOY_WRAPPER_SHA256",
+      "DG_STAGING_PORT",
+      "LIVEKIT_URL",
+      "OPENAI_SPEECH_MODEL",
+      "OPENAI_TEXT_MODEL",
+      "SUPABASE_DB_CA_BASE64",
+      "SUPABASE_PUBLISHABLE_KEY",
+      "SUPABASE_STORAGE_BUCKET",
+      "SUPABASE_URL"
+    ],
+    "variableValuesCaptured": false,
+    "secretValuesRead": false,
+    "verifiedCiRuns": [
+      {
+        "id": 42062188288,
+        "sha": "06ea22275661cb0c5edd2c1352737b377573d1b5",
+        "workflow": "CI",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/milobingo/platform/actions/runs/42062188288"
+      },
+      {
+        "id": 42063259923,
+        "sha": "528dc6b06e6a924edabe752eb21b65155fa5470c",
+        "workflow": "CI",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/milobingo/platform/actions/runs/42063259923"
+      }
+    ],
+    "newerDatabaseMetadataChanges": "not covered by these runs; require their own exact successful CI"
+  },
+  "publicHttps": {
+    "url": "https://milo-staging.dgwebservices.nl",
+    "httpStatus": 502,
+    "tlsVerificationResult": 0,
+    "tlsPeerVerified": true,
+    "remoteIp": "128.140.93.95",
+    "interpretation": "Caddy HTTPS responds; application upstream is not active"
+  },
+  "application": {
+    "activated": false,
+    "currentReleasePresent": false,
+    "serviceActive": false,
+    "serviceEnabled": false,
+    "port4173Listening": false,
+    "acceptance": "not_run"
+  },
+  "notProvenByThisInventory": [
+    "hosted database backup and restore completion",
+    "hosted schema migration",
+    "least-privilege runtime login and secret switch",
+    "application release health",
+    "Supabase Auth and provider acceptance"
+  ],
+  "collectionSafety": {
+    "sshKnownHostVerification": "existing trusted known_hosts; no bypass",
+    "runtimeEnvironmentFilesRead": false,
+    "privateCredentialOrBootstrapFilesRead": false,
+    "unitEnvironmentPropertiesRequested": false,
+    "databaseConnectionsOpened": false,
+    "helperExecuted": false,
+    "hostMutationsPerformed": false,
+    "sudoChecks": "policy listing only; no deployment or service command execution"
+  }
+}
