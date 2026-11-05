@@ -12,6 +12,7 @@ export const STAGING=Object.freeze({
  runnerName:'dg-nxttrack-01-nxttrack-staging',runnerUser:'run-mil-stg',appUser:'app-mil-stg',host:'dg-nxttrack-01',
  workspace:'/home/run-mil-stg/_work/platform/platform',
  deployWrapper:'/usr/local/bin/dg-site-deploy',
+ nativeHelper:'/usr/local/libexec/dg-milobingo-deploy-helper',
  node:'24.18.0',pnpm:'11.25.0',minFreeBytes:4*1024**3,minFreeInodes:50000,
 });
 export const RUNTIME_KEYS=Object.freeze(['NODE_ENV','HOSTNAME','APP_URL','MILO_LOCAL_AUTH','PORT','SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','SUPABASE_STORAGE_BUCKET','SUPABASE_DB_CA_BASE64','DATABASE_URL','SUPABASE_SECRET_KEY','VLAMPIE_SETTINGS_KEY','OPENAI_TEXT_MODEL','OPENAI_SPEECH_MODEL','OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','RELEASE_SHA','RELEASE_ID','CONFIG_VERSION']);
@@ -26,6 +27,13 @@ const git=(...args)=>execFileSync('git',args,{encoding:'utf8',stdio:['ignore','p
 const toolVersion=(tool,...args)=>execFileSync(tool,args,{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 
 export function validateReleaseSha(value){return fullHash(value);}
+export function validateNativeHelperPin(entrySource,helperSource){
+ const declarations=entrySource.toString('utf8').split('\n').filter(line=>/^\s*HELPER_SHA256\b/.test(line));
+ const match=declarations.length===1&&/^HELPER_SHA256 = '([a-f0-9]{64})'(?:[ \t]+#[^\r\n]*)?\r?$/.exec(declarations[0]);
+ if(!match)fail('Hostcontract: de beoordeelde entry moet precies één letterlijke HELPER_SHA256 bevatten.');
+ if(sha256(helperSource)!==match[1])fail('Hostcontract: helperhash wijkt af van de in de beoordeelde entry vastgelegde versie.');
+ return match[1];
+}
 export function validateCiRun(run,releaseSha){
  fullHash(releaseSha);
  if(!run||run.repository?.full_name!==STAGING.repository||run.head_repository?.full_name!==STAGING.repository)fail('CI: herkomstrepository wijkt af.');
@@ -136,6 +144,7 @@ function hostGate(environment){
  const configuration=validateDeploymentConfiguration(environment);
  const deploySource=secureRootFile(STAGING.deployWrapper,{executable:true});
  if(sha256(deploySource)!==configuration.wrapperHash)fail('Hostcontract: wrapperhash wijkt af van de beoordeelde versie.');
+ const helperHash=validateNativeHelperPin(deploySource,secureRootFile(STAGING.nativeHelper,{executable:true}));
  const site=statSync(STAGING.siteRoot);if(!site.isDirectory()||site.uid!==0||toolVersion('stat','-c','%G',STAGING.siteRoot)!==STAGING.appUser)fail('Hostcontract: site-eigenaar of appgroep wijkt af.');
  if(toolVersion('node','--version')!==`v${STAGING.node}`||toolVersion('pnpm','--version')!==STAGING.pnpm)fail('Hostcontract: Node/pnpm-versie wijkt af van de lockfile-toolchain.');
  for(const tool of ['psql','pg_dump','pg_restore','flock','sudo','curl'])toolVersion('sh','-c','command -v "$1"','milo-check',tool);
@@ -143,7 +152,7 @@ function hostGate(environment){
  for(const path of [STAGING.workspace,STAGING.siteRoot]){const disk=statfsSync(path,{bigint:true});if(disk.bavail*disk.bsize<BigInt(STAGING.minFreeBytes)||disk.ffree<BigInt(STAGING.minFreeInodes))fail('Hostcontract: te weinig vrije bytes of inodes voor behoud van releases en backups.');}
  for(const file of ['.env','.env.local','.env.production','.env.production.local'])if(existsSync(join(STAGING.workspace,file)))fail('Releasecheckout bevat een niet-toegestaan configuratiebestand.');
  const config=readFileSync('next.config.mjs','utf8');if(!/output\s*:\s*['"]standalone['"]/.test(config))fail('Hostcontract: standalone-start vereist een expliciete standalone-build.');
- console.log(JSON.stringify({gate:'host',status:'passed',releaseSha:sha,wrapperSha256:configuration.wrapperHash,port:configuration.port,buildKeys:BUILD_KEYS,runtimeKeys:RUNTIME_KEYS}));
+ console.log(JSON.stringify({gate:'host',status:'passed',releaseSha:sha,wrapperSha256:configuration.wrapperHash,helperSha256:helperHash,port:configuration.port,buildKeys:BUILD_KEYS,runtimeKeys:RUNTIME_KEYS}));
  return configuration;
 }
 

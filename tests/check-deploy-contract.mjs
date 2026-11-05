@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {X509Certificate} from 'node:crypto';
+import {X509Certificate,createHash} from 'node:crypto';
 import {rootCertificates} from 'node:tls';
-import {STAGING,RUNTIME_KEYS,BUILD_KEYS,validateReleaseSha,validateCiRun,selectCiRun,validateIdentity,validateDeploymentConfiguration,validateRuntimeConfiguration,wrapperEnvironment,validateRuntimeDatabaseRole,verifyRuntimeDatabase} from '../scripts/deploy/release-preflight.mjs';
+import {STAGING,RUNTIME_KEYS,BUILD_KEYS,validateReleaseSha,validateNativeHelperPin,validateCiRun,selectCiRun,validateIdentity,validateDeploymentConfiguration,validateRuntimeConfiguration,wrapperEnvironment,validateRuntimeDatabaseRole,verifyRuntimeDatabase} from '../scripts/deploy/release-preflight.mjs';
 
 const releaseSha='a'.repeat(40),otherSha='b'.repeat(40),wrapperHash='c'.repeat(64);
 const metadata={releaseSha,releaseId:'42000000001-1',configVersion:'staging-2026-11-05-v1',port:4190};
@@ -15,6 +15,17 @@ const values=()=>({APP_URL:STAGING.appUrl,SUPABASE_URL:`https://${STAGING.supaba
 test('release selection accepts only a complete immutable source SHA',()=>{
  assert.equal(validateReleaseSha(releaseSha),releaseSha);
  for(const invalid of ['',null,'main','a'.repeat(39),'a'.repeat(41),'A'.repeat(40),'a'.repeat(40)+'\n','$(echo leak)'])assert.throws(()=>validateReleaseSha(invalid));
+});
+
+test('reviewed native entry transitively pins its exact helper before database apply',()=>{
+ const entry=readFileSync(new URL('../infra/staging/deploy-entry.py',import.meta.url),'utf8');
+ const helper=readFileSync(new URL('../infra/staging/deploy-helper.py',import.meta.url));
+ const hash=createHash('sha256').update(helper).digest('hex');
+ const rendered=entry.replace('__HELPER_SHA256__',hash);
+ assert.equal(validateNativeHelperPin(rendered,helper),hash);
+ assert.equal(STAGING.nativeHelper,'/usr/local/libexec/dg-milobingo-deploy-helper');
+ assert.throws(()=>validateNativeHelperPin(rendered,Buffer.concat([helper,Buffer.from('\n# drift')])));
+ for(const source of [entry,rendered+`\nHELPER_SHA256 = '${hash}'\n`,rendered.replace(`'${hash}'`,`'${hash.toUpperCase()}'`),rendered.replace(`'${hash}'`,`'${hash}' + ''`)])assert.throws(()=>validateNativeHelperPin(source,helper));
 });
 
 test('CI proof binds successful required workflow to its own repository, branch and exact SHA',()=>{

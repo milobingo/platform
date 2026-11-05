@@ -54,6 +54,8 @@ jobs:
         env:
           MILO_TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
         run: pnpm test
+      - name: Native deployment boundary and rollback checks
+        run: python3 -B tests/check-native-deployer.py
       - name: Build Next.js
         run: pnpm build
       - name: Typecheck

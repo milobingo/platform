@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
 import { pipeline } from 'node:stream/promises';
 import { Transform, Writable } from 'node:stream';
+import { TLSSocket, checkServerIdentity } from 'node:tls';
 import { Pool } from 'pg';
 import { postgresTlsOptions } from '../../server/node-postgres-tls.js';
 
@@ -79,6 +80,19 @@ function defaultPoolFactory(connectionString, { verifiedTls = false, caBase64 } 
   const pool = new Pool({ ...tls, max: 2, connectionTimeoutMillis: 10_000, statement_timeout: 60_000 });
   pool.on('error', () => {}); // Query failures are handled without raw credential-bearing diagnostics.
   return pool;
+}
+
+export function verifyDatabaseClientTls(client, hostname) {
+  const socket = client?.connection?.stream;
+  // pg_stat_ssl describes the pooler's upstream PostgreSQL connection. The
+  // transport carrying our credentials terminates at the pooler, so inspect
+  // that actual client socket and independently match its peer hostname.
+  if (!(socket instanceof TLSSocket) || socket.encrypted !== true || socket.authorized !== true || socket.authorizationError || socket.destroyed) {
+    fail('database_tls_unconfirmed', 'De clientverbinding bevestigt geen geverifieerde TLS.');
+  }
+  const certificate = socket.getPeerCertificate();
+  if (!certificate?.raw || checkServerIdentity(hostname, certificate)) fail('database_tls_unconfirmed', 'Het TLS-certificaat hoort niet bij de bevestigde databasehost.');
+  return { tls: true, tlsAuthorized: true };
 }
 
 async function inventory(client, manifest) {
@@ -158,12 +172,14 @@ export async function auditDatabase({ env = process.env, expectedProjectRef, man
   try {
     const client = await pool.connect();
     try {
+      const transport = verifyDatabaseClientTls(client, target.database.hostname);
       await client.query('BEGIN READ ONLY');
       const connection = (await client.query(`SELECT current_user AS user,current_database() AS database,current_setting('server_version_num')::int AS version,
         r.rolsuper AS superuser,r.rolcreaterole AS createrole,r.rolbypassrls AS bypassrls,has_schema_privilege(current_user,'public','CREATE') AS schema_create,
-        coalesce((SELECT ssl FROM pg_stat_ssl WHERE pid=pg_backend_pid()),false) AS tls
+        coalesce((SELECT ssl FROM pg_stat_ssl WHERE pid=pg_backend_pid()),false) AS "backendTls",pg_database_size(current_database())::text AS "databaseSizeBytes"
         FROM pg_roles r WHERE r.rolname=current_user`)).rows[0];
-      if (!connection.tls) fail('database_tls_unconfirmed', 'De database bevestigt geen TLS voor deze verbinding.');
+      Object.assign(connection, transport);
+      connection.extensions = (await client.query('SELECT extname,extversion FROM pg_extension ORDER BY extname')).rows;
       const state = await inventory(client, manifest), applied = await history(client);
       await client.query('COMMIT');
       const expected = manifest.migrations.map(({ filename, checksum }) => ({ filename, checksum }));
@@ -379,6 +395,7 @@ export async function applyDatabase({ env = process.env, expectedProjectRef, rev
   const pool = poolFactory(env.DATABASE_URL, { verifiedTls: true, caBase64: env.SUPABASE_DB_CA_BASE64 }), client = await pool.connect();
   let committed = false, backup;
   try {
+    verifyDatabaseClientTls(client, target.database.hostname);
     await client.query("SELECT pg_advisory_lock(hashtextextended('milo-controlled-schema-bootstrap',0))");
     // Audit again under the lock; the backup and migration must use this exact
     // immutable manifest, even when another deployment completed while waiting.

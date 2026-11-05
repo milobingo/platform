@@ -7,11 +7,32 @@ import { tmpdir } from 'node:os';
 import { Readable, Writable } from 'node:stream';
 import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
+import { createServer as createTlsServer, connect as connectTls } from 'node:tls';
+import { Socket } from 'node:net';
 import { Pool } from 'pg';
-import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity } from '../scripts/deploy/database.mjs';
+import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls } from '../scripts/deploy/database.mjs';
 
 const projectRef = 'lfsdgxcpdyghidzkzzvn';
 const sha = value => createHash('sha256').update(value).digest('hex');
+const directHost = `db.${projectRef}.supabase.co`, poolerHost = 'aws-0-eu-central-1.pooler.supabase.com';
+async function tlsFixture(t) {
+  const directory = await mkdtemp(join(tmpdir(), 'milo-tls-transport-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const keyPath = join(directory, 'test-only.key'), certPath = join(directory, 'test-only.crt');
+  await promisify(execFile)('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', keyPath, '-out', certPath, '-days', '2', '-subj', '/CN=milo-local-test-only', '-addext', `subjectAltName=DNS:${directHost},DNS:${poolerHost}`, '-addext', 'basicConstraints=critical,CA:TRUE']);
+  const [key, cert] = await Promise.all([readFile(keyPath), readFile(certPath)]);
+  const sockets = [], server = createTlsServer({ key, cert }, socket => { sockets.push(socket); socket.on('error', () => {}); });
+  server.on('tlsClientError', () => {});
+  await new Promise(done => server.listen(0, '127.0.0.1', done));
+  t.after(async () => { for (const socket of sockets) socket.destroy(); await new Promise(done => server.close(done)); });
+  async function connect(verify = true) {
+    const socket = connectTls({ host: '127.0.0.1', port: server.address().port, servername: directHost, ...(verify ? { ca: cert } : {}), rejectUnauthorized: verify });
+    sockets.push(socket); socket.on('error', () => {});
+    await new Promise((done, reject) => { socket.once('secureConnect', done); socket.once('error', reject); });
+    return socket;
+  }
+  return { socket: await connect(), connect };
+}
 function fixturePool(options, failures) {
   const pool = new Pool(options), disconnects = [];
   pool.on('connect', client => { disconnects.push(new Promise(done => client.once('end', done))); });
@@ -60,6 +81,37 @@ test('database preflight binds API and TLS database to the explicitly confirmed 
   ]) assert.throws(() => validateTarget(env, projectRef));
   assert.throws(() => validateTarget(configuration(), undefined), error => error.code === 'expected_project_required');
   assert.ok(validateTarget(configuration({ DATABASE_URL: `postgresql://postgres.${projectRef}:secret@aws-0-eu-central-1.pooler.supabase.com:5432/postgres` }), projectRef));
+});
+
+test('audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop', async t => {
+  const { socket, connect } = await tlsFixture(t), manifest = await loadManifest();
+  assert.deepEqual(verifyDatabaseClientTls({ connection: { stream: socket } }, directHost), { tls: true, tlsAuthorized: true });
+  assert.throws(() => verifyDatabaseClientTls({ connection: { stream: socket } }, 'different.example'), error => error.code === 'database_tls_unconfirmed');
+  const unauthorized = await connect(false);
+  assert.equal(unauthorized.encrypted, true); assert.equal(unauthorized.authorized, false);
+  for (const stream of [unauthorized, new Socket(), { encrypted: true, authorized: true }]) {
+    assert.throws(() => verifyDatabaseClientTls({ connection: { stream } }, directHost), error => error.code === 'database_tls_unconfirmed');
+  }
+  for (const [hostname, user, backendTls] of [[directHost, 'migration', true], [poolerHost, `migration.${projectRef}`, false]]) {
+    const queries = [], env = configuration({ DATABASE_URL: `postgresql://${user}:test-only@${hostname}:5432/postgres?sslmode=verify-full` });
+    let closed = false;
+    const poolFactory = () => ({ async end() { closed = true; }, async connect() { return { connection: { stream: socket }, release() {}, async query(sql) {
+      queries.push(sql);
+      if (sql.includes('FROM pg_roles r WHERE r.rolname=current_user')) return { rows: [{ user: 'migration', database: 'postgres', version: 170011, superuser: false, createrole: true, bypassrls: true, schema_create: true, backendTls, databaseSizeBytes: '123456' }] };
+      if (sql.includes('FROM pg_extension')) return { rows: [{ extname: 'plpgsql', extversion: '1.0' }] };
+      return { rows: [] };
+    } }; } });
+    const fetcher = async () => Response.json({ id: 'milo-staging', name: 'milo-staging', public: false });
+    const audit = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, poolFactory, fetcher });
+    assert.equal(audit.connection.tls, true); assert.equal(audit.connection.tlsAuthorized, true); assert.equal(audit.connection.backendTls, backendTls);
+    assert.deepEqual(audit.connection.extensions, [{ extname: 'plpgsql', extversion: '1.0' }]); assert.equal(audit.connection.databaseSizeBytes, '123456');
+    assert.equal(closed, true); assert.equal(queries[0], 'BEGIN READ ONLY'); assert.equal(queries.at(-1), 'COMMIT');
+    assert.ok(audit.blockers.every(reason => reason.startsWith('migration_pending:')));
+  }
+  let queried = false, closed = false;
+  const poolFactory = () => ({ async end() { closed = true; }, async connect() { return { connection: { stream: unauthorized }, release() {}, async query() { queried = true; } }; } });
+  await assert.rejects(auditDatabase({ env: configuration(), expectedProjectRef: projectRef, manifest, poolFactory }), error => error.code === 'database_tls_unconfirmed');
+  assert.equal(queried, false); assert.equal(closed, true);
 });
 
 test('apply fails before any connection when backup, scratch restore or reviewed manifest is missing', async () => {
@@ -117,6 +169,7 @@ test('backup capacity uses measured available filesystem bytes and database size
 
 const testDatabase = process.env.MILO_TEST_DATABASE_URL;
 test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift', { skip: !testDatabase, timeout: 30_000 }, async t => {
+  const { socket: verifiedSocket } = await tlsFixture(t);
   const adminUrl = new URL(testDatabase);
   assert.ok(['localhost', '127.0.0.1', '[::1]'].includes(adminUrl.hostname)); assert.match(adminUrl.pathname, /test/i);
   const failures = [], admin = fixturePool({ connectionString: testDatabase }, failures);
@@ -136,19 +189,15 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
     const url = new URL(adminUrl); url.pathname = `/${name}`;
     const pool = fixturePool({ connectionString: url.toString() }, failures);
     fixturePools.push(pool);
-    // Production always requires verified remote TLS. Only this dependency
-    // injection substitutes the local test server's transport attestation.
+    // Production inspects pg's actual TLS stream. This injected pool uses an
+    // independently verified local TLS stream for the plaintext PG fixture.
     const seenTls = [];
     const poolFactory = (connectionString, options) => {
       seenTls.push(options);
       const real = fixturePool({ connectionString: url.toString() }, failures); factoryPools.push(real);
       return { end: () => real.end(), async connect() {
         const client = await real.connect();
-        return { release: () => client.release(), async query(sql, values) {
-          const result = await client.query(sql, values);
-          if (sql.includes('FROM pg_roles r WHERE r.rolname=current_user')) result.rows[0].tls = true;
-          return result;
-        } };
+        return { connection: { stream: verifiedSocket }, release: () => client.release(), query: (sql, values) => client.query(sql, values) };
       } };
     };
     const buckets = new Map(), requests = [];

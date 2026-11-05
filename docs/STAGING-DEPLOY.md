@@ -1,53 +1,57 @@
 # Milo stagingdeployment
 
-De gebruiker heeft op 5 november 2026 stagingdeployment geautoriseerd. Het doel is `https://milo-staging.dgwebservices.nl`, site `milobingo-staging` op `dg-nxttrack-01`. Productie is geen onderdeel van deze procedure.
+De gebruiker heeft op 5 november 2026 stagingdeployment geautoriseerd. Het doel is `https://milo-staging.dgwebservices.nl`, site `milobingo-staging` op `dg-nxttrack-01`. Productie valt buiten deze opdracht. Er is nog geen stagingapp geactiveerd of hosted databasemigratie uitgevoerd.
 
-## Aangetroffen inrichting
+## Huidige stand en eerste uitvoering
 
-De [hostinspectie van 5 november](https://github.com/milobingo/platform/actions/runs/42051941726) bevestigt de runner `dg-nxttrack-01-nxttrack-staging`, gebruiker `run-mil-stg`, workspace `/home/run-mil-stg/_work/platform/platform`, groep `dg-build` en appaccount `app-mil-stg`. De sitebasis bestaat. Er is voldoende vrije ruimte; de aangetroffen host heeft ruim 150 GB en 9 miljoen vrije inodes.
+De [eerste hostinspectie](https://github.com/milobingo/platform/actions/runs/42051941726) bevestigde de runner `dg-nxttrack-01-nxttrack-staging`, gebruiker `run-mil-stg` UID 1001, workspace `/home/run-mil-stg/_work/platform/platform`, groep `dg-build` en appaccount `app-mil-stg` UID 996. De sitebasis bestaat; bij inspectie waren ruim 150 GB en 9 miljoen inodes vrij. Capaciteit wordt vóór een release opnieuw gemeten.
 
-Dezelfde inspectie vindt geen geïnstalleerde `dg-site-deploy`/`dg-site-rollback`, deploymentversies van Node/pnpm, PostgreSQL-clienttools of Milo-appservice. De runner kan geen sudo-opdrachten uitvoeren. Caddy draait, maar heeft geen Milo-siteconfiguratie en luistert nog niet op HTTPS. De staging-URL is daardoor nog niet beschikbaar. Geen applicatierelease of hosted migratie is geactiveerd.
+Die eerste runnerinspectie vond geen native toolchain, deploywrapper, PostgreSQL-clients of Milo-service. Latere geautoriseerde rootinspectie bevestigde dat `/etc/dg-sites` aanvankelijk leeg was en dat er ook in de beheer-/root-/optpaden geen bestaande DG-wrapperbron beschikbaar was. Inmiddels werkt tijdelijke root-SSH vanaf uitsluitend Tailscale-peer `100.79.0.26`, begrensd tot twee uur en met cleanup na de taak. De volgende hostonderdelen zijn gericht voorbereid:
 
-De groene inspectierun bewijst dat de runner opdrachten uitvoert; hij keurt de host niet automatisch goed voor deployment. De releaseworkflow stopt op ontbrekende voorwaarden vóór backup, migratie, build of activatie.
+- Node `24.18.0` onder `/opt/node-v24.18.0-linux-x64`, met officiële distributiechecksumcontrole; pnpm `11.25.0` onder `/opt/dg-toolchains/pnpm/11.25.0`, zonder installatiescripts uitgevoerd.
+- Het afzonderlijke buildaccount `build-mil-stg`, UID 990/GID 983, met `/var/lib/dg-build/milobingo-staging` als root:build `0710`.
+- Loopbackpoort **4173**, na controle van sockets en siteregister; rootprofiel `/etc/dg-sites/milobingo-staging.deploy.json` mode `0600` met de vaste Node-/pnpm-paden en poort.
+- Private backups onder `/var/backups/milobingo-staging`, runner-owned `0700`, buiten de app-owned `shared`-map.
 
-Lokaal zijn de 38 contractcheck-scripts geslaagd, inclusief acht TLS-contracttests, tien releasecontroles en zeven database-deploytests op PostgreSQL 17.11. De laatste omvatten een echte versleutelde dump/restore met gegevens-, eigenaarschap-, ACL- en RLS-vergelijking. De standalonebuild, typecheck, lint, workflowvalidatie met actionlint 1.7.12 en acht browsertests zijn geslaagd. Dit zijn lokale procedurebewijzen; het zijn geen stagingacceptatie of hosted herstelbewijs.
+Omdat geen bestaande DG-wrapper beschikbaar bleek, is een **nieuwe Milo-specifieke native wrapper versie 1** gebouwd. [STAGING-NATIVE-WRAPPER.md](STAGING-NATIVE-WRAPPER.md) beschrijft de bron, isolatie, hashes, vierargumenteninterface en automatische rollback. De 23 lokale tests en onafhankelijke bronreview zijn geslaagd. De helper/entry zijn nog niet geïnstalleerd; dat volgt uitsluitend na groene CI op de exacte commit die deze wrapper bevat. Caddy had bij inspectie alleen de standaard HTTP-site en een include voor sitefragmenten; Milo-service/Caddy/TLS-activatie zijn nog niet bewezen. Zie [STAGING-HOST.md](STAGING-HOST.md) voor de resterende installatie.
 
-## Eenmalige inrichting
+Procedurecommit `cad5c82e95c72141313cb9cdf4882cf594421dea` heeft [groene CI](https://github.com/milobingo/platform/actions/runs/42055666740). De [eerste deploypoging](https://github.com/milobingo/platform/actions/runs/42056457151) stopte op ontbrekende hostbootstrap, vóór checkout/runtime-secrets/migraties/activatie. De [eerste readonly-databaseaudit](https://github.com/milobingo/platform/actions/runs/42056451922) stopte veilig op `SELF_SIGNED_CERT_IN_CHAIN`.
 
-Laat een beheerder met sudo op de doelhost de stappen in [STAGING-HOST.md](STAGING-HOST.md) afronden. De huidige Codex-sessie heeft sleuteltoegang als `dgadmin`, maar sudo vereist een wachtwoord en root-SSH staat uit. Een tijdelijk toegangsscript voor uitsluitend de Codex-Tailscale-peer is klaargezet in `/home/dgadmin/milobingo-codex-access.py`; de beheerder moet dit met sudo uitvoeren voordat Codex de rootinrichting kan afronden. De repo bevat service-/Caddyvoorbeelden om dit gericht voor Milo af te maken; geen scripts die andere sites herconfigureren.
+De publieke Supabase-CA is daarna gecontroleerd en als stagingvariabele `SUPABASE_DB_CA_BASE64` geplaatst; certificaat- en hostnaamcontrole blijven aan. De TLS-correctie heeft [groene CI-run 42058318577](https://github.com/milobingo/platform/actions/runs/42058318577). De [nieuwe audit 42061456116](https://github.com/milobingo/platform/actions/runs/42061456116) verbond met geverifieerde CA, maar stopte op de interne `pg_stat_ssl`-controle achter de sessiepooler; de transportcontrole wordt daarvoor gecorrigeerd. Databaseversie, werkelijke rollen, app-tabellen en migratiehistorie blijven daarom onbekend. Een groene CI voor een oudere commit vervangt niet de vereiste CI voor de releasecommit met de nieuwe wrapper.
 
-In [GitHub environment staging](https://github.com/milobingo/platform/settings/environments) zijn de onderstaande runtimeconfiguratienamen al aanwezig. Alleen namen en publieke projectidentiteiten zijn geïnspecteerd; secretwaarden zijn niet opgehaald.
+De lokale regressies, standalonebuild, typecheck, lint, actionlint en browsertests zijn procedurebewijs. De databasechecks omvatten een echte PostgreSQL 17.11-dump/restore met encryptie, gegevenschecksums, eigenaarschap, ACL en RLS. Dit is geen bewijs van hosted herstel, OTP-mail of stagingacceptatie.
+
+## Environmentconfiguratie
+
+[GitHub environment staging](https://github.com/milobingo/platform/settings/environments) bevat de volgende benoemde runtimewaarden. Secretwaarden worden niet in documentatie, CLI-argumenten of logs getoond.
 
 | Bestaande variabelen | Bestaande secrets |
 | --- | --- |
-| `APP_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_STORAGE_BUCKET` | `DATABASE_URL`, `SUPABASE_SECRET_KEY`, `VLAMPIE_SETTINGS_KEY` |
+| `APP_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_STORAGE_BUCKET`, `SUPABASE_DB_CA_BASE64` | `DATABASE_URL`, `SUPABASE_SECRET_KEY`, `VLAMPIE_SETTINGS_KEY` |
 | `OPENAI_TEXT_MODEL`, `OPENAI_SPEECH_MODEL`, `LIVEKIT_URL` | `OPENAI_API_KEY`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` |
 
-Supabase staging is project `lfsdgxcpdyghidzkzzvn`, private bucket `milo-staging`. Maak hiervoor geen vervangend project aan. De verbonden Supabase-accounts van deze sessie hebben geen toegang tot dit project; het gecontroleerde databasepad gebruikt de bestaande GitHub-environmentconfiguratie.
+Supabase staging blijft project `lfsdgxcpdyghidzkzzvn`, privébucket `milo-staging`. Maak geen vervangend project aan. De verbonden Supabase-accounts hebben geen toegang tot dit project; het gecontroleerde databasepad gebruikt de bestaande GitHub-environmentconfiguratie.
 
-Voeg na hostinrichting toe:
+| Releaseconfiguratie | Soort en huidige invulling |
+| --- | --- |
+| `DG_STAGING_PORT` | Environment variable, geplaatst als `4173`. |
+| `DG_CONFIG_VERSION` | Environment variable, geplaatst als `v1`; wordt door de workflow naar runtime `CONFIG_VERSION` gemapt. |
+| `DG_DEPLOY_WRAPPER_SHA256` | Environment variable, nog vast te leggen als hash van de daadwerkelijk geïnstalleerde **gerenderde entry**. De helperhash wordt daarin gepind. |
+| `MIGRATION_DATABASE_URL` | Nog aan te leveren deployment-only secret: geautoriseerde beheerverbinding, gescheiden van de beperkte app-login. |
+| `BACKUP_ENCRYPTION_KEY` | Nog aan te leveren afzonderlijke deployment-only secret, 64 hextekens. |
+| `RESTORE_TEST_DATABASE_URL` | Nog aan te leveren deployment-only secret voor de afzonderlijke lege lokale `milo_restore_test_*`-database. |
 
-| Naam | Soort | Invulling |
-| --- | --- | --- |
-| `SUPABASE_DB_CA_BASE64` | Environment variable | Publiek Supabase-CA-certificaat als base64-PEM, voor geverifieerde database-TLS. Officiële CA en fingerprint zijn gecontroleerd en de variabele is geplaatst. |
-| `DG_DEPLOY_WRAPPER_SHA256` | Environment variable | SHA-256 van de daadwerkelijk geïnstalleerde en beoordeelde rootwrapper. Geen hash van een willekeurig bestand of fictieve versie. |
-| `DG_STAGING_PORT` | Environment variable | Door de beheerder gecontroleerde vrije loopbackpoort, gelijk aan service en Caddy. |
-| `DG_CONFIG_VERSION` | Environment variable | Niet-geheime configuratieversie; verhoog bij relevante omgevingswijzigingen. |
-| `MIGRATION_DATABASE_URL` | Environment secret | Aparte beheerverbinding van het stagingproject voor databaseaudit, migraties en backups. De app gebruikt `DATABASE_URL` met een beperkte login die lid is van `milo_backend`, zonder superuser, rol-/databasebeheer of RLS-bypass. |
-| `BACKUP_ENCRYPTION_KEY` | Environment secret | Afzonderlijke 32-byte sleutel als 64 hextekens voor AES-256-GCM-backups. Bewaar ook gecontroleerd buiten GitHub voor herstel. |
-| `RESTORE_TEST_DATABASE_URL` | Environment secret | Afzonderlijke lege lokale hersteltestdatabase, loopback, naam `milo_restore_test_*`. Geen staging- of productiedatabase. |
+`DATABASE_BACKUP_DIRECTORY` is in de workflow vastgezet op **`/var/backups/milobingo-staging`**. De app-runtime krijgt geen migratie-, backup-, herstel- of GitHub-credentials. De bestaande `DATABASE_URL` moet nog op werkelijk least-privilege loginrechten worden gecontroleerd; aanwezigheid van de secret bewijst dat niet. De runtimegate weigert beheer-/RLS-bypassrechten en onverwachte rollidmaatschappen.
 
-Gebruik voor migraties een projectgebonden directe PostgreSQL- of sessiepoolerverbinding op 5432; een transaction pooler op 6543 is ongeschikt. Laat de procedure TLS en projectidentiteit controleren. Backup-/restorecredentials en de migratieverbinding gaan niet naar de applicatie. De afgeschermde backuplocatie is `/srv/sites/milobingo-staging/shared/backups`; laat de beheerder de juiste private toegang voor de deploygebruiker inrichten. Raadpleeg [STAGING-DATABASE.md](STAGING-DATABASE.md) voor het vereiste databasecontract, de backupbewijzen en de behandeling van bestaande tabellen.
+## Releasepad
 
-## Release uitvoeren
-
-1. Integreer bron en lockfile op `main`. Kies één volledige 40-teken commit. Laat de workflow **CI** op die exacte commit slagen; browseracceptatie draait tegen het gebouwde standalonepakket.
-2. Start **Inspect Milo staging** indien hostinrichting is veranderd. Beoordeel de gevonden hostinformatie; de muterende deploy heeft daarnaast eigen harde voorcontroles.
-   **Audit Milo staging database** is een afzonderlijke read-only diagnose. Deze kan met tijdelijk gecachete Actions-tools al draaien vóór de native hosttoolchain is ingericht. Hij gebruikt de bestaande databaseverbinding alleen voor inventarisatie en verandert geen schema, bucket of app. Ontbrekende migraties of andere blokkades geven een rode audit met concrete redenen.
-3. Start **Deploy Milo staging** vanuit `main`, met de gekozen `release_sha`. Kies database toepassen uitsluitend als de read-only audit aangeeft dat migraties of de bevestigde private bucket ontbreken en backup/herstel volledig is ingericht. Bestaande onbeheerde applicatietabellen of schemadrift vereisen eerst afzonderlijke vergelijking en review.
-4. De workflow controleert de eigen groene CI en main-afkomst, exact runneraccount/host/workspace/checkout, wrapperhash, toolchain, configuratienamen en vrije bytes/inodes. De wrapper verzorgt de hostbrede build-lock, installatie uit het lockfile, native build en activatie. Runtime-secrets blijven buiten het buildproces.
-5. De databasecontrole inventariseert historie, checksums, tabellen, RLS/grants en de private bucket. Toepassen vereist een versleutelde backup met echte herstelproef. Een tweede audit moet gereed melden voordat de applicatie wordt geactiveerd.
-6. `dg-site-deploy` krijgt uitsluitend de bestaande vier argumenten:
+1. Integreer bron en lockfile op `main`, inclusief de beoordeelde native wrapper en documentatie. Kies één volledige 40-teken releasecommit en laat de eigen **CI** daarop slagen. De gate controleert ook main-afkomst, workflow-SHA en de succesvolle vereiste verify-job.
+2. Rond de eenmalige hostinstallatie uit [STAGING-HOST.md](STAGING-HOST.md) af: helper/gerenderde entry, hashes, beperkte sudoers-regel, appunit, Caddyfragment, PostgreSQL-tools en herstelvoorzieningen. Installeer geen nieuwere wrapperbron op basis van alleen CI voor een oudere commit.
+3. Start zo nodig **Inspect Milo staging** voor nieuw hostbewijs. **Audit Milo staging database** is een afzonderlijke readonly-diagnose, eveneens gebonden aan exacte groene CI. Zij kan met tijdelijke Actions-tools draaien voordat alle native voorzieningen gereed zijn. De eerste diagnose mag de bestaande `DATABASE_URL` inventariseren; zij verandert geen schema, bucket of app. Pending migraties, onleesbare historie of andere blokkades geven een rode audit.
+4. Beoordeel SQL-checksums en de werkelijke database-/rolstaat. Volg [STAGING-DATABASE.md](STAGING-DATABASE.md). Configureer de aparte migratieverbinding en de beperkte runtime-login. Bestaande onbeheerde applicatietabellen of drift worden nooit gereset of stilzwijgend geadopteerd.
+5. Start **Deploy Milo staging** vanuit `main`, met de volledige `release_sha`. `apply_database` staat standaard uit. Schakel het uitsluitend voor de afzonderlijk beoordeelde ontbrekende bootstrap/bucket in wanneer backup en echte herstelproef volledig ingericht zijn. De workflow berekent de manifesthash van de geselecteerde, door CI gecontroleerde bron en geeft die expliciet aan `--apply` door. Ontbrekende backup-/herstelconfiguratie blijft een blokkade, ook bij nul app-tabellen.
+6. De workflow verifieert runner/caller/host/workspace/checkout, wrapperhash, toolchain, configuratienamen, vrije bytes/inodes en de eigen groene CI. Databasebeheer gebruikt alleen binnen die stap de naar `DATABASE_URL` gemapte `MIGRATION_DATABASE_URL`. Na eventuele toepassing volgt opnieuw een readonly-audit en een afzonderlijke controle van de beperkte app-databaselogin.
+7. De entry wordt uitsluitend aangeroepen met deze vier argumenten:
 
    ```text
    milobingo-staging
@@ -56,22 +60,19 @@ Gebruik voor migraties een projectgebonden directe PostgreSQL- of sessiepoolerve
    <GitHub run-ID>-<pogingnummer>
    ```
 
-7. Na activatie controleert de workflow publieke HTTPS, volledige health-revision, release-ID en configuratieversie, demo en assets, anonieme toegangsweigering en uitgeschakelde ontwikkelaanmelding. Leg de run-URL en actieve release vast. Een mislukte nacontrole maakt de deployment niet succesvol.
+   De roothelper controleert de argumenten opnieuw, gebruikt de hostbrede build-lock en archiveert de exacte commit als runner. Uitpakken, installatiescripts en native build draaien als afzonderlijke `build-mil-stg`-identiteit in begrensde systemd-units met een lege gecontroleerde omgeving. Runtimecredentials komen pas na build/sealing in een afzonderlijk root-only envbestand terecht.
+8. De helper activeert app en env samen via `current`, herstart alleen de Milo-service en controleert loopback-health op SHA/run/configuratie. De workflow controleert daarna publieke HTTPS, dezelfde volledige identiteit, demoassets, anonieme toegangsweigering en uitgeschakelde ontwikkelaanmelding. Een mislukte nacontrole maakt de deployment niet succesvol.
 
-Buildconfiguratie bevat geen browservariabelen of providersecrets. De runtime-allowlist staat als `RUNTIME_KEYS` in `scripts/deploy/release-preflight.mjs`. Alleen de benoemde applicatiewaarden gaan naar de runtime; `GITHUB_TOKEN`, backupkey en herstelverbinding blijven erbuiten. Er wordt tijdens deployment geen betaalde AI-call, OTP-mail of echte uitzending gestart.
+De service leest `EnvironmentFile=/srv/sites/milobingo-staging/current/.runtime.env` en start rechtstreeks `/opt/node-v24.18.0-linux-x64/bin/node` met `current/.next/standalone/server.js`. Een vast envbestand buiten deze releasekoppeling zou automatische rollback breken. Het bijgewerkte servicevoorbeeld en Caddyfragment gebruiken de bevestigde paden en poort 4173; hun aanwezigheid in Git bewijst geen installatie.
 
-## Acceptatie en herstel
+Buildconfiguratie bevat geen providersecrets of browservariabelen. De 21 runtimekeys staan in `scripts/deploy/release-preflight.mjs` en de wrapper; de entry geeft uitsluitend deze waarden als begrensde JSON via sudo-stdin door. `GITHUB_TOKEN`, de migratieverbinding, backupkey en herstelverbinding worden niet doorgegeven. Deployment start geen betaalde AI-call, OTP-mail of echte uitzending.
 
-De automatische nacontrole bewijst bereikbaarheid en toegangsgrenzen. OTP/Google met echte accounts, regierollen, gezin/boekjes/PDF en de bel-/uitzendketen blijven releasegebonden acceptatiestappen volgens [RUNBOOK.md](RUNBOOK.md). De DG-mailgateway/outbox vereist nog het afgesproken gatewaycontract. Sla die controles niet als geslaagd op als ze niet zijn uitgevoerd.
+## Acceptatie, herstel en bewijs
 
-De rootwrapper moet de vorige compatibele release bewaren en bij mislukte activatie de gedocumenteerde approllback ondersteunen. Omdat deze wrapper nog niet aanwezig is, staat er bewust geen verzonnen rollbackcommando in deze procedure. Leg vóór de eerste activering het werkelijke rollbackcommando en vorige release vast. Bij de allereerste release kan er nog geen vorige applicatierelease zijn.
+De automatische nacontrole bewijst bereikbaarheid en toegangsgrenzen. OTP/Google met echte accounts, bewuste regietoekenning, gezin/boekjes/PDF en de bel-/uitzendketen blijven releasegebonden acceptatiestappen volgens [RUNBOOK.md](RUNBOOK.md). De DG-mailgateway/outbox vereist nog het afgesproken gatewaycontract. Registreer niet-uitgevoerde controles als openstaand.
 
-Een approllback draait database, bucket, Auth- of providerinstellingen niet terug. Als de databasewijziging al is toegepast, noteer dat als gedeeltelijke uitrol en controleer compatibiliteit met de vorige applicatie. Gebruik databaseherstel alleen via het bewaarde backup-/herstelbewijs en een apart beoordeeld herstelplan. Reset nooit een omgeving om historieverschillen te verbergen.
+Native wrapper versie 1 bewaart alle bekende releases en private envbestanden. Bij mislukte nieuwe activatie herstelt hij automatisch een vooraf gezond bevonden vorige app én het bijbehorende envbestand. Mislukt die rollback, dan stopt de service. Bij de eerste mislukte activatie zonder gezonde voorganger stopt de service en verdwijnt `current`. Er is geen apart handmatig `dg-site-rollback`-commando; een aanvullende herstelactie wordt gericht als beheerhandeling uitgevoerd volgens het beoordeelde versie-1-contract.
 
-Bewaar per release bron-SHA, workflow-SHA, CI-run, deploy-run, wrapperhash, Node/pnpm-versies, configuratieversie, backup-/herstelbewijs, migratiechecksums, actieve health-identiteit en resterende acceptatiestappen. `PROJECTPROFIEL.json` houdt onbekende gegevens op `null` totdat ze op de doelhost zijn bevestigd.
+Een approllback draait database, bucket, Auth of providerinstellingen niet terug. Bij een gecommitte databasewijziging met later mislukte appactivatie is de uitrol gedeeltelijk. Bewaar backup en historie, controleer de nog actieve app en gebruik een apart herstelplan voor database/providerconfiguratie. Reset nooit een omgeving om historieverschillen te verbergen.
 
-## Eerste uitvoering op 5 november
-
-Procedurecommit `cad5c82e95c72141313cb9cdf4882cf594421dea` heeft [groene CI](https://github.com/milobingo/platform/actions/runs/42055666740). De [eerste deploypoging](https://github.com/milobingo/platform/actions/runs/42056457151) bevestigt de CI-koppeling en stopt op de ontbrekende hostbootstrap, vóór checkout/runtime-secrets/migraties/activatie. Er is geen app geactiveerd.
-
-De [eerste database-audit](https://github.com/milobingo/platform/actions/runs/42056451922) bereikt de TLS-controle maar meldt `SELF_SIGNED_CERT_IN_CHAIN`. Hiervoor wordt de officiële publieke Supabase-CA expliciet ondersteund; certificaat- en hostnaamcontrole blijven aan. Een nieuwe geslaagde audit moet de werkelijke projectverbinding nog bevestigen.
+Leg na de echte uitvoering vast: volledige bron-/workflow-/runtime-SHA, CI- en deploy-run, entry-/helper-/toolchaindigests, release-inventarisdigest, configuratieversie, migratiechecksums, backup/herstelbewijs, service-eigenaar/werkmap/loopbackbinding, publieke healthidentiteit en resterende acceptatiestappen. Werk dan `PROJECTPROFIEL.json` en het resultaatbericht bij. Verwijder de tijdelijke root-SSH-toegang na de taak; de normale releasebediening blijft de beperkte runneractie.

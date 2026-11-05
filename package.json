@@ -23,7 +23,7 @@
     "build": "node scripts/prepare-next.mjs && next build --webpack && node scripts/package-standalone.mjs",
     "start": "next start --hostname 127.0.0.1 --port ${PORT:-4173}",
     "start:standalone": "HOSTNAME=127.0.0.1 PORT=${PORT:-4173} node .next/standalone/server.js",
-    "lint": "eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/package-standalone.mjs scripts/deploy scripts/run-checks.mjs",
+    "lint": "eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/package-standalone.mjs scripts/start-standalone-test.mjs scripts/deploy scripts/run-checks.mjs playwright.config.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node scripts/run-checks.mjs",
     "test:browser": "playwright test",

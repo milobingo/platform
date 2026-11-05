@@ -55,10 +55,11 @@
     },
     "linux_users": {
       "staging_runner": "run-mil-stg",
-      "staging_app": "app-mil-stg"
+      "staging_app": "app-mil-stg",
+      "staging_build": "build-mil-stg"
     },
     "ports": {
-      "staging": null
+      "staging": 4173
     },
     "deploy_wrapper_version": null,
     "supabase_staging_ref": "lfsdgxcpdyghidzkzzvn",
@@ -80,26 +81,36 @@
       "runner_verified": true,
       "secrets_names_present": true,
       "missing_host_prerequisites": [
-        "Node 24.18.0 and pnpm 11.25.0 deployment toolchain",
-        "PostgreSQL client and isolated restore-test database",
-        "reviewed dg-site-deploy wrapper and verified rollback interface",
-        "restricted non-interactive deployment privilege",
-        "Milo app service and loopback port",
-        "Milo Caddy vhost and HTTPS"
+        "PostgreSQL clients matching actual source major and isolated restore database",
+        "reviewed native wrapper installation and restricted sudoers",
+        "Milo app service and Caddy HTTPS activation",
+        "database backup, restore proof, migration and least-privilege runtime connection"
       ],
       "acceptance": "not_run",
       "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42055666740",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42058318577",
       "ci_result": "success",
       "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
       "deploy_result": "blocked_before_checkout_by_host_bootstrap",
-      "database_audit": "https://github.com/milobingo/platform/actions/runs/42056451922",
-      "database_audit_result": "SELF_SIGNED_CERT_IN_CHAIN; explicit official Supabase CA being configured",
+      "database_audit": "https://github.com/milobingo/platform/actions/runs/42061456116",
+      "database_audit_result": "CA-verified pooler connection established; audit stopped on backend pg_stat_ssl check; transport proof correction pending",
       "ssh_admin": {
-        "user": "dgadmin",
+        "temporary_user": "root",
+        "source_tailscale_peer": "100.79.0.26",
         "key_login_verified": true,
-        "noninteractive_sudo": false,
-        "root_login": "disabled by /etc/ssh/sshd_config.d/00-dg-hardening.conf"
+        "expires_at": "2026-11-05T17:48:09Z",
+        "scope": "one-time Milo staging bootstrap; remove after task",
+        "permanent_root_login": "disabled outside scoped temporary exception"
+      },
+      "prepared_host": {
+        "node": "24.18.0",
+        "pnpm": "11.25.0",
+        "build_uid": 990,
+        "build_gid": 983,
+        "port": 4173,
+        "backup_directory": "/var/backups/milobingo-staging",
+        "wrapper_source": "infra/staging/deploy-helper.py",
+        "wrapper_installed": false
       }
     }
   },
@@ -158,8 +169,8 @@
     "Null target fields are unresolved project information; they are not deploy-ready defaults.",
     "CI does not create accounts, apply remote migrations, send mail or deploy.",
     "The user authorized staging deployment on 2026-11-05. Production is outside the current scope.",
-    "The staging runner identity, GitHub environment variable values and secret names were inspected. Secret values were not retrieved.",
     "The host preflight found an incomplete deployment host; no app release or remote migration was activated.",
-    "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio."
+    "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
+    "Credentials are handled only through protected staging workflow inputs and private bootstrap files; values are never logged or committed."
   ]
 }
