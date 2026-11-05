@@ -122,6 +122,37 @@ test('Supabase verifies identity and private SQL roles override all email and me
  assert.equal(context.identity.user,null);
 });
 
+test('standalone proxy origin requires the fixed listener and exact public host and protocol',async t=>{
+ const origin='https://studio.example';
+ const h=await fixture(t,{NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:'4173',APP_URL:origin,SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'});
+ const provider=fakeProvider(null);let clients=0;
+ const authClientFactory=(...args)=>{clients++;return provider.factory(...args);};
+ const transport=(path,{headers={},body,base='https://127.0.0.1:4173'}={})=>{
+  const values={Host:'studio.example','X-Forwarded-Host':'studio.example','X-Forwarded-Proto':'https',Origin:origin,'Content-Type':'application/json',...headers};
+  for(const key of Object.keys(values))if(values[key]===null)delete values[key];
+  return new Request(base+path,{headers:values,method:body===undefined?'GET':'POST',...(body===undefined?{}:{body:JSON.stringify(body)})});
+ };
+ const call=(request,env=h.env)=>dispatchNodeRequest(request,{env,authClientFactory});
+ const session=await call(transport('/api/auth/session',{headers:{Origin:null}}));
+ assert.equal(session.status,200);assert.equal((await session.json()).localAvailable,false);
+ const otp=await call(transport('/auth/otp',{body:{email:'parent@example.test'}}));
+ assert.equal(otp.status,200);assert.match(otp.headers.getSetCookie().join(';'),/Secure/);
+ assert.equal(provider.calls.at(-1)[1].options.emailRedirectTo,origin+'/auth/callback');
+ const google=await call(transport('/auth/google',{body:{next:'/spelen?spel=selected'}}));
+ assert.equal(google.status,200);assert.equal(provider.calls.at(-1)[1].options.redirectTo,origin+'/auth/callback?next=%2Fspelen%3Fspel%3Dselected');
+ const callback=await call(transport('/auth/callback?code=provider-code&next=%2Fspelen',{headers:{Origin:null,'Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'navigate','Sec-Fetch-Dest':'document'}}));
+ assert.equal(callback.status,303);assert.equal(callback.headers.get('location'),origin+'/spelen');
+ const before=clients;
+ for(const headers of [{Host:'attacker.example'},{Host:null},{'X-Forwarded-Host':'attacker.example'},{'X-Forwarded-Host':'studio.example, attacker.example'},{'X-Forwarded-Host':null},{'X-Forwarded-Proto':'http'},{'X-Forwarded-Proto':'https, http'},{'X-Forwarded-Proto':null},{Origin:'https://attacker.example'},{'Sec-Fetch-Site':'cross-site'}]){
+  const rejected=await call(transport('/api/auth/session',{headers}));assert.equal(rejected.status,403);
+ }
+ for(const base of ['https://127.0.0.2:4173','https://127.0.0.1:4174','https://attacker.example'])assert.equal((await call(transport('/api/auth/session',{base}))).status,403);
+ for(const config of [{HOSTNAME:'0.0.0.0'},{PORT:'4174'}])assert.equal((await call(transport('/api/auth/session'),{...h.env,...config})).status,403);
+ assert.equal((await call(transport('/auth/otp',{body:{email:'blocked@example.test'},headers:{Origin:null}}))).status,403);
+ assert.equal(clients,before);
+ const local=await call(transport('/auth/local',{body:{role:'regie'}}));assert.equal(local.status,403);assert.equal(local.headers.getSetCookie().length,0);
+});
+
 test('OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects',async t=>{
  const h=await fixture(t,{MILO_LOCAL_AUTH:'false',APP_URL:'https://studio.example',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'});
  const provider=fakeProvider(null),call=(request)=>dispatchNodeRequest(request,{env:h.env,authClientFactory:provider.factory});

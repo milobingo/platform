@@ -17,6 +17,20 @@ const json=(message,status=503,code='unavailable')=>Response.json({error:{code,m
 const authPaths=new Set(['/api/auth/session','/api/player/request-code','/api/player/verify-code','/api/player/logout']);
 const environmentSymbol=Symbol.for('milo.node-runtime-environment');
 
+// Standalone Next builds request.url from the loopback listener, even when
+// Caddy preserved the public Host. Only the fixed, matching proxy contract may
+// replace that internal origin; forwarded headers never choose an origin.
+function publicRequestUrl(request,env){
+ if(env.NODE_ENV!=='production'||env.HOSTNAME!=='127.0.0.1'||!/^\d{1,5}$/.test(String(env.PORT||'')))return request.url;
+ try{
+  const incoming=new URL(request.url),canonical=new URL(env.APP_URL);
+  if(canonical.protocol!=='https:'||canonical.username||canonical.password||canonical.pathname!=='/'||canonical.search||canonical.hash)return request.url;
+  if(!['http:','https:'].includes(incoming.protocol)||incoming.hostname!==env.HOSTNAME||incoming.port!==String(env.PORT)||Number(env.PORT)<1||Number(env.PORT)>65535)return request.url;
+  if(request.headers.get('host')?.toLowerCase()!==canonical.host||request.headers.get('x-forwarded-host')?.toLowerCase()!==canonical.host||request.headers.get('x-forwarded-proto')!=='https')return request.url;
+  return canonical.origin+incoming.pathname+incoming.search;
+ }catch{return request.url;}
+}
+
 export async function getRuntimeEnvironment(){
  if(!globalThis[environmentSymbol])globalThis[environmentSymbol]=createStorageEnvironment(process.env).then(storage=>({...process.env,...storage})).catch(error=>{delete globalThis[environmentSymbol];throw error;});
  return globalThis[environmentSymbol];
@@ -30,7 +44,9 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   env=env||await getRuntimeEnvironment();
   const cleanHeaders=new Headers(request.headers);
   for(const name of [...cleanHeaders.keys()])if(name.startsWith('oai-authenticated-')||name==='x-milo-role'||name==='x-milo-user')cleanHeaders.delete(name);
-  const cleanRequest=new Request(request,{headers:cleanHeaders});
+  let cleanRequest=new Request(request,{headers:cleanHeaders});
+  const publicUrl=publicRequestUrl(cleanRequest,env);
+  if(publicUrl!==cleanRequest.url)cleanRequest=new Request(publicUrl,cleanRequest);
   context=await createAuthContext(cleanRequest,env,{clientFactory:authClientFactory});
   const url=new URL(cleanRequest.url),path=url.pathname;
   const finish=response=>applyAuthCookies(response,context);
