@@ -307,8 +307,11 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   await admin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
   if (scratchAdmin !== admin) await scratchAdmin.query(`CREATE ROLE "${restoreRole}" LOGIN SUPERUSER PASSWORD 'milo-local-test-only'`);
   const sourceUrl = new URL(adminUrl), restoreUrl = new URL(scratchAdminUrl); sourceUrl.pathname = `/${sourceName}`; restoreUrl.pathname = `/${restoreName}`; restoreUrl.username = restoreRole; restoreUrl.password = 'milo-local-test-only';
-  const sourcePool = fixturePool({ connectionString: sourceUrl.toString() }, failures), restoredPool = fixturePool({ connectionString: restoreUrl.toString() }, failures), restorePools = [];
-  const poolFactory = connectionString => { const pool = fixturePool({ connectionString }, failures); restorePools.push(pool); return pool; };
+  const sourcePool = fixturePool({ connectionString: sourceUrl.toString() }, failures), restoredPool = fixturePool({ connectionString: restoreUrl.toString() }, failures), restorePools = [], restoredCommands = [];
+  const poolFactory = connectionString => {
+    const pool = fixturePool({ connectionString }, failures); restorePools.push(pool);
+    return { end: () => pool.end(), async connect() { const client = await pool.connect(); return { release: () => client.release(), async query(sql, values) { restoredCommands.push(sql); return client.query(sql, values); } }; } };
+  };
   const sourceClient = await sourcePool.connect();
   t.after(async () => {
     const unclosedRestorePools = restorePools.filter(pool => !pool.ending).length;
@@ -337,7 +340,11 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
     INSERT INTO pgcustom_restore.preserved_data VALUES ('nonreserved-pg-prefix','{"preserve":"namespace-data"}');
     ALTER TABLE pgcustom_restore.preserved_data OWNER TO "${ownerRole}";
     GRANT USAGE ON SCHEMA pgcustom_restore TO "${readerRole}";
+    GRANT USAGE ON SCHEMA pgcustom_restore TO "${restoreRole}" WITH GRANT OPTION;
     GRANT SELECT ON pgcustom_restore.preserved_data TO "${readerRole}"`);
+  // Reproduce initial privileges recorded by extension scripts for an existing
+  // schema: pg_dump omits them, but CREATE SCHEMA cannot recreate those grants.
+  await sourceClient.query("INSERT INTO pg_init_privs(objoid,classoid,objsubid,privtype,initprivs) SELECT oid,'pg_namespace'::regclass,0,'e',nspacl FROM pg_namespace WHERE nspname='pgcustom_restore'");
   await sourceClient.query(`CREATE EXTENSION pg_stat_statements; ALTER VIEW public.pg_stat_statements_info OWNER TO "${ownerRole}"`);
   await sourceClient.query(`ALTER ROLE "${ownerRole}" SUPERUSER;
     CREATE FUNCTION public.fixture_event_handler() RETURNS event_trigger LANGUAGE plpgsql AS $$ BEGIN NULL; END $$;
@@ -361,6 +368,9 @@ test('real pg_dump backup is encrypted and restored with matching data checksums
   assert.deepEqual((await restoredPool.query('SELECT id,document FROM pgcustom_restore.preserved_data')).rows, [{ id: 'nonreserved-pg-prefix', document: { preserve: 'namespace-data' } }]);
   assert.deepEqual((await restoredPool.query("SELECT pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname='pgcustom_restore'")).rows[0], { owner: ownerRole });
   assert.deepEqual((await restoredPool.query("SELECT has_schema_privilege($1,'pgcustom_restore','USAGE') AS usage,has_table_privilege($1,'pgcustom_restore.preserved_data','SELECT') AS read,has_table_privilege($1,'pgcustom_restore.preserved_data','UPDATE') AS write", [readerRole])).rows[0], { usage: true, read: true, write: false });
+  assert.ok(restoredCommands.some(sql => sql === `SET LOCAL ROLE "${ownerRole}"`));
+  assert.ok(restoredCommands.some(sql => sql === `GRANT USAGE ON SCHEMA "pgcustom_restore" TO "${restoreRole}" WITH GRANT OPTION`), 'initial schema privileges omitted by the archive are restored with their original grantor and grant option');
+  assert.equal((await restoredPool.query("SELECT a.is_grantable FROM pg_namespace n CROSS JOIN LATERAL aclexplode(n.nspacl) a WHERE n.nspname='pgcustom_restore' AND a.grantee=$1::regrole AND a.grantor=$2::regrole AND a.privilege_type='USAGE'", [restoreRole, ownerRole])).rows[0].is_grantable, true);
   if (scratchAdmin !== admin) assert.deepEqual((await restoredPool.query('SELECT rolcanlogin AS login,rolsuper AS superuser,rolcreaterole AS createrole,rolcreatedb AS createdb FROM pg_roles WHERE rolname=$1', [readerRole])).rows[0], { login: false, superuser: false, createrole: false, createdb: false }, 'pgbouncer-style ACL grantees are restored as unprivileged NOLOGIN scaffolding');
   const extensionOwners = (await restoredPool.query("SELECT c.relname AS name,pg_get_userbyid(c.relowner) AS owner FROM pg_class c WHERE c.oid IN ('public.pg_stat_statements'::regclass,'public.pg_stat_statements_info'::regclass) ORDER BY name")).rows;
   assert.deepEqual(extensionOwners, [{ name: 'pg_stat_statements', owner: decodeURIComponent(adminUrl.username) }, { name: 'pg_stat_statements_info', owner: ownerRole }], 'individual source extension owners survive a full restore by a different superuser');

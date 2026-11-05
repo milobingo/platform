@@ -300,9 +300,7 @@ async function securityProof(client) {
     FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace CROSS JOIN LATERAL aclexplode(coalesce(c.relacl,acldefault(CASE WHEN c.relkind='S' THEN 's'::"char" ELSE 'r'::"char" END,c.relowner))) a
     WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f') ORDER BY n.nspname,c.relname,grantor,grantee,a.privilege_type`)).rows;
   const policies = (await client.query("SELECT schemaname,tablename,policyname,permissive,roles::text[] AS roles,cmd,qual,with_check FROM pg_policies ORDER BY schemaname,tablename,policyname")).rows;
-  const schemas = (await client.query("SELECT nspname AS name,pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE left(nspname,3)<>'pg_' AND nspname<>'information_schema' ORDER BY nspname")).rows;
-  const schemaGrants = (await client.query(`SELECT n.nspname AS name,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
-    FROM pg_namespace n CROSS JOIN LATERAL aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) a WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' ORDER BY n.nspname,grantor,grantee,a.privilege_type`)).rows;
+  const { schemas, grants: schemaGrants } = await schemaPermissions(client);
   const defaults = (await client.query(`SELECT pg_get_userbyid(d.defaclrole) AS owner,coalesce(n.nspname,'') AS schema,d.defaclobjtype AS kind,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
     FROM pg_default_acl d LEFT JOIN pg_namespace n ON n.oid=d.defaclnamespace CROSS JOIN LATERAL aclexplode(d.defaclacl) a ORDER BY owner,schema,kind,grantor,grantee,a.privilege_type`)).rows;
   const eventTriggers = await eventTriggerInventory(client);
@@ -327,6 +325,13 @@ async function eventTriggerInventory(client) {
     FROM pg_event_trigger e JOIN pg_proc p ON p.oid=e.evtfoid JOIN pg_namespace n ON n.oid=p.pronamespace ORDER BY e.evtname`)).rows;
 }
 
+async function schemaPermissions(client) {
+  const schemas = (await client.query("SELECT nspname AS name,pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE left(nspname,3)<>'pg_' AND nspname<>'information_schema' ORDER BY nspname")).rows;
+  const grants = (await client.query(`SELECT n.nspname AS name,pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
+    FROM pg_namespace n CROSS JOIN LATERAL aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) a WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' ORDER BY n.nspname,grantor,grantee,a.privilege_type`)).rows;
+  return { schemas, grants };
+}
+
 export async function readExtensionMetadata(path, key, expected) {
   if (!expected || !/^[a-f0-9]{64}$/.test(expected.encryptedSha256 || '') || !/^[a-f0-9]{64}$/.test(expected.metadataSha256 || '') || await fileDigest(path) !== expected.encryptedSha256) fail('extension_metadata_hash', 'De versleutelde extensiemetadata wijkt af van het vastgelegde herstelbewijs.');
   const chunks = []; let bytes = 0;
@@ -345,11 +350,32 @@ export async function readExtensionMetadata(path, key, expected) {
     if (new Set(metadata.owners.map(row => stable([row.schema, row.name]))).size !== metadata.owners.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele relaties.');
     if (new Set(metadata.extensions.map(row => row.name)).size !== metadata.extensions.length) fail('extension_metadata_invalid', 'De extensiemetadata bevat dubbele extensies.');
     if (!Array.isArray(metadata.eventTriggers) || metadata.eventTriggers.length !== expected.eventTriggers || metadata.eventTriggers.some(row => !row || ['name', 'owner', 'function_schema', 'function_name'].some(key => !identifier(row[key])) || typeof row.event !== 'string' || !row.event || !['O', 'D', 'R', 'A'].includes(row.enabled) || typeof row.function_arguments !== 'string' || row.function_arguments.length > 65536 || row.tags !== null && (!Array.isArray(row.tags) || row.tags.some(tag => typeof tag !== 'string' || tag.length > 512))) || new Set(metadata.eventTriggers.map(row => row.name)).size !== metadata.eventTriggers.length) fail('extension_metadata_invalid', 'De eventtriggermetadata heeft geen geldig, uniek contract.');
+    const permissions = metadata.schemaPermissions;
+    if (!permissions || !Array.isArray(permissions.schemas) || permissions.schemas.length !== expected.schemas || permissions.schemas.some(row => !row || !identifier(row.name) || !identifier(row.owner) || row.name.startsWith('pg_') || row.name === 'information_schema') || new Set(permissions.schemas.map(row => row.name)).size !== permissions.schemas.length || !Array.isArray(permissions.grants) || permissions.grants.length !== expected.schemaGrants || permissions.grants.some(row => !row || !permissions.schemas.some(schema => schema.name === row.name) || !identifier(row.grantor) || !identifier(row.grantee) || !['USAGE', 'CREATE'].includes(row.privilege_type) || typeof row.is_grantable !== 'boolean') || new Set(permissions.grants.map(row => stable(row))).size !== permissions.grants.length) fail('extension_metadata_invalid', 'De schemarechtenmetadata heeft geen geldig, uniek broncontract.');
     return metadata;
   } catch (error) {
     if (error instanceof DatabaseGateError) throw error;
     fail('extension_metadata_invalid', 'De versleutelde extensiemetadata kon niet geauthenticeerd en gevalideerd worden.');
   }
+}
+
+async function restoreSchemaPermissions(restoreClient, metadata) {
+  const database = (await restoreClient.query('SELECT current_database() AS database')).rows[0].database;
+  if (!/^milo_restore_test_[a-z0-9_]+$/.test(database)) fail('schema_restore_target', 'Schemarechten mogen uitsluitend op de afzonderlijke hersteltestdatabase worden aangevuld.');
+  await restoreClient.query('BEGIN');
+  try {
+    const expected = metadata.schemaPermissions, actual = await schemaPermissions(restoreClient);
+    if (stable(actual.schemas) !== stable(expected.schemas)) fail('schema_restore_identity', 'De herstelde schemanamen of eigenaars wijken af van de versleutelde bronmetadata.');
+    const recorded = new Set(expected.grants.map(row => stable(row))), existing = new Set(actual.grants.map(row => stable(row)));
+    if (actual.grants.some(row => !recorded.has(stable(row)))) fail('schema_restore_extra_grant', 'De herstelde database bevat een extra of gewijzigde schemagrant. Er wordt niets ingetrokken of verborgen.');
+    for (const row of expected.grants.filter(row => !existing.has(stable(row)))) {
+      await restoreClient.query(`SET LOCAL ROLE ${quote(row.grantor)}`);
+      await restoreClient.query(`GRANT ${row.privilege_type} ON SCHEMA ${quote(row.name)} TO ${row.grantee === 'PUBLIC' ? 'PUBLIC' : quote(row.grantee)}${row.is_grantable ? ' WITH GRANT OPTION' : ''}`);
+      await restoreClient.query('RESET ROLE');
+    }
+    if (stable(await schemaPermissions(restoreClient)) !== stable(expected)) fail('schema_restore_mismatch', 'De aangevulde schemarechten wijken nog af in grantor, ontvanger of grant option.');
+    await restoreClient.query('COMMIT');
+  } catch (error) { await restoreClient.query('ROLLBACK'); throw error; }
 }
 
 async function withScratchEventOwners(restoreClient, metadata, restoreUrl, operation) {
@@ -431,10 +457,10 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     let sourceProof, sourceSecurity, extensionMetadata;
     try {
       const snapshot = (await sourceClient.query('SELECT pg_export_snapshot() AS id')).rows[0].id;
-      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient), eventTriggers: await eventTriggerInventory(sourceClient) };
+      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient), eventTriggers: await eventTriggerInventory(sourceClient), schemaPermissions: await schemaPermissions(sourceClient) };
       const metadataBody = stable(metadata);
       await encryptBackup(Readable.from(metadataBody), extensionPath, env.BACKUP_ENCRYPTION_KEY);
-      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length, eventTriggers: metadata.eventTriggers.length };
+      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length, eventTriggers: metadata.eventTriggers.length, schemas: metadata.schemaPermissions.schemas.length, schemaGrants: metadata.schemaPermissions.grants.length };
       const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL, rootCertFile), spawnTool);
       dump.child.stdin.end();
       try { await Promise.all([encryptBackup(dump.child.stdout, encryptedPath, env.BACKUP_ENCRYPTION_KEY), dump.done]); }
@@ -456,6 +482,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     });
     if (stable(await eventTriggerInventory(restoreClient)) !== stable(metadata.eventTriggers)) fail('event_restore_mismatch', 'De herstelde eventtriggers wijken af in eigenaar, functie, status of tags.');
     await restoreExtensionOwners(restoreClient, metadata);
+    await restoreSchemaPermissions(restoreClient, metadata);
     await restoreClient.query('BEGIN READ ONLY');
     const restoredProof = await dataProof(restoreClient), restoredSecurity = await securityProof(restoreClient); await restoreClient.query('COMMIT');
     if (stable(sourceProof) !== stable(restoredProof)) fail('restore_proof_mismatch', 'De teruggezette database wijkt af in tabelaantallen of gegevenschecksums.');
