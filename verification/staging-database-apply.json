@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "kind": "staging-database-apply",
+  "workflow": {
+    "id": 42073060158,
+    "name": "Apply Milo staging database",
+    "url": "https://github.com/milobingo/platform/actions/runs/42073060158",
+    "event": "workflow_dispatch",
+    "branch": "main",
+    "sourceSha": "10a9c351fb9c7e501ff9996291518bedb8ed7c8d",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-11-05T17:16:52Z",
+    "completedAt": "2026-11-05T17:18:19Z"
+  },
+  "ok": true,
+  "committed": true,
+  "applicationTables": 18,
+  "pending": [],
+  "managed": true,
+  "historyReadable": true,
+  "projectRef": "lfsdgxcpdyghidzkzzvn",
+  "bucket": "milo-staging",
+  "storageReady": true,
+  "migrationManifestDigest": "9d3373fbcd81337fbf0c80f95e4a566b4692c0022b2a815b444835e39e0a5f92",
+  "schemaDigest": "3c8e022a071bd44ad8be42438069c2b9263d5d17416d5e6094e9894fdf6fea1e",
+  "backup": {
+    "backupId": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4",
+    "encryptedSha256": "89300594ff1c7a0f8db4e4d98141d1f79d98158dfdae15df61eddbd896919e88",
+    "restoreVerified": true,
+    "proofArtifact": "staging-restore-proof.json"
+  },
+  "backendAcceptance": {
+    "status": "passed",
+    "artifact": "staging-backend-acceptance.json",
+    "releaseSha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+    "verifiedAt": "2026-11-05T17:37:00.247Z",
+    "cleanupVerified": true
+  },
+  "runtimeProvisioning": {
+    "runId": 42073332963,
+    "status": "failed_partial",
+    "independentVerificationPending": false,
+    "credentialsPublished": true,
+    "independentVerificationArtifact": "staging-runtime-verification.json",
+    "recoveredWithSamePassword": true,
+    "route": "direct-ipv6"
+  },
+  "credentialsIncluded": false
+}

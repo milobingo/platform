@@ -1,0 +1,201 @@
+{
+  "format": 1,
+  "kind": "active-staging-host-evidence",
+  "observedAt": "2026-11-05T17:40:16.494395+00:00",
+  "host": "dg-nxttrack-01",
+  "current": "/srv/sites/milobingo-staging/releases/985ed0d8aeac-42076441650-1",
+  "release": {
+    "version": 1,
+    "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+    "id": "42076441650-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "port": 4173,
+    "artifactSha256": "724c9863dde4b6bff4319f9681eb301eb2b86f1a1c419dffea7902262a07d2fe",
+    "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+    "toolchain": {
+      "node": "24.18.0",
+      "pnpm": "11.25.0",
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+    }
+  },
+  "localHealth": {
+    "status": "ok",
+    "revision": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+    "releaseId": "42076441650-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "service": {
+    "MainPID": "20126",
+    "EnvironmentFiles": "/srv/sites/milobingo-staging/current/.runtime.env (ignore_errors=no)",
+    "WorkingDirectory": "/srv/sites/milobingo-staging/current/.next/standalone",
+    "User": "app-mil-stg",
+    "Group": "app-mil-stg",
+    "ActiveState": "active",
+    "SubState": "running",
+    "UnitFileState": "enabled"
+  },
+  "listeners": "LISTEN 0      511    127.0.0.1:4173 0.0.0.0:* users:((\"next-server (v1\",pid=20126,fd=21))",
+  "entrySha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+  "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+  "caddyFragmentSha256": "5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e",
+  "runtimeKeyNames": [
+    "APP_URL",
+    "CONFIG_VERSION",
+    "DATABASE_URL",
+    "HOSTNAME",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
+    "LIVEKIT_URL",
+    "MILO_LOCAL_AUTH",
+    "NODE_ENV",
+    "OPENAI_API_KEY",
+    "OPENAI_SPEECH_MODEL",
+    "OPENAI_TEXT_MODEL",
+    "PORT",
+    "RELEASE_ID",
+    "RELEASE_SHA",
+    "SUPABASE_DB_CA_BASE64",
+    "SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_SECRET_KEY",
+    "SUPABASE_STORAGE_BUCKET",
+    "SUPABASE_URL",
+    "VLAMPIE_SETTINGS_KEY"
+  ],
+  "runtimePath": {
+    "path": "/etc/dg-sites/milobingo-staging.runtime.d/985ed0d8aeac-42076441650-1.env",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o600",
+    "target": null
+  },
+  "currentLink": {
+    "path": "/srv/sites/milobingo-staging/current",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o777",
+    "target": "releases/985ed0d8aeac-42076441650-1"
+  },
+  "releases": [
+    {
+      "name": "10a9c351fb9c-42074495308-1",
+      "metadata": {
+        "version": 1,
+        "sha": "10a9c351fb9c7e501ff9996291518bedb8ed7c8d",
+        "id": "42074495308-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": "c4337bd6d365e5a597816532561b9980e91047f02fa6b01278cd5bd2fedf4590",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0",
+          "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+        }
+      }
+    },
+    {
+      "name": "985ed0d8aeac-42075923621-1",
+      "metadata": {
+        "version": 1,
+        "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+        "id": "42075923621-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": "bd9e586ca6abe993f55d5271ab3b3b750c20404c709911e52ed18772a9a09444",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0",
+          "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+        }
+      }
+    },
+    {
+      "name": "985ed0d8aeac-42076441650-1",
+      "metadata": {
+        "version": 1,
+        "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+        "id": "42076441650-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": "724c9863dde4b6bff4319f9681eb301eb2b86f1a1c419dffea7902262a07d2fe",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0",
+          "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+        }
+      }
+    }
+  ],
+  "backupFiles": [
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T163610646Z-4cd39388-f2d4-40ef-9857-3df0e863e481.dump.aesgcm",
+      "bytes": 385834,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T163610646Z-4cd39388-f2d4-40ef-9857-3df0e863e481.extensions.json.aesgcm",
+      "bytes": 996,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T164810682Z-00700281-fba7-40c0-8309-25fcb7588a84.dump.aesgcm",
+      "bytes": 385834,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T164810682Z-00700281-fba7-40c0-8309-25fcb7588a84.extensions.json.aesgcm",
+      "bytes": 996,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T170413128Z-72011f32-37a4-41bc-91db-4122965ed587.dump.aesgcm",
+      "bytes": 385834,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T170413128Z-72011f32-37a4-41bc-91db-4122965ed587.extensions.json.aesgcm",
+      "bytes": 2496,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.dump.aesgcm",
+      "bytes": 385834,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.extensions.json.aesgcm",
+      "bytes": 9968,
+      "mode": "0o600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.proof.json",
+      "bytes": 1511,
+      "mode": "0o600"
+    }
+  ],
+  "process": {
+    "Uid:": [
+      "996",
+      "996",
+      "996",
+      "996"
+    ],
+    "Gid:": [
+      "987",
+      "987",
+      "987",
+      "987"
+    ],
+    "cwd": "/srv/sites/milobingo-staging/releases/985ed0d8aeac-42076441650-1/.next/standalone",
+    "executable": "/opt/node-v24.18.0-linux-x64/bin/node"
+  }
+}

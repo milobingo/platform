@@ -1,0 +1,106 @@
+{
+  "format": 1,
+  "kind": "staging-runtime-independent-verification",
+  "verifiedAt": "2026-11-05T17:25:20Z",
+  "sourceSha": "10a9c351fb9c7e501ff9996291518bedb8ed7c8d",
+  "projectRef": "lfsdgxcpdyghidzkzzvn",
+  "provisionWorkflow": {
+    "id": 42073332963,
+    "url": "https://github.com/milobingo/platform/actions/runs/42073332963",
+    "conclusion": "failure",
+    "partialCommit": true,
+    "recoveredByIndependentVerification": true
+  },
+  "backupId": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4",
+  "restoreVerified": true,
+  "readOnlyDatabaseVerification": true,
+  "ok": true,
+  "route": "direct-ipv6",
+  "passwordReset": false,
+  "roleChangesDuringRecovery": false,
+  "poolerDiagnostic": {
+    "authenticationFailed": true,
+    "sqlstate": "28P01"
+  },
+  "directAdmin": {
+    "sameOriginalPassword": true,
+    "selectOne": true,
+    "tlsEncrypted": true,
+    "tlsAuthorized": true,
+    "hostnameVerified": true
+  },
+  "directRuntime": {
+    "sameGeneratedPassword": true,
+    "user": "milo_staging_runtime",
+    "sessionUserMatches": true,
+    "login": true,
+    "superuser": false,
+    "createdb": false,
+    "createrole": false,
+    "bypassrls": false,
+    "replication": false,
+    "memberships": [
+      "milo_backend"
+    ],
+    "membershipOptions": {
+      "admin": false,
+      "inherit": true,
+      "set": false
+    },
+    "unexpectedMembership": false,
+    "elevatedMembership": false,
+    "databaseConnect": true,
+    "publicSchemaUsage": true,
+    "publicSchemaCreate": false,
+    "tlsEncrypted": true,
+    "tlsAuthorized": true,
+    "hostnameVerified": true,
+    "sharedRuntimeGatePassed": true,
+    "readableTableCount": 18,
+    "readableTables": [
+      "show_workspaces",
+      "bingo_families",
+      "bingo_games",
+      "bingo_codes",
+      "bingo_chat_events",
+      "bingo_chat_members",
+      "bingo_chat_messages",
+      "bingo_chat_operations",
+      "bingo_chat_rooms",
+      "presentation_workspaces",
+      "studio_outputs",
+      "studio_calls",
+      "player_accounts",
+      "player_auth_limits",
+      "player_challenges",
+      "player_sessions",
+      "show_character_settings",
+      "app_user_roles"
+    ]
+  },
+  "privateHandoff": {
+    "updatedAtomically": true,
+    "mode": "0600",
+    "runnerOwned": true,
+    "originalPoolerHandoffPreserved": true,
+    "consumedByRootHelper": true
+  },
+  "credentialsPublished": true,
+  "credentialsIncluded": false,
+  "backendAcceptance": {
+    "status": "passed",
+    "artifact": "staging-backend-acceptance.json",
+    "releaseSha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+    "verifiedAt": "2026-11-05T17:37:00.247Z",
+    "cleanupVerified": true
+  },
+  "credentialsPublishedAt": "2026-11-05T17:25:00Z",
+  "publicationEvidence": {
+    "source": "root-orchestrator",
+    "configureRuntimeHelper": "success",
+    "sameVerifiedDirectCredential": true,
+    "originalAdminBootstrapPreserved": true,
+    "migrationRoute": "direct_confirmed_configured",
+    "migrationConfiguredAt": "2026-11-05T17:25:59Z"
+  }
+}

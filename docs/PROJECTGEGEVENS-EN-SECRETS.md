@@ -1,18 +1,18 @@
 # Projectgegevens, accounts en configuratie
 
-Deze lijst hoort bij de lokale Next.js-overzetting van 4 november 2026. De lokale bouw en inventaris zijn opgeleverd. Op 5 november 2026 is repository `milobingo/platform` aangeleverd voor synchronisatie naar `main`. Op 5 november is ook stagingdeployment opgedragen. GitHub bevat inmiddels de stagingvariabelen, runtime-secrets en een werkende runner; de host mist nog het releasepad. Er is geen stagingrelease geactiveerd. Zie [STAGING-DEPLOY.md](STAGING-DEPLOY.md) en [STAGING-HOST.md](STAGING-HOST.md).
+De lokale Next.js-bouw is opgeleverd en de bron staat op `main` van [milobingo/platform](https://github.com/milobingo/platform). Staging is geautoriseerd en de native wrapper, toolchains, beperkte deploybevoegdheid, appunit en Caddy/TLS zijn geïnstalleerd. GitHub, het bestaande Supabase-stagingproject en de benoemde OpenAI-/LiveKitwaarden zijn al geconfigureerd: hiervoor hoeven geen nieuwe stagingaccounts te worden aangemaakt. De databasebackup is werkelijk hersteld en gecontroleerd, alle 18 applicatietabellen zijn aangebracht, de beperkte runtime-login is onafhankelijk geverifieerd en backendacceptatie is geslaagd. De app is actief op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); native deployment, publieke health/release-identiteit, demoassets en anonieme toegangsgrenzen zijn gecontroleerd. De laatste exacte [publieke releasecontrole](../verification/staging-public.json), [actieve hoststatus](../verification/staging-release.json) en [handmatige app/configuratie-hersteloefening](../verification/staging-recovery.json) zijn vastgelegd. De definitieve actieve release en actuele acceptatie staan in [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md). Zie ook [STAGING-DEPLOY.md](STAGING-DEPLOY.md) en [STAGING-HOST.md](STAGING-HOST.md). Productie valt buiten de huidige opdracht.
 
-## Eerst aanleveren
+## Bevestigd en nog aan te leveren
 
 | Onderdeel | Benodigde gegevens |
 | --- | --- |
 | GitHub | Bevestigd: [milobingo/platform](https://github.com/milobingo/platform), integratiebranch `main`, remote `origin`. Environments `staging` en `production` bestaan; de Milo-stagingrunner is online. |
-| Development | VPS-host, checkoutpad en Linux-gebruiker. De huidige werkmap is `/home/codex/repos/milobingo`; dat bewijst geen DG-developmenthost. |
-| Staging | Bevestigd: `https://milo-staging.dgwebservices.nl`, `milobingo-staging`, host `dg-nxttrack-01`, root `/srv/sites/milobingo-staging`, runner `run-mil-stg`, app `app-mil-stg`. Exacte labels/workspace staan in het projectprofiel. Lokale servicepoort en root-releasepad nog inrichten. |
-| Productie | Dezelfde gegevens afzonderlijk, plus de toegestane releasescope. |
-| DG-wrapper | Geïnstalleerde `dg-site-deploy`-versie, CLI-contract, build-lock, start-/activatie-/rollbackcommando en Caddy-configuratie. |
-| Supabase | Organisatie/eigenaar, apart staging- en productieproject, projectrefs, regio, databaseverbinding en Auth-/Storageinstellingen. |
-| Beheer | Wie regie/eigenaar mag worden en diens Supabase user-ID; toekenning via `app_user_roles`, niet via een invulbaar e-mailadres of metadata. |
+| Development | De lokale werkmap `/home/codex/repos/milobingo` en lokale demo zijn beschikbaar. Alleen wanneer daarnaast een DG-developmenthost gewenst is: host, checkoutpad en Linux-gebruiker afzonderlijk bepalen. |
+| Staging | Bevestigd: [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl), `milobingo-staging`, host `dg-nxttrack-01`, root `/srv/sites/milobingo-staging`, runner `run-mil-stg`, build `build-mil-stg`, app `app-mil-stg`, loopbackpoort `4173`. Native app en publieke nacontrole zijn geslaagd via [Deploy 42076441650](https://github.com/milobingo/platform/actions/runs/42076441650), bron `985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161`. Werkelijke database-/Storageacceptatie is op deze actieve bron herhaald; [acht publieke browsertests](../verification/staging-browser-tests.json) zijn geslaagd. Actuele release: [stagingresultaat](STAGING-RESULTAAT.md). |
+| Productie | Nog afzonderlijk bepalen: domein, host/site-ID, runner/accounts/paden/poort, environmentwaarden, Supabase-project en toegestane releasescope. Er is geen productie-uitrol geautoriseerd. |
+| DG-wrapper | Geïnstalleerd: nieuwe Milo-specifieke native versie 1, vier argumenten, root-owned entry/helper, globale build-lock, begrensde sudoers-regel, releasegebonden env, appunit/Caddy en automatische health-rollback. Geen eerder aanwezige centrale wrapperstandaard aangetroffen. Hashes en exacte paden staan in het hostbewijs. |
+| Supabase | Stagingproject `lfsdgxcpdyghidzkzzvn`, URL `https://lfsdgxcpdyghidzkzzvn.supabase.co` en private bucket `milo-staging` zijn ingericht; alle 18 applicatietabellen, backup/restore en echte beperkte database-/Storagebewerkingen zijn gecontroleerd. Nog bevestigen: verantwoordelijke eigenaar/teamtoegang, Auth-/SMTP-/Google-inrichting en acceptatie. Een productieproject later afzonderlijk bepalen; staging niet opnieuw aanmaken. |
+| Beheer | Nog nodig: wie regie/eigenaar mag worden en diens echte Supabase user-UUID, plus bruikbare testaccounts. Toekenning via `app_user_roles`, niet via een invulbaar e-mailadres of metadata. |
 | Mail | Bestaand DG-mailgatewaycontract, omgevinggebonden endpoint, signing/key-ID-contract, worker/outbox, afzender, ontvangerbeleid en webhookcontract. Deze bron bevat het vaste DG-contract nog niet. |
 | Over te nemen data | Of bestaande D1/R2-gegevens moeten worden behouden; zo ja: gecontroleerde export, ID-/eigenaarsmapping en de oorspronkelijke encryptiesleutel via een veilig kanaal. De ZIP bevat geen runtime-export. |
 | Uitzending | YouTube-kanaal/uitzending, insluitbare video-ID/URL, OBS-opstelling en testapparaten voor de belrepetitie. |
@@ -23,14 +23,14 @@ Werk de bevestigde gegevens bij in het actuele `PROJECTPROFIEL.json` in de proje
 
 | Dienst | Aanmaken of beschikbaar stellen | Waar de configuratie hoort |
 | --- | --- | --- |
-| GitHub | Repository; environments `staging` en `production`; bevoegde beheerders en selfhosted runners per doelomgeving. | GitHub environment variables/secrets en DG-hostconfiguratie. De meegeleverde CI publiceert niets. |
-| Supabase | Twee afzonderlijke projecten voor PostgreSQL, Auth en desgewenst private Storage. | Runtimewaarden per omgeving; beheer-/CLI-tokens uitsluitend in het releasepad. |
-| Google Cloud | OAuth webclient en consentconfiguratie als Google-login wordt gebruikt. | Client-ID en client-secret in de Google-provider van het bijbehorende Supabase-project. Geen app-runtimevariabelen hiervoor. |
-| Resend | Beschikbaar account, geverifieerd afzenderdomein/DNS en afgesproken verzendbevoegdheden. | Auth-mailinstellingen en de DG-mailgateway; applicatiemail via een duurzame outbox. Contract nog aanleveren en aansluiten. |
-| OpenAI | Alleen voor echte AI-/stemfunctionaliteit: eigen project, facturering/tegoed en toegang tot de gekozen modellen. | Eén centrale serversleutel via `OPENAI_API_KEY`. Geen sleutel per personage. |
-| LiveKit Cloud | Eigen project met Cloud-URL, API key en API secret voor de echte belverbinding. | `LIVEKIT_URL`, `LIVEKIT_API_KEY` en `LIVEKIT_API_SECRET` op de server, of de aparte beveiligde regie-instellingen. |
+| GitHub | Repository, stagingenvironment, runner en configuratie bestaan. Geen nieuwe stagingrepository of runner nodig. Productierunners/bevoegdheden later afzonderlijk bepalen. | GitHub environment variables/secrets en DG-hostconfiguratie. CI verifieert bron; deployment verloopt via de afzonderlijke handmatige workflows. |
+| Supabase | Bestaand stagingproject gebruiken. Database/restore en private Storageacceptatie zijn geslaagd; Auth-/accountacceptatie afronden. Productie later als afzonderlijk project bepalen. | Runtimewaarden per omgeving; migratie-/backup-/herstelcredentials uitsluitend in de eigen beheerstappen. |
+| Google Cloud | Bestaande OAuth-webclient en consentconfiguratie bevestigen als Google-login wordt gebruikt. Alleen een client aanmaken wanneer geen geschikte bestaande client beschikbaar is. | Client-ID en client-secret in de Google-provider van het bestaande Supabase-project. Geen app-runtimevariabelen hiervoor. |
+| Resend / SMTP | Bestaand mailaccount, afzenderdomein/DNS en verzendbevoegdheden volgens het nog aan te leveren DG-mailcontract bevestigen. De geplaatste appkeys configureren deze mailroute niet. | Auth-mailinstellingen en de DG-mailgateway; applicatiemail via een duurzame outbox. Contract nog aanleveren en aansluiten. |
+| OpenAI | Stagingkey en modelnamen zijn geplaatst. Geen nieuw stagingaccount nodig; echte project-/modeltoegang en stemgebruik zijn nog niet geaccepteerd. | Eén centrale serversleutel via `OPENAI_API_KEY`. Geen sleutel per personage. |
+| LiveKit Cloud | Staging-URL, API key en API secret zijn geplaatst. Geen nieuw stagingproject nodig; echte belverbinding en audio nog testen. | `LIVEKIT_URL`, `LIVEKIT_API_KEY` en `LIVEKIT_API_SECRET` op de server, of de aparte beveiligde regie-instellingen. |
 | YouTube / OBS | Kanaal met bruikbare insluitbare uitzending; OBS op het uitzendapparaat. | Show-/streaminstellingen. OBS is lokale uitzendsoftware, geen benodigde app-secret. |
-| DNS / VPS | DNS-toegang, DG-hostcapaciteit en TLS/Caddy-configuratie. | Beheeromgeving, buiten de applicatie-runtime. |
+| DNS / VPS | Staging-DNS, native toolchains, poort `4173` en Caddy/TLS zijn ingericht. Productiedomein/hosting nog afzonderlijk bepalen. | Beheeromgeving, buiten de applicatie-runtime. |
 
 Voor bouwen en de expliciete demofamilie zijn geen externe accounts nodig. De lokale repetitielogin is alleen beschikbaar wanneer die expliciet is ingeschakeld op een developmentserver op loopback. Echte OTP, Google-login, AI, mail en bellen blijven afzonderlijke aansluit- en acceptatiestappen.
 
@@ -42,6 +42,8 @@ Kopieer `.env.example` naar `.env.local` voor lokaal gebruik. Vul nooit echte se
 
 | Naam | Soort / fase | Gebruik |
 | --- | --- | --- |
+| `NODE_ENV` | Vaste stagingruntimevariabele | `production` in het native releasepad; de lokale repetitielogin blijft daardoor uitgeschakeld. |
+| `HOSTNAME` | Vaste stagingruntimevariabele | `127.0.0.1`; Caddy benadert uitsluitend de loopbackserver. |
 | `APP_URL` | Publieke URL, serverruntime | Canonieke app-origin. Voor live Auth verplicht; per omgeving gelijk aan de daadwerkelijke app-origin. Callback: `/auth/callback`. |
 | `MILO_LOCAL_AUTH` | Runtimevariabele | Alleen `true` voor expliciete lokale repetitielogin in development op `localhost`, `127.0.0.1` of `::1`, zonder remote projectconfiguratie of proxy. In staging/productie uit. |
 | `SQLITE_PATH` | Runtimepad | Lokale database; standaard `.data/milobingo.sqlite`. Geen productie-databasekeuze. |
@@ -53,16 +55,16 @@ Kopieer `.env.example` naar `.env.local` voor lokaal gebruik. Vul nooit echte se
 | `SUPABASE_SECRET_KEY` | **Serversecret**, runtime | Alleen voor expliciet gekozen private Supabase Storage; blijft buiten browserbundels. |
 | `SUPABASE_STORAGE_BUCKET` | Runtimevariabele | Leeg voor lokale objecten. Staging gebruikt de bevestigde private bucket `milo-staging` en vereist `DATABASE_URL`, `SUPABASE_URL` en `SUPABASE_SECRET_KEY`. De oorspronkelijke SQL noemt `milo-private`; de deployprocedure controleert en configureert daarom afzonderlijk de gekozen stagingbucket. |
 | `VLAMPIE_SETTINGS_KEY` | **Serversecret**, runtime | 64 hextekens voor AES-encryptie van private instellingen. Historische naam bewust behouden. Bewaar dezelfde sleutel wanneer bestaande versleutelde instellingen meegaan. |
-| `OPENAI_API_KEY` | **Serversecret**, runtime, optioneel | Eén centrale providerkey, alleen als echte AI-functies worden aangesloten. Anders blijven die functies ongeconfigureerd. |
+| `OPENAI_API_KEY` | **Serversecret**, runtime, optioneel | Eén centrale providerkey; stagingwaarde geplaatst. Werkelijke provider-/modeltoegang volgt nog uit acceptatie, niet uit aanwezigheid van de key. |
 | `OPENAI_TEXT_MODEL` | Runtimevariabele, optioneel | Bestaande tekstmodelkeuze; bronstandaard `gpt-4.1-mini`. Werkelijke accounttoegang nog verifiëren. |
 | `OPENAI_SPEECH_MODEL` | Runtimevariabele, optioneel | Bestaande speechmodelkeuze; bronstandaard `gpt-4o-mini-tts`. De GPT-Live-personageflow heeft een eigen vastgelegd modelcontract. |
-| `LIVEKIT_URL` | Runtimevariabele, optioneel | Eigen `wss://…livekit.cloud`-projectorigin. Alleen samen met de twee LiveKitkeys configureren. |
-| `LIVEKIT_API_KEY` | **Serversecret**, runtime, optioneel | Eigen LiveKit API key. |
-| `LIVEKIT_API_SECRET` | **Serversecret**, runtime, optioneel | Eigen LiveKit API secret; nooit naar de browser. |
-| `PORT` | Host/runtimevariabele | Lokale Next-poort of later de bevestigde servicepoort; geen nu gekozen DG-productiepoort. |
-| `RELEASE_SHA` | Publieke release-identiteit, runtime | Optionele volledige 40-teken broncommit voor het healthcontract; in te vullen door het latere bevestigde releasepad. |
-| `RELEASE_ID` | Publieke release-identiteit, runtime | Optionele unieke actieve release-identiteit. |
-| `CONFIG_VERSION` | Publieke release-identiteit, runtime | Optionele configuratieversie zonder secretwaarden. |
+| `LIVEKIT_URL` | Runtimevariabele, optioneel | Eigen `wss://…livekit.cloud`-projectorigin; stagingwaarde met beide keys geplaatst. Echte verbinding nog accepteren. |
+| `LIVEKIT_API_KEY` | **Serversecret**, runtime, optioneel | Eigen LiveKit API key; stagingwaarde geplaatst. |
+| `LIVEKIT_API_SECRET` | **Serversecret**, runtime, optioneel | Eigen LiveKit API secret; stagingwaarde geplaatst, nooit naar de browser. |
+| `PORT` | Host/runtimevariabele | Lokaal en op de bevestigde staginghost `4173`. Productiepoort wordt later afzonderlijk bepaald. |
+| `RELEASE_SHA` | Publieke release-identiteit, runtime | Volledige 40-teken broncommit; verplicht ingevuld en gecontroleerd door het stagingreleasepad, optioneel bij lokale demo. |
+| `RELEASE_ID` | Publieke release-identiteit, runtime | Staging: GitHub run-ID en pogingnummer; optioneel lokaal. |
+| `CONFIG_VERSION` | Publieke release-identiteit, runtime | Staging: gemapt vanuit `DG_CONFIG_VERSION`; gecontroleerd in health en bevat geen secretwaarden. |
 
 `RESEND_API_KEY` en `PLAYER_MAIL_FROM` zijn namen van de historische directe mailintegratie in `server/player-auth.js`. De nieuwe Auth-adapter gebruikt Supabase voor OTP; deze waarden sluiten de vaste DG-mailgateway/outbox niet aan. Daarom staan ze niet als te activeren mailconfiguratie in het nieuwe voorbeeld. Hetzelfde geldt voor `OPENAI_REALTIME_MODEL`, dat alleen door de historische call-handler wordt gelezen: dit is geen vervanging voor het GPT-Live-contract.
 
@@ -76,17 +78,29 @@ Zodra één `LIVEKIT_*`-waarde is ingevuld, hebben de omgevingswaarden voorrang 
 
 Gebruik voor staging en productie aparte waarden voor `APP_URL`, Supabase URL/key/projectref, databaseverbinding, encryptiesleutel, Storagebucket en eventuele providerconfiguratie. De encryptiesleutel kan alleen worden gedeeld wanneer dat voor een expliciete datamigratie nodig is; documenteer die keuze.
 
-De huidige CI heeft geen secrets nodig. De stagingworkflow gebruikt uitsluitend environment `staging` en de bevestigde Milo-runner. De aanvullende namen voor het releasepad staan in [STAGING-DEPLOY.md](STAGING-DEPLOY.md): `DG_DEPLOY_WRAPPER_SHA256`, `DG_STAGING_PORT`, `DG_CONFIG_VERSION`, `MIGRATION_DATABASE_URL`, `BACKUP_ENCRYPTION_KEY` en `RESTORE_TEST_DATABASE_URL`. De laatste drie horen uitsluitend bij databasebeheer/backup/herstel en gaan niet naar de app-runtime. De beheerder moet eerst de rootwrapper en beperkte deploybevoegdheid installeren. Mailgateway-/webhooksigning hoort bij het nog te leveren gatewaycontract.
+De huidige CI heeft geen projectsecrets nodig. De stagingworkflows gebruiken uitsluitend environment `staging` en de bevestigde Milo-runner. Het releasepad, de rootwrapper en de beperkte deploybevoegdheid zijn geïnstalleerd. De blijvende deploymentconfiguratie is geplaatst: `DG_DEPLOY_WRAPPER_SHA256`, `DG_STAGING_PORT`, `DG_CONFIG_VERSION`, `MIGRATION_DATABASE_URL` en `BACKUP_ENCRYPTION_KEY`. De tijdelijke `RESTORE_TEST_DATABASE_URL` en scratchomgeving zijn na de geslaagde volledige herstelproef verwijderd; richt die voor een volgende muterende migratie opnieuw afzonderlijk in. Migratie-, backup- en herstelcredentials gaan niet naar de app-runtime. De [tijdelijke beheertoegang en bootstrapduplicaten zijn opgeruimd](../verification/staging-access-cleanup.json); beide nieuwe sleutel-logins zijn geweigerd. Actieve runtime-envs, versleutelde backups en het private sleutelherstelpad zijn behouden. De publieke eindcontrole is na intrekking opnieuw geslaagd.
+
+Het [databaseapply-/herstelbewijs](../verification/staging-database-apply.json), [offhost-escrowbewijs](../verification/staging-backup-escrow.json), de [onafhankelijke runtimecontrole](../verification/staging-runtime-verification.json) en [werkelijke backendacceptatie](../verification/staging-backend-acceptance.json) zijn vastgelegd. `DATABASE_URL` bevat de beperkte app-login en `MIGRATION_DATABASE_URL` de afzonderlijke beheerlogin; beide zijn via de directe IPv6-projectverbinding met geautoriseerde TLS en hostnaamcontrole geverifieerd. De routewisseling gebruikte dezelfde wachtwoorden en wijzigde geen rolrechten. Iedere volgende schemamigratie blijft vooraf een nieuwe beoordeelde backup-/herstelgate vereisen. Zie [STAGING-DEPLOY.md](STAGING-DEPLOY.md). Mailgateway-/webhooksigning hoort bij het nog te leveren gatewaycontract.
 
 Op dit moment leest de browser geen `NEXT_PUBLIC_*`-waarden. Worden die later toegevoegd, bouw iedere omgeving met haar eigen publieke configuratie: Next.js bakt deze tijdens `next build` in. Een gelijke bron-SHA bewijst geen byte-identieke staging-/productiebuild.
 
 ## Supabase-inrichting en aansluitbewijs
 
-1. Maak of selecteer de expliciete staging- en productieprojecten. Houd de nieuwe API-keytypen aan: publishable voor gewone clients, secret alleen server-side. Zie [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
+1. Gebruik het bestaande stagingproject `lfsdgxcpdyghidzkzzvn`; maak dit niet opnieuw aan. Bevestig eigenaar/teamtoegang en de aanwezige Auth-/Storageinstellingen. Bepaal productie later afzonderlijk. Houd de nieuwe API-keytypen aan: publishable voor gewone clients, secret alleen server-side. Zie [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
 2. Controleer het migratieplan en een herstelbare backup vóór toepassing. De speldata gaan via geautoriseerde serverroutes; RLS en ingetrokken browsergrants zijn aanvullende bescherming. Ken regie doelbewust toe in `app_user_roles`.
 3. Zet de juiste Site URL en `/auth/callback` in de Supabase redirectallowlist. Activeer e-mail-OTP en gebruik een OTP-template met de Supabase-tokenvariabele. [Passwordless email sign-in](https://supabase.com/docs/guides/auth/auth-email-passwordless) beschrijft dit contract.
 4. Stel de Google webclient in met de callback uit het eigen Supabase-dashboard; zet het client-secret in de Supabase-providerinstellingen. De appcallback en provider-callback zijn verschillende adressen. Zie [Sign in with Google](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
 5. Richt de gekozen Auth-mailroute en de bestaande DG-gateway in. Voor nieuwe gratis projecten is aanpassing van Auth-mailtemplates niet beschikbaar met de standaard SMTP-dienst; regel eigen SMTP of een passend projectplan wanneer nodig. Zie [wijziging van 3 juni 2026](https://supabase.com/changelog/46599-changes-to-email-template-customisation-on-free-tier).
 6. Doorloop OTP en Google met echte testaccounts; controleer sessieherstel, uitloggen, ongeautoriseerde toegang, meerdere kindprofielen en een echte postbus. Leg provideracceptatie, aflevering en ontvangst afzonderlijk vast.
 
-De Supabase-changelog en bovenstaande primaire documentatie zijn op 4 november 2026 geraadpleegd. De aangekondigde [TLS-wijziging vanaf 10 november](https://supabase.com/changelog/cbc-tls-ciphers-deprecated) is relevant voor oude testapparaten; test de werkelijk gebruikte browsers tijdens acceptatie. Er is met deze documentatiecontrole geen projectverbinding of provideraccount getest.
+De Supabase-changelog en bovenstaande primaire documentatie zijn op 4 november 2026 geraadpleegd. De aangekondigde [TLS-wijziging vanaf 10 november](https://supabase.com/changelog/cbc-tls-ciphers-deprecated) is relevant voor oude testapparaten; test de werkelijk gebruikte browsers tijdens acceptatie. De stagingdatabase, volledige herstelproef en private Storagebewerkingen zijn inmiddels werkelijk gecontroleerd. Auth-, mail-, provider- en showacceptatie blijven afzonderlijke open controles.
+
+## Nog nodig om het geheel af te ronden
+
+- Productiegegevens en afzonderlijke toestemming voor die omgeving; geen productie-uitrol afleiden uit de stagingopdracht.
+- Bevoegde regiegebruiker(s) met echte Supabase user-UUID en bruikbare testaccounts.
+- Bevestigde Supabase Site URL/redirects, werkende OTP-mailtemplate/bezorging en Google-providerconfiguratie, gevolgd door echte accounttests.
+- Het vaste DG-mailgateway-/outbox-/webhookcontract, afzendergegevens en benodigde mailproviderbevoegdheden.
+- Een besluit over bestaande D1/R2-data; zo nodig een gecontroleerde export, eigenaarsmapping en de oorspronkelijke encryptiesleutel via een veilig kanaal.
+- YouTube-/OBS-uitzendgegevens, testapparaten en echte OpenAI-/LiveKit-/bel-/audiorepetitie. Aanwezige keys bewijzen deze werking niet.
+- De hierboven genoemde echte account-/mail-/provider-/showacceptatie uitvoeren. Publieke appcontrole, database-, herstel-, runtime- en backendbewijs zijn al vastgelegd; dit vervangt de echte gebruikers- en uitzendproef niet.

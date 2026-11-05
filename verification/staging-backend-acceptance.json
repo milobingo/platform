@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "kind": "staging-backend-acceptance",
+  "projectRef": "lfsdgxcpdyghidzkzzvn",
+  "verificationId": "1712b986-c9b5-44c5-891c-96fb17a0e280",
+  "database": {
+    "verifiedTls": true,
+    "limitedPrincipal": true,
+    "insertSelectUpdateDelete": true,
+    "denied": {
+      "app_user_roles_write": "42501",
+      "schema_create": "42501",
+      "migration_history_read": "42501"
+    },
+    "rollbackRowAbsent": true
+  },
+  "storage": {
+    "key": "_verification/1712b986-c9b5-44c5-891c-96fb17a0e280.json",
+    "putStatus": 200,
+    "put": true,
+    "read": true,
+    "anonymousStatuses": [
+      400,
+      400
+    ],
+    "anonymousDenied": true,
+    "deleted": true,
+    "deletedReadMissing": true
+  },
+  "ok": true,
+  "releaseSha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+  "verifiedAt": "2026-11-05T17:37:00.247Z"
+}

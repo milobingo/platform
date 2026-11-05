@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "successfulApplyRun": "https://github.com/milobingo/platform/actions/runs/42073060158",
+  "scope": "Milo temporary restore infrastructure only",
+  "databaseNames": [
+    "milo_restore_test_42062775524_1",
+    "milo_restore_test_42070813323_2"
+  ],
+  "sourceDatabaseTouched": false,
+  "encryptedBackupsTouched": false,
+  "backupEncryptionKeyTouched": false,
+  "localKeyEscrowTouched": false,
+  "rootPrivateScratchURLRemoved": true,
+  "tunnelExitRequested": true,
+  "databaseContainerRemoved": true,
+  "relayContainerRemoved": true,
+  "internalNetworkRemoved": true,
+  "githubStagingRestoreSecretRemoved": true,
+  "workerPort54387Closed": true,
+  "hostPort55433Closed": true,
+  "operatorSSHKeyRetained": true,
+  "privateOperationDirectoryRemoved": true,
+  "completedAt": "2026-11-05T17:25:58.510052+00:00",
+  "status": "passed",
+  "fixtureContainerCleanup": {
+    "name": "milobingo-deploy-gate-test",
+    "removed": true,
+    "storageConfirmedSafe": true
+  },
+  "tunnelMasterProcessGone": true
+}

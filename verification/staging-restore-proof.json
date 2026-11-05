@@ -1,0 +1,42 @@
+{
+  "format": 1,
+  "projectRef": "lfsdgxcpdyghidzkzzvn",
+  "releaseSha": "10a9c351fb9c7e501ff9996291518bedb8ed7c8d",
+  "backupId": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4",
+  "encryptedSha256": "89300594ff1c7a0f8db4e4d98141d1f79d98158dfdae15df61eddbd896919e88",
+  "extensionMetadata": {
+    "format": 1,
+    "filename": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.extensions.json.aesgcm",
+    "encryptedSha256": "fb0bab9dea904e0ab557b6b35b55bbf41c9a7fd6a99d92a9dcfd1b0933dd47ff",
+    "metadataSha256": "6cb743ded70f469d4945917a1de9a8b3091d51e63f2eec16ae6e3d024d3f70eb",
+    "relations": 4,
+    "extensions": 5,
+    "eventTriggers": 7,
+    "schemas": 9,
+    "schemaGrants": 60
+  },
+  "postgresMajor": 17,
+  "sourceProof": {
+    "tables": 40,
+    "digest": "4b850b76cc1abeb6210e78818f34c2a18049797305ad4d4c5fda2eb07b3b52f5"
+  },
+  "restoredProof": {
+    "tables": 40,
+    "digest": "4b850b76cc1abeb6210e78818f34c2a18049797305ad4d4c5fda2eb07b3b52f5"
+  },
+  "sourceSecurity": {
+    "relations": 46,
+    "digest": "0b585c852a4b7e2eddfd242ecb6ad1fb51daca08fbb002a42926669fca1bf2b2"
+  },
+  "restoredSecurity": {
+    "relations": 46,
+    "digest": "0b585c852a4b7e2eddfd242ecb6ad1fb51daca08fbb002a42926669fca1bf2b2"
+  },
+  "capacity": {
+    "sourceDatabaseBytes": "10958515",
+    "backupAvailableBytes": "147986370560",
+    "backupRequiredBytes": "558787942"
+  },
+  "verifiedAt": "2026-11-05T17:18:12.964Z",
+  "restoreVerified": true
+}

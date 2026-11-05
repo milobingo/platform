@@ -69,60 +69,111 @@
       "staging",
       "production"
     ],
-    "staging_release": null,
+    "staging_release": {
+      "version": 1,
+      "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+      "id": "42076441650-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "port": 4173,
+      "artifactSha256": "724c9863dde4b6bff4319f9681eb301eb2b86f1a1c419dffea7902262a07d2fe",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "toolchain": {
+        "node": "24.18.0",
+        "pnpm": "11.25.0",
+        "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+        "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+      },
+      "path": "/srv/sites/milobingo-staging/releases/985ed0d8aeac-42076441650-1",
+      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42076441650"
+    },
     "production_release": null,
     "github_repository_url": "https://github.com/milobingo/platform",
     "git_remote": "origin",
     "git_remote_url": "https://github.com/milobingo/platform.git",
     "staging_status": {
-      "deployed": false,
-      "host_preflight": "https://github.com/milobingo/platform/actions/runs/42051941726",
-      "observed_at": "2026-11-05",
+      "deployed": true,
+      "observed_at": "2026-11-05T17:41:05.596343+00:00",
       "runner_verified": true,
       "secrets_names_present": true,
-      "missing_host_prerequisites": [
-        "successful full encrypted backup and matching restore proof",
-        "initial application migration and least-privilege runtime login",
-        "native release activation and public acceptance"
-      ],
-      "acceptance": "not_run",
-      "procedure_source_sha": "cad5c82e95c72141313cb9cdf4882cf594421dea",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42067369331",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42075300318",
       "ci_result": "success",
-      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42056457151",
-      "deploy_result": "blocked_before_checkout_by_host_bootstrap",
-      "database_audit": "https://github.com/milobingo/platform/actions/runs/42062775524",
-      "database_audit_result": "verified client TLS; PostgreSQL17.11; empty app schema; private bucket ready; only initial migration pending",
+      "ci_source_sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42076441650",
+      "deploy_result": "success",
+      "previous_accepted_deploy": "https://github.com/milobingo/platform/actions/runs/42075923621",
+      "database_apply": "https://github.com/milobingo/platform/actions/runs/42073060158",
+      "database_apply_result": "committed; 18 managed tables; pending migrations empty; encrypted full restore verified",
+      "database_migration_source_sha": "10a9c351fb9c7e501ff9996291518bedb8ed7c8d",
+      "migration_manifest_sha256": "9d3373fbcd81337fbf0c80f95e4a566b4692c0022b2a815b444835e39e0a5f92",
+      "schema_sha256": "3c8e022a071bd44ad8be42438069c2b9263d5d17416d5e6094e9894fdf6fea1e",
+      "runtime_login": "milo_staging_runtime",
+      "runtime_memberships": [
+        "milo_backend"
+      ],
+      "database_transport": "direct IPv6 port5432; certificate and hostname verified",
+      "runtime_provisioning": "https://github.com/milobingo/platform/actions/runs/42073332963",
+      "runtime_provisioning_result": "role committed; pooler postcheck failed28P01; same-password direct verification passed before credential publication",
+      "backup_id": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4",
+      "restore_verified": true,
+      "off_host_encrypted_copy_verified": true,
+      "scratch_infrastructure_and_secret_removed": true,
       "ssh_admin": {
-        "temporary_user": "root",
-        "source_tailscale_peer": "100.79.0.26",
-        "key_login_verified": true,
-        "expires_at": "2026-11-05T17:48:09Z",
-        "scope": "one-time Milo staging bootstrap; remove after task",
-        "permanent_root_login": "disabled outside scoped temporary exception"
+        "removed": true,
+        "removed_at": "2026-11-05T17:41:04.790110+00:00",
+        "new_key_logins_denied": [
+          "root",
+          "dgadmin"
+        ],
+        "local_temporary_key_removed": true,
+        "permanent_root_login": "disabled"
       },
       "prepared_host": {
         "node": "24.18.0",
         "pnpm": "11.25.0",
+        "postgres_clients": "17.11",
+        "port": 4173,
         "build_uid": 990,
         "build_gid": 983,
-        "port": 4173,
-        "backup_directory": "/var/backups/milobingo-staging",
-        "wrapper_source": "infra/staging/deploy-helper.py",
+        "app_uid": 996,
+        "app_gid": 987,
         "wrapper_installed": true,
+        "wrapper_version": "milobingo-staging-native-v1",
         "entry_sha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
         "helper_sha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
-        "postgres_clients": "17.11",
-        "caddy_https": "verified certificate, HTTP502 until app activation",
-        "evidence": "verification/staging-host.json"
+        "service": "active/running and enabled for boot",
+        "caddy_https": "verified HTTPS; app HTTP200",
+        "backup_directory": "/var/backups/milobingo-staging"
       },
-      "credential_handoff": "https://github.com/milobingo/platform/actions/runs/42062776243",
-      "migration_connection_configured": true,
-      "backup_key_configured": true,
-      "scratch_restore_connection": "temporary private loopback relay; authenticated empty PG17.11; must clean after restore",
-      "database_apply_attempt": "https://github.com/milobingo/platform/actions/runs/42068032013",
-      "database_apply_result": "restore blocked before migration on standard PostgreSQL event-trigger owner rule; bounded scratch-only compatibility fix added",
-      "wrapper_denial_evidence": "verification/staging-wrapper-denial.json"
+      "acceptance": {
+        "public_release_and_access_boundaries": "passed",
+        "browser_tests": {
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "database_crud_rollback_permissions": "passed",
+        "private_storage_and_cleanup": "passed",
+        "manual_paired_app_recovery": "passed; earlier app/env activated and latest app/env restored",
+        "automatic_failure_injection": "not_run; local wrapper tests cover failure rollback",
+        "real_otp_google_admin_accounts": "pending",
+        "mail_gateway_outbox_contract": "pending",
+        "paid_provider_model_and_live_audio": "pending"
+      },
+      "result_document": "docs/STAGING-RESULTAAT.md",
+      "evidence": {
+        "host": "verification/staging-release.json",
+        "public": "verification/staging-public.json",
+        "deploy": "verification/staging-deploy.json",
+        "database": "verification/staging-database-apply.json",
+        "restore": "verification/staging-restore-proof.json",
+        "backup_escrow": "verification/staging-backup-escrow.json",
+        "runtime": "verification/staging-runtime-verification.json",
+        "backend": "verification/staging-backend-acceptance.json",
+        "browser": "verification/staging-browser-tests.json",
+        "recovery": "verification/staging-recovery.json",
+        "scratch_cleanup": "verification/staging-scratch-cleanup.json",
+        "access_cleanup": "verification/staging-access-cleanup.json"
+      }
     }
   },
   "configuration": {
@@ -157,7 +208,7 @@
       "LIVEKIT_API_SECRET"
     ],
     "livekit": "LIVEKIT_URL/API_KEY/API_SECRET, or separate encrypted server settings when no environment values are set",
-    "deploy_secrets": "GitHub staging: MIGRATION_DATABASE_URL, BACKUP_ENCRYPTION_KEY, RESTORE_TEST_DATABASE_URL, only for database audit/migration/backup/restore; DATABASE_URL is a separate least-privilege app connection.",
+    "deploy_secrets": "GitHub staging retains MIGRATION_DATABASE_URL and BACKUP_ENCRYPTION_KEY for database management; RESTORE_TEST_DATABASE_URL was temporary and has been removed after verified restore. Recreate it only for a separately reviewed migration. DATABASE_URL is the distinct limited app connection.",
     "deployment_variables": [
       "DG_DEPLOY_WRAPPER_SHA256",
       "DG_STAGING_PORT",
@@ -180,8 +231,8 @@
     "Null target fields are unresolved project information; they are not deploy-ready defaults.",
     "CI does not create accounts, apply remote migrations, send mail or deploy.",
     "The user authorized staging deployment on 2026-11-05. Production is outside the current scope.",
-    "The host preflight found an incomplete deployment host; no app release or remote migration was activated.",
+    "At the initial host preflight the deployment host was incomplete and no app or migration was activated; the final completed deployment is recorded in target.staging_status.",
     "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
-    "Credentials are handled only through protected staging workflow inputs and private bootstrap files; values are never logged or committed."
+    "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed."
   ]
 }

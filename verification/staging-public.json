@@ -1,0 +1,35 @@
+{
+  "format": 1,
+  "kind": "final-public-staging-evidence",
+  "observedAt": "2026-11-05T17:41:05.596343+00:00",
+  "url": "https://milo-staging.dgwebservices.nl",
+  "sourceSha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+  "workflowRun": 42076441650,
+  "health": {
+    "status": "ok",
+    "revision": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+    "releaseId": "42076441650-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "anonymousSession": {
+    "authenticated": false,
+    "user": null,
+    "email": "",
+    "role": null,
+    "local": false,
+    "configured": true,
+    "localAvailable": false
+  },
+  "statuses": {
+    "health": 200,
+    "anonymousSession": 200,
+    "crossOriginDenied": 403,
+    "forgedIdentityDenied": 401,
+    "localLoginDenied": 403
+  },
+  "localLoginSetCookie": false,
+  "realAccountOrProviderCallsMade": false
+}

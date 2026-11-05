@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "kind": "encrypted-backup-off-host-copy",
+  "backupId": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4",
+  "encryptedFiles": [
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.dump.aesgcm",
+      "sha256": "89300594ff1c7a0f8db4e4d98141d1f79d98158dfdae15df61eddbd896919e88",
+      "bytes": 385834,
+      "mode": "0600"
+    },
+    {
+      "name": "milo-lfsdgxcpdyghidzkzzvn-20261105T171731414Z-58502cc2-d252-4dfc-acd7-e2230b674aa4.extensions.json.aesgcm",
+      "sha256": "fb0bab9dea904e0ab557b6b35b55bbf41c9a7fd6a99d92a9dcfd1b0933dd47ff",
+      "bytes": 9968,
+      "mode": "0600"
+    }
+  ],
+  "keyValuesLogged": false,
+  "offHostDirectory": "/home/codex/.local/share/milobingo/staging-backups/2026-11-05",
+  "keyEscrow": {
+    "hostPath": "/etc/dg-sites/milobingo-staging.backup-key",
+    "localPath": "/home/codex/.config/milobingo/staging/backup-encryption-key",
+    "localMode": "0600"
+  }
+}

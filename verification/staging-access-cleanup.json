@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "kind": "staging-temporary-admin-cleanup",
+  "observedAt": "2026-11-05T17:40:38.886679+00:00",
+  "temporaryRootExceptionRemoved": true,
+  "temporaryKeyRemovedByScopedHelper": true,
+  "rootLoginDisabledForFormerPeer": true,
+  "rootLoginDisabledOutsidePeer": true,
+  "expiryTimerStopped": true,
+  "privateBootstrapCopiesRemoved": [
+    "/etc/dg-sites/milobingo-staging.bootstrap.json",
+    "/etc/dg-sites/milobingo-staging.runtime-bootstrap.json",
+    "/var/backups/milobingo-staging/runtime-output.pooler-original.json",
+    "/var/backups/milobingo-staging/restore-diagnostic.log",
+    "/var/backups/milobingo-staging/restore-diagnostic-2.log"
+  ],
+  "activeRuntimeFilesRetained": true,
+  "encryptedBackupsAndKeyEscrowRetained": true,
+  "hostBackupKeyMode": "0600",
+  "newTemporaryKeyLoginsDenied": {
+    "root": true,
+    "dgadmin": true
+  },
+  "localTemporaryPrivateAndPublicKeyRemoved": true,
+  "verifiedAt": "2026-11-05T17:41:04.790110+00:00"
+}

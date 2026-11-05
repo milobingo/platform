@@ -1,0 +1,39 @@
+{
+  "format": 1,
+  "kind": "manual-paired-application-recovery",
+  "observedAt": "2026-11-05T17:40:15.796141+00:00",
+  "earlierSuccessfulDeploy": 42075923621,
+  "latestSuccessfulDeploy": 42076441650,
+  "checks": [
+    {
+      "recovery": "starting",
+      "original": "985ed0d8aeac-42076441650-1",
+      "earlier": "985ed0d8aeac-42075923621-1",
+      "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+      "runtimePaths": {
+        "985ed0d8aeac-42076441650-1": "/etc/dg-sites/milobingo-staging.runtime.d/985ed0d8aeac-42076441650-1.env",
+        "985ed0d8aeac-42075923621-1": "/etc/dg-sites/milobingo-staging.runtime.d/985ed0d8aeac-42075923621-1.env"
+      }
+    },
+    {
+      "recovery": "earlier-healthy",
+      "release": "985ed0d8aeac-42075923621-1",
+      "releaseId": "42075923621-1",
+      "configVersion": "staging-2026-11-05-v1"
+    },
+    {
+      "recovery": "original-restored",
+      "release": "985ed0d8aeac-42076441650-1",
+      "releaseId": "42076441650-1",
+      "configVersion": "staging-2026-11-05-v1"
+    },
+    {
+      "recovery": "passed",
+      "sha": "985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161",
+      "originalCurrentRestored": true,
+      "runtimeValuesRead": false
+    }
+  ],
+  "automaticFailureRollbackExecuted": false,
+  "databaseRollbackExecuted": false
+}
