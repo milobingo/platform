@@ -56,3 +56,22 @@ jobs:
               find "$directory" -maxdepth 2 -type f -name '*.json' -printf '%p\n' 2>/dev/null || true
             fi
           done
+      - name: Inspect Milo service configuration and toolchain locations
+        shell: bash
+        run: |
+          set -euo pipefail
+          id
+          getent passwd run-mil-stg app-mil-stg || true
+          find /opt /usr/local /home/run-mil-stg -maxdepth 4 -type f \( -name node -o -name pnpm -o -name dg-site-deploy \) -print 2>/dev/null || true
+          systemctl list-unit-files --no-pager 'milobingo*' 'milo*' 'dg-site*' || true
+          for service in milobingo-staging.service milo-staging.service; do
+            systemctl show "$service" --no-pager -p LoadState -p ActiveState -p FragmentPath -p User -p Group -p WorkingDirectory -p EnvironmentFiles || true
+          done
+          systemctl show caddy --no-pager -p LoadState -p ActiveState -p FragmentPath || true
+          ss -ltn
+          for path in /etc/caddy/Caddyfile /etc/caddy/sites/*; do
+            if test -f "$path" && test -r "$path"; then
+              printf 'caddy_file=%s\n' "$path"
+              grep -n -F milo-staging.dgwebservices.nl "$path" || true
+            fi
+          done
