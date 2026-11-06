@@ -1,43 +1,37 @@
-# Milo staging: resultaat 5 november 2026
+# Milo staging: resultaat 6 november 2026
 
-Staging is bereikbaar op **https://milo-staging.dgwebservices.nl**. Open de [familiedemo](https://milo-staging.dgwebservices.nl/spelen?demo=1) om zonder account te kijken. De bron staat op `main` van [milobingo/platform](https://github.com/milobingo/platform).
+De zes wijzigingen uit overdracht `2026-11-06-v6` staan op [Milo staging](https://milo-staging.dgwebservices.nl). De [familiedemo](https://milo-staging.dgwebservices.nl/spelen?demo=1) is zonder account beschikbaar. De native doelrepo blijft [milobingo/platform](https://github.com/milobingo/platform), branch `main`.
 
-## Actieve release en deployment
-
-| Onderdeel | Gecontroleerd resultaat |
+| Onderdeel | Resultaat |
 | --- | --- |
-| Actieve appbron | `985ed0d8aeac3ef7f7b2960d0a03a047e8a1d161` |
-| Release / configuratie | `42076441650-1` / `staging-2026-11-05-v1` |
-| Exacte bron-CI | [42075300318: geslaagd](https://github.com/milobingo/platform/actions/runs/42075300318) |
-| Laatste deployment | [42076441650: alle drie jobs geslaagd](https://github.com/milobingo/platform/actions/runs/42076441650) |
-| Vorige bevestigde release | [42075923621: geslaagd](https://github.com/milobingo/platform/actions/runs/42075923621), dezelfde appbron met eigen release/env |
-| Host / service | `dg-nxttrack-01`, `milobingo-staging.service`, actief en ingeschakeld voor boot |
-| Werkelijke procesidentiteit | `app-mil-stg`, UID `996`, GID `987`; native Node `24.18.0` |
-| Appbinding | Alleen `127.0.0.1:4173`, publiek via Caddy met geldig HTTPS |
-| Appboom | Root-owned standalone-output; private runtime-env buiten de appboom, root-only `0600` |
+| Actieve volledige appbron | `16305c0d70fff1a5a80fccabf3703175e03df1d3` |
+| Release / configuratie | `42154203480-1` / `staging-2026-11-05-v1` |
+| Exacte bron-CI | [42153719888: geslaagd](https://github.com/milobingo/platform/actions/runs/42153719888) |
+| Native stagingdeployment | [42154203480: alle drie jobs geslaagd](https://github.com/milobingo/platform/actions/runs/42154203480) |
+| Toolchain | Node `24.18.0`, pnpm `11.25.0`, Next `16.4.5` |
+| Hostcontract | Bestaande native wrapper v1, vaste stagingrunner en loopbackpoort `4173`; entry-/helperpins gecontroleerd |
+| Database | Readonly audit geslaagd; dezelfde 18 beheerde tabellen, schema en migratiehistorie; beperkte runtime-login met echte TLS bevestigd |
+| Migraties / reset | Geen migratie aangevraagd of uitgevoerd; geen datareset |
+| Publieke nacontrole | Exacte SHA/run/config, 25 bronidentieke modules/cuebeelden en toegangsgrenzen geslaagd |
+| Browser | 13/13 geslaagd op de echte staging-URL; geen skips of consolefouten |
 
-De [hostinventaris](../verification/staging-release.json) bevat de exacte werkmap, release-inventarisdigest, entry/helper/toolchaindigests en effectieve procesidentiteit. De [publieke nacontrole na intrekking van SSH](../verification/staging-public.json) bevestigt de volledige SHA, release-ID en configuratieversie. Een nieuwe documentatiecommit op `main` wijzigt deze expliciet gekozen appbron niet automatisch.
+Het [integratierapport](WIJZIGINGEN-1-6-INTEGRATIE.md) beschrijft bingoprioriteit/troostprijzen, Milo’s rig en tour, twaalf trucs, bestellen/goedkeuren, de werkruimte en privéfluisteren. De onafhankelijke review heeft onder andere wachtende audio bij een nieuw bingovenster, de asynchrone outputbevestiging, korte aanwijzingsecho’s, oude betaalmailversies en dubbele legacy-troostprijzen aangescherpt.
 
-## Database, opslag en herstel
+## Bewijs en reikwijdte
 
-- [Databaseworkflow 42073060158](https://github.com/milobingo/platform/actions/runs/42073060158) heeft na een werkelijke versleutelde backup en volledige scratchrestore het schema gecommitteerd: **18 beheerde tabellen, geen openstaande migraties**. De migratieprocedure kwam uit bron `10a9c351fb9c7e501ff9996291518bedb8ed7c8d`; de latere appcorrectie veranderde het schema niet. Zie [applybewijs](../verification/staging-database-apply.json).
-- Het [herstelbewijs](../verification/staging-restore-proof.json) bevestigt overeenkomende gegevenschecksums en beveiligingsmetadata, inclusief eigenaars, grants, RLS, schema-ACLs en eventtriggers. De versleutelde dump en metadata staan onder `/var/backups/milobingo-staging`; de [kopie buiten de staginghost](../verification/staging-backup-escrow.json) heeft dezelfde hashes. De encryptiesleutel is afzonderlijk als private escrow bewaard; waarden staan niet in Git.
-- App en migraties gebruiken afzonderlijke accounts via de geverifieerde directe IPv6-databaseverbinding met certificaat- en hostnaamcontrole. De eerste pooler-nacontrole van runtimeprovisioning stopte met `28P01`; dezelfde nieuwe login is onafhankelijk rechtstreeks geverifieerd, voordat het appsecret is gepubliceerd. Het wachtwoord en de rechten zijn daarbij behouden. Zie [runtimebewijs](../verification/staging-runtime-verification.json).
-- De [backendacceptatie op de actieve appbron](../verification/staging-backend-acceptance.json) bevestigt werkelijk invoegen/lezen/wijzigen/verwijderen en rollback van een unieke testrij, drie geweigerde privilegeproeven, private Storage-upload/read, geweigerde anonieme toegang en bevestigde verwijdering van het testobject.
-- De [handmatige appherstelproef](../verification/staging-recovery.json) heeft de eerdere bevestigde app met zijn eigen env geactiveerd, de exacte health gecontroleerd en daarna de nieuwste app/env hersteld. Automatische rollback bij een geforceerde fout is lokaal getest; op de host is geen fout geïnjecteerd. Appherstel draait de database en providerinstellingen niet terug.
+- [Exacte CI](../verification/handoff-v6/ci.json): configuratie, lint, 62 controleprogramma’s met afzonderlijke PostgreSQL-testservice, 23 native deploy-/rollbacktests, build, typecheck en 13 browsertests. De eerste CI ontdekte de sudo-rs-parser op Ubuntu 26; de test kiest nu aantoonbaar een digest-capabele C-parser. De sudoersbeveiliging is behouden.
+- [Native uitrol](../verification/handoff-v6/staging-deploy.json): eigen main-CI, ongewijzigde rootwrapper-/helperhash, gescheiden buildaccount, runtimeallowlist, echte readonly database-/rolcontrole, activatie en publieke nacontrole. Nieuwe host-artifactdigest en proces-PID zijn zonder nieuwe SSH-beheertoegang niet afzonderlijk uitgelezen; er wordt geen nieuwe volledige SSH-inventaris geclaimd.
+- [Publieke source-/assetcontrole](../verification/handoff-v6/staging-public.json): dezelfde volledige bron en release-ID, 25 identieke modules/afbeeldingen, geconfigureerde anonieme Auth-grens, vreemde Origin `403`, vervalste identiteit `401`, lokale login `403` zonder cookie, anonieme orders/fluisteren `401`.
+- [Stagingbrowsertests](../verification/handoff-v6/staging-browser-results.json): vijf familiebreedtes en echte openbare autorisatiegrenzen; daarnaast de echte app/CSS/Canvas met uitsluitend in de browser gesimuleerde regie-API-antwoorden. Die simulatie doorloopt 24 routes/personagepagina’s, 33 subtabs en 7 modules op 390/1366 pixels, korte modals, tour/pauze/hervatten/terugkeer, een nieuwe truc, bestelvenster en privéfluisteren. [Screenshots en transportverslagen](../verification/handoff-v6/staging-browser/) zijn apart van lokale captures opgeslagen. Dit is geen echte regie-login, betaling, mail of providerproef.
 
-De PostgreSQL-backup bevat database-inhoud en Storage-metadata. Het herstelpad voor echte private objectbytes en volledige clusterrolconfiguratie blijft afzonderlijk te beheren volgens [de databaseprocedure](STAGING-DATABASE.md).
+De [vorige volledige host-/backup-/herstelacceptatie van 5 november](STAGING-RESULTAAT-2026-11-05.md) blijft historische onderbouwing; de toenmalige status is bewaard in [staging-status-2026-11-05.json](../verification/staging-status-2026-11-05.json). Er is voor deze wijziging geen nieuwe schemamigratie of muterende herstelproef nodig geweest. Een approllback verwijdert geen nieuwe orders/prijsgegevens, maar oudere code begrijpt die velden niet: controleer compatibiliteit vóór oudere code daadwerkelijk schrijft en kies bij nieuwe featuredata bij voorkeur een compatibele correctie vooruit.
 
-## Browser, autorisatie en opruiming
+Een volgende documentatiecommit op `main` verandert de expliciet gekozen actieve appbron niet automatisch.
 
-De [acht stagingbrowsertests](../verification/staging-browser-tests.json) slagen zonder skips, op vijf breedtes van 320 tot 1280 pixels. Ze controleren onder meer de vijf familietabs, vaste speler, 75 ballen, accountvenster, layout, normale aanmeldroute en afwijzing van vervalste identiteit en lokale regie-aanmelding. Er zijn aparte [mobiele](../verification/screenshots/staging-family-320.png) en [desktop](../verification/screenshots/staging-family-1280.png) screenshots.
+## Wat productie nog blokkeert
 
-De publieke nacontrole bevestigt anonieme sessie `200` met `configured=true` en `localAvailable=false`, vervalste identiteit `401`, afwijkende Origin `403` en lokale aanmelding `403` zonder cookie. De proxycorrectie behoudt de controles op de vaste host, protocol, interne poort, Origin en Sec-Fetch.
+Productie is expliciet geautoriseerd. De echte productie-URL, DG-host/site/runner en afzonderlijke Supabase-configuratie ontbreken echter nog. Het GitHub-environment `production` heeft bij de laatste controle geen variabelen of secrets. In de verbonden Supabase-accounts is geen Milo-productieproject zichtbaar; er is geen project of bestemming geraden of aangemaakt.
 
-[Scratch, relay, tunnel, private scratchcredentials en hersteltestsecret zijn verwijderd](../verification/staging-scratch-cleanup.json). De [tijdelijke beheertoegang is om 17:41 UTC ingetrokken](../verification/staging-access-cleanup.json), inclusief beide sleutelregistraties, lokale sleutelbestanden en extra bootstrapkopieën. Nieuwe logins met die sleutel zijn voor `root` en `dgadmin` geweigerd; staging bleef bereikbaar.
+Verder ontbreken het daadwerkelijk ingerichte Milo-mailgateway-/worker-/afzender-/reconciliatiecontract en de echte releasegebonden gezins-/regie-, bestel/PDF-, mail- en show-/belacceptatie. De geïnstalleerde stagingwrapper v1 ondersteunt de vier nieuwe mail-runtimevelden nog niet; bestelmail blijft veilig uitgeschakeld totdat die afzonderlijk beoordeelde koppeling is ingericht. Ontbrekende verzending blijft zichtbaar bij de bestelling; bestellingen en goedgekeurde bladen blijven bewaard.
 
-## Volgende release en benodigde gegevens
-
-Een volgende apprelease loopt via **[Actions: Deploy Milo staging](https://github.com/milobingo/platform/actions/workflows/deploy-staging.yml)** met een volledige main-SHA met geslaagde CI en `apply_database: false` wanneer het schema gelijk blijft. De [procedure](STAGING-DEPLOY.md) beschrijft de stappen, databasegate en rollback. Gewone appreleases gebruiken de beperkte runnerbevoegdheid.
-
-Bestaande stagingaccounts en secrets zijn beschikbaar. Voor verdere acceptatie zijn nog nodig: echte Supabase-testaccounts en beheerder-UUID, bevestigde Site URL/redirects en OTP-/Google-flow, het DG-mailgateway/outboxcontract, provider-/modeltoegang en de LiveKit-/YouTube-/OBS-audiorepetitie. Ook de keuze over oude data en eventuele productiegegevens staat in de volledige [inventaris van accounts, gegevens, variabelen en secrets](PROJECTGEGEVENS-EN-SECRETS.md). Deze menselijke en provideracceptatie is nog niet uitgevoerd.
+De concrete [productieprocedure en vereiste configuratie](PRODUCTIE-DEPLOY.md) zijn gebouwd en met tien gerichte controles getest. Het lege profiel wordt geweigerd. Na een echte bestemming worden de beoordeelde bootstrapbestanden en de workflow gerenderd; promotie vereist geslaagde CI én volledige echte stagingacceptatie van precies dezelfde bron. De [account-/secretinventaris](PROJECTGEGEVENS-EN-SECRETS.md) blijft de namenlijst. Geen echte testmail, betaling of betaalde providerrepetitie is uitgevoerd en er is niets naar productie uitgerold.

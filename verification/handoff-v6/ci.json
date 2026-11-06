@@ -1,0 +1,106 @@
+{
+  "kind": "exact-source-ci-evidence",
+  "sourceSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+  "run": 42153719888,
+  "url": "https://github.com/milobingo/platform/actions/runs/42153719888",
+  "status": "completed",
+  "conclusion": "success",
+  "updatedAt": "2026-11-06T03:03:46Z",
+  "jobs": [
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout exact event commit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pnpm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install Node",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install locked dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate build configuration",
+          "conclusion": "success"
+        },
+        {
+          "name": "Lint",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare digest-capable sudoers parser",
+          "conclusion": "success"
+        },
+        {
+          "name": "Offline contract tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native deployment boundary and rollback checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Next.js",
+          "conclusion": "success"
+        },
+        {
+          "name": "Typecheck",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser acceptance",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Install Node",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Install pnpm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout exact event commit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "testContext": {
+    "programs": 62,
+    "isolatedPostgresService": true,
+    "nativeWrapperTests": 23,
+    "browserTests": 13,
+    "realProviderCalls": false,
+    "sudoersParser": "/usr/sbin/visudo.ws",
+    "sudoPackage": "1.9.17p2-1ubuntu3.2"
+  }
+}

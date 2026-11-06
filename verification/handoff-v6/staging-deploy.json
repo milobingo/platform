@@ -1,0 +1,354 @@
+{
+  "kind": "handoff-v6-staging-deployment",
+  "sourceSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+  "run": 42154203480,
+  "url": "https://github.com/milobingo/platform/actions/runs/42154203480",
+  "status": "completed",
+  "conclusion": "success",
+  "observedAt": "2026-11-06T03:07:49.956Z",
+  "jobs": [
+    {
+      "name": "release-gate",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Read the trusted dispatch workflow revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Use the pinned validation toolchain",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require successful own main CI on the exact release SHA",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Use the pinned validation toolchain",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Read the trusted dispatch workflow revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "deploy",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Fail before checkout or runtime secrets when host bootstrap is absent",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check out only the CI-approved release",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify checkout, rootwrapper hash, service contract and capacity",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install locked dependencies without application or deployment credentials",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate all runtime names before any requested database mutation",
+          "conclusion": "success"
+        },
+        {
+          "name": "Apply only explicitly reviewed database changes with backup and restore proof",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Audit ready database and deploy through the reviewed four-argument DG interface",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Check out only the CI-approved release",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "verify-public",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Read release-bound verification and asset checksums",
+          "conclusion": "success"
+        },
+        {
+          "name": "Use the pinned validation toolchain",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify exact public release, demo assets and anonymous access boundaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Record scoped staging evidence",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Use the pinned validation toolchain",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Read release-bound verification and asset checksums",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "gate": "ci",
+      "status": "passed",
+      "release_sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "workflow_sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "ci_run_id": "42153719888",
+      "ci_run_attempt": "1",
+      "ci_run_url": "https://github.com/milobingo/platform/actions/runs/42153719888"
+    },
+    {
+      "gate": "host",
+      "status": "passed",
+      "releaseSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "wrapperSha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "port": 4173,
+      "buildKeys": [],
+      "runtimeKeys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ]
+    },
+    {
+      "gate": "host",
+      "status": "passed",
+      "releaseSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "wrapperSha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "port": 4173,
+      "buildKeys": [],
+      "runtimeKeys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ]
+    },
+    {
+      "gate": "runtime",
+      "status": "passed",
+      "keys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ],
+      "valuesPrinted": false
+    },
+    {
+      "gate": "host",
+      "status": "passed",
+      "releaseSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "wrapperSha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "port": 4173,
+      "buildKeys": [],
+      "runtimeKeys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ]
+    },
+    {
+      "gate": "runtime",
+      "status": "passed",
+      "keys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ],
+      "valuesPrinted": false
+    },
+    {
+      "gate": "ci",
+      "status": "passed",
+      "release_sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "workflow_sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "ci_run_id": "42153719888",
+      "ci_run_attempt": "1",
+      "ci_run_url": "https://github.com/milobingo/platform/actions/runs/42153719888"
+    },
+    {
+      "gate": "runtime-database-role",
+      "status": "passed",
+      "verifiedTls": true,
+      "readableTables": 18,
+      "credentialsPrinted": false
+    },
+    {
+      "deployment": "passed",
+      "version": 1,
+      "site": "milobingo-staging",
+      "sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "releaseId": "42154203480-1"
+    },
+    {
+      "gate": "public",
+      "status": "passed",
+      "releaseSha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+      "releaseId": "42154203480-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "checks": [
+        "exact-health-identity",
+        "demo-assets",
+        "unauthenticated-access",
+        "local-login-disabled"
+      ],
+      "notTested": [
+        "real-otp-email",
+        "google-oauth-account",
+        "paid-provider-access",
+        "live-broadcast-audio"
+      ]
+    }
+  ],
+  "database": {
+    "applyRequested": false,
+    "managedTablesReadable": 18,
+    "pending": [],
+    "manifestDigest": "9d3373fbcd81337fbf0c80f95e4a566b4692c0022b2a815b444835e39e0a5f92",
+    "schemaDigest": "3c8e022a071bd44ad8be42438069c2b9263d5d17416d5e6094e9894fdf6fea1e",
+    "tlsVerified": true,
+    "limitedRuntimeRoleVerified": true
+  },
+  "browser": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "regieBackend": "browser-only simulated transport",
+    "realAccountOrProviderCalls": false
+  },
+  "production": {
+    "deployed": false,
+    "reason": "destination and production configuration unavailable; real staging integration acceptance remains pending"
+  }
+}
