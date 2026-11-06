@@ -10,6 +10,7 @@ import {X509Certificate} from 'node:crypto';
 import {validateProductionProfile,productionPaths,profileDigest,requireProfilePin} from '../scripts/deploy/production-profile.mjs';
 import {renderProductionBundle} from '../scripts/deploy/production-render.mjs';
 import {validateProductionRuntime,productionWrapperEnvironment,validateProductionStagingProof,validateProductionStagingAcceptance,productionReleaseGate,verifyProductionPublic,STAGING_ACCEPTANCE_CHECKS} from '../scripts/deploy/production-preflight.mjs';
+import {selectDigestVisudo} from './helpers/sudoers-toolchain.mjs';
 const sha='a'.repeat(40),stageId=303,releaseId='404-1';
 // Isolated documentation/test fixtures, never a discovered production destination.
 const profile={version:1,environment:'production',repository:'milobingo/platform',branch:'main',siteId:'milobingo-fixture',appUrl:'https://production.milo.example',host:'milo-fixture-host',runnerName:'milo-fixture-runner',runnerUser:'run-milo-fixture',buildUser:'build-milo-fixture',appUser:'app-milo-fixture',buildLockGroup:'dg-build',workspace:'/home/run-milo-fixture/_work/platform/platform',port:4173,supabaseRef:'a'.repeat(20),bucket:'milo-fixture',configVersion:'fixture-v1',mailMode:'allowlist'};
@@ -49,7 +50,23 @@ test('rendered production wrapper pins reviewed source and enforces fixed target
   {DATABASE_URL:values.DATABASE_URL+'&host=attacker.example'},
  ]){const invalid={...values,...change};assert.notEqual(spawnSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(invalid),encoding:'utf8'}).status,0);}
  const pooled={...values,DATABASE_URL:values.DATABASE_URL.replace(productionPaths(profile).runtimeRole+':',productionPaths(profile).runtimeRole+'.'+profile.supabaseRef+':').replace('db.'+profile.supabaseRef+'.supabase.co','aws-fixture.pooler.supabase.com')};assert.equal(execFileSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(pooled),encoding:'utf8'}).trim(),'native-policy-passed');
- execFileSync('/usr/sbin/visudo',['-cf',join(temporary,'deploy.sudoers')],{stdio:'pipe'});
+ const {parser}=selectDigestVisudo();
+ execFileSync(parser,['-cf',join(temporary,'deploy.sudoers')],{stdio:'pipe'});
+});
+
+test('sudoers parser selection requires digest support and rejects a no-op or incompatible pinned parser',()=>{
+ const attempted=[];
+ const run=(parser,args)=>{
+  attempted.push(parser);
+  if(args[0]==='--version')return {status:0,stdout:'visudo version fixture\n'};
+  const policy=readFileSync(args[1],'utf8');
+  return {status:parser.endsWith('/visudo.ws')&&!policy.includes('INVALID!')?0:1};
+ };
+ assert.equal(selectDigestVisudo({pinned:null,run}).parser,'/usr/sbin/visudo.ws');
+ assert(!attempted.includes('/usr/sbin/visudo'));
+ assert.throws(()=>selectDigestVisudo({pinned:'/usr/sbin/visudo',run}),/digest_capable_visudo_required/);
+ assert.throws(()=>selectDigestVisudo({pinned:'/tmp/visudo',run}),/visudo_parser_path_not_allowed/);
+ assert.throws(()=>selectDigestVisudo({pinned:null,run:()=>({status:0,stdout:'no-op'})}),/digest_capable_visudo_required/);
 });
 
 test('binding preserves confirmed names containing old tokens and port digits without cascading substitutions',async()=>{

@@ -1,17 +1,18 @@
-✔ production profile requires a real separate destination and rejects staging or injected configuration (4.475977ms)
-✔ rendered production wrapper pins reviewed source and enforces fixed target and production mail policy (1168.51569ms)
-✔ binding preserves confirmed names containing old tokens and port digits without cascading substitutions (8.810412ms)
-✔ production runtime binds TLS, limited account, mail mode and strips all deployment/build credentials (4.816324ms)
-✔ same-SHA staging proof requires exact successful workflow jobs and currently matching public release (0.531786ms)
-✔ protected full staging acceptance cannot be inferred from health, pending checks or a different release (2.574809ms)
-✔ promotion consults own exact CI, staging identity and protected complete acceptance without provider calls (23.600151ms)
-✔ public production verification checks actual bytes and access boundaries without an account/provider call (22.664745ms)
-✔ production imports have no CLI side effects and incomplete default profile cannot render or deploy (84.053862ms)
-ℹ tests 9
+✔ production profile requires a real separate destination and rejects staging or injected configuration (5.118532ms)
+✔ rendered production wrapper pins reviewed source and enforces fixed target and production mail policy (1158.814335ms)
+✔ sudoers parser selection requires digest support and rejects a no-op or incompatible pinned parser (1.551679ms)
+✔ binding preserves confirmed names containing old tokens and port digits without cascading substitutions (7.488211ms)
+✔ production runtime binds TLS, limited account, mail mode and strips all deployment/build credentials (3.671249ms)
+✔ same-SHA staging proof requires exact successful workflow jobs and currently matching public release (0.407458ms)
+✔ protected full staging acceptance cannot be inferred from health, pending checks or a different release (1.447031ms)
+✔ promotion consults own exact CI, staging identity and protected complete acceptance without provider calls (19.619972ms)
+✔ public production verification checks actual bytes and access boundaries without an account/provider call (22.667989ms)
+✔ production imports have no CLI side effects and incomplete default profile cannot render or deploy (93.311072ms)
+ℹ tests 10
 ℹ suites 0
-ℹ pass 9
+ℹ pass 10
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1328.256374
+ℹ duration_ms 1319.807104

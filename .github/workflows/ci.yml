@@ -50,6 +50,19 @@ jobs:
         run: pnpm check:config --phase=build
       - name: Lint
         run: pnpm lint
+      - name: Prepare digest-capable sudoers parser
+        shell: bash
+        run: |
+          # Ubuntu 26.04 uses sudo-rs by default. Keep that default unchanged;
+          # the supported C sudo parser is needed for our mandatory digest policy.
+          if ! node tests/helpers/sudoers-toolchain.mjs; then
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends sudo
+          fi
+          node tests/helpers/sudoers-toolchain.mjs --github-env
+          cat /etc/os-release
+          printf 'Runner image: %s %s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}"
+          dpkg-query -W -f='${Package} ${Version}\n' sudo
       - name: Offline contract tests
         env:
           MILO_TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}

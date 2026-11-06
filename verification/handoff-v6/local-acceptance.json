@@ -9,7 +9,7 @@
     "failed": 0,
     "report": "verification/local-tests.json",
     "nodeReported": {
-      "tests": 380,
+      "tests": 381,
       "skipped": 4,
       "reason": "Four remote PostgreSQL integration checks require the isolated local test service; exact-SHA CI supplies it."
     }
@@ -39,5 +39,5 @@
       "same-SHA real account, order/PDF, mail and live show acceptance"
     ]
   },
-  "productionScaffoldTests": 9
+  "productionScaffoldTests": 10
 }

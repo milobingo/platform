@@ -128,3 +128,5 @@ node --test tests/check-production-deploy.mjs
 ```
 
 De tests gebruiken expliciete `.example`-/`.test`-fixtures, geïnjecteerde GitHub/HTTP-antwoorden en een werkelijk geladen lokale Python-helper plus `visudo -cf`. Ze controleren doelisolatie, source-/helperpins, mailpolicy, credentialstripping, complete releasegebonden acceptatie, publieke grenzen en weigering bij een leeg profiel. Ze voeren geen sudo, systemd-, host-, database- of providerwijzigingen uit en vormen geen productie- of echte stagingacceptatie.
+
+Ubuntu 26.04 gebruikt standaard sudo-rs. De test kiest alleen een parser die een echte digest-/argumentregel accepteert én een ongeldige digest weigert: de ondersteunde C-variant `visudo.ws`, of de klassieke `visudo`. CI installeert zo nodig uitsluitend het officiële pakket `sudo`, legt parser-/imageversies vast en wijzigt de standaard-sudo niet. De volledige gegenereerde sudoersregel blijft verplicht gevalideerd. Zie [Ubuntu 26.04-release-informatie](https://documentation.ubuntu.com/release-notes/26.04/summary-for-lts-users/) en [de pakketbestanden](https://packages.ubuntu.com/resolute/amd64/sudo/filelist).

@@ -299,7 +299,7 @@
     {
       "name": "check-production-deploy",
       "exitCode": 0,
-      "ms": 1383
+      "ms": 1373
     },
     {
       "name": "check-deploy-database",
