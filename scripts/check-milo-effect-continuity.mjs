@@ -1,7 +1,7 @@
-import {canvasRuntime} from './canvas-runtime.mjs';
 // Consecutive-frame checks of the real effect renderers, not selected stills.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {canvasRuntime} from './canvas-runtime.mjs';
 import {resolve} from 'node:path';
 import {gameFrame,objectPose} from '../public/bingo-choreography.js';
 import {drawRibbonGame} from '../public/milo-ribbon-game.js';

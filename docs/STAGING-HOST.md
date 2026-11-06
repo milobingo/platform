@@ -1,6 +1,6 @@
 # Milo staging: hostinrichting en overdracht
 
-Staging is geautoriseerd; productie valt buiten deze opdracht. De Milo-specifieke **native wrapper versie 1**, beperkte sudoers-regel, appunit en Caddyfragment zijn geïnstalleerd. De app is actief op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); de native deployment en publieke releasecontrole zijn geslaagd. De actuele release, laatste workflowuitkomst en definitieve cleanup staan in [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md). Het implementatiecontract staat in [STAGING-NATIVE-WRAPPER.md](STAGING-NATIVE-WRAPPER.md).
+Staging is geautoriseerd; dit document beschrijft uitsluitend het stagingdoel. Productie is afzonderlijk geautoriseerd op 6 november 2026; zie [de productieprocedure](PRODUCTIE-DEPLOY.md). De Milo-specifieke **native wrapper versie 1**, beperkte sudoers-regel, appunit en Caddyfragment zijn geïnstalleerd. De app is actief op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); de native deployment en publieke releasecontrole zijn geslaagd. De actuele release, laatste workflowuitkomst en definitieve cleanup staan in [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md). Het implementatiecontract staat in [STAGING-NATIVE-WRAPPER.md](STAGING-NATIVE-WRAPPER.md).
 
 ## Uitgevoerde database- en runtimecontroles
 

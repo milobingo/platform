@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {miloPoseAt,MILO_MOTION_IDS,MILO_MOTION_JOINTS,createMiloPoseSmoother,easeMilo} from '../public/milo-motion.js';
+import {miloPoseAt,MILO_MOTION_IDS,MILO_MOTION_JOINTS,MILO_WALK_PERIOD,solveMiloLeg,createMiloPoseSmoother,easeMilo} from '../public/milo-motion.js';
 
 const rotate=([x,y],a)=>[x*Math.cos(a)-y*Math.sin(a),x*Math.sin(a)+y*Math.cos(a)];
 const add=(a,b)=>[a[0]+b[0],a[1]+b[1]],sub=(a,b)=>[a[0]-b[0],a[1]-b[1]];
@@ -11,6 +11,13 @@ function handAt(p,side){
  return add(add(joint,rotate(sub(wrist,elbow),b)),rotate(sub(hand,wrist),c));
 }
 const distance=(a,b)=>Math.hypot(...sub(a,b));
+function ankleAt(p,side){
+ const {hip,knee,ankle}=MILO_MOTION_JOINTS[side],upper=p[side+'Leg'],lower=upper+p[side+'Knee'];
+ const joint=add(hip,rotate(sub(knee,hip),upper));
+ const local=add(joint,rotate(sub(ankle,knee),lower));
+ const pivot=[414,655],turned=add(pivot,rotate(sub(local,pivot),p.pelvisRot));
+ return add(turned,[(p.rootX+p.pelvisX)*916,(p.rootY+p.pelvisY)*916]);
+}
 
 test('all Milo performances sample finite, bounded, continuous poses including both magic acts',()=>{
  for(const motion of MILO_MOTION_IDS)for(const magicId of ['star-hat','silk-stars']){
@@ -105,6 +112,66 @@ test('reduced motion and zero energy freeze the full skeleton while leaving faci
  for(const motion of MILO_MOTION_IDS){assert.deepEqual(miloPoseAt({time:9,motion,reducedMotion:true,speaking:true}),still);assert.deepEqual(miloPoseAt({time:9,motion,energy:0}),still);}
  const invalid=miloPoseAt({time:NaN,idleTime:Infinity,energy:'oops',blend:NaN,mouth:NaN});
  for(const value of Object.values(invalid))assert(Number.isFinite(value));
+});
+
+test('walking alternates planted feet and raised swing legs without stretching their source geometry',()=>{
+ for(const side of ['left','right']){
+  const rest=solveMiloLeg(side,MILO_MOTION_JOINTS[side].ankle);
+  assert(Math.abs(rest.leg)<1e-10&&Math.abs(rest.knee)<1e-10,'The IK rest pose must match the approved drawing');
+ }
+ let leftLift=0,rightLift=0,leftKneeMin=Infinity,leftKneeMax=-Infinity,bootRollMin=Infinity,bootRollMax=-Infinity;
+ for(let frame=0;frame<=640;frame++){
+  const phase=frame/640,p=miloPoseAt({motion:'walk',walkPhase:phase,idleTime:6});
+  const u=phase%1,v=(phase+.5)%1;
+  const left=ankleAt(p,'left'),right=ankleAt(p,'right');
+  const l=MILO_MOTION_JOINTS.left.ankle[1]-left[1],r=MILO_MOTION_JOINTS.right.ankle[1]-right[1];
+  assert(l>=-1e-8&&r>=-1e-8,'A foot passed below its calibrated floor height');
+  if(u<=.62)assert(Math.abs(l)<1e-8,'Left support foot should stay planted');
+  if(v<=.62)assert(Math.abs(r)<1e-8,'Right support foot should stay planted');
+  assert(l<1e-8||r<1e-8,'Walking must never become a two-foot hop');
+  leftLift=Math.max(leftLift,l);rightLift=Math.max(rightLift,r);
+  leftKneeMin=Math.min(leftKneeMin,p.leftKnee);leftKneeMax=Math.max(leftKneeMax,p.leftKnee);
+  const roll=p.leftFoot+p.leftLeg+p.leftKnee+p.pelvisRot;
+  bootRollMin=Math.min(bootRollMin,roll);bootRollMax=Math.max(bootRollMax,roll);
+ }
+ assert(leftLift>18&&rightLift>18,'Both legs must visibly lift during their own swing');
+ assert(leftKneeMax-leftKneeMin>.35,'The knee should flex independently of the hip');
+ assert(bootRollMax-bootRollMin>.14,'The ankle should add its own toe-off/swing roll');
+});
+
+test('walking is continuous at every contact and can follow the travelled distance in either direction',()=>{
+ for(const direction of [-1,0,1])for(const boundary of [0,.12,.5,.62,1,20.5]){
+  const before=miloPoseAt({motion:'walk',walkPhase:boundary-1e-6,idleTime:3,walkDirection:direction});
+  const after=miloPoseAt({motion:'walk',walkPhase:boundary+1e-6,idleTime:3,walkDirection:direction});
+  for(const key of Object.keys(before))assert(Math.abs(after[key]-before[key])<.0001,`${key} snapped at a foot contact`);
+ }
+ const timed=miloPoseAt({motion:'walk',time:MILO_WALK_PERIOD*.35,idleTime:3});
+ const travelled=miloPoseAt({motion:'walk',time:900,walkPhase:42.35,idleTime:3});
+ for(const key of Object.keys(timed))assert(Math.abs(timed[key]-travelled[key])<1e-12,'Travel distance must drive the same pose independently of elapsed cue time');
+ const forwardA=ankleAt(miloPoseAt({motion:'walk',walkPhase:.1,walkDirection:1}),'left');
+ const forwardB=ankleAt(miloPoseAt({motion:'walk',walkPhase:.4,walkDirection:1}),'left');
+ const backwardA=ankleAt(miloPoseAt({motion:'walk',walkPhase:.1,walkDirection:-1}),'left');
+ const backwardB=ankleAt(miloPoseAt({motion:'walk',walkPhase:.4,walkDirection:-1}),'left');
+ assert(forwardA[0]-forwardB[0]>45,'The support step is too short for a studio walk');
+ assert(backwardB[0]-backwardA[0]>45,'Walking direction must reverse support-foot travel');
+ const middle=ankleAt(miloPoseAt({motion:'walk',walkPhase:.25,walkDirection:1}),'left');
+ assert(Math.abs((forwardA[0]+forwardB[0])/2-middle[0])<1e-8,'Planted foot should travel at constant speed against stage translation');
+});
+
+test('walk stride and energy settle safely without destroying the inverse-kinematic foot destinations',()=>{
+ const idle=miloPoseAt({motion:'idle',idleTime:8});
+ assert.deepEqual(miloPoseAt({motion:'walk',idleTime:8,walkStride:0}),idle,'Zero stride must use the same ongoing idle pose');
+ for(const phase of [.1,.36,.72,.9]){
+  const ordinary=miloPoseAt({motion:'walk',walkPhase:phase});
+  for(const energy of [1.2,100/70,1.6]){
+   const lively=miloPoseAt({motion:'walk',walkPhase:phase,energy});
+   for(const side of ['left','right'])assert(distance(ankleAt(ordinary,side),ankleAt(lively,side))<1e-8,'Energy must not move a foot away from its physical destination');
+  }
+ }
+ for(const stride of [-999,.001,.5,1,1.1,999,NaN])for(const direction of [-999,0,999,NaN]){
+  const p=miloPoseAt({motion:'walk',walkPhase:12.77,walkStride:stride,walkDirection:direction});
+  for(const value of Object.values(p))assert(Number.isFinite(value)&&Math.abs(value)<3.15);
+ }
 });
 
 

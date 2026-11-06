@@ -1,0 +1,39 @@
+{
+  "project": "Milo & Friends BingoShow",
+  "origin_kind": "existing Sites project",
+  "origin_url": "https://vlampie-studio.dgwebserv.chatgpt.site",
+  "published_site_version": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad~appgver_021341b4b8288191bdcd77837af3b9ca",
+  "published_site_deployed_at": "2026-11-06T01:21:11Z",
+  "source_commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+  "source_commit_time": "2026-11-05T20:19:15-05:00",
+  "export_method": "git archive of the resolved commit; no uncommitted source overlay. Explicit packaging-only additions listed below.",
+  "source_directory": "bron",
+  "omitted_source_files": [
+    ".openai/hosting.json"
+  ],
+  "hosting_notice": "The origin-specific .openai/hosting.json is omitted. Use the target repository deployment workflow; this is not a ready VPS deployment.",
+  "packaging_only_additions": [
+    {
+      "file": "bron/.openai/hosting.example.json",
+      "purpose": "Generic local-build-only dummy; no original project/account/resource IDs. Explicit copy required before local build; never deploy."
+    },
+    {
+      "file": "bron/PAKKET-LEESMIJ.md",
+      "purpose": "Portable build/read-order notice; original committed source files remain unchanged."
+    },
+    {
+      "file": "PAKKET-LEESMIJ.md",
+      "purpose": "Package entrypoint and explicit local-build copy step."
+    }
+  ],
+  "packaging_only_doc_supplements": [
+    "START-HIER.md",
+    "INSTALLATIE-EN-KOPPELINGEN.md",
+    "CODEX-PROMPT.md",
+    "handoff/START-HIER.md",
+    "handoff/INSTALLATIE-EN-KOPPELINGEN.md",
+    "handoff/CODEX-PROMPT.md"
+  ],
+  "doc_supplement_notice": "Root/handoff copies add the explicit portable-build notice; committed bron/handoff originals remain byte-for-byte source. Root SCREENSHOTS.md adjusts only relative screenshot links.",
+  "secrets_notice": "No real environment files, provider secrets, node_modules, session stores or local working-tree data are exported. .env.example contains empty account/secret fields."
+}

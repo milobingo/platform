@@ -1,3 +1,4 @@
+import {getMagicCue} from './magic-cues.js';
 /** Milo's articulated performance. Angles are radians; translations are fractions
  * of the 916px source height. All choreography is a pure sample of show time.
  * The scene owns timing, pause and the active cue: this module never advances it.
@@ -12,11 +13,12 @@ const windowAt=(t,a,b,c,d)=>ramp(t,a,b)*(1-ramp(t,c,d));
 const angle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 
 export const MILO_MOTION_JOINTS=Object.freeze({
- left:Object.freeze({shoulder:[286,423],elbow:[240,495],wrist:[187,528],hand:[125,536]}),
- right:Object.freeze({shoulder:[523,431],elbow:[568,500],wrist:[650,538],hand:[710,546]}),
+ left:Object.freeze({shoulder:[286,423],elbow:[240,495],wrist:[187,528],hand:[125,536],hip:[373,661],knee:[340,739],ankle:[301,824],foot:[285,862]}),
+ right:Object.freeze({shoulder:[523,431],elbow:[568,500],wrist:[650,538],hand:[710,546],hip:[466,663],knee:[471,739],ankle:[476,817],foot:[518,853]}),
 });
+export const MILO_WALK_PERIOD=1.28;
 export const MILO_MOTION_IDS=Object.freeze(['idle','speak','wave','welcome','point','cheer','celebrate','think','listen','look','clap','dance','surprise','bow','walk','enter','exit','magic']);
-const neutral=()=>({bodyRot:0,headRot:0,tailRot:0,hatRot:0,leftUpper:0,leftForearm:0,leftHand:0,rightUpper:0,rightForearm:0,rightHand:0,leftLeg:0,rightLeg:0,leftFoot:0,rightFoot:0,rootX:0,rootY:0,headX:0,headY:0,hatLift:0,bodyScaleY:1,eyeX:0,eyeY:0});
+const neutral=()=>({bodyRot:0,headRot:0,tailRot:0,hatRot:0,leftUpper:0,leftForearm:0,leftHand:0,rightUpper:0,rightForearm:0,rightHand:0,leftLeg:0,rightLeg:0,leftKnee:0,rightKnee:0,leftFoot:0,rightFoot:0,pelvisX:0,pelvisY:0,pelvisRot:0,chestRot:0,rootX:0,rootY:0,headX:0,headY:0,hatLift:0,bodyScaleY:1,eyeX:0,eyeY:0});
 
 /** Two joints aim the original hand centre, keeping limb lengths unchanged.
  * bend controls which side of the shoulder/hand line the elbow occupies.
@@ -32,7 +34,56 @@ export function solveMiloArm(side,target,{bend=side==='left'?1:-1}={}){
  const upper=angle(upperWorld-Math.atan2(e[1]-s[1],e[0]-s[0]));
  return {upper,forearm:angle(foreWorld-Math.atan2(h[1]-e[1],h[0]-e[0])-upper)};
 }
+/** The leg uses the very same source-pixel anchors as the drawing rig. The
+ * returned hip/knee rotations reach an ankle target without lengthening a leg.
+ */
+export function solveMiloLeg(side,target,{bend=-1}={}){
+ const {hip:h,knee:k,ankle:a}=MILO_MOTION_JOINTS[side]||MILO_MOTION_JOINTS.left;
+ const upperLength=Math.hypot(k[0]-h[0],k[1]-h[1]),lowerLength=Math.hypot(a[0]-k[0],a[1]-k[1]);
+ const dx=finite(target?.[0],a[0])-h[0],dy=finite(target?.[1],a[1])-h[1];
+ const distance=clamp(Math.hypot(dx,dy),Math.abs(upperLength-lowerLength)+1e-7,upperLength+lowerLength-1e-7),heading=Math.atan2(dy,dx);
+ const alpha=Math.acos(clamp((upperLength*upperLength+distance*distance-lowerLength*lowerLength)/(2*upperLength*distance),-1,1));
+ const upperWorld=heading+(bend<0?-alpha:alpha),joint=[h[0]+Math.cos(upperWorld)*upperLength,h[1]+Math.sin(upperWorld)*upperLength];
+ const ankle=[h[0]+Math.cos(heading)*distance,h[1]+Math.sin(heading)*distance],lowerWorld=Math.atan2(ankle[1]-joint[1],ankle[0]-joint[0]);
+ const leg=angle(upperWorld-Math.atan2(k[1]-h[1],k[0]-h[0]));
+ return {leg,knee:angle(lowerWorld-Math.atan2(a[1]-k[1],a[0]-k[0])-leg)};
+}
 function aim(p,side,x,y,bend){const a=solveMiloArm(side,[x,y],{bend});p[side+'Upper']=a.upper;p[side+'Forearm']=a.forearm;}
+function walkPose(p,t,{walkStride=1,walkDirection=1,walkPhase=null}={}){
+ const strideScale=clamp(finite(walkStride,1),0,1.1),amount=Math.min(1,strideScale),direction=clamp(finite(walkDirection,1),-1,1),rest={...p};
+ if(amount===0)return;
+ const phase=walkPhase!==null&&Number.isFinite(Number(walkPhase))?Number(walkPhase):t/MILO_WALK_PERIOD,beat=phase*TAU,stride=Math.sin(beat),bounce=(1-Math.cos(beat*2))/2;
+ // A little knee compression leaves genuine reach for the swing leg. The
+ // pelvis carries the weight; shoulders and head counter it with a soft lag.
+ p.rootX=0;p.rootY=-bounce*.0015;
+ p.pelvisX=-stride*direction*.0028;p.pelvisY=.024+Math.cos(beat*2)*.0015;p.pelvisRot=stride*direction*.009;
+ p.chestRot=-Math.sin(beat-.25)*.018;p.bodyRot=Math.sin(beat-.15)*.006;
+ p.bodyScaleY=1+Math.cos(beat*2-.3)*.0018;
+ p.headRot=-Math.sin(beat-.35)*.018;p.headX=-stride*.0012;p.headY=-bounce*.001;
+ p.hatRot=Math.sin(beat-.7)*.004;p.tailRot=Math.sin(beat-.9)*.082;
+ p.leftUpper=-.34+stride*.16;p.rightUpper=.32+stride*.16;
+ p.leftForearm=-.16+Math.sin(beat-.4)*.065;p.rightForearm=.15+Math.sin(beat-.4)*.065;
+ p.leftHand=-.04+Math.sin(beat-.8)*.055;p.rightHand=.04+Math.sin(beat-.8)*.055;
+ for(const [side,offset] of [['left',0],['right',.5]]){
+  const u=((phase+offset)%1+1)%1,stance=.62,swing=clamp((u-stance)/(1-stance));
+  // The planted foot travels back at constant speed against the moving stage
+  // position. A quintic swing joins that velocity at both ends, avoiding a
+  // foot-stop at lift/landing. At least one foot always supports the body.
+  const slope=-(1-stance)/stance,swingTravel=slope*swing+(1-slope)*easeMilo(swing);
+  const slide=(u<stance?mix(50,-50,u/stance):mix(-50,50,swingTravel))*strideScale*direction;
+  const lift=Math.sin(swing*PI)**2*19,ankle=MILO_MOTION_JOINTS[side].ankle;
+  const walkingX=side==='left'?340:ankle[0];
+  const target=[walkingX+slide-p.pelvisX*916-p.rootX*916,ankle[1]-lift-p.pelvisY*916-p.rootY*916];
+  const dx=target[0]-414,dy=target[1]-655,c=Math.cos(-p.pelvisRot),s=Math.sin(-p.pelvisRot);
+  const leg=solveMiloLeg(side,[414+dx*c-dy*s,655+dx*s+dy*c]);
+  p[side+'Leg']=leg.leg;p[side+'Knee']=leg.knee;
+  const roll=(u<stance?Math.sin(u/stance*TAU)*.055:-Math.sin(swing*PI)*.10);
+  // Keep the boot level while hip and knee articulate, then add a small
+  // independently authored ankle roll for toe-off and a relaxed swing.
+  p[side+'Foot']=roll-leg.leg-leg.knee-p.pelvisRot;
+ }
+ for(const key of Object.keys(p))p[key]=mix(rest[key],p[key],amount);
+}
 // Quintic interpolation gives fresh, reproducible phrasing without per-frame
 // random calls or a hard restart when a noise interval changes.
 const hash=(n,seed=0)=>{const v=Math.sin(n*127.1+seed*311.7)*43758.5453123;return v-Math.floor(v);};
@@ -91,7 +142,7 @@ function attentionPose(x,y,expression,t){
  return p;
 }
 function magicPose(p,t,progress,id){
- const silk=id==='silk-stars',duration=silk?15:14,u=clamp(progress>=0?progress:t/duration),seconds=u*duration;
+ const silk=id==='silk-stars',duration=getMagicCue(id)?.duration||(silk?15:14),u=clamp(progress>=0?progress:t/duration),seconds=u*duration;
  const prepare=windowAt(u,0,.10,.16,.24),spell=windowAt(u,.12,.25,.68,.82),reveal=windowAt(u,.61,.73,.86,.96),settle=1-ramp(u,.90,1);
  if(silk){
   // The wrist leads the ribbon. Elbow, shoulder and torso follow more slowly.
@@ -103,7 +154,7 @@ function magicPose(p,t,progress,id){
   p.leftHand=spell*Math.sin(seconds*1.9-1)*.16;
   p.bodyRot=Math.sin(seconds*1.25-.9)*.023*spell;p.headRot=-Math.sin(seconds*1.25-.5)*.048*spell-reveal*.035;
   p.headY=-reveal*.007;p.rootY=-Math.sin(seconds*1.8)*.003*spell;
- }else{
+ }else if(id==='star-hat'){
   p.rightUpper=-.15-prepare*.18-spell*.65-reveal*.13;
   p.rightForearm=-.10-prepare*.25-spell*(.33+Math.sin(seconds*1.5)*.13);
   p.rightHand=prepare*.12+spell*Math.sin(seconds*1.8)*.19+reveal*.18;
@@ -114,13 +165,59 @@ function magicPose(p,t,progress,id){
   p.hatRot=-prepare*.045+spell*Math.sin(seconds*.8)*.018;p.hatLift=prepare*.005;
   p.bodyRot=prepare*.025-spell*.015;p.rootY=-spell*.004;
  }
+ if(id!=='star-hat'&&!silk){
+  const hold=windowAt(u,.10,.22,.77,.92),turn=Math.sin(seconds*1.35),revealAt=ramp(u,.40,.65),flourish=windowAt(u,.51,.67,.78,.91);
+  p.rightUpper=-.24-hold*.36;p.rightForearm=-.15-hold*.34;p.rightHand=Math.sin(seconds*1.2)*.16*hold;
+  p.leftUpper=.16+hold*.24;p.leftForearm=.12+hold*.16;
+  p.headRot=-hold*.04+flourish*.025;p.headY=-flourish*.005;p.bodyRot=-hold*.012;p.eyeX=-hold*.002;
+  switch(id){
+   case 'flower-hat':
+    p.leftUpper+=prepare*.38+flourish*.17;p.leftForearm+=prepare*.36;p.leftHand=-hold*.18;
+    p.rightUpper-=spell*.12;p.rightHand+=flourish*.16;p.headRot-=flourish*.02;break;
+   case 'linking-rings': {
+    const gap=105-50*revealAt+Math.sin(seconds*1.1)*9*hold;
+    // Keep room for each elbow: a destination too close to the shoulder
+    // folds the forearm through its ±PI boundary and reverses its easing.
+    aim(p,'left',414-gap,565+turn*8*hold,1);aim(p,'right',414+gap,565-turn*8*hold,-1);
+    p.leftHand=-turn*.25*hold;p.rightHand=turn*.25*hold;p.headRot=turn*.025*hold;break;
+   }
+   case 'floating-table':
+    p.leftUpper=.20+hold*.40;p.rightUpper=-.20-hold*.40;
+    p.leftForearm=.14+hold*.32;p.rightForearm=-.14-hold*.32;
+    p.leftHand=-hold*.28;p.rightHand=hold*.28;p.rootY=-flourish*.004;break;
+   case 'rainbow-cube':
+    p.leftUpper=.18+hold*(.25+turn*.13);p.rightUpper=-.20-hold*(.25-turn*.13);
+    p.leftForearm=.30*hold-turn*.15*hold;p.rightForearm=-.30*hold-turn*.15*hold;
+    p.leftHand=turn*.35*hold;p.rightHand=-turn*.35*hold;p.bodyRot=turn*.019*hold;break;
+   case 'cookie-mystery':
+    p.rightUpper=-.25-hold*.42+flourish*.23;p.rightForearm=-.13-hold*.27+flourish*.19;
+    p.leftUpper=.10+flourish*.50;p.leftForearm=.04+flourish*.38;p.headRot=prepare*.08-flourish*.09;p.headY=prepare*.008-flourish*.008;break;
+   case 'star-rabbit':
+    p.leftUpper=.14+prepare*.67+flourish*.25;p.leftForearm=.08+prepare*.49+flourish*.22;
+    p.rightUpper-=revealAt*.20*settle;p.rightForearm-=flourish*.21;p.hatLift=prepare*.007;p.headRot=-flourish*.06;break;
+   case 'bubble-world':
+    p.leftUpper=.15+hold*(.20+revealAt*.33);p.rightUpper=-.15-hold*(.20+revealAt*.33);
+    p.leftForearm=.12+hold*.20;p.rightForearm=-.12-hold*.20;p.leftHand=-hold*.2;p.rightHand=hold*.2;
+    p.headY=-revealAt*.007*settle;p.bodyScaleY=1+flourish*.008;break;
+   case 'reverse-hourglass':
+    p.rightHand=Math.sin((u-.15)*Math.PI*2)*.55*hold;p.rightForearm=-.1-hold*.42;
+    p.leftUpper=.2+hold*.36;p.leftForearm=.1+hold*.29;p.headRot=-p.rightHand*.10;break;
+   case 'wand-multiplication':
+    p.rightHand=turn*.36*hold;p.rightUpper=-.15-hold*(.45+flourish*.12);
+    p.leftUpper=.12+flourish*.45;p.leftForearm=.06+flourish*.35;p.leftHand=-flourish*.16;break;
+   case 'banana-surprise':
+    p.leftUpper=.10+prepare*.64+flourish*.39;p.leftForearm=.08+prepare*.44+flourish*.30;
+    p.rightUpper=-.15-hold*.34-flourish*.12;p.rightForearm=-.1-hold*.22;
+    p.headRot=prepare*.04-flourish*.11;p.headY=-flourish*.012;p.rootY=-flourish*.004;break;
+  }
+ }
  p.tailRot=Math.sin(seconds*.8-.6)*.055;p.bodyScaleY=1+Math.sin(seconds*1.4)*.004;
  // A small closing bow acknowledges the reveal and smoothly returns to neutral.
  const bow=windowAt(u,.83,.89,.93,.995);p.headRot+=bow*.11;p.headY+=bow*.006;p.bodyScaleY-=bow*.012;
  for(const k of ['leftUpper','leftForearm','leftHand','rightUpper','rightForearm','rightHand'])p[k]*=settle;
 }
 
-export function miloPoseAt({time=0,idleTime=time,motion='idle',energy=1,blend=1,speaking=false,mouth=0,magicProgress=-1,magicId='star-hat',reducedMotion=false,attentionX=0,attentionY=0,expression='neutral'}={}){
+export function miloPoseAt({time=0,idleTime=time,motion='idle',energy=1,blend=1,speaking=false,mouth=0,magicProgress=-1,magicId='star-hat',reducedMotion=false,attentionX=0,attentionY=0,expression='neutral',walkStride=1,walkDirection=1,walkPhase=null}={}){
  const t=finite(time),it=finite(idleTime,t),e=clamp(finite(energy,1),0,1.6),b=clamp(finite(blend,1));
  if(reducedMotion||e===0)return neutral();
  const base=idlePose(it,(speaking&&['idle','speak'].includes(motion))||motion==='speak',clamp(finite(mouth))),p={...base};
@@ -170,18 +267,17 @@ export function miloPoseAt({time=0,idleTime=time,motion='idle',energy=1,blend=1,
   p.leftUpper=-.30*bow;p.leftForearm=-.20*bow;p.leftHand=-.08*bow;
   p.rightUpper=.19*bow;p.rightForearm=.38*bow;p.rightHand=.10*bow;p.tailRot=-.08*bow;p.hatRot=.025*bow;
  }else if(['walk','enter','exit'].includes(motion)){
-  const stride=Math.sin(t*5.6),rise=(1-Math.cos(t*11.2))/2;
-  p.leftLeg=stride*.11;p.rightLeg=-stride*.11;p.leftFoot=-Math.max(0,stride)*.09;p.rightFoot=Math.min(0,stride)*.09;
-  p.leftUpper=-.10-stride*.16;p.rightUpper=.10-stride*.16;p.leftForearm=.08+stride*.06;p.rightForearm=-.08+stride*.06;
-  p.rootY=-rise*.007;p.bodyRot=stride*.019;p.headRot=-stride*.018;p.tailRot=Math.sin(t*5.6-.8)*.095;
+  walkPose(p,t,{walkStride,walkDirection,walkPhase});
  }else if(motion==='magic'||magicProgress>=0){magicPose(p,t,finite(magicProgress,-1),magicId);}
  const result={};
  for(const key of Object.keys(base)){
   const zero=key==='bodyScaleY'?1:0,rest=zero+(base[key]-zero)*e;
-  // Folded arms have a physical destination: multiplying their joint angles by
-  // the energy slider would send clapping palms through the body or past it.
-  // Keep those destinations at normal/high energy while the torso stays lively.
-  const aimed=/Upper|Forearm|Hand/.test(key)&&(motion==='clap'||(motion==='think'&&key.startsWith('right')));
+  // Hands and planted feet have physical destinations. Scaling their solved
+  // angles separately would miss a clap or push a walking boot off its floor.
+  // Keep the whole leg/pelvis chain consistent at normal/high energy.
+  const aimedArms=/Upper|Forearm|Hand/.test(key)&&(motion==='clap'||(motion==='think'&&key.startsWith('right')));
+  const aimedWalk=['walk','enter','exit'].includes(motion)&&/^(?:(?:left|right)(?:Leg|Knee|Foot)|pelvis(?:X|Y|Rot)|root(?:X|Y))$/.test(key);
+  const aimed=aimedArms||aimedWalk;
   const target=aimed?mix(rest,p[key],Math.min(e,1)):zero+(p[key]-zero)*e;
   result[key]=mix(rest,target,b);
  }

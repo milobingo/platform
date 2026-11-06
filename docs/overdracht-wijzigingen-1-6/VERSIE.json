@@ -1,0 +1,143 @@
+{
+  "project": "Milo & Friends BingoShow",
+  "version": "2026-11-06-v6",
+  "changes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "source_commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+  "source_commit_time": "2026-11-05T20:19:15-05:00",
+  "packaged_at": "2026-11-06T01:23:15.979209+00:00",
+  "entrypoint": "index.html",
+  "codex_prompt": "CODEX-PROMPT.md",
+  "source": "bron/",
+  "docs": "handoff/",
+  "screenshots": [
+    {
+      "file": "screenshots/01-bingo-prioriteit.jpg",
+      "change": 1,
+      "width": 1363,
+      "height": 988,
+      "sha256": "6cb815ce0742ade61cb35a430b93d3401ca2755fc2cd7a116dd68e3d3b4b1200",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/02-troostprijs-instellingen.jpg",
+      "change": 1,
+      "width": 1363,
+      "height": 936,
+      "sha256": "3c40b94631929cf3b824a931f551fd46be0193ad1c37edc4ed08197eb9639db2",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/03-milo-studiorondje.jpg",
+      "change": 2,
+      "width": 1348,
+      "height": 926,
+      "sha256": "6276fbc3186ae46d3323022d957dd7587961db9b605d4f22fc421c9b2f7415fa",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/04-goochelatelier.jpg",
+      "change": 3,
+      "width": 1348,
+      "height": 926,
+      "sha256": "fa2966499281ab3cd66944792befe578fb585b8739e0154ec0bdc74083b70f7c",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/05-magie-onthulling.jpg",
+      "change": 3,
+      "width": 1348,
+      "height": 926,
+      "sha256": "52e485492294878c0a337b1bbfc01e783f284bceb713e7f32d21a87fb8c0be7a",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/06-gezin-bestellen.jpg",
+      "change": 4,
+      "width": 1348,
+      "height": 1206,
+      "sha256": "aee18d5f2f47abd81096964bf0701e8a147f7a19f44af5b502a427e6016cac1e",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/07-organisatie-bestelling.jpg",
+      "change": 4,
+      "width": 1363,
+      "height": 936,
+      "sha256": "56fa85ba9a445ce15b640a3dd4c45bca8125b9e7b56a149772a8573feee65b10",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/08-goedgekeurde-bladen.jpg",
+      "change": 4,
+      "width": 1363,
+      "height": 936,
+      "sha256": "57094fda429531c17caf11aea382993dfec7f7d88f200f2941dab94d618577b2",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/09-regie-desktop.jpg",
+      "change": 5,
+      "width": 1363,
+      "height": 936,
+      "sha256": "091df2bd162bde6a24327de1e392aa333edb615309d0deae19d6253fae8f1cf7",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/10-familie-mobiel.jpg",
+      "change": 5,
+      "width": 393,
+      "height": 802,
+      "sha256": "85499749e82503e4f5c2c9a3525f5bb0bdcc8d9fb1895ddeec4b4a54e954ad2c",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/11-fluisteren-regie.jpg",
+      "change": 6,
+      "width": 1363,
+      "height": 936,
+      "sha256": "addb81c65579dd014b1ab4b938cedbdb081772cf3940daf16c6e68e74f56f13d",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/12-fluisteren-voorstel.jpg",
+      "change": 6,
+      "width": 1363,
+      "height": 936,
+      "sha256": "7307a047ac7143300f1e02ee8507cc3d2657fa54f837ffb0346110ec4717ef50",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    },
+    {
+      "file": "screenshots/13-fluisteren-simulatie.jpg",
+      "change": 6,
+      "width": 1363,
+      "height": 936,
+      "sha256": "0aa604e852c373066a699bc94c145f9581577a6eb73c40e3a114cfcf46d62d87",
+      "kind": "actual-app-browser-capture",
+      "data": "fictional/demo; no real-provider claim"
+    }
+  ],
+  "checksum_manifest": "SHA256SUMS",
+  "checksum_scope": "Every package file except SHA256SUMS itself; external .zip.sha256 verifies the ZIP.",
+  "test_notice": "Screenshots and provider fixtures do not prove an actual OpenAI, LiveKit, YouTube, email or payment rehearsal. See TESTEN-EN-ACCEPTATIE.md.",
+  "source_file_count": 553,
+  "package_file_count": 584
+}

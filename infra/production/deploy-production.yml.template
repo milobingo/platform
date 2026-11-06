@@ -1,0 +1,124 @@
+# Rendered only after a complete real profile; review and commit this as
+# .github/workflows/deploy-production.yml together with the public profile.
+name: Deploy Milo production
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Full main SHA with successful own CI and staging acceptance
+        required: true
+        type: string
+      staging_run_id:
+        description: Successful staging deploy run for the exact same SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: __SITE_ID__
+  cancel-in-progress: false
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 5
+    outputs:
+      release_sha: ${{ steps.gate.outputs.release_sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - id: gate
+        env:
+          RELEASE_SHA: ${{ inputs.release_sha }}
+          STAGING_RUN_ID: ${{ inputs.staging_run_id }}
+          DG_STAGING_ACCEPTANCE_JSON: ${{ vars.DG_STAGING_ACCEPTANCE_JSON }}
+          DG_PRODUCTION_PROFILE_SHA256: ${{ vars.DG_PRODUCTION_PROFILE_SHA256 }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/deploy/production-preflight.mjs release
+  deploy:
+    needs: release-gate
+    environment:
+      name: production
+      url: __APP_URL__
+    runs-on: __RUNNER_LABELS__
+    timeout-minutes: 30
+    env:
+      RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+      RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      STAGING_RUN_ID: ${{ inputs.staging_run_id }}
+      DG_PRODUCTION_PROFILE_SHA256: ${{ vars.DG_PRODUCTION_PROFILE_SHA256 }}
+      DG_DEPLOY_WRAPPER_SHA256: ${{ vars.DG_DEPLOY_WRAPPER_SHA256 }}
+    steps:
+      - name: Require the exact production runner before checkout or credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = '__HOST__'
+          test "$(id -un)" = '__RUNNER_USER__'
+          test "$RUNNER_NAME" = '__RUNNER_NAME__'
+          test "$GITHUB_WORKSPACE" = '__WORKSPACE__'
+          test -x '__ENTRY__'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          persist-credentials: false
+      - name: Verify source, reviewed host contract and capacity
+        run: node scripts/deploy/production-preflight.mjs host
+      - name: Install locked dependencies without runtime or deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -i HOME="$HOME" PATH="$PATH" CI=true NEXT_TELEMETRY_DISABLED=1 pnpm install --frozen-lockfile
+          env -i HOME="$HOME" PATH="$PATH" CI=true node scripts/check-config.mjs --phase=build
+          env -i HOME="$HOME" PATH="$PATH" CI=true pnpm lint
+      - name: Recheck release, audit ready database and activate through fixed native wrapper
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DG_STAGING_ACCEPTANCE_JSON: ${{ vars.DG_STAGING_ACCEPTANCE_JSON }}
+          NODE_ENV: production
+          HOSTNAME: 127.0.0.1
+          MILO_LOCAL_AUTH: 'false'
+          APP_URL: ${{ vars.APP_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          SUPABASE_DB_CA_BASE64: ${{ vars.SUPABASE_DB_CA_BASE64 }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VLAMPIE_SETTINGS_KEY: ${{ secrets.VLAMPIE_SETTINGS_KEY }}
+          OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
+          OPENAI_SPEECH_MODEL: ${{ vars.OPENAI_SPEECH_MODEL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIVEKIT_URL: ${{ vars.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+          MAIL_ENVIRONMENT: production
+          MAIL_MODE: ${{ vars.MAIL_MODE }}
+          MAIL_ALLOWED_RECIPIENTS: ${{ vars.MAIL_ALLOWED_RECIPIENTS }}
+          SEND_EMAIL_HOOK_SECRET: ${{ secrets.SEND_EMAIL_HOOK_SECRET }}
+        run: node scripts/deploy/production-preflight.mjs deploy
+  verify-public:
+    needs: [release-gate, deploy]
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+      - env:
+          RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+          RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          DG_PRODUCTION_PROFILE_SHA256: ${{ vars.DG_PRODUCTION_PROFILE_SHA256 }}
+        run: node scripts/deploy/production-preflight.mjs verify

@@ -6,7 +6,10 @@ import {drawShowEffects,drawShowCueWand,motionEnvelope} from './mf-show-effects.
 import {drawShowGraphics} from './show-graphics.js';
 import {brandedContext} from './brand-canvas.js';
 import {ARENA_LAYOUT,STUDIO_ART,drawBroadcastSet,drawBroadcastDesk} from './mf-broadcast-set.js';
-import {CAMERA_PRESETS,CameraRig,resolveCameraShot} from './mf-camera.js';
+import {CAMERA_PRESETS,CameraRig,resolveCameraShot,boundCamera} from './mf-camera.js';
+import {studioTourAt} from './milo-studio-tour.js';
+import {MAGIC_CUES} from './magic-cues.js';
+import {drawExtraMagic,EXTRA_MAGIC_IDS} from './milo-magic-effects.js';
 export {CAMERA_PRESETS} from './mf-camera.js';
 
 const W=1920,H=1080,TAU=Math.PI*2;
@@ -15,10 +18,7 @@ const LABELS={milo:'Milo Magico',stella:'Stella Sterrenstof',otto:'Otto Octa',pi
 const cache=new Map();
 let productionAssets;
 function loadProductionAssets(){return productionAssets??=Promise.all(['race-environments.png','show-environments.png','game-sprites.png','horse-gallop-atlas.png','gift-components-atlas.png','hosts/milo-games.webp'].map(name=>loadImage('/assets/'+name).catch(()=>null))).then(([races,shows,sprites,gallop,giftParts,brandBackground])=>({races,shows,sprites,gallop,giftParts,brandBackground,brandId:'milo'}));}
-export const MAGIC_MOMENTS=Object.freeze([
-  {id:'star-hat',title:'De zwevende sterrenhoed',duration:14},
-  {id:'silk-stars',title:'Van lint naar sterrenvlinder',duration:15},
-]);
+export const MAGIC_MOMENTS=MAGIC_CUES;
 
 function loadImage(src){
   if(!cache.has(src))cache.set(src,new Promise((resolve,reject)=>{const i=new Image();i.decoding='async';i.onload=()=>resolve(i);i.onerror=()=>{cache.delete(src);reject(new Error('Afbeelding niet beschikbaar: '+src));};i.src=src;}));
@@ -124,7 +124,7 @@ export function mountStudio(container,options={}){
       const m=partial.magic;
       if(!m||m.playing===false){magic=null;lastExternalMagicKey=null;}
       else if(lastExternalMagicKey!==String(m.id)+':'+String(m.startedAt)){
-        lastExternalMagicKey=String(m.id)+':'+String(m.startedAt);const elapsed=Number.isFinite(m.elapsed)?Math.max(0,m.elapsed/1000):m.startedAt?Math.max(0,(Date.now()-m.startedAt)/1000):0;playMagic(m.id,{externalKey:lastExternalMagicKey,elapsed});
+        lastExternalMagicKey=String(m.id)+':'+String(m.startedAt);const elapsed=Number.isFinite(m.elapsed)?Math.max(0,m.elapsed/1000):m.startedAt?Math.max(0,(Date.now()-m.startedAt)/1000):0;playMagic(m.id,{externalKey:lastExternalMagicKey,elapsed,duration:m.duration});
       }else if(magic&&Number.isFinite(m.elapsed)&&m.elapsed!==magic.externalElapsed){
         const elapsed=Math.max(0,m.elapsed/1000);magic.externalElapsed=m.elapsed;if(String(m.startedAt).startsWith('preview-')||Math.abs(sceneTime-magic.start-elapsed)>.35)magic.start=sceneTime-elapsed;
       }
@@ -139,8 +139,8 @@ export function mountStudio(container,options={}){
   function playMagic(id='star-hat',opts={}){
     const aliases={hat:'star-hat',stars:'silk-stars',ribbon:'silk-stars','floating-hat':'star-hat','ribbon-butterfly':'silk-stars'};id=aliases[id]||id;
     const m=MAGIC_MOMENTS.find(x=>x.id===id)||MAGIC_MOMENTS[0];
-    const previous=magic;magic={...m,start:sceneTime-(opts.elapsed||0),externalKey:opts.externalKey||null,externalElapsed:opts.externalKey?(opts.elapsed||0)*1000:null,oldCamera:previous?.oldCamera||state.camera,oldMoving:previous?.oldMoving??state.movingCamera};setCamera('magic',{moving:state.movingCamera});loadActor('milo');
-    options.onEvent?.({type:'magic-start',id:m.id,duration:m.duration});return api;
+    const previous=magic;magic={...m,duration:Number.isFinite(opts.duration)?clamp(opts.duration,2,180):m.duration,start:sceneTime-(opts.elapsed||0),externalKey:opts.externalKey||null,externalElapsed:opts.externalKey?(opts.elapsed||0)*1000:null,oldCamera:previous?.oldCamera||state.camera,oldMoving:previous?.oldMoving??state.movingCamera};setCamera(m.camera||'magic',{moving:state.movingCamera});loadActor('milo');
+    options.onEvent?.({type:'magic-start',id:m.id,duration:magic.duration});return api;
   }
   function setSpeaking(speaking,extra={}){return update({speaking:!!speaking,...extra});}
 
@@ -170,7 +170,7 @@ export function mountStudio(container,options={}){
     if(source&&typeof source==='object')return source.id?source.id===id?source:{}:source[id]||{};
     return {};
   }
-  function actor(id,{x,y,height,clipDesk=false,enter=1,motion=state.motion||'idle',magicProgress=-1}={}){
+  function actor(id,{x,y,height,clipDesk=false,enter=1,motion=state.motion||'idle',magicProgress=-1,walking=null}={}){
     const a=actors.get(id);if(!a){
       if(actorErrors.has(id)){ctx.save();ctx.globalAlpha=.9;roundRect(ctx,x-112,600,224,46,23);ctx.fillStyle='#2d1b4e';ctx.fill();fillText(ctx,LABELS[id]||'Presentator',x,623,18,'#ffe4ac');ctx.restore();}return null;
     }
@@ -180,28 +180,32 @@ export function mountStudio(container,options={}){
     const cueTime=cue&&id===state.hostId?cue.elapsed:undefined;
     const actingTime=movement?.elapsed??cueTime??liveTime;
     const t=reducedMotion()||((state.idleMotion===false||settings.idleMotion===false)&&motion==='idle')?0:actingTime;
-    const motionBlend=movement?motionEnvelope(movement.elapsed,movement.duration):cue&&id===state.hostId?motionEnvelope(cue.elapsed,cue.duration):1;
+    const motionBlend=walking?walking.blend:movement?motionEnvelope(movement.elapsed,movement.duration):cue&&id===state.hostId?motionEnvelope(cue.elapsed,cue.duration):1;
     const energy=Number.isFinite(settings.gestureEnergy)?clamp(settings.gestureEnergy,0,100)/70:Number.isFinite(state.gestureEnergy)?(state.gestureEnergy>2?clamp(state.gestureEnergy,0,100)/70:state.gestureEnergy):1;
     const mouth=state.lipSync===false||settings.lipSync===false?0:typeof state.mouth==='number'?state.mouth:speaking?clamp(.15+Math.sin(liveTime*15.5)*.31+Math.sin(liveTime*24.2)*.24,.03,1):0;
     const blinkPhase=(liveTime+1.3)%5.1,blink=id==='milo'?miloBlinkAt(liveTime):blinkPhase>.08&&blinkPhase<.28?Math.sin((blinkPhase-.08)/.20*Math.PI)**1.1:0;
     const speakerSide=state.speaking&&!speaking?(state.speakerId===state.cohostId?1:state.cohostId&&id===state.cohostId?-1:state.speakerId===state.guestId?1:0):0;
     const attention=id==='milo'&&!((state.idleMotion===false||settings.idleMotion===false)&&motion==='idle')?miloAttentionAt({speaking,listening:motion==='listen'||!!state.liveCall,speakerSide,guestSide:state.guestId&&id!==state.guestId?1:0,numberAge:performerTime-numberReactionAt}):{};
     ctx.save();if(clipDesk){ctx.beginPath();ctx.rect(0,0,W,ARENA_LAYOUT.desk.occlusionY);ctx.clip();}
-    const result=a.rig.draw(ctx,{...attention,x,y,height,time:t,idleTime:(state.idleMotion===false||settings.idleMotion===false)&&motion==='idle'?0:liveTime,deltaTime:renderDelta,paused:!!state.paused&&!(speaking&&state.speechActive===true),immediate:state.showCue?.source==='preview'&&!!state.showCue?.paused||state.movement?.source==='preview'&&!!state.movement?.paused,reducedMotion:reducedMotion(),magicId:magic?.id,motion,energy:reducedMotion()?0:energy,speaking,mouth,blink:state.blink===false||reducedMotion()?0:blink,magicProgress,alpha:smooth(enter),motionBlend});ctx.restore();return result;
+    const result=a.rig.draw(ctx,{...attention,x,y,height,time:t,idleTime:(state.idleMotion===false||settings.idleMotion===false)&&motion==='idle'?0:liveTime,deltaTime:renderDelta,paused:!!state.paused&&!(speaking&&state.speechActive===true),immediate:state.showCue?.source==='preview'&&!!state.showCue?.paused||state.movement?.source==='preview'&&!!state.movement?.paused,reducedMotion:reducedMotion(),magicId:magic?.id,motion,energy:reducedMotion()?0:energy,speaking,mouth,blink:state.blink===false||reducedMotion()?0:blink,magicProgress,alpha:smooth(enter),motionBlend,...(walking?{walkPhase:walking.bodyDistance*(a.rig.bounds?.h||874)/(100/.62),walkDirection:walking.direction,walkStride:1}:{})});ctx.restore();return result;
   }
   function deskFront(){drawBroadcastDesk(ctx,{state,time:sceneTime,assets:scenery});}
 
   function cast(){
     const isMagic=!!magic;
     const hostX=state.cohostId?805:ARENA_LAYOUT.host.x,coX=ARENA_LAYOUT.cohost.x;
-    if(!(isMagic&&state.hostId==='milo')){const hostRig=actor(state.hostId,{x:hostX,y:ARENA_LAYOUT.host.y,height:ARENA_LAYOUT.host.height,clipDesk:true});if(!state.cohostId)drawShowCueWand(ctx,{cue:activeShowCue(),wrist:hostRig?.grip||hostRig?.wrist,reducedMotion:reducedMotion()});}
+    const tour=!isMagic&&state.hostId==='milo'?studioTourAt(activeShowCue(),{homeX:hostX,reducedMotion:reducedMotion()}):null;
+    const tourActor=()=>{ctx.save();ctx.globalAlpha*=tour.alpha;shadow(tour.x,tour.y+5,105*tour.height/440);ctx.restore();actor('milo',{...tour,walking:tour,enter:tour.alpha});};
+    if(tour?.layer==='behind')tourActor();
+    if(!tour&&!(isMagic&&state.hostId==='milo')){const hostRig=actor(state.hostId,{x:hostX,y:ARENA_LAYOUT.host.y,height:ARENA_LAYOUT.host.height,clipDesk:true});if(!state.cohostId)drawShowCueWand(ctx,{cue:activeShowCue(),wrist:hostRig?.grip||hostRig?.wrist,reducedMotion:reducedMotion()});}
     if(state.cohostId&&state.cohostId!==state.hostId&&!(isMagic&&state.cohostId==='milo'))actor(state.cohostId,{x:coX,y:ARENA_LAYOUT.cohost.y,height:ARENA_LAYOUT.cohost.height,clipDesk:true,motion:state.speakerId===state.cohostId?state.motion:'listen'});
     if(state.guestId&&!(isMagic&&state.guestId==='milo')){
       const p=reducedMotion()?1:smooth((sceneTime-guestEnteredAt)/3.6),x=mix(ARENA_LAYOUT.guest.entryX,ARENA_LAYOUT.guest.x,p),h=mix(245,ARENA_LAYOUT.guest.height,p),y=mix(ARENA_LAYOUT.guest.entryY,ARENA_LAYOUT.guest.y,p);shadow(x,y+8,95);actor(state.guestId,{x,y,height:h,enter:p,motion:p<1?'walk':'wave'});
     }
     if(leavingGuest){const p=reducedMotion()?1:smooth((sceneTime-leavingGuest.start)/3.1);if(p>=1)leavingGuest=null;else{const x=mix(ARENA_LAYOUT.guest.x,ARENA_LAYOUT.guest.entryX,p),y=mix(ARENA_LAYOUT.guest.y,ARENA_LAYOUT.guest.entryY,p),height=mix(ARENA_LAYOUT.guest.height,245,p);shadow(x,y+8,90);actor(leavingGuest.id,{x,y,height,enter:1-p,motion:'walk'});}}
     deskFront();
-    if(isMagic){const elapsed=sceneTime-magic.start,p=elapsed/magic.duration,stageIn=reducedMotion()?1:smooth(elapsed/1.8),stageOut=smooth((magic.duration-elapsed)/1.5),entrance=Math.min(stageIn,stageOut);const x=mix(ARENA_LAYOUT.host.x,ARENA_LAYOUT.magic.x,stageIn),y=mix(ARENA_LAYOUT.host.y,ARENA_LAYOUT.magic.y,stageIn),height=mix(ARENA_LAYOUT.host.height,ARENA_LAYOUT.magic.height,stageIn);shadow(x,y-4,120);const rig=actor('milo',{x,y,height,motion:'magic',magicProgress:p,enter:entrance});magicEffects(elapsed,rig?.grip||rig?.wrist||{x:1190,y:575});}
+    if(tour?.layer==='front')tourActor();
+    if(isMagic){const elapsed=sceneTime-magic.start,p=elapsed/magic.duration,stageIn=reducedMotion()?1:smooth(elapsed/1.8),stageOut=smooth((magic.duration-elapsed)/1.5),entrance=Math.min(stageIn,stageOut);const x=mix(ARENA_LAYOUT.host.x,ARENA_LAYOUT.magic.x,stageIn),y=mix(ARENA_LAYOUT.host.y,ARENA_LAYOUT.magic.y,stageIn),height=mix(ARENA_LAYOUT.host.height,ARENA_LAYOUT.magic.height,stageIn);shadow(x,y-4,120);const rig=actor('milo',{x,y,height,motion:'magic',magicProgress:p,enter:entrance});const hand=EXTRA_MAGIC_IDS.includes(magic.id)?rig?.hands?.left:null;magicEffects(elapsed,hand||rig?.grip||rig?.wrist||{x:1190,y:575});}
   }
 
   function floatingHat(x,y,size,time){
@@ -216,14 +220,25 @@ export function mountStudio(container,options={}){
     const rim=ctx.createLinearGradient(0,-size*.13,0,size*.10);rim.addColorStop(0,'#b476c6');rim.addColorStop(.45,'#441162');rim.addColorStop(1,'#b88732');ctx.fillStyle=rim;ctx.beginPath();ctx.ellipse(0,0,size*.62,size*.145,0,0,TAU);ctx.fill();ctx.strokeStyle='#ffe3a2';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#170c2d';ctx.beginPath();ctx.ellipse(0,-size*.02,size*.31,size*.075,0,0,TAU);ctx.fill();goldStar(ctx,0,-size*.5,size*.10);ctx.restore();
   }
   function magicEffects(elapsed,wrist){
-    const p=clamp(elapsed/magic.duration,0,1),fade=smooth(elapsed/.8)*smooth((magic.duration-elapsed)/1.3);
+    const originalElapsed=elapsed,extra=EXTRA_MAGIC_IDS.includes(magic.id),p=clamp(elapsed/magic.duration,0,1),fade=smooth(elapsed/.8)*smooth((magic.duration-elapsed)/1.3);
     // Accessibility keeps a still mid-trick tableau; the director's real cue
     // clock still controls its fade and completion.
-    if(reducedMotion())elapsed=magic.id==='star-hat'?7.4:8.6;
+    if(reducedMotion())elapsed=extra?magic.duration*.68:magic.id==='star-hat'?7.4:8.6;
     ctx.save();ctx.globalAlpha=fade;
-    const wandAngle=-.88+Math.sin(elapsed*1.7)*.11,tip={x:wrist.x+Math.cos(wandAngle)*156,y:wrist.y+Math.sin(wandAngle)*156};
-    ctx.save();ctx.translate(wrist.x,wrist.y);ctx.rotate(wandAngle);ctx.shadowColor='#c7f8ed';ctx.shadowBlur=12;ctx.fillStyle='#301b47';roundRect(ctx,0,-5,158,10,5);ctx.fill();ctx.fillStyle='#fff5d3';roundRect(ctx,130,-5,28,10,4);ctx.fill();ctx.restore();glow(ctx,tip.x,tip.y,38,'rgba(255,228,143,.85)');goldStar(ctx,tip.x,tip.y,10,elapsed);
-    if(!reducedMotion())for(let i=1;i<=18;i++){const age=i/18,angle=-.88+Math.sin((elapsed-age*.85)*1.7)*.11,x=wrist.x+Math.cos(angle)*156-age*30,y=wrist.y+Math.sin(angle)*156+age*18;ctx.save();ctx.globalAlpha*=Math.pow(1-age,2)*.7;glow(ctx,x,y,4+(1-age)*6,'rgba(182,255,235,.8)');ctx.restore();}
+    const baseAngle=extra?Math.atan2(615-wrist.y,1200-wrist.x):-.88,wandAngle=baseAngle+Math.sin(elapsed*1.7)*.11,tip={x:wrist.x+Math.cos(wandAngle)*156,y:wrist.y+Math.sin(wandAngle)*156};
+    if(magic.id!=='wand-multiplication'){ctx.save();ctx.translate(wrist.x,wrist.y);ctx.rotate(wandAngle);ctx.shadowColor='#c7f8ed';ctx.shadowBlur=12;ctx.fillStyle='#301b47';roundRect(ctx,0,-5,158,10,5);ctx.fill();ctx.fillStyle='#fff5d3';roundRect(ctx,130,-5,28,10,4);ctx.fill();ctx.restore();glow(ctx,tip.x,tip.y,38,'rgba(255,228,143,.85)');goldStar(ctx,tip.x,tip.y,10,elapsed);}
+    if(!reducedMotion())for(let i=1;i<=18;i++){const age=i/18,angle=baseAngle+Math.sin((elapsed-age*.85)*1.7)*.11,x=wrist.x+Math.cos(angle)*156-age*30,y=wrist.y+Math.sin(angle)*156+age*18;ctx.save();ctx.globalAlpha*=Math.pow(1-age,2)*.7;glow(ctx,x,y,4+(1-age)*6,'rgba(182,255,235,.8)');ctx.restore();}
+    if(extra){
+      // The visible ribbon begins at the actual puppet grip, linking the
+      // performer's wand to the scenic prop rather than an arbitrary emitter.
+      if(magic.id!=='wand-multiplication'){
+        const reach=smooth((p-.08)/.16)*smooth((.80-p)/.18);
+        ctx.save();ctx.globalAlpha*=reach*.38;ctx.lineCap='round';ctx.lineWidth=2.5;ctx.shadowColor='#93e8dc';ctx.shadowBlur=12;
+        const beam=ctx.createLinearGradient(tip.x,tip.y,1200,615);beam.addColorStop(0,'#c9fff0');beam.addColorStop(1,'#f8d790');ctx.strokeStyle=beam;ctx.beginPath();ctx.moveTo(tip.x,tip.y);
+        for(let i=1;i<=38;i++){const q=i/38;ctx.lineTo(mix(tip.x,1200,q),mix(tip.y,615,q)-Math.sin(q*Math.PI)*60+Math.sin(q*TAU*1.2+elapsed*.6)*7*Math.sin(q*Math.PI));}ctx.stroke();ctx.restore();
+      }
+      ctx.restore();drawExtraMagic(ctx,{id:magic.id,elapsed:originalElapsed,duration:magic.duration,reducedMotion:reducedMotion(),wrist});return;
+    }
     if(magic.id==='star-hat'){
       const hx=1240,hy=695-Math.sin(clamp((elapsed-2)/7,0,1)*Math.PI)*145;
       glow(ctx,hx,hy-75,220,'rgba(143,77,240,.33)',.8);floatingHat(hx,hy,182,elapsed);
@@ -279,6 +294,8 @@ export function mountStudio(container,options={}){
     if(magic&&sceneTime-magic.start>=magic.duration){const done=magic;magic=null;setCamera(done.oldCamera||'host',{moving:done.oldMoving});options.onEvent?.({type:'magic-end',id:done.id});root.dispatchEvent(new CustomEvent('mf:magic-end',{bubbles:true,detail:{id:done.id}}));}
     if(now-lastTick>1000){lastTick=now;ensureActors();}
     cam=cameraRig.update(dt,{paused:!!state.paused,reducedMotion:prefersReduced||!!state.show?.reducedMotion,moving:!!state.movingCamera});
+    const touring=state.hostId==='milo'&&!magic?studioTourAt(activeShowCue(),{homeX:state.cohostId?805:ARENA_LAYOUT.host.x,reducedMotion:reducedMotion()}):null;
+    if(touring){const w=state.movingCamera?touring.cameraWeight:0,target=boundCamera({scale:1+.035*w,x:960+(touring.cameraX-960)*.025*w,y:540+12*w}),pose=boundCamera({scale:mix(cam.scale,target.scale,w),x:mix(cam.x,target.x,w),y:mix(cam.y,target.y,w)});cam={...cam,...pose,parallaxX:(pose.x-960)/960,parallaxY:(pose.y-540)/540};}
     const {scale,x:cx,y:cy}=cam;
     boardScreen={top:H/2+(ARENA_LAYOUT.board.y-cy)*scale,bottom:H/2+(ARENA_LAYOUT.board.y+ARENA_LAYOUT.board.height-cy)*scale};
     ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);ctx.fillStyle='#160c28';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(W/2,H/2);ctx.scale(scale,scale);ctx.translate(-cx,-cy);backdrop();drawShowEffects(ctx,{cue:activeShowCue(),reducedMotion:reducedMotion(),layer:'back'});cast();drawShowEffects(ctx,{cue:activeShowCue(),reducedMotion:reducedMotion(),layer:'front'});ctx.restore();
@@ -289,7 +306,7 @@ export function mountStudio(container,options={}){
     hud();
     if(transition){const t=Math.min(1,(now-transition.start)/transition.duration);if(t>=1)transition=null;else{ctx.save();ctx.globalAlpha=transition.kind==='slide'?1:1-t;ctx.drawImage(transition.image,transition.kind==='slide'?-W*smooth(t):0,0,W,H);ctx.restore();if(transition.kind==='logo'&&overlayLogo){ctx.save();ctx.globalAlpha=Math.sin(t*Math.PI)*.9;const width=620,height=width*overlayLogo.height/overlayLogo.width;ctx.drawImage(overlayLogo,(W-width)/2,(H-height)/2,width,height);ctx.restore();}}}
   }
-  function snapshot(){return {state:{...state},time:sceneTime,showCue:activeShowCue(),movement:activeMovement(),magic:magic?{id:magic.id,elapsed:sceneTime-magic.start,duration:magic.duration}:null,ready:scenicReady,assetError:scenicError,studio:'sterrenplein-grand',presenterLayout:{...ARENA_LAYOUT.host},characters:[...actors.keys()],characterRigs:Object.fromEntries([...actors].map(([id,a])=>[id,a.rig.stats])),performerTime,gameAge,camera:{...cam},deskBoard:{...boardScreen},caption:captionScreen,width:cv.width,height:cv.height};}
+  function snapshot(){return {state:{...state},time:sceneTime,showCue:activeShowCue(),movement:activeMovement(),tour:state.hostId==='milo'?studioTourAt(activeShowCue(),{homeX:state.cohostId?805:ARENA_LAYOUT.host.x,reducedMotion:reducedMotion()}):null,magic:magic?{id:magic.id,elapsed:sceneTime-magic.start,duration:magic.duration}:null,ready:scenicReady,assetError:scenicError,studio:'sterrenplein-grand',presenterLayout:{...ARENA_LAYOUT.host},characters:[...actors.keys()],characterRigs:Object.fromEntries([...actors].map(([id,a])=>[id,a.rig.stats])),performerTime,gameAge,camera:{...cam},deskBoard:{...boardScreen},caption:captionScreen,width:cv.width,height:cv.height};}
   function destroy(){if(disposed)return;disposed=true;cancelAnimationFrame(raf);observer?.disconnect();motionPreference?.removeEventListener?.('change',motionPreferenceChanged);window.removeEventListener('resize',resize);for(const a of actors.values())a.rig.dispose();actors.clear();root.remove();}
   const api={update,setCamera,playMagic,setSpeaking,snapshot,destroy,canvas:cv,element:root,preload:(ids=Object.keys(LABELS))=>Promise.all([sceneryLoaded,magicPropsLoaded,...ids.map(loadActor)])};
   update(options.state||{});raf=requestAnimationFrame(frame);return api;

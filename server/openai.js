@@ -7,6 +7,7 @@ import {ALL_CHARACTER_IDS,characterSpeechStyle,characterIdentity,liveVoice} from
 import {LIVE_MODEL,LiveServiceError,synthesizeLiveScript,liveSession,createLivePeer,hangupLive,validLiveSessionId} from './gpt-live.js';
 import {CharacterSettingsStore,savedCharacter} from './character-settings.js';
 import {platformIdentity} from './player-identity.js';
+import {DirectorWhisperError,directorWhisperContext,prepareDirectorWhisper} from './director-whisper.js';
 const API='https://api.openai.com/v1';
 const VOICE='ballad';
 const limits=new Map();
@@ -47,7 +48,7 @@ async function call(path,key,body,request,fetcher,timeoutMs=45000){
 }
 export async function handleOpenAI(request,env={},fetcher=fetch){
   const url=new URL(request.url),route=url.pathname.slice('/api/openai/'.length);
-  if(!['status','test','speech','reply','present','validate','settings','library','design-voice','live-test','live-preview','live-preview-stop'].includes(route)&&!/^clips\/[a-f0-9]{64}$/.test(route))return fail(404,'not_found','Onbekende aanvraag.');
+  if(!['status','test','speech','reply','present','validate','settings','library','design-voice','live-test','live-preview','live-preview-stop','director-whisper'].includes(route)&&!/^clips\/[a-f0-9]{64}$/.test(route))return fail(404,'not_found','Onbekende aanvraag.');
   const {user,admin}=platformIdentity(request,env);
   if(!user)return fail(401,'sign_in','Open de studio terwijl je bent ingelogd.');
   if(!admin)return fail(403,'owner_only','Alleen de eigenaar kan deze regie-instellingen gebruiken.');
@@ -56,6 +57,10 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
   if(route==='settings')return handleSettings(request,env,fetcher,user,url);
   if(route==='validate'){try{const body=await readBody(request),context=await presentationContext(env,user,body,{source:true});return json({valid:true,message:context.message});}catch(error){return fail(error.status||400,error.code||'invalid',error.message||'Dit bericht is niet beschikbaar.');}}
   let preparedBody,preparedContext,preparedCharacter,cacheKey,cacheStyle,preparedSpeed;
+  if(route==='director-whisper'){
+   if(request.headers.get('origin')!==url.origin||request.headers.get('x-milo-director')!=='1'||request.headers.get('x-vlampie-player')==='1'||url.searchParams.get('player')==='1')return fail(403,'whisper_forbidden','Een privéaanwijzing kan alleen vanuit de regie worden verstuurd.');
+   try{preparedBody=await readBody(request);preparedContext=await directorWhisperContext(env,user,preparedBody);}catch(error){return fail(error instanceof DirectorWhisperError?error.status:400,error instanceof DirectorWhisperError?error.code:'invalid_body',error instanceof DirectorWhisperError?error.message:'De aanwijzing is ongeldig of te groot.');}
+  }
   if(route.startsWith('clips/')){try{const clip=await env.SETTINGS?.get(voicePath(user,route.slice(6)));return clip?new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg'}}):fail(404,'clip_missing','Dit stemfragment is niet meer beschikbaar.');}catch{return fail(503,'cache_unavailable','De stemopslag is tijdelijk niet bereikbaar.');}}
   if(route==='speech'||route==='library'){
    try{preparedBody=await readBody(request);if(route==='speech'&&(typeof preparedBody.text!=='string'||!preparedBody.text.trim()||[...preparedBody.text].length>500))return fail(400,'invalid_text','Gebruik 1 tot 500 tekens voor een uitspraak.');
@@ -71,8 +76,8 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
   }
   let saved;try{saved=await readSecret(env);}catch{return fail(503,'settings_unavailable','De beveiligde sleutelopslag kan niet worden gelezen. Probeer opnieuw of laat de verbinding herstellen.');}
   const key=saved.key;
-  if(route==='status')return json({configured:!!key,voice:VOICE,aiGenerated:true,revision:saved.revision,source:saved.source,canManage:settingsReady(env),speechEngine:'gpt-live',model:LIVE_MODEL,liveVerified:false});
-  if(!key)return fail(503,'not_configured','Voer je OpenAI API-sleutel in bij API-instellingen en kies Opslaan en testen.');
+  if(route==='status')return json({configured:!!key,voice:VOICE,aiGenerated:true,revision:saved.revision,source:saved.source,canManage:!env.OPENAI_ENV_ONLY&&settingsReady(env),speechEngine:'gpt-live',model:LIVE_MODEL,liveVerified:false});
+  if(!key)return fail(503,'not_configured',env.OPENAI_ENV_ONLY?'De centrale OpenAI-koppeling is nog niet ingesteld. Laat de serveromgeving configureren.':'Voer je OpenAI API-sleutel in bij API-instellingen en kies Opslaan en testen.');
   const release=throttle(user);if(!release)return fail(429,'busy','Even wachten: er lopen al aanvragen of er zijn veel verzoeken verstuurd.');
   try{
     if(route==='live-test'){const response=await call('/models/'+LIVE_MODEL,key,null,request,fetcher);if(!response.ok){await response.body?.cancel();return upstreamError(response.status);}await response.body?.cancel();return json({model:LIVE_MODEL,modelAccessible:true,audioVerified:false,message:'GPT-Live-modeltoegang bevestigd. Beluister een stemproef om de audio te testen.'});}
@@ -83,6 +88,7 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
       return json({connected:true,voice:VOICE,message:'OpenAI bereikbaar. Beluister de GPT-Live-stem bij Personages.'});
     }
     let body;try{body=preparedBody||await readBody(request,route==='live-preview'?40000:5000);}catch{return fail(400,'invalid_body','De aanvraag is ongeldig of te groot.');}
+    if(route==='director-whisper')return json(await prepareDirectorWhisper({request,env,user,key,body,context:preparedContext,fetcher}));
     if(route==='live-preview'||route==='live-preview-stop'){
       if(request.headers.get('origin')!==url.origin||request.headers.get('x-milo-characters')!=='1')return fail(403,'origin','Open de gesprekstest vanuit de personagepagina.');
       const basePath='private/live-preview/'+encodeURIComponent(user)+'/',path=basePath+'latest.json',prior=await env.SETTINGS?.get(path),previous=prior?await prior.json():null;
@@ -169,11 +175,12 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
     const text=(data.output||[]).filter(x=>x.type==='message').flatMap(x=>x.content||[]).filter(x=>x.type==='output_text').map(x=>x.text).join(' ').trim();
     if(!text||data.status==='incomplete')return fail(502,'no_reply','Er kwam geen complete reactie terug. Probeer het opnieuw.');
     return json({text:text.slice(0,500),voice:speakingCharacter?.voice||VOICE,...(speakingCharacter?{characterId:speakingCharacter.id}:{})});
-  }catch(error){if(error instanceof PresentationError)return fail(error.status,error.code,error.message);if(error instanceof LiveServiceError)return json({error:{code:error.code,message:error.message,diagnostic:error.diagnostic}},error.status);if(route==='design-voice')return fail(502,error?.name==='TimeoutError'?'timeout':'connection','OpenAI heeft het stemontwerp nog niet bevestigd. Herlaad eerst het profiel om te controleren of de stem is opgeslagen. Er wordt niet automatisch opnieuw ontworpen.');return fail(502,error?.name==='TimeoutError'?'timeout':'connection','De verbinding met OpenAI is onderbroken of duurde te lang. Probeer het opnieuw.');}
+  }catch(error){if(error instanceof PresentationError||error instanceof DirectorWhisperError)return fail(error.status,error.code,error.message);if(error instanceof LiveServiceError)return json({error:{code:error.code,message:error.message,diagnostic:error.diagnostic}},error.status);if(route==='design-voice')return fail(502,error?.name==='TimeoutError'?'timeout':'connection','OpenAI heeft het stemontwerp nog niet bevestigd. Herlaad eerst het profiel om te controleren of de stem is opgeslagen. Er wordt niet automatisch opnieuw ontworpen.');return fail(502,error?.name==='TimeoutError'?'timeout':'connection','De verbinding met OpenAI is onderbroken of duurde te lang. Probeer het opnieuw.');}
   finally{release();}
 }
 
 async function handleSettings(request,env,fetcher,user,url){
+  if(env.OPENAI_ENV_ONLY)return fail(409,'server_secret_required','Beheer de OpenAI-sleutel in de serveromgeving.');
   if(request.headers.get('origin')!==url.origin||request.headers.get('x-vlampie-settings')!=='1')return fail(403,'origin','Sla de sleutel op vanuit de instellingen in Vlampie Studio.');
   if(!settingsReady(env))return fail(503,'settings_unavailable','De beveiligde sleutelopslag is nog niet beschikbaar.');
   const release=throttle(user);if(!release)return fail(429,'busy','Even wachten: probeer de sleutel straks opnieuw op te slaan.');

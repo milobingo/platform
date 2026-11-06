@@ -1,7 +1,7 @@
 {
   "project": "Milo & Friends BingoShow",
-  "updated_at": "2026-11-05",
-  "authorized_scope": "local_build_repository_sync_and_staging_deployment",
+  "updated_at": "2026-11-06",
+  "authorized_scope": "local_build_repository_sync_staging_and_production_deployment",
   "source": {
     "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
     "sites_version": 63,
@@ -9,7 +9,13 @@
     "runtime": "Cloudflare Worker, D1/SQLite, R2",
     "original_profile": "docs/overdracht/PROJECTPROFIEL.json",
     "runtime_data_export_included": false,
-    "secrets_included": false
+    "secrets_included": false,
+    "latest_handoff": {
+      "commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+      "version": "2026-11-06-v6",
+      "directory": "docs/overdracht-wijzigingen-1-6",
+      "verified_manifest_entries": 583
+    }
   },
   "local": {
     "checkout": "/home/codex/repos/milobingo",
@@ -174,6 +180,12 @@
         "scratch_cleanup": "verification/staging-scratch-cleanup.json",
         "access_cleanup": "verification/staging-access-cleanup.json"
       }
+    },
+    "production_status": {
+      "authorized": true,
+      "configured": false,
+      "deployed": false,
+      "reason": "Real URL/host/site/runner and separate Supabase project not supplied; production environment empty at read-only audit on 2026-11-06."
     }
   },
   "configuration": {
@@ -197,7 +209,10 @@
       "PORT",
       "RELEASE_SHA",
       "RELEASE_ID",
-      "CONFIG_VERSION"
+      "CONFIG_VERSION",
+      "MAIL_ENVIRONMENT",
+      "MAIL_MODE",
+      "MAIL_ALLOWED_RECIPIENTS"
     ],
     "server_runtime_secrets": [
       "DATABASE_URL",
@@ -205,7 +220,8 @@
       "VLAMPIE_SETTINGS_KEY",
       "OPENAI_API_KEY",
       "LIVEKIT_API_KEY",
-      "LIVEKIT_API_SECRET"
+      "LIVEKIT_API_SECRET",
+      "SEND_EMAIL_HOOK_SECRET"
     ],
     "livekit": "LIVEKIT_URL/API_KEY/API_SECRET, or separate encrypted server settings when no environment values are set",
     "deploy_secrets": "GitHub staging retains MIGRATION_DATABASE_URL and BACKUP_ENCRYPTION_KEY for database management; RESTORE_TEST_DATABASE_URL was temporary and has been removed after verified restore. Recreate it only for a separately reviewed migration. DATABASE_URL is the distinct limited app connection.",
@@ -225,14 +241,21 @@
       "sha256_fingerprint": "807025AD50D4ED219D2C9C7D299C004F824EB00CF7F65AFEF607D07B72E6CAFA",
       "ca_source": "https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt",
       "verify_peer_and_hostname": true
+    },
+    "order_mail": {
+      "transport": "fixed signed Supabase send-email-hook transactional gateway",
+      "default_mode": "disabled",
+      "status": "adapter implemented; actual Milo gateway/worker and signing contract not provisioned",
+      "uncertain_retry_guarantee_ms": 0,
+      "staging_wrapper_upgrade_required_to_enable": true
     }
   },
   "notes": [
     "Null target fields are unresolved project information; they are not deploy-ready defaults.",
     "CI does not create accounts, apply remote migrations, send mail or deploy.",
-    "The user authorized staging deployment on 2026-11-05. Production is outside the current scope.",
     "At the initial host preflight the deployment host was incomplete and no app or migration was activated; the final completed deployment is recorded in target.staging_status.",
     "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
-    "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed."
+    "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed.",
+    "The user explicitly authorized production deployment on 2026-11-06. Production target fields remain unresolved until the real host, URL and isolated backend are supplied."
   ]
 }

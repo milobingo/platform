@@ -16,12 +16,20 @@ export function validateLivekit(input,saved={}){
  if(!/^[A-Za-z0-9_-]{8,160}$/.test(apiKey)||apiSecret.length<16||apiSecret.length>500)throw livekitError('Vul de LiveKit API-key en API-secret in. Een leeg secretveld behoudt het bestaande secret.',400);
  return {url:url.origin,apiKey,apiSecret};
 }
+const ENV_TEST='livekit-cloud-environment-test';
+const environmentManaged=env=>!!(env.LIVEKIT_URL||env.LIVEKIT_API_KEY||env.LIVEKIT_API_SECRET);
+const credentialFingerprint=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(JSON.stringify([value.url,value.apiKey,value.apiSecret])))),byte=>byte.toString(16).padStart(2,'0')).join('');
 export async function livekitSettings(env){
- if(env.LIVEKIT_URL||env.LIVEKIT_API_KEY||env.LIVEKIT_API_SECRET)return {revision:null,source:'environment',value:{url:env.LIVEKIT_URL||'',apiKey:env.LIVEKIT_API_KEY||'',apiSecret:env.LIVEKIT_API_SECRET||'',connectionTest:null}};
- const saved=await readPrivateSetting(env,'livekit-cloud');return {...saved,value:saved.value||{url:'',apiKey:'',apiSecret:'',connectionTest:null}};
+ if(environmentManaged(env)){
+  let value={url:env.LIVEKIT_URL||'',apiKey:env.LIVEKIT_API_KEY||'',apiSecret:env.LIVEKIT_API_SECRET||''};
+  try{value=validateLivekit(value);}catch{}
+  const saved=await readPrivateSetting(env,ENV_TEST),fingerprint=await credentialFingerprint(value);
+  return {revision:saved.revision,source:'environment',value:{...value,connectionTest:saved.value?.fingerprint===fingerprint?saved.value.connectionTest:null}};
+ }
+ const saved=await readPrivateSetting(env,'livekit-cloud');return {...saved,source:'private',value:saved.value||{url:'',apiKey:'',apiSecret:'',connectionTest:null}};
 }
-export const livekitConfigured=value=>!!value?.url&&!!value?.apiKey&&!!value?.apiSecret;
-export function publicLivekit(saved){const p=saved.value;return {url:p.url||'',apiKey:p.apiKey||'',apiKeyConfigured:!!p.apiKey,secretConfigured:!!p.apiSecret,configured:livekitConfigured(p),revision:saved.revision,connectionTest:p.connectionTest||{tested:false,testedAt:null}};}
+export function livekitConfigured(value){try{validateLivekit(value||{});return true;}catch{return false;}}
+export function publicLivekit(saved){const p=saved.value,managed=saved.source==='environment';return {url:p.url||'',apiKey:managed?'':p.apiKey||'',apiKeyConfigured:!!p.apiKey,secretConfigured:!!p.apiSecret,configured:livekitConfigured(p),revision:saved.revision,source:saved.source||'private',canManage:!managed,connectionTest:p.connectionTest||{tested:false,testedAt:null}};}
 export async function roomService(settings,method,body={},fetcher=fetch,{ignoreMissing=false,now=Date.now()}={}){
  if(!livekitConfigured(settings))throw livekitError('Stel eerst de aparte LiveKit Cloud-koppeling in.',503);
  const room=body.room||body.name,video=method==='ListRooms'?{roomList:true}:['CreateRoom','DeleteRoom'].includes(method)?{roomCreate:true}:{roomAdmin:true,room};
@@ -35,11 +43,18 @@ export async function manageLivekitSettings(request,env,body,fetcher=fetch){
  const saved=await livekitSettings(env);if(request.method==='GET')return publicLivekit(saved);
  if(body.revision!==saved.revision)throw livekitError('De instellingen zijn gewijzigd. Herlaad deze pagina.');
  if(!['save','test'].includes(body.action||'save'))throw livekitError('Onbekende LiveKit-instelling.',400);
- const value=validateLivekit(body,saved.value);let tested=false,connectionTest={tested:false,testedAt:null};
+ const managed=saved.source==='environment';
+ if(managed&&!livekitConfigured(saved.value))throw livekitError('De LiveKit-serverconfiguratie is onvolledig of ongeldig. Laat de projectgegevens in de serveromgeving controleren.',503);
+ const value=validateLivekit(body,saved.value);
+ if(managed&&(body.action!=='test'||value.url!==saved.value.url||value.apiKey!==saved.value.apiKey||value.apiSecret!==saved.value.apiSecret))throw livekitError('De LiveKit-projectgegevens worden op de server beheerd. Test de bestaande koppeling; wijzigingen verlopen via het omgevingsbeheer.',403);
+ let tested=false,connectionTest={tested:false,testedAt:null};
  if(body.action==='test'){const data=await roomService(value,'ListRooms',{},fetcher);tested=true;connectionTest={tested:true,testedAt:Date.now(),roomCount:Array.isArray(data.rooms)?data.rooms.length:0};}
  else if(value.url===saved.value.url&&value.apiKey===saved.value.apiKey&&value.apiSecret===saved.value.apiSecret)connectionTest=saved.value.connectionTest||connectionTest;
- const result=await writePrivateSetting(env,'livekit-cloud',{...value,connectionTest},saved.revision);if(!result)throw livekitError('Een andere wijziging is net opgeslagen. Herlaad de instellingen.');
- return {...publicLivekit({value:{...value,connectionTest},revision:result.revision}),saved:true,tested};
+ // Environment credentials remain exclusively on the server. Only a bound test
+ // receipt is stored; its revision survives reloads and prevents stale writes.
+ const stored=managed?{fingerprint:await credentialFingerprint(value),connectionTest}:{...value,connectionTest};
+ const result=await writePrivateSetting(env,managed?ENV_TEST:'livekit-cloud',stored,saved.revision);if(!result)throw livekitError('Een andere wijziging is net opgeslagen. Herlaad de instellingen.');
+ return {...publicLivekit({value:{...value,connectionTest},revision:result.revision,source:saved.source}),saved:true,tested};
 }
 export function callRooms(call){return {backstage:'bs-'+call.id,live:'live-'+call.id};}
 export function callIdentities(call){return {participantIdentity:'guest-'+call.id,guestIdentity:'guest-'+call.id,outputIdentity:'output-'+call.id,hostIdentity:'host-'+call.id};}
@@ -66,7 +81,7 @@ export async function handleLiveKit(request,env,fetcher=fetch){
   let body={};if(write){const raw=await request.text();if(raw.length>6000)throw livekitError('De instellingen zijn te groot.',413);body=JSON.parse(raw);}
   if(url.pathname==='/api/livekit/settings'){
    if(!identity.admin)throw livekitError('Alleen de regie kan de LiveKit-koppeling instellen.',403);
-   if(write&&env.DB){const current=await env.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(identity.user).first();if(current){const call=JSON.parse(current.document);if(call?.transport==='livekit'&&call.phase!=='completed'){const saved=await livekitSettings(env),next=validateLivekit(body,saved.value);if(next.url!==saved.value.url||next.apiKey!==saved.value.apiKey||next.apiSecret!==saved.value.apiSecret)throw livekitError('Rond eerst het lopende belmoment en de terugkeer af voordat je de LiveKit-projectgegevens wijzigt.');}}}
+   if(write&&env.DB){const current=await env.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(identity.user).first();if(current){const call=JSON.parse(current.document);if(call?.transport==='livekit'&&call.phase!=='completed'){const saved=await livekitSettings(env);if(saved.source!=='environment'){const next=validateLivekit(body,saved.value);if(next.url!==saved.value.url||next.apiKey!==saved.value.apiKey||next.apiSecret!==saved.value.apiSecret)throw livekitError('Rond eerst het lopende belmoment en de terugkeer af voordat je de LiveKit-projectgegevens wijzigt.');}}}}
    return json(await manageLivekitSettings(request,env,body,fetcher));
   }
   if(url.pathname!=='/api/livekit/preflight'||!write)throw livekitError('Onbekende LiveKit-route.',404);

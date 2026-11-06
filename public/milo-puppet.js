@@ -7,9 +7,9 @@ import {miloPoseAt,createMiloPoseSmoother} from './milo-motion.js';
  */
 export const MILO_PUPPET_CALIBRATION=Object.freeze({
  width:799,height:916,
- body:[414,655],neck:[419,369],hat:[449,174],tail:[283,674],
- left:{shoulder:[286,423],elbow:[240,495],wrist:[187,528],hand:[125,536],hip:[373,661],ankle:[301,824],foot:[285,862]},
- right:{shoulder:[523,431],elbow:[568,500],wrist:[650,538],hand:[710,546],hip:[466,663],ankle:[476,817],foot:[518,853]},
+ body:[414,655],waist:[414,610],neck:[419,369],hat:[449,174],tail:[283,674],tailMiddle:[164,689],
+ left:{shoulder:[286,423],elbow:[240,495],wrist:[187,528],hand:[125,536],hip:[373,661],knee:[340,739],ankle:[301,824],foot:[285,862]},
+ right:{shoulder:[523,431],elbow:[568,500],wrist:[650,538],hand:[710,546],hip:[466,663],knee:[471,739],ankle:[476,817],foot:[518,853]},
  mouth:[365,294,105,73],eyes:[[347,213,60,51],[452,244,56,51]],
  irises:[[362,226,35,36],[459,256,33,33]],
 });
@@ -31,6 +31,30 @@ const PARTS={
  head:[[217,169],[250,109],[299,101],[339,126],[365,110],[536,128],[587,135],[614,164],[594,225],[615,291],[601,335],[563,370],[488,389],[419,386],[346,369],[291,346],[245,310],[219,255]],
  hat:[[331,22],[383,8],[483,18],[542,35],[560,70],[559,112],[549,153],[577,176],[600,212],[599,244],[577,263],[554,245],[525,219],[482,198],[427,179],[372,164],[338,154],[326,129]],
 };
+// Split the approved pixels with overlapping joint bands. No new art or
+// stretched mesh is needed, and the neutral silhouette remains the original.
+function clipHalf(points,axis,edge,keepAbove){
+ const out=[],inside=p=>keepAbove?p[axis]>=edge:p[axis]<=edge;
+ for(let i=0;i<points.length;i++){
+  const a=points[i],b=points[(i+1)%points.length],aIn=inside(a),bIn=inside(b);
+  if(aIn)out.push(a);
+  if(aIn!==bIn){const t=(edge-a[axis])/(b[axis]-a[axis]);out.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);}
+ }
+ return out;
+}
+const SOURCE_PARTS={
+ ...PARTS,
+ tailBase:clipHalf(PARTS.tail,0,145,true),
+ tailTip:clipHalf(PARTS.tail,0,181,false),
+ leftLeg:clipHalf(PARTS.leftLeg,1,750,false),
+ rightLeg:clipHalf(PARTS.rightLeg,1,750,false),
+ leftShin:clipHalf(PARTS.leftLeg,1,726,true),
+ rightShin:clipHalf(PARTS.rightLeg,1,726,true),
+ torso:clipHalf(PARTS.torso,1,676,false),
+ leftCoat:clipHalf(clipHalf(PARTS.torso,1,650,true),0,421,false),
+ rightCoat:clipHalf(clipHalf(PARTS.torso,1,650,true),0,407,true),
+};
+delete SOURCE_PARTS.tail;
 const I=[1,0,0,1,0,0];
 function mul(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
 const move=(x=0,y=0)=>[1,0,0,1,x,y];
@@ -46,6 +70,11 @@ function cropPart(image,points,subtract=[]){
  polygon(ctx,points,minX,minY);ctx.clip();ctx.drawImage(image,0,0,image.naturalWidth||image.width,image.naturalHeight||image.height,-minX,-minY,C.width,C.height);
  for(const sub of subtract){ctx.globalCompositeOperation='destination-out';polygon(ctx,sub,minX,minY);ctx.fill();}
  return {canvas,x:minX,y:minY,w,h};
+}
+function featherJoint(part,start,end,fadeIn){
+ const ctx=part.canvas.getContext('2d'),mask=ctx.createLinearGradient(0,start-part.y,0,end-part.y);
+ mask.addColorStop(0,fadeIn?'#fff0':'#fff');mask.addColorStop(1,fadeIn?'#fff':'#fff0');
+ ctx.globalCompositeOperation='destination-in';ctx.fillStyle=mask;ctx.fillRect(0,0,part.w,part.h);ctx.globalCompositeOperation='source-over';
 }
 function maskedPatch(image,rect,{feather=false}={}){
  const [x,y,w,h]=rect,canvas=surface(w,h),ctx=canvas.getContext('2d');
@@ -104,18 +133,20 @@ function closeLid(ctx,image,rect,amount,m,index){
 
 export function createMiloPuppet(image,{talkImage=null,profile={}}={}){
  const bounds=neutralBounds(image),parts={};
- for(const [name,shape] of Object.entries(PARTS))parts[name]=cropPart(image,shape,name==='head'?[PARTS.hat]:[]);
+ for(const [name,shape] of Object.entries(SOURCE_PARTS))parts[name]=cropPart(image,shape,name==='head'?[PARTS.hat]:[]);
+ for(const side of ['left','right']){featherJoint(parts[side+'Leg'],739,750,false);featherJoint(parts[side+'Shin'],726,738,true);}
  const mouthPatch=talkImage?maskedPatch(talkImage,C.mouth,{feather:true}):null;
  const irises=C.irises.map(rect=>maskedPatch(image,rect));
  const poseSmoother=createMiloPoseSmoother();
  const shoulderCaps={left:maskedPatch(image,[263,399,45,53]),right:maskedPatch(image,[503,405,42,51])};
  const elbowCaps={left:maskedPatch(image,[220,475,39,40]),right:maskedPatch(image,[549,481,40,39])};
+ const kneeCaps={left:maskedPatch(image,[307,718,66,42]),right:maskedPatch(image,[442,718,58,42])};
  let previous=null,lastPose=null,lastFace=null,disposed=false;
- const stats={kind:'articulated',parts:Object.keys(parts).length,joints:17,triangles:0,source:'approved-milo-pixels'};
+ const stats={kind:'articulated',parts:Object.keys(parts).length,layers:Object.keys(parts).length+8+(mouthPatch?1:0),joints:21,triangles:0,source:'approved-milo-pixels',legChains:'hip-knee-ankle-foot',bodyLayers:'pelvis-chest-coattails',tailSegments:2};
  function draw(ctx,opts={}){
   if(disposed)return null;
-  const {x=0,y=0,height=500,time=0,idleTime=time,motion='idle',energy=1,speaking=false,mouth=0,blink=0,magicProgress=-1,magicId=null,alpha=1,motionBlend=1,deltaTime=1/60,paused=false,reducedMotion=false,immediate=false,attentionX=0,attentionY=0,expression='neutral'}=opts;
-  let desired=miloPoseAt({time,idleTime,motion,energy,blend:motionBlend,speaking,mouth,magicProgress,magicId,reducedMotion,attentionX,attentionY,expression});
+  const {x=0,y=0,height=500,time=0,idleTime=time,motion='idle',energy=1,speaking=false,mouth=0,blink=0,magicProgress=-1,magicId=null,alpha=1,motionBlend=1,deltaTime=1/60,paused=false,reducedMotion=false,immediate=false,attentionX=0,attentionY=0,expression='neutral',walkStride=1,walkDirection=1,walkPhase=null}=opts;
+  let desired=miloPoseAt({time,idleTime,motion,energy,blend:motionBlend,speaking,mouth,magicProgress,magicId,reducedMotion,attentionX,attentionY,expression,walkStride,walkDirection,walkPhase});
   const dt=clamp(Number(deltaTime)||0,0,.1),jump=previous&&Math.abs(Number(idleTime)-previous.time)>.5;
   // A frame-rate-independent critically damped spring carries momentum
   // through a change of performance, without a sudden shoulder/hand snap.
@@ -128,17 +159,28 @@ export function createMiloPuppet(image,{talkImage=null,profile={}}={}){
   const scale=height/bounds.h,width=bounds.w*scale;
   let base=mul(move(x,y),mul([scale,0,0,scale,0,0],move(-bounds.x-bounds.w/2,-bounds.y-bounds.h)));
   base=mul(base,move((pose.rootX||0)*C.height,(pose.rootY||0)*C.height));
-  const body=pivot(base,C.body,pose.bodyRot||0,1,pose.bodyScaleY||1);
+  const pelvis=pivot(mul(base,move((pose.pelvisX||0)*C.height,(pose.pelvisY||0)*C.height)),C.body,pose.pelvisRot||0);
+  const body=pivot(pivot(pelvis,C.body,pose.bodyRot||0,1,pose.bodyScaleY||1),C.waist,pose.chestRot||0);
   const head=pivot(mul(body,move((pose.headX||0)*C.height,(pose.headY||0)*C.height)),C.neck,pose.headRot||0);
   const leftUpper=pivot(body,C.left.shoulder,pose.leftUpper||0),rightUpper=pivot(body,C.right.shoulder,pose.rightUpper||0);
   const leftForearm=pivot(leftUpper,C.left.elbow,pose.leftForearm||0),rightForearm=pivot(rightUpper,C.right.elbow,pose.rightForearm||0);
   const leftHand=pivot(leftForearm,C.left.wrist,pose.leftHand||0),rightHand=pivot(rightForearm,C.right.wrist,pose.rightHand||0);
-  const leftLeg=pivot(base,C.left.hip,pose.leftLeg||0),rightLeg=pivot(base,C.right.hip,pose.rightLeg||0);
-  const leftFoot=pivot(leftLeg,C.left.ankle,pose.leftFoot||0),rightFoot=pivot(rightLeg,C.right.ankle,pose.rightFoot||0);
+  const leftLeg=pivot(pelvis,C.left.hip,pose.leftLeg||0),rightLeg=pivot(pelvis,C.right.hip,pose.rightLeg||0);
+  const leftShin=pivot(leftLeg,C.left.knee,pose.leftKnee||0),rightShin=pivot(rightLeg,C.right.knee,pose.rightKnee||0);
+  const leftFoot=pivot(leftShin,C.left.ankle,pose.leftFoot||0),rightFoot=pivot(rightShin,C.right.ankle,pose.rightFoot||0);
+  const tail=pivot(body,C.tail,pose.tailRot||0),tailTip=pivot(tail,C.tailMiddle,(pose.tailRot||0)*.38);
+  const coatLeft=pivot(body,[316,657],clamp((pose.leftLeg||0)*.13,-.035,.035));
+  const coatRight=pivot(body,[526,657],clamp((pose.rightLeg||0)*.13,-.035,.035));
   const hat=pivot(mul(head,move(0,-clamp(pose.hatLift||0,-.006,.012)*C.height)),C.hat,pose.hatRot||0);
   ctx.save();ctx.globalAlpha*=alpha;ctx.imageSmoothingEnabled=true;
-  paint(ctx,parts.tail,pivot(body,C.tail,pose.tailRot||0));
-  paint(ctx,parts.leftLeg,leftLeg);paint(ctx,parts.rightLeg,rightLeg);paint(ctx,parts.leftFoot,leftFoot);paint(ctx,parts.rightFoot,rightFoot);
+  paint(ctx,parts.tailTip,tailTip);paint(ctx,parts.tailBase,tail);
+  // The two lower-leg pieces hinge at real knees. Wide source-pixel overlaps
+  // and small fur/cloth caps hide the seams during the largest walking bend.
+  paint(ctx,parts.leftLeg,leftLeg);paint(ctx,parts.rightLeg,rightLeg);
+  paint(ctx,kneeCaps.left,leftLeg);paint(ctx,kneeCaps.right,rightLeg);
+  paint(ctx,parts.leftShin,leftShin);paint(ctx,parts.rightShin,rightShin);
+  paint(ctx,parts.leftFoot,leftFoot);paint(ctx,parts.rightFoot,rightFoot);
+  paint(ctx,parts.leftCoat,coatLeft);paint(ctx,parts.rightCoat,coatRight);
   // Upper sleeves behind the jacket; cuffs and hands remain naturally in front.
   paint(ctx,shoulderCaps.left,body);paint(ctx,shoulderCaps.right,body);
   paint(ctx,parts.leftUpper,leftUpper);paint(ctx,parts.rightUpper,rightUpper);
@@ -155,7 +197,8 @@ export function createMiloPuppet(image,{talkImage=null,profile={}}={}){
   C.eyes.forEach((rect,index)=>closeLid(ctx,image,rect,face.blink,head,index));
   ctx.restore();
   const leftWrist=point(leftHand,C.left.wrist),rightWrist=point(rightHand,C.right.wrist),headAnchor=point(head,C.neck),hatAnchor=point(hat,C.hat),hands={left:point(leftHand,C.left.hand),right:point(rightHand,C.right.hand)};
-  return {wrist:rightWrist,grip:hands.right,leftWrist,rightWrist,hands,head:headAnchor,hat:hatAnchor,bounds,width,height,triangles:0,pose:{...pose},stats};
+  const legs={left:{hip:point(pelvis,C.left.hip),knee:point(leftLeg,C.left.knee),ankle:point(leftShin,C.left.ankle),foot:point(leftFoot,C.left.foot)},right:{hip:point(pelvis,C.right.hip),knee:point(rightLeg,C.right.knee),ankle:point(rightShin,C.right.ankle),foot:point(rightFoot,C.right.foot)}};
+  return {wrist:rightWrist,grip:hands.right,leftWrist,rightWrist,hands,legs,head:headAnchor,hat:hatAnchor,bounds,width,height,triangles:0,pose:{...pose},stats};
  }
- return {draw,bounds,profile:{...profile,kind:'articulated'},stats,dispose(){disposed=true;for(const part of [...Object.values(parts),...Object.values(shoulderCaps),...Object.values(elbowCaps),...irises,mouthPatch].filter(Boolean))part.canvas.width=part.canvas.height=1;poseSmoother.reset();previous=lastPose=lastFace=null;}};
+ return {draw,bounds,profile:{...profile,kind:'articulated'},stats,dispose(){disposed=true;for(const part of [...Object.values(parts),...Object.values(shoulderCaps),...Object.values(elbowCaps),...Object.values(kneeCaps),...irises,mouthPatch].filter(Boolean))part.canvas.width=part.canvas.height=1;poseSmoother.reset();previous=lastPose=lastFace=null;}};
 }

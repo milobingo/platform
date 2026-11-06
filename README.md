@@ -2,6 +2,8 @@
 
 Lokale Next.js 16-app op basis van de goedgekeurde overdracht van 4 november 2026 (Sites-versie 63, broncommit `08e1a652a78586d2e791179eead388acad8a3266`). De familie-app, twaalf vrienden, regie, Sterrenplein, Vlampie-werelden, spelmodellen, PDF-templates en alle assets zijn behouden.
 
+De zes wijzigingen uit overdracht `2026-11-06-v6` (bron `2a32f65f464e78f22a256ba74af3ea85765c2482`) zijn geïntegreerd: bingoprioriteit/troostprijzen, Milo’s rig en studiorondje, twaalf goocheltrucs, bestellen/goedkeuren, compacte werkruimte en privéfluisteren. Zie [integratie, gegevensbehoud en acceptatie](docs/WIJZIGINGEN-1-6-INTEGRATIE.md).
+
 Broncode: [milobingo/platform](https://github.com/milobingo/platform), integratiebranch `main`. De lokale checkout gebruikt deze repository als remote `origin`.
 
 ## Lokaal starten
@@ -50,6 +52,6 @@ De concrete inventaris staat in [Projectgegevens, accounts en secrets](docs/PROJ
 
 Staging draait op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); de openbare [familiedemo](https://milo-staging.dgwebservices.nl/spelen?demo=1) is direct te openen. De native releaseprocedure, databasebackup met echte herstelproef, beperkte runtime-login en publieke nacontrole zijn ingericht. Zie [het actuele resultaat en bewijs](docs/STAGING-RESULTAAT.md), [de volgende deployment uitvoeren](docs/STAGING-DEPLOY.md) en [de hostinrichting](docs/STAGING-HOST.md).
 
-Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De DG-mailgateway/outbox wordt aangesloten op het nog te leveren contract. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md).
+Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De gesigneerde DG-bestelmailadapter is gebouwd; de eigen Milo-gateway/worker, afzender, signing secret en het reconciliatiecontract moeten nog worden ingericht. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md). Productie is geautoriseerd; de echte bestemming wordt gevalideerd via [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
 
 De oorspronkelijke overdrachtsdocumenten staan onder `docs/overdracht/`, de oorspronkelijke README onder `docs/overdracht/README-bron.md`. Het Cloudflare-buildpad is historische bron; de standaardbuild is nu Next.js. `.openai/hosting.json` hoort bij de oude Site en wordt niet gebruikt voor DG-releases.

@@ -1,5 +1,7 @@
 import {makeGame,playerGame,activeGoal,completionIndex} from '../server/bingo-model.js';
 import {productionSettings} from '../server/production-model.js';
+import {matchFamilyOrderDemo} from './family-order-demo.js';
+import {resetOrderDemo} from './order-demo-store.js';
 
 /** Explicit, browser-local examples. This module never calls fetch or a provider. */
 export const FAMILY_DEMO_GAME_ID='milo-family-demo';
@@ -71,6 +73,7 @@ function urlOf(input){const value=typeof input==='string'?input:input?.url;if(!v
 async function dispatch(input,{method='GET',body,signal}={}){
  aborted(signal);assertDemo();await Promise.resolve();aborted(signal);
  const url=urlOf(input),path=url.pathname,s=getState(),data=bodyData(body),verb=method.toUpperCase();
+ const orderReply=matchFamilyOrderDemo(url,{method:verb,body:data,signal},s);if(orderReply!==undefined)return orderReply;
  if(/^\/api\/(?:livekit|live-calls|openai)(?:\/|$)/.test(path))throw error(DEMO_ERROR,409,'demo_provider_disabled');
  if(path==='/api/player/session'&&verb==='GET')return {authenticated:s.authenticated,method:'demo',needsOnboarding:false,...identity(s)};
  if(path==='/api/player/brand'&&verb==='GET')return {brandId:s.games.get(url.searchParams.get('game'))?.brandId||'milo',simulated:true};
@@ -132,6 +135,6 @@ export async function familyDemoFetch(input,options={}){
  try{return Response.json(copy(await dispatch(input,options)),{headers:{'X-Milo-Demo':'local-simulation'}});}
  catch(cause){if(cause.name==='AbortError')throw cause;return Response.json({error:{message:cause.message,code:cause.code||'demo_invalid'},simulated:true},{status:cause.status||500,headers:{'X-Milo-Demo':'local-simulation'}});}
 }
-export function resetFamilyDemo(){state=undefined;}
+export function resetFamilyDemo(){state=undefined;resetOrderDemo();}
 /** Static watermarked sample, never a valid or account-specific player book. */
 export function familyDemoPdf(mode='color'){return mode==='mono'?'/assets/milo-friends/example-mono.pdf':'/assets/milo-friends/example-color.pdf';}

@@ -6,6 +6,7 @@ import WebSocket,{WebSocketServer} from 'ws';
 import {createNodeProviderFetch} from '../server/node-provider-fetch.js';
 import {synthesizeLiveScript,hangupLive,LIVE_MODEL} from '../server/gpt-live.js';
 import {CHARACTERS} from '../server/characters.js';
+import {appendLiveDirectorInstruction} from '../server/live-director-whisper.js';
 
 const key='test-only-never-a-real-provider-key';
 const auth={Upgrade:'websocket',Authorization:'Bearer '+key};
@@ -111,4 +112,46 @@ test('session teardown confirms session.closed; rejected close stays unconfirmed
  rejectClose=true;let diagnostic;
  assert.equal(await hangupLive(key,'live_test_456',h.fetcher,{onFailure:value=>diagnostic=value}),false);
  assert.equal(diagnostic.reason,'close_rejected');assert.equal(diagnostic.restStatus,503);assert.equal(diagnostic.attachStatus,101);assert(!JSON.stringify(warnings).includes(key));
+});
+
+test('live whisper uses an existing Node WebSocket session, accepts only its ACK and leaves primary media open',async t=>{
+ const commands=[];let sidebandClosed;
+ const h=await fixture(t,{connection:(socket,request)=>{
+  if(!request.url.endsWith('/attach'))return;
+  sidebandClosed=once(socket,'close');
+  socket.on('message',raw=>{
+   const command=JSON.parse(raw.toString());commands.push(command);
+   socket.send(JSON.stringify({type:'session.output_transcript.delta',delta:'ignored private media'}));
+   socket.send(JSON.stringify({type:'session.instructions.appended',client_event_id:'another-request'}));
+   socket.send(JSON.stringify({type:'session.instructions.appended',client_event_id:command.event_id}));
+  });
+ }});
+ const primary=(await h.fetcher('https://api.openai.com/v1/live/sessions',{headers:auth})).webSocket;primary.accept();
+ const requestId=crypto.randomUUID(),instruction='Praat rustig en stel één makkelijke vraag.';
+ const accepted=await appendLiveDirectorInstruction({key,sessionId:'live_existing_node',requestId,instruction,request:new Request('https://studio.example/api/live-calls/whisper'),fetcher:h.fetcher,timeoutMs:500});
+ assert(Number.isFinite(accepted.acceptedAt));await sidebandClosed;
+ assert.deepEqual(h.upstreams.map(x=>x.url),['/v1/live/sessions','/v1/live/sessions/live_existing_node/attach']);
+ assert.equal(commands.length,1);assert.equal(commands[0].type,'session.instructions.append');assert.equal(commands[0].event_id,requestId);assert.equal(commands[0].delegation_id,null);assert(commands[0].content.includes(instruction));
+ assert(!JSON.stringify(commands).includes(key));assert(!commands.some(x=>x.type==='session.close'||x.type==='session.start'||x.type==='session.input_audio.append'));
+ assert.equal(primary.readyState,WebSocket.OPEN);const closed=event(primary,'close');primary.close();await closed;
+});
+
+test('an early buffered Node sideband ACK cannot confirm a later whisper send',async t=>{
+ const requestId=crypto.randomUUID(),commands=[];
+ const h=await fixture(t,{connection:socket=>{
+  socket.send(JSON.stringify({type:'session.instructions.appended',client_event_id:requestId}));
+  socket.on('message',raw=>commands.push(JSON.parse(raw.toString())));
+ }});
+ await assert.rejects(appendLiveDirectorInstruction({key,sessionId:'live_existing_node',requestId,instruction:'Houd het rustig.',request:new Request('https://studio.example/api/live-calls/whisper'),fetcher:h.fetcher,timeoutMs:60}),error=>error.code==='whisper_uncertain'&&error.uncertain===true);
+ assert.equal(commands.length,1);assert.equal(commands[0].type,'session.instructions.append');
+});
+
+test('request abort on an open Node whisper sideband reports uncertain and never sends primary-session close',async t=>{
+ const controller=new AbortController(),commands=[];let sidebandClosed;
+ const h=await fixture(t,{connection:socket=>{
+  sidebandClosed=once(socket,'close');
+  socket.on('message',raw=>{commands.push(JSON.parse(raw.toString()));controller.abort();});
+ }});
+ await assert.rejects(appendLiveDirectorInstruction({key,sessionId:'live_existing_node',requestId:crypto.randomUUID(),instruction:'Stel één makkelijke vraag.',request:new Request('https://studio.example/api/live-calls/whisper',{signal:controller.signal}),fetcher:h.fetcher,timeoutMs:500}),error=>error.code==='whisper_uncertain'&&error.uncertain===true);
+ await sidebandClosed;assert.equal(commands.length,1);assert.equal(commands[0].type,'session.instructions.append');
 });

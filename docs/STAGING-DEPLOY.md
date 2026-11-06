@@ -1,6 +1,6 @@
 # Milo stagingdeployment
 
-Staging is geautoriseerd voor `https://milo-staging.dgwebservices.nl`, site `milobingo-staging` op `dg-nxttrack-01`. Productie valt buiten deze opdracht. Hostinrichting, volledige databasebackup met werkelijke restore, schema-aanmaak, beperkte runtime-login en backendacceptatie zijn uitgevoerd. De app is actief en de native deployment plus publieke releasecontrole zijn geslaagd. De definitieve actieve bron en laatste workflowuitkomst staan in [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
+Staging is geautoriseerd voor `https://milo-staging.dgwebservices.nl`, site `milobingo-staging` op `dg-nxttrack-01`. Dit document beschrijft uitsluitend staging; de afzonderlijk geautoriseerde productieprocedure staat in [PRODUCTIE-DEPLOY.md](PRODUCTIE-DEPLOY.md). Hostinrichting, volledige databasebackup met werkelijke restore, schema-aanmaak, beperkte runtime-login en backendacceptatie zijn uitgevoerd. De app is actief en de native deployment plus publieke releasecontrole zijn geslaagd. De definitieve actieve bron en laatste workflowuitkomst staan in [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
 
 ## Bevestigde stand
 

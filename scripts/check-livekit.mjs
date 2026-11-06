@@ -1,8 +1,10 @@
+import {verifiedTestEnvironment} from './verified-test-identity.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixture,jwtBody} from './live-calls-fixture.mjs';
-import {livekitJwt,roomService,validateLivekit} from '../server/livekit.js';
-import {handleLiveCalls} from '../server/live-calls.js';
+import {livekitJwt,roomService,validateLivekit,livekitSettings} from '../server/livekit.js';
+import {readPrivateSetting} from '../server/secrets.js';
+import {handleLiveCalls as verifiedHandleLiveCalls} from '../server/live-calls.js';
 
 test('JWTs are signed with project secret and room deletion uses the real roomCreate grant',async()=>{
  const settings={url:'wss://test-project.livekit.cloud',apiKey:'API_KEY_TEST',apiSecret:'PRIVATE_SECRET_FOR_TEST'};
@@ -38,8 +40,28 @@ test('a post-hold checkpoint-store failure retains a recoverable held call',asyn
 });
 
 test('cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold',async t=>{
+ t.mock.method(console,'warn',()=>{});
  const h=await fixture(t);await h.live();let entered,release,hangups=0;const waiting=new Promise(r=>entered=r);
- h.setUpstream(async(url,options)=>{if(url.includes('/twirp/'))return Response.json({});if(url.endsWith('/hangup')){hangups++;return new Response(null,{status:hangups<3?503:200});}entered();await new Promise(r=>release=r);return new Response('v=0\r\nanswer',{status:201,headers:{Location:'https://api.openai.com/v1/realtime/calls/rtc_late_owned_123'}});});
- const pending=h.step('output',undefined,{sdp:'v=0\r\n'},409,{path:'/api/live-calls/realtime'});await waiting;await h.step('host','finish');assert.equal((await h.current()).resourcesClosed,false);release();await pending;let c=await h.current();assert.equal(c.realtimeId,'rtc_late_owned_123');assert.equal(c.resourcesClosed,false);assert((await h.bingo.game(h.game.id)).data.state.drawHold);
+ h.setUpstream(async(url,options)=>{if(url.includes('/twirp/'))return Response.json({});if(url.endsWith('/hangup')){hangups++;return new Response(null,{status:hangups<3?503:200});}if(url.endsWith('/attach'))return Response.json({error:{code:'unavailable'}},{status:503});entered();await new Promise(r=>release=r);return Response.json({session:{id:'live_late_owned_123'},transport:{sdp:'v=0\r\nanswer'}});});
+ const pending=h.step('output',undefined,{sdp:'v=0\r\n'},409,{path:'/api/live-calls/realtime'});await waiting;await h.step('host','finish');assert.equal((await h.current()).resourcesClosed,false);release();await pending;let c=await h.current();assert.equal(c.realtimeId,'live_late_owned_123');assert.equal(c.resourcesClosed,false);assert((await h.bingo.game(h.game.id)).data.state.drawHold);
  await h.step('host','finish');c=await h.current();assert(hangups>=3);assert(c.resourcesClosed);assert.equal(c.phase,'returning');assert((await h.bingo.game(h.game.id)).data.state.drawHold);
+});
+
+function handleLiveCalls(request,env,...args){return verifiedHandleLiveCalls(request,verifiedTestEnvironment(request,env),...args);}
+
+test('environment-managed LiveKit tests persist their revision without storing or exposing server credentials',async t=>{
+ const h=await fixture(t);Object.assign(h.env,{LIVEKIT_URL:'wss://environment-project.livekit.cloud',LIVEKIT_API_KEY:'API_ENV_TEST_KEY',LIVEKIT_API_SECRET:'SERVER_ENV_SECRET_NOT_REAL_12345'});
+ const path={path:'/api/livekit/settings'},initial=await h.invoke('host',undefined,200,path);
+ assert.equal(initial.source,'environment');assert.equal(initial.canManage,false);assert.equal(initial.apiKey,'');assert.equal(initial.apiKeyConfigured,true);assert.equal(initial.secretConfigured,true);assert.equal(initial.connectionTest.tested,false);
+ const tested=await h.invoke('host',{action:'test',revision:initial.revision},200,path);assert.equal(tested.tested,true);assert.equal(tested.connectionTest.tested,true);assert.notEqual(tested.revision,null);
+ const reloaded=await h.invoke('host',undefined,200,path);assert.equal(reloaded.revision,tested.revision);assert.deepEqual(reloaded.connectionTest,tested.connectionTest);assert(!JSON.stringify(reloaded).includes(h.env.LIVEKIT_API_SECRET));assert(!JSON.stringify(reloaded).includes(h.env.LIVEKIT_API_KEY));
+ const receipt=(await readPrivateSetting(h.env,'livekit-cloud-environment-test')).value;assert.deepEqual(Object.keys(receipt).sort(),['connectionTest','fingerprint']);assert.equal(typeof receipt.fingerprint,'string');
+ await h.invoke('host',{action:'test',revision:initial.revision},409,path);
+ await h.invoke('host',{action:'save',revision:tested.revision},403,path);
+ await h.invoke('host',{action:'test',revision:tested.revision,url:'wss://other-project.livekit.cloud'},403,path);
+ assert.equal(h.upstream.filter(x=>x.url.endsWith('/ListRooms')).length,1);
+ assert(h.upstream.find(x=>x.url.endsWith('/ListRooms')).url.startsWith('https://environment-project.livekit.cloud/'));
+ await h.prepare();assert.equal((await h.current()).phase,'preparing','Reloaded successful server test allows the real call preparation contract');
+ h.env.LIVEKIT_API_SECRET='ROTATED_SERVER_ENV_SECRET_NOT_REAL_12345';const rotated=await livekitSettings(h.env);assert.equal(rotated.revision,tested.revision);assert.equal(rotated.value.connectionTest,null);
+ h.env.LIVEKIT_API_SECRET='';const incomplete=await h.invoke('host',undefined,200,path);assert.equal(incomplete.configured,false);assert.equal(incomplete.source,'environment');assert.equal(incomplete.secretConfigured,false);await h.invoke('host',{action:'test',revision:incomplete.revision},503,path);assert.equal(h.upstream.filter(x=>x.url.endsWith('/ListRooms')).length,1);
 });

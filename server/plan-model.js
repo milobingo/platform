@@ -2,6 +2,7 @@
 import {ALL_CHARACTER_IDS,ANIMATIONS,CAMERA_IDS,MAGIC_IDS,CHARACTERS} from './characters.js';
 import {showBrand} from './show-brands.js';
 import {getShowCue} from './show-cues.js';
+import {getMagicCue} from './magic-cues.js';
 export const BLOCK_TYPES=Object.freeze({
  countdown:{name:'Countdown',short:'Aftellen',icon:'i-rest',description:'Een timer vóór de show of een ronde.'},
  welcome:{name:'Welkomstwoord',short:'Welkom',icon:'i-wave',description:'De presentator verwelkomt het publiek met jouw tekst.'},
@@ -75,8 +76,8 @@ export function normalizePlan(input){
   if(['countdown','pause','call'].includes(b.type)){out.seconds=number(b.seconds,1,86400,'de timer');out.unit=b.unit==='minutes'?'minutes':'seconds';}
   if(['welcome','explanation','story','finale','call','magic','guest'].includes(b.type))out.text=text(b.text,500,'Presentatietekst');
   if(['welcome','explanation','story','finale','magic','guest'].includes(b.type))out.hold=number(b.hold,0,60,'de wachttijd');
-  if(['magic','guest'].includes(b.type))out.duration=number(b.duration,2,180,'de cue-duur');
-  if(b.type==='show'){const cue=getShowCue(b.showCueId);if(!cue)throw new Error('Kies een bestaand showelement.');if((input.studioId&&input.studioId!=='sterrenplein')||(!input.studioId&&(!input.leadId||input.leadId==='vlampie'))||input.leadId==='vlampie'||out.speakerId==='vlampie')throw new Error('Showelementen horen bij de Milo & Friends-productie.');out.showCueId=cue.id;out.duration=cue.duration;out.hold=0;}
+  if(['magic','guest'].includes(b.type))out.duration=number(b.duration??(b.type==='magic'?getMagicCue(b.magicId)?.duration:undefined),2,180,'de cue-duur');
+  if(b.type==='show'){const cue=getShowCue(b.showCueId);if(!cue)throw new Error('Kies een bestaand showelement.');if((input.studioId&&input.studioId!=='sterrenplein')||(!input.studioId&&(!input.leadId||input.leadId==='vlampie'))||input.leadId==='vlampie'||out.speakerId==='vlampie')throw new Error('Showelementen horen bij de Milo & Friends-productie.');if(cue.hostId)out.speakerId=cue.hostId;out.showCueId=cue.id;out.duration=cue.duration;out.hold=0;}
   if(b.type==='magic'){if(!MAGIC_IDS.includes(b.magicId))throw new Error('Kies een bestaand magiemoment.');if(out.speakerId&&out.speakerId!=='milo')throw new Error('Milo voert deze goocheltruc uit.');out.speakerId='milo';out.magicId=b.magicId;}
   if(b.type==='guest'){
    if(!ALL_CHARACTER_IDS.includes(b.guestId))throw new Error('Kies een bestaand gastpersonage.');out.guestId=b.guestId;

@@ -8,6 +8,7 @@ import {characterLiveInstructions,ALL_CHARACTER_IDS} from './characters.js';
 import {readSecret} from './secrets.js';
 import {livekitSettings,livekitConfigured,livekitError,roomService,callRoomToken,callRooms,callIdentities,closeLivekitRoom} from './livekit.js';
 import {makeLiveCall,liveCallActive,transitionLiveCall,expireLiveCall,publicLiveCall,callContext,returnLiveCall} from './live-call-model.js';
+import {liveDirectorWhisper} from './live-director-whisper.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
 const uuid=v=>typeof v==='string'&&/^[a-f0-9-]{36}$/.test(v);
 class LiveCallStore extends CallStore{
@@ -82,6 +83,10 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
   if(role==='player'&&c.playerClientId&&c.playerClientId!==clientId&&!['decline'].includes(action))throw livekitError('Gebruik het apparaat waarmee deze oproep is opgenomen.');
   if(role==='output'){if(c.outputId!==clientId)throw livekitError('Een ander uitzendvenster verzorgt dit belmoment.',403);if(url.pathname!=='/api/live-calls/realtime-stop')needsOutput(output,clientId,role,now);}
   const change=async fn=>{c=await store.mutate(owner,current=>{if(current.id!==body.callId)throw livekitError('Deze oproep is vervangen.');return fn(current)||current;});return c;};
+  if(url.pathname==='/api/live-calls/whisper'){
+   if(role!=='host')throw livekitError('Alleen de regie kan de live presentator een privéaanwijzing geven.',403);
+   return json(await liveDirectorWhisper({store,owner,call:c,clientId,gameId,body,request,env,fetcher}));
+  }
   if(url.pathname==='/api/live-calls/token'){
    if(!['backstage','live'].includes(body.target))throw livekitError('Kies de juiste geluidsruimte.',400);
    if(body.target==='backstage'&&(role==='output'||!['backstage','staged'].includes(c.phase)||c.switchingLive))throw livekitError('Het privé-voorgesprek is niet toegankelijk vanuit de uitzending.',403);
@@ -133,5 +138,5 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
   }
   if(['returning','returned'].includes(c.phase))c=await cleanup(env,store,owner,c,fetcher,{force:['finish','cancel','fail','decline'].includes(action)});
   return json({call:safe(c,role),serverTime:Date.now()});
- }catch(error){return json({error:error.status?error.message:'De belaanvraag kon niet worden bevestigd. De trekking blijft geblokkeerd als het belmoment al was voorbereid.'},error.status||503);}
+ }catch(error){return json({error:error.status?error.message:'De belaanvraag kon niet worden bevestigd. De trekking blijft geblokkeerd als het belmoment al was voorbereid.',...(error.code?{code:error.code}:{}),...(typeof error.code==='string'&&error.code.startsWith('whisper_')?{uncertain:error.uncertain===true,retryable:false}:{})},error.status||503);}
 }

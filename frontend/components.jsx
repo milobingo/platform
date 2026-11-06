@@ -1,4 +1,4 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useEffect,useRef,useState,useId} from 'react';
 import {motion,AnimatePresence} from 'motion/react';
 import {X,LoaderCircle,ArrowUpRight,Check,ChevronRight} from 'lucide-react';
 import {mountStudio} from '../public/mf-studio.js';
@@ -8,7 +8,17 @@ export function Badge({children,tone='purple',dot=false}){return <span className
 export function Empty({icon:Icon,title,children,action}){return <div className="mf-empty">{Icon&&<span><Icon size={26}/></span>}<h3>{title}</h3><p>{children}</p>{action}</div>;}
 export function Panel({title,subtitle,action,children,className=''}){return <section className={'mf-panel '+className}>{(title||action)&&<header className="mf-panel-head"><div>{title&&<h2>{title}</h2>}{subtitle&&<p>{subtitle}</p>}</div>{action}</header>}{children}</section>;}
 export function Field({label,hint,children,className=''}){return <label className={'mf-field '+className}><span>{label}</span>{children}{hint&&<small>{hint}</small>}</label>;}
-export function Modal({title,children,onClose,wide=false}){const ref=useRef();useEffect(()=>{const prev=document.activeElement;const node=ref.current;const get=()=>[...node.querySelectorAll('button:not([disabled]),input,select,textarea,a[href]')];get()[0]?.focus();const key=e=>{if(e.key==='Escape')onClose();if(e.key==='Tab'){const f=get();if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===f.at(-1)){e.preventDefault();f[0]?.focus();}}};document.addEventListener('keydown',key);const prior=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.removeEventListener('keydown',key);document.body.style.overflow=prior;prev?.focus?.();};},[]);return <AnimatePresence><motion.div className="mf-modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.section ref={ref} role="dialog" aria-modal="true" aria-labelledby="mf-modal-title" className={'mf-modal '+(wide?'wide':'')} initial={{y:18,opacity:0,scale:.98}} animate={{y:0,opacity:1,scale:1}}><header><div><span className="mf-eyebrow">JOUW SHOW, GOED GEREGELD</span><h2 id="mf-modal-title">{title}</h2></div><button className="mf-icon-btn" onClick={onClose} aria-label="Sluiten"><X size={21}/></button></header>{children}</motion.section></motion.div></AnimatePresence>;}
+export function Modal({title,children,onClose,wide=false}){
+ const ref=useRef(),titleId=useId();
+ useEffect(()=>{const previous=document.activeElement,node=ref.current,prior=document.body.style.overflow;
+  const focusables=()=>[...node.querySelectorAll('button,a[href],input,select,textarea,[tabindex]')].filter(el=>!el.disabled&&el.type!=='hidden'&&el.tabIndex!==-1&&!el.closest('[hidden],[inert],[aria-hidden="true"]')&&(!el.getClientRects||el.getClientRects().length));
+  (focusables()[0]||node).focus();
+  const key=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose();}if(e.key==='Tab'){const list=focusables();if(!list.length){e.preventDefault();node.focus();return;}if(e.shiftKey&&document.activeElement===list[0]){e.preventDefault();list.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===list.at(-1)){e.preventDefault();list[0].focus();}}};
+  document.addEventListener('keydown',key);document.body.style.overflow='hidden';
+  return()=>{document.removeEventListener('keydown',key);document.body.style.overflow=prior;previous?.focus?.();};
+ },[]);
+ return <AnimatePresence><motion.div className="mf-modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.section ref={ref} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={'mf-modal '+(wide?'wide':'')} initial={{y:14,opacity:0,scale:.99}} animate={{y:0,opacity:1,scale:1}}><header><div><span className="mf-eyebrow">SHOW STUDIO</span><h2 id={titleId}>{title}</h2></div><button type="button" className="mf-icon-btn" onClick={onClose} aria-label="Sluiten"><X size={21}/></button></header><div className="mf-modal-body">{children}</div></motion.section></motion.div></AnimatePresence>;
+}
 export function Stage({state,className='',onReady}){const root=useRef(),actor=useRef(),latest=useRef(state);latest.current=state;const [error,setError]=useState('');useEffect(()=>{let disposed=false,frame=0,last=performance.now(),clock=0,legacy=null;setError('');const node=root.current;
  if(state.production==='vlampie'){
   const cv=document.createElement('canvas');cv.className='mf-vlampie-canvas';cv.setAttribute('aria-label','Vlampie in zijn eigen studio');node.append(cv);

@@ -12,6 +12,7 @@ import {handleChat} from './chat.js';
 import {handlePresentation} from './presentation.js';
 import {handleCharacterSettings} from './character-settings.js';
 import {nodeProviderFetch} from './node-provider-fetch.js';
+import {createOrderMailDelivery} from './node-mail-gateway.js';
 
 const json=(message,status=503,code='unavailable')=>Response.json({error:{code,message}},{status});
 const authPaths=new Set(['/api/auth/session','/api/player/request-code','/api/player/verify-code','/api/player/logout']);
@@ -56,7 +57,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   if(!context.identity.user&&path!=='/api/player/brand'&&path!=='/api/player/session')return finish(json('Log in om deze functie te gebruiken.',401,'sign_in'));
   if(cleanRequest.headers.get('upgrade')?.toLowerCase()==='websocket')return finish(json('Deze Node-runtime ondersteunt hier geen WebSocket-upgrade.',501,'websocket_unavailable'));
   if(!['GET','HEAD','POST','PUT','PATCH','DELETE'].includes(cleanRequest.method))return finish(json('Deze aanvraag wordt niet ondersteund.',405,'method'));
-  const verifiedEnv={...env,AUTH_IDENTITY:context.identity,OPENAI_ENV_ONLY:true};
+  const verifiedEnv={...env,AUTH_IDENTITY:context.identity,OPENAI_ENV_ONLY:true,ORDER_MAIL_DELIVERY:env.ORDER_MAIL_DELIVERY||createOrderMailDelivery(env)};
   let response;
   if(/^\/api\/characters(?:\/|$)/.test(path))response=await handleCharacterSettings(cleanRequest,verifiedEnv);
   else if(path.startsWith('/api/player/'))response=await handlePlayerAuth(cleanRequest,verifiedEnv);

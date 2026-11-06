@@ -26,6 +26,7 @@ const code=(await build({stdin:{contents:`
 const {window}=parseHTML('<html><head><style>.test{color:red}</style><link rel="stylesheet" href="/app.css"></head><body><div id="root"></div></body></html>'),{document}=window;
 const memory=new Map(),localStorage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},intervals=new Set(),children=[],notices=[];
 let blocked=false;
+const mediaListeners=new Set(),media={matches:false,addEventListener:(type,fn)=>mediaListeners.add(fn),removeEventListener:(type,fn)=>mediaListeners.delete(fn)};window.matchMedia=()=>media;
 window.mounts={};window.unmounts={};window.notices=notices;window.location={href:'https://bingo.example/#/live',hash:'#/live'};window.focus=()=>{};
 window.open=(url,name)=>{
  assert.equal(url,'about:blank','Never load a second app/engine in a panel window');
@@ -53,7 +54,11 @@ try{
  child.close();await wait();assert.equal(document.querySelector('[data-panel-id="audience"]'),target);assert.equal(window.unmounts.audience||0,0);assert.equal(document.querySelector('[data-value="audience"]').textContent,'2');
  blocked=true;click('[aria-label="audience losmaken"]');await wait();assert(document.querySelector('.rd-panel-slot [data-panel-id="audience"]'));assert(notices.at(-1).includes('pop-ups'));blocked=false;
  click('[aria-label="audience naar links"]');await wait();assert.deepEqual(dockIds(),['rundown','audience','cameras']);assert.deepEqual(JSON.parse(memory.get(layoutKey('milo'))).slots,dockIds());
+ media.matches=true;for(const changed of mediaListeners)changed();await wait();assert.equal(dockIds().length,1,'A narrow console must show one fitted dock, never a wide horizontal dock strip');
+ const picker=document.querySelector('select[aria-label="Mobiel werkpaneel"]');assert(picker);const choose=id=>{Object.defineProperty(picker,'value',{value:id,configurable:true,writable:true});picker.dispatchEvent(new window.Event('change',{bubbles:true}));};
+ choose('audio');await wait();assert.deepEqual(dockIds(),['audio']);choose('audience');await wait();assert.deepEqual(dockIds(),['audience']);assert.equal(document.querySelector('[data-panel-id="audience"]'),target);assert.equal(document.querySelector('[data-value="audience"]').textContent,'2','Narrow dock changes must retain the same unsaved form state');assert.equal(window.mounts.audience,mounts);
+ media.matches=false;for(const changed of mediaListeners)changed();await wait();assert.equal(dockIds().length,3,'Returning to desktop must restore the saved multi-dock layout');
  click('[aria-label="audience losmaken"]');await wait();assert.equal(children.at(-1).closed,false);
- window.dispose();await wait();assert.equal(children.at(-1).closed,true);assert.equal(intervals.size,0);
- console.log('✓ Modular regie: clamped saved layouts, reorder, resize bounds, single mounted panel, retained local state, same portal across documents, close/blocked popup handling, main navigation and window/timer cleanup');
+ window.dispose();await wait();assert.equal(children.at(-1).closed,true);assert.equal(intervals.size,0);assert.equal(mediaListeners.size,0,'Responsive media listener is removed with the console');
+ console.log('✓ Modular regie: clamped saved layouts, reorder, resize bounds, single mounted panel, retained local state, same portal across documents, close/blocked popup handling, mobile one-panel selection/state, desktop restoration, main navigation and window/timer cleanup');
 }finally{window.dispose?.();for(const id of intervals)clearInterval(id);}

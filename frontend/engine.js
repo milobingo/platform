@@ -13,7 +13,9 @@ import {createLiveCallRuntime} from './live-call-runtime.js';
 import {getShowRuntime} from './show-runtime.js';
 import {ShowCueRuntime} from './show-cue-runtime.js';
 import {getShowCue} from '../server/show-cues.js';
+import {getMagicCue} from '../server/magic-cues.js';
 import {showPresentation} from '../server/presentation-model.js';
+import {DirectorWhisperRuntime} from './director-whisper-runtime.js';
 
 export const cameraMap={establish:'establish',front:'host',desk:'host',portrait:'portrait',machine:'board',led:'board',tour:'dolly',audience:'wide',entrance:'guest',orbit:'orbit',crane:'crane',duo:'duo',magic:'magic',wide:'wide'};
 export const productionName=p=>p==='vlampie'?'Vlampie':'Milo & Friends';
@@ -46,13 +48,14 @@ export class StudioEngine{
   this.runner.afterRound=()=>this.syncGame();
   this.director.requestPick=async()=>{if(this.demo){if(this.game.status!=='running'){this.game.status='running';activateBlock(this.game,this.game.plan.blocks.findIndex(b=>b.type==='round'));}return reserveBall(this.game);}const r=await this.post('reserve');return r.pending;};
   this.director.requestCommit=async token=>{if(this.demo){const commit=commitBall(this.game,token);this.syncGame();return commit;}const r=await this.post('commit',{token});this.syncGame();return r.commit;};
-  this.voice=createOpenAIVoice({onState:phase=>{this.voicePhase=phase;this.emit();},onStart:(text,duration)=>{this.caption=text;this.speechDuration=duration;this.audio.duck(true);this.emit();},onEnd:()=>this.speechEnded(),onError:m=>this.speechFailed(m),getRemote:()=>this.bridge?.remote});
+  this.voice=createOpenAIVoice({onState:phase=>{this.voicePhase=phase;this.emit();},onStart:(text,duration)=>{this.caption=text;this.speechDuration=duration;this.audio.duck(true);this.emit();},onEnd:()=>this.speechEnded(),onError:m=>this.speechFailed(m),getRemote:()=>this.bridge?.remote,canPlay:()=>!this.whispers?.playback||this.whispers.playbackAllowed()});
   this.bridge=new OutputBridge({isOutput:this.isOutput,getId:()=>this.clientId,getGame:()=>this.demo?null:this.game,getSnapshot:()=>this.stage(),getShow:()=>this.stage().show||null,showAudio:this.audio,receive:e=>this.receive(e),onLost:m=>{this.pause(true);this.fail(m);},onNotice:m=>this.notify(m)});
+  if(!this.isOutput)this.whispers=new DirectorWhisperRuntime(this);
   this.gameAudioClock=new GameMotionClock();this._snapshot=this.snapshot();this.lastFrame=performance.now();this.timer=setInterval(()=>this.tick(),100);this.refreshTimer=setInterval(()=>this.refresh(),3500);if(!this.isOutput)this.load();
  }
  subscribe=fn=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
  getSnapshot=()=>this._snapshot;
- snapshot(){return {production:this.production,hostId:this.hostId,game:this.game,demo:this.demo,games:this.games,characters:this.characters,characterRevision:this.characterRevision,selectedCharacter:this.selectedCharacter,loading:this.loading,working:this.working,notice:this.notice,error:this.error,dirty:this.dirty,apiStatus:this.apiStatus,voiceMode:this.voiceMode,voicePhase:this.voicePhase,voiceText:this.voiceText,stage:this.stage(),runner:this.runner?.visual?.()||{},selectedCue:this.selectedCue,previewCamera:this.previewCamera,previewSceneId:this.previewSceneId||null,showRuntime:this.showRuntime?.status||null,outputConnected:!!this.bridge?.connected,outputRouting:this.outputRouting,autoDraw:this.runner?.autoDraw||false,log:this.log,now:Date.now(),settingsReady:this.settingsReady,drawHeld:!!this.game.state.drawHold||!!this.liveCalls?.drawHeld};}
+ snapshot(){return {whisper:this.whispers?.snapshot()||null,production:this.production,hostId:this.hostId,game:this.game,demo:this.demo,games:this.games,characters:this.characters,characterRevision:this.characterRevision,selectedCharacter:this.selectedCharacter,loading:this.loading,working:this.working,notice:this.notice,error:this.error,dirty:this.dirty,apiStatus:this.apiStatus,voiceMode:this.voiceMode,voicePhase:this.voicePhase,voiceText:this.voiceText,stage:this.stage(),runner:this.runner?.visual?.()||{},selectedCue:this.selectedCue,previewCamera:this.previewCamera,previewSceneId:this.previewSceneId||null,showRuntime:this.showRuntime?.status||null,outputConnected:!!this.bridge?.connected,outputRouting:this.outputRouting,autoDraw:this.runner?.autoDraw||false,log:this.log,now:Date.now(),settingsReady:this.settingsReady,drawHeld:!!this.game.state.drawHold||!!this.liveCalls?.drawHeld};}
  stage(){
   if(this.isOutput&&this.remoteStage){const remote={...this.remoteStage,...(this.remoteStage.voiceMode==='ai'&&this.remoteStage.outputRouting?{mouth:this.bridge?.meter()||0}:{})};return this.liveCalls?.stagePatch(this.calls?.stagePatch(remote)||remote)||remote;}
   const raw=this.director?.visual?.()||{},liveShow=this.showRuntime?.visual(raw)||raw,show=this.showCues?.holding?{...liveShow,scene:'host',age:this.showCues.active.elapsed,paused:this.showCues.paused}:liveShow;
@@ -67,7 +70,7 @@ export class StudioEngine{
  assertTimelineAvailable(){if(this.showCues?.active)throw Error('Rond eerst het actieve showelement of gebaar af.');if(this.calls?.held||this.game.state.callId)throw Error('Rond eerst het belmoment af.');if(this.showRuntime?.holding)throw Error('Zet eerst de presentator terug live om het draaiboek of een trekking te bedienen.');}
  setMix(key,value){const levels={...this.bridge.mixer,[key]:Number(value)};getShowRuntime(this).mix(levels);this.emit();}
 
- emit(){this._snapshot=this.snapshot();for(const fn of this.listeners)fn();}
+ emit(){this.whispers?.validateContext();this._snapshot=this.snapshot();for(const fn of this.listeners)fn();}
  notify(text){this.notice=text;this.error='';this.emit();}
  fail(text){this.error=text||'Dit lukte niet.';this.emit();}
  async task(fn,success){if(this.working)return;this.working=true;this.error='';this.emit();try{const r=await fn();if(success)this.notice=success;return r;}catch(e){this.fail(e.message);throw e;}finally{this.working=false;this.emit();}}
@@ -97,7 +100,7 @@ export class StudioEngine{
   this.characters=data.characters;this.characterRevision=data.revision;this.settingsReady=true;
  },'Eigen GPT-Live-stem opgeslagen. Beluister de stemproef voordat je uitzendt.');}
  chooseCharacter(id){if(!ALL_CHARACTER_IDS.includes(id))return;this.selectedCharacter=id;this.emit();}
- setHost(id){if(this.production==='vlampie'&&id!=='vlampie')throw Error('Kies de Milo & Friends-productie voor deze presentator.');if(id==='vlampie'&&this.production!=='vlampie')throw Error('Vlampie staat in zijn eigen productie; gebruik een gastcue voor een bezoek.');this.showCues?.reset();this.hostId=id;this.speakerId=id;this.selectedCharacter=id;this.magic=null;this.emit();}
+ setHost(id){if(this.production==='vlampie'&&id!=='vlampie')throw Error('Kies de Milo & Friends-productie voor deze presentator.');if(id==='vlampie'&&this.production!=='vlampie')throw Error('Vlampie staat in zijn eigen productie; gebruik een gastcue voor een bezoek.');this.whispers?.cancel('De presentator is gewijzigd.');this.showCues?.reset();this.hostId=id;this.speakerId=id;this.selectedCharacter=id;this.magic=null;this.emit();}
  setCamera(id,take=true){if(take){this.camera=id;this.emit();this.bridge.sendLocal();}else{this.previewCamera=id;this.emit();}}
  setMotion(id){return this.showCues.motion(id);}
  playShowCue(id){return this.showCues.play(id);}
@@ -130,11 +133,11 @@ export class StudioEngine{
   const operation=(async()=>{try{await prior;if(!this.demo&&this.game.status==='running')await this.post('pause',{paused:value});if(!value){if(this.demo)this.game.state.paused=false;if(this.runner.voiceFailed&&this.failedSpeech){const failed=this.failedSpeech;this.failedSpeech=null;this.runner.voiceFailed=false;if(this.director.flow)this.director.flow.age=0;this.speak(failed.text,failed.id,failed.mode,failed.planned);if(this.failedSpeech)return false;}this.director.resume();this.voice.resume();globalThis.speechSynthesis?.resume();this.audio.resume();}this.emit();return true;}catch(e){this.director.pause();this.fail(e.message);return false;}})();
   this.pauseRequest=operation;this.emit();return operation;
  }
- stopSpeech(){this.speechToken=(this.speechToken||0)+1;this.voice.stop();globalThis.speechSynthesis?.cancel();this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.failedSpeech=null;this.director.narrationHold=false;this.audio.duck(false);this.emit();}
- speechEnded(){this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.director.narrationHold=false;this.audio.duck(false);this.emit();}
- speechFailed(message){const failed=this.currentSpeech;this.speechEnded();this.failedSpeech=failed;this.runner.voiceFailed=!!failed;this.director.pause();this.fail(message);}
+ stopSpeech({replacement=false,whisperInternal=false,silent=false}={}){if(!whisperInternal)this.whispers?.speechStopped({replacement});this.speechToken=(this.speechToken||0)+1;this.voice.stop();globalThis.speechSynthesis?.cancel();this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.failedSpeech=null;this.director.narrationHold=false;this.audio.duck(false);if(!silent)this.emit();}
+ speechEnded(){this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.director.narrationHold=false;this.audio.duck(false);this.whispers?.speechEnded();this.emit();}
+ speechFailed(message){const failed=this.currentSpeech,privateReaction=this.whispers?.speechFailed(message);this.speechEnded();this.failedSpeech=privateReaction?null:failed;this.runner.voiceFailed=!privateReaction&&!!failed;this.director.pause();this.fail(message);}
  speak(text,id=this.speakerId,mode=this.voiceMode,planned=false){
-  if(this.liveCalls?.onAir)throw Error('De live presentator voert nu het gesprek. Rond dit eerst af.');if(!text?.trim())return;this.stopSpeech();this.speakerId=id;this.caption=text;this.voicePhase='loading';this.currentSpeech={text,id,mode,planned};const token=this.speechToken;
+  if(this.liveCalls?.onAir)throw Error('De live presentator voert nu het gesprek. Rond dit eerst af.');if(!text?.trim())return;this.stopSpeech({replacement:true});this.speakerId=id;this.caption=text;this.voicePhase='loading';this.currentSpeech={text,id,mode,planned};const token=this.speechToken;
   // Manual announcements hold the timeline, including a spin that has no own speech.
   this.director.narrationHold=!planned;this.emit();const c=this.characters.find(c=>c.id===id)||CHARACTERS[id]||CHARACTERS.milo;
   if(!this.demo&&this.game.status==='running'&&mode!=='ai'){this.speechFailed('De browserstem is alleen voor repetities. Kies de eigen personagestem voor de echte show.');return;}
@@ -161,6 +164,7 @@ export class StudioEngine{
  }
  async routeOutput(enabled){await this.bridge.route(enabled);this.outputRouting=enabled;this.emit();}
  stop(){
+  this.whispers?.cancel('De show is gestopt vanuit de regie.');
   this.stopRevision=(this.stopRevision||0)+1;
   if(this.liveCalls)this.liveCalls.stop().catch(e=>this.fail(e.message));if(this.calls)this.calls.stop().catch(e=>this.fail(e.message));if(this.showRuntime?.manual){this.showRuntime.generation++;this.showRuntime.manual=null;this.showRuntime.restore=null;}
 
@@ -175,17 +179,17 @@ export class StudioEngine{
   if(e.type==='sound'){this.audio.cue(e.cue);this.bridge?.cue(e.cue);}
   if(e.type==='speech'){this.director.narrationHold=false;this.speak(e.text,this.director.config.speakerId||this.hostId,this.voiceMode,true);}
   if(e.type==='show-cue'){if(e.action==='start')this.showCues.startRundown(e);else this.showCues.reset();}
-  if(e.type==='cast-cue'){if(e.action==='start'){if(e.guestId)this.guestId=e.guestId;if(e.magicId){this.magic={id:e.magicId,startedAt:Date.now(),playing:true,elapsed:0,duration:e.duration};this.audio.cue('prize');this.bridge?.cue('prize');}}else {this.magic=null;this.guestId=null;this.speakerId=e.returnSpeakerId||this.hostId;}}
+  if(e.type==='cast-cue'){if(e.action==='start'){if(e.guestId)this.guestId=e.guestId;if(e.magicId){this.magic={id:e.magicId,startedAt:Date.now(),playing:true,elapsed:0,duration:e.duration};const sound=getMagicCue(e.magicId)?.sound||'prize';this.audio.cue(sound);this.bridge?.cue(sound);}}else {this.magic=null;this.guestId=null;this.speakerId=e.returnSpeakerId||this.hostId;}}
   if(e.type==='cast-speaker'){this.speakerId=e.characterId;this.motion=e.animation;}
   if(e.type==='external-error')this.fail(e.error?.message);
   if(e.type==='pause'){this.bridge?.controls('pause');this.voice?.pause();globalThis.speechSynthesis?.pause();this.audio?.pause();}
   if(e.type==='resume'){this.bridge?.controls('resume');this.voice?.resume();globalThis.speechSynthesis?.resume();this.audio?.resume();}
-  if(e.type==='cancel'){this.speechToken=(this.speechToken||0)+1;this.currentSpeech=null;this.failedSpeech=null;this.voice?.stop();globalThis.speechSynthesis?.cancel();this.voicePhase='idle';this.caption='';this.director.narrationHold=false;}
+  if(e.type==='cancel'){this.whispers?.speechStopped({replacement:true});this.speechToken=(this.speechToken||0)+1;this.currentSpeech=null;this.failedSpeech=null;this.voice?.stop();globalThis.speechSynthesis?.cancel();this.voicePhase='idle';this.caption='';this.director.narrationHold=false;}
   this.emit();this.bridge?.sendLocal();
  }
  receive(e){if(e.kind==='snapshot'){this.remoteStage=e.payload;if(this.isOutput)this.demo=!e.payload.gameId;this.emit();}if(e.kind==='show'){this.remoteStage={...this.remoteStage,show:e.payload,scene:e.payload.scene};this.emit();}if(e.kind==='speech-start'){this.remoteStage={...this.remoteStage,speaking:true,caption:e.payload.text};this.emit();}if(e.kind==='stop'){this.remoteStage={...this.remoteStage,paused:true,speaking:false};this.emit();}}
  tick(){const now=performance.now(),dt=Math.min(.35,(now-this.lastFrame)/1000);this.lastFrame=now;if(this.isOutput){this.audio?.tickGame?.(this.gameAudioClock.read(this.stage().show,now));this.emit();return;}this.showRuntime?.tick(dt);this.audio?.tickGame?.(this.gameAudioClock.read(this.stage().show,now));if(this.demo&&this.game.state.window?.status==='open'&&Date.now()>=this.game.state.window.endsAt){settleWindow(this.game);this.director.externalHold=!!this.game.state.resultId;}
-  this.director.drawBlocked=!!this.game.state.drawHold||!!this.liveCalls?.drawHeld;const hold=this.game.state.window?.status==='open'||!!this.game.state.resultId;this.director.externalHold=hold;const cueWasHolding=this.showCues?.holding;this.showCues?.tick(dt);if(!hold&&!this.showRuntime?.holding&&!this.calls?.held&&!cueWasHolding){this.director.tick(dt,{voiceBusy:this.voicePhase!=='idle'});this.runner.tick(dt);}if(this.magic&&!this.magic.manual&&!this.director.paused&&!hold){this.magic.elapsed=(this.magic.elapsed||0)+dt;}if(now-(this.lastEmit||0)>240){this.lastEmit=now;this.emit();}if(!this.demo&&this.game.status==='running'&&now-(this.lastHeartbeat||0)>5000){this.lastHeartbeat=now;this.post('heartbeat').catch(e=>{this.director.pause();this.fail(e.message);});}
+  this.director.drawBlocked=!!this.game.state.drawHold||!!this.liveCalls?.drawHeld;const hold=this.game.state.window?.status==='open'||!!this.game.state.resultId;this.director.externalHold=hold;this.whispers?.tick();const cueWasHolding=this.showCues?.holding;this.showCues?.tick(dt);if(!hold&&!this.showRuntime?.holding&&!this.calls?.held&&!cueWasHolding){this.director.tick(dt,{voiceBusy:this.voicePhase!=='idle'});this.runner.tick(dt);}if(this.magic&&!this.magic.manual&&!this.director.paused&&!hold){this.magic.elapsed=(this.magic.elapsed||0)+dt;}if(now-(this.lastEmit||0)>240){this.lastEmit=now;this.emit();}if(!this.demo&&this.game.status==='running'&&now-(this.lastHeartbeat||0)>5000){this.lastHeartbeat=now;this.post('heartbeat').catch(e=>{this.director.pause();this.fail(e.message);});}
  }
- dispose(){this.showCues?.reset();this.liveCalls?.dispose();this.calls?.dispose();this.showRuntime?.dispose();clearInterval(this.timer);clearInterval(this.refreshTimer);this.voice.stop();this.bridge.dispose();this.audio.dispose();}
+ dispose(){this.whispers?.dispose();this.showCues?.reset();this.liveCalls?.dispose();this.calls?.dispose();this.showRuntime?.dispose();clearInterval(this.timer);clearInterval(this.refreshTimer);this.voice.stop();this.bridge.dispose();this.audio.dispose();}
 }

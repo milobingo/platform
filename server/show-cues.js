@@ -1,5 +1,6 @@
 // One cue library for the planner, live regie and broadcast renderer. Times are seconds.
 export const SHOW_CUES=Object.freeze([
+ {id:'studio-tour',title:'Milo’s studiorondje',description:'Milo stapt rechts van de desk, loopt over de speelvloer en keert links terug. Met een ruime, rustig meebewegende camera.',duration:64,motion:'walk',hostId:'milo',camera:'establish',art:'welcome-wave',sound:null,effect:null,color:'#82e3dc'},
  {id:'welcome-wave',title:'Welkom op het Sterrenplein',description:'Een warme zwaai in een zacht fonkelende spotlight.',duration:6,motion:'wave',camera:'host',sound:'friendly',effect:'starlight',color:'#f7cf76',shots:[{at:0,camera:'establish'},{at:1.4,camera:'host'}]},
  {id:'applause',title:'Een groot klein applaus',description:'De presentator klapt mee terwijl gouden confetti langs het podium dwarrelt.',duration:7,motion:'clap',camera:'wide',sound:'applause',effect:'confetti',color:'#f7cf76'},
  {id:'dance',title:'Het Sterrenplein-dansje',description:'Een vrolijk ritme, dansende schouders en zwevende muzieknoten.',duration:8,motion:'dance',camera:'wide',sound:'round',effect:'notes',color:'#82e3dc',shots:[{at:0,camera:'wide'},{at:2.2,camera:'duo'}]},

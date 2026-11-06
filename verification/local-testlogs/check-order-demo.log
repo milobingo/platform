@@ -1,0 +1,10 @@
+✔ family request → payment report → explicit organizer approval → assigned books is one shared simulation (16.504654ms)
+✔ closed ordering, family ownership, rejection, copy isolation and mail retry stay separate (4.388556ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26.186416

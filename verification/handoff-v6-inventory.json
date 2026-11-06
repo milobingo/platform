@@ -1,0 +1,1102 @@
+{
+  "baseline_sha": "d10f923108b28cbf0c332374394d3ab8091ea47a",
+  "source_commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+  "handoff": "2026-11-06-v6",
+  "manifest_entries_verified": 583,
+  "differences": [
+    {
+      "path": ".env.example",
+      "source_change": "changed",
+      "source_sha256": "dd98915e706db3c30909286503620500421417ab9774c485fd3ff6fd935fbd61",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": ".gitignore",
+      "source_change": "changed",
+      "source_sha256": "6c07fc1eb49d77f7b88d902d91f5c88862fdd659e589a87f244b49c219403d06",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": ".openai/hosting.example.json",
+      "source_change": "added",
+      "source_sha256": "a15eb3942d349f8019149e5b347375aa1a5dd366c2ea4f440816b769f22b4bf1",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "PAKKET-LEESMIJ.md",
+      "source_change": "added",
+      "source_sha256": "f0843f10048c83bf794258c7efdb575e8c561acadc17f4b19fd2d7b9dc8876cc",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "README.md",
+      "source_change": "changed",
+      "source_sha256": "7d0b59cf32fdf27bd6ef0d67ab822b4ce8ac97c48cf715c26be37bc6f0b40e9d",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "docs/familie-redesign.md",
+      "source_change": "changed",
+      "source_sha256": "7ea8fb3a03d430fae9f06c23a95713347c5ec77cad3584870a6a32d4c7b51f45",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "docs/wijziging-5-ui-audit.md",
+      "source_change": "added",
+      "source_sha256": "2f8b7ef4333f1c38ee08b2a8940d732ac8cb52e47752cf486dba2cbb88c99131",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "docs/wijzigingen-2026-11-05.md",
+      "source_change": "added",
+      "source_sha256": "130e27f5dbf0621212dde1698549279951136494d84af35a0bc73451b2d377b4",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "docs/wijzigingen-3-4-2026-11-06.md",
+      "source_change": "added",
+      "source_sha256": "5cabce496d55b42c59cd7a8f7bd6e05833528b21fdfa093e55c20986e4357c96",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "frontend/Administration.jsx",
+      "source_change": "changed",
+      "source_sha256": "91c1c1dce2c7ccf3ed875faf7508e142df7f5f195858cda5aef76706511b175d",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/App.jsx",
+      "source_change": "changed",
+      "source_sha256": "8b1ea8f0ba5d7bea5212ddcff69023bbec46e5691c074c30ea2d329eeaf0c92e",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/AudienceWorkspace.jsx",
+      "source_change": "changed",
+      "source_sha256": "0c6efcb415d4cd5998b1a9d1279d15209bac8eedac670f44604afa976ae38338",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/CharacterProfile.jsx",
+      "source_change": "changed",
+      "source_sha256": "49e5aeb24c143837eda865776972b6e0138b360f5766a3be764425fa0f787c1e",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/DirectorWhisper.jsx",
+      "source_change": "added",
+      "source_sha256": "cd521bc9b1cc6bde2182d52f1a68aa674e53064483b985236995699756a2ac39",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/FamilyApp.jsx",
+      "source_change": "changed",
+      "source_sha256": "e9e28b5889b4201b4e3aa5c41f5f41f3cf6d22868ec5b9d127dea0d80b4c9d45",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/FamilyLiveCall.jsx",
+      "source_change": "changed",
+      "source_sha256": "b14df0542d5cf7da27cf05377fa1974f2b69f0695128ebe71a9e29057f57fc1f",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/FamilyOrders.jsx",
+      "source_change": "added",
+      "source_sha256": "7faa9d0872914bf45551df03494d8d2d151378c0e1f2d40cd5cef3ec30b0bd03",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/LiveCallDesk.jsx",
+      "source_change": "changed",
+      "source_sha256": "904223071e9b8b257b810097b849de7410e82174278305424e927f3bfc01c719",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/OrderAdministration.jsx",
+      "source_change": "added",
+      "source_sha256": "faab381a273d3aba2a6166cbca30b4e073c1c40d7cd657d19757bb0f38451234",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/RegiePanels.jsx",
+      "source_change": "changed",
+      "source_sha256": "1eb9db012fddd0d3b41458f8925d17db54d9e1068e049412a73a9f3418d403ae",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/RegieWorkspace.jsx",
+      "source_change": "changed",
+      "source_sha256": "2fc39614a285759d47bcec1be86b0854377e9cf9781f5705e9076448f4080187",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/ShowCuePanel.jsx",
+      "source_change": "changed",
+      "source_sha256": "3b50928903b9223d332ef93da96eb08786ab62526cac0f945331937898ebcb51",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/ShowElements.jsx",
+      "source_change": "changed",
+      "source_sha256": "1deed6cb2ac235c5aff832dad376b6ba963f8ca7717e06a7fb58fce5d1c48793",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/administration.css",
+      "source_change": "changed",
+      "source_sha256": "ee91750875ca54094faeec68623e1ad4a444b9e464b64a2fb7c2336267f67531",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/audience-chat-style.js",
+      "source_change": "changed",
+      "source_sha256": "b3f72c126310ed6277638f98f91505c23107b916b7912d79113d9c8d30062809",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/audience.css",
+      "source_change": "changed",
+      "source_sha256": "dc125e11d58862290045d238982c576eed45128de2d44f1d375d04fbfecb7485",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/broadcast-shell.css",
+      "source_change": "changed",
+      "source_sha256": "9bda81ef5a9b548bceb0f12434c624c72bf9889858df1b543b63e6d4ca517d2a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/character-profile.css",
+      "source_change": "changed",
+      "source_sha256": "e6b9c15435b6e216c5b5fc3c10e1d974618712d8514d67e91eec42e7c02f1588",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/components.jsx",
+      "source_change": "changed",
+      "source_sha256": "e15ce7aec8ca587e0b25160f50670745ceb84c82d0b73660b4fb2c20c4c4de58",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/director-whisper-runtime.js",
+      "source_change": "added",
+      "source_sha256": "878f43291e01f2dac086ccdba0aa5dea158ec9f9a2f4e435114ad7a5bc419c2b",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/director-whisper.css",
+      "source_change": "added",
+      "source_sha256": "2902e757333737fa559cd94c71c88c6a8a4e9c4345aa12161b81bd55a6d51c83",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/engine.js",
+      "source_change": "changed",
+      "source_sha256": "2b738d85add77b14c2b35b9259744b3547135f8ac78cc7775e1e5ee1e3d9d9c2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-demo.js",
+      "source_change": "changed",
+      "source_sha256": "1f0b2c7af909ee8b79316122ebc504a5593753ad2e0590586934aba88bf89084",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-dialog-scroll.js",
+      "source_change": "added",
+      "source_sha256": "19be0c95e026c3c45a9bce692fb28fb94874de532880c276c76894ac27de2b19",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-header.css",
+      "source_change": "added",
+      "source_sha256": "96e18ab742490389b99fab3ade37b3662ca0f087fba55ff7a537d5b2b7280a3a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-order-demo.js",
+      "source_change": "added",
+      "source_sha256": "0ba11c052628754522a71010b8570d124c23e5287a9b56e43cb88f039503b797",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-orders.css",
+      "source_change": "added",
+      "source_sha256": "67623ef354a5293b0ece5fb3a95d7916f4d06b4944024bc1ca0f78c4f09ed76a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-prizes.js",
+      "source_change": "added",
+      "source_sha256": "aabdf40937ef0660741bf3df46df38d23f37585d47237bf4612e0255dc59a4ba",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-refinement.css",
+      "source_change": "added",
+      "source_sha256": "42f526f885c7a5466ed3b29c72aa38a49dde41f755791193c6d75603eb84a11d",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/family-responsive.css",
+      "source_change": "changed",
+      "source_sha256": "be1a3515fa507ee876b529c42b0c58382558447d3c9393fe25f3c01f74e6cb14",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/live-call-desk.css",
+      "source_change": "changed",
+      "source_sha256": "664e5145e1a0195199a2a5c7b9003aa789ba83dcb267e9455dd9e8c396cd5725",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/livekit-settings.css",
+      "source_change": "changed",
+      "source_sha256": "1b0406da01415a8964d0ac4db63eb207cc2c5b307a6c7f7c1aa9799a4769ab7e",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/order-admin-demo.js",
+      "source_change": "added",
+      "source_sha256": "37af3d57bd066b544c547ac8cdf8f81a8f08bf73975d53b9db745867b612d8b2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/order-demo-store.js",
+      "source_change": "added",
+      "source_sha256": "28b4293fe5d1af4311b92693e7fb291d22cb63beaab6c4eaad1b809382407107",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/orders-admin.css",
+      "source_change": "added",
+      "source_sha256": "d000735756e678d0570aa5f8e28ee8bd0d4697cccc65041163b2db94e40137ee",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/regie-compact.css",
+      "source_change": "changed",
+      "source_sha256": "5d7c34b34d8c619d2684290508bbe91d546b9f90f5f8a94830c3e956775d4a92",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/regie-panels.css",
+      "source_change": "changed",
+      "source_sha256": "b569e92b65970e487c75c83764861ae90068ac7549cc1cf89366747f9740c7c5",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/regie.css",
+      "source_change": "changed",
+      "source_sha256": "f2c06bf671d782fe339bdad778c92e0c7c13eaa8cf838ff8fb85a4c3dff056ca",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/show-cue-runtime.js",
+      "source_change": "changed",
+      "source_sha256": "f44a6b6624797737cb4a52dc59a8c5b5ee876d4a9ae94ee9410a31adc86d63e5",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/show-cues.css",
+      "source_change": "changed",
+      "source_sha256": "c863f69a06bb7503a4501f4013b2a72f911497b48142db479cbd67b885f00c5a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/show-elements.css",
+      "source_change": "changed",
+      "source_sha256": "e8babc3f8f3745ae33adaa10033484caa685964824a22e6c13c5b26d36909af6",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/show-runtime.js",
+      "source_change": "changed",
+      "source_sha256": "b6bc961a1d5cf42588e82b39ab2938cf5ea7aa3a634f1a5fe402a5cdf132a28f",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/studio.css",
+      "source_change": "changed",
+      "source_sha256": "f9579f0e032db348e6540a7c7c800556dd93c63b14fd59c8a137716c408fc627",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "frontend/workspace-system.css",
+      "source_change": "added",
+      "source_sha256": "f980a322be23c4553f0881aec4770d0430005846566a6db6e22a2718ac007afc",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "handoff/CODEX-PROMPT.md",
+      "source_change": "added",
+      "source_sha256": "8ef47239fc62c0830f9ab6302ed2db7f39405c37b1b9ae0a0c7b13f2d6e6c218",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "handoff/INSTALLATIE-EN-KOPPELINGEN.md",
+      "source_change": "added",
+      "source_sha256": "e6fe5fba370cae80b4c8e98df6e2205edc3588824529d03c9ecad2e9057879e4",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "handoff/SCREENSHOTS.md",
+      "source_change": "added",
+      "source_sha256": "3bdec00d898ca0a0787703344e73be755918af8beebb02b6b908ab19f3d8b7cd",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "handoff/START-HIER.md",
+      "source_change": "added",
+      "source_sha256": "709858eed7f9bd901cbd1e9357b2b0c2f7aa04082f36ebb50baa6f0d237aa5d5",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "handoff/TESTEN-EN-ACCEPTATIE.md",
+      "source_change": "added",
+      "source_sha256": "e83e22fddaf19b5fa10b02e3f006635f25bf984102ae37463e9ea14984ff639b",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "handoff/WIJZIGINGEN-1-TM-6.md",
+      "source_change": "added",
+      "source_sha256": "4c68e33fc30445eb20ec1c9570b3abda825e8168de8c139c07dd52500268f893",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "package-lock.json",
+      "source_change": "added",
+      "source_sha256": "7c5a45b0f46b5ac1051f11758f7d9ebdf9fbce4e25fb175c3ce144f3f67ac100",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "package.json",
+      "source_change": "changed",
+      "source_sha256": "58e74405c342a498d5e09112e46eb3f867d25d8a5fbda83a3c9d19da53834cf8",
+      "integration": "reference only; native Next/DG project configuration retained"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/banana-surprise.webp",
+      "source_change": "added",
+      "source_sha256": "d90fb59d9f2e6ad4bd57c064d61ff074d17d75f2484362aa9e76e57d225b5e81",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/bubble-world.webp",
+      "source_change": "added",
+      "source_sha256": "628756120cef9649da65414e603b5fa638ca16739068a5c11feead6fbfa85b18",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/cookie-mystery.webp",
+      "source_change": "added",
+      "source_sha256": "0dd0dbcfffc3af4020594ee5b66b54d69b9f4bb0e3021000daaa4123d053e1f6",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/floating-table.webp",
+      "source_change": "added",
+      "source_sha256": "afbf53b1bf6ef3c82885e696bf776f51bea829a1a6c0874cc40e4cef38da0b05",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/flower-hat.webp",
+      "source_change": "added",
+      "source_sha256": "ea9870922cdd06bc55d81b756a5238ebba4c54d4aca72dde37ee3e8de7fb9810",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/linking-rings.webp",
+      "source_change": "added",
+      "source_sha256": "7729f675dfd62e0ed821d9499c5346ec0b6eb79dfb4c95ecd6ae535616377b41",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/rainbow-cube.webp",
+      "source_change": "added",
+      "source_sha256": "d5a7cd78a849e851288aad9da05f5904a2ab1a9b888c1400cd7c3c3e11e150a8",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/reverse-hourglass.webp",
+      "source_change": "added",
+      "source_sha256": "6e82433e89416c96f22c32dd34771120732d1373930156059ec7d703b00861ab",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/star-rabbit.webp",
+      "source_change": "added",
+      "source_sha256": "bcbd0dbcfb4a0762e23c8ccd7cd02aae3bf92e83e8d8ba99a37424379ce42d9f",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/assets/milo-friends/studio/show-cues/wand-multiplication.webp",
+      "source_change": "added",
+      "source_sha256": "b9252f19419ca1703965f0c67c2412d5192f9c754f6129822db35c6d191bce75",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/bingo-model.js",
+      "source_change": "changed",
+      "source_sha256": "9e9abb5f5ecc4c91736f44af8d8d8f0229b2111a5fecf55bd832de59c6c4ef4e",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/characters.js",
+      "source_change": "changed",
+      "source_sha256": "382a5ce3cfa36adb8e67d1317c84dd0234ad55cafb46a4ff8e1c93b199ac7dbd",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/magic-cues.js",
+      "source_change": "added",
+      "source_sha256": "da4c41b08adfc36fccbbb18862eb4d9d8a16194d4e786d4462c081526ed171d7",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/mf-studio.js",
+      "source_change": "changed",
+      "source_sha256": "eea78d7b69f49dd3acdf705fbeff93046b98bbbb47f071817da8194c40027ed2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/milo-magic-effects.js",
+      "source_change": "added",
+      "source_sha256": "c673074bfa907b31d1786467119e5ef9f930adf844517b605fd4f8166052ae02",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/milo-motion.js",
+      "source_change": "changed",
+      "source_sha256": "f707ce5146c5657aaac865397d3ecc3e2b12b60cf512821e62b5077283c4dc6c",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/milo-puppet.js",
+      "source_change": "changed",
+      "source_sha256": "528290c27dd98c762603714da0b78a9128eaada8ad8ff7bc606c0c80155cc973",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/milo-studio-tour.js",
+      "source_change": "added",
+      "source_sha256": "7c29dcc651a62fe38f7e55c9dc15eccc49c26f82661dbb23fd319e630e9008ae",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/plan-model.js",
+      "source_change": "changed",
+      "source_sha256": "69a2e0d06c8a92b00494ad1d20e9204e85df7837e36bc584e3527838daea163b",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/presentation-model.js",
+      "source_change": "changed",
+      "source_sha256": "f54e4c4609ba351eb4bee56672f8e8099662c75d08ac98a25659b86857e076a2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/production-model.js",
+      "source_change": "changed",
+      "source_sha256": "03ae4f7357e5f1e3c75c389fd34397fb389ed4202adc81322115411053d90cae",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/show-brands.js",
+      "source_change": "changed",
+      "source_sha256": "955ef861904cacc7c0ac3dff7b8649db11c040ec2933af22d669aa4543ea95a1",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/show-cues.js",
+      "source_change": "changed",
+      "source_sha256": "9c2451e68cb4ce31ee278b65438eef08ec731a72b62c05704d4a8e82125c12c4",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/LICENSE",
+      "source_change": "added",
+      "source_sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/controls/OrbitControls.js",
+      "source_change": "added",
+      "source_sha256": "b97879c748170baadeb3fb84cea1ffdf4674e283dc06042f34e2acb95a76042c",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/environments/RoomEnvironment.js",
+      "source_change": "added",
+      "source_sha256": "c20f0b4677f6128a138d7152b85cbef9091f4f45cdfa05adca04d40c1697c7ae",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/loaders/GLTFLoader.js",
+      "source_change": "added",
+      "source_sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/objects/Reflector.js",
+      "source_change": "added",
+      "source_sha256": "0908d87a7251268dd6d12310b9633f08fd3be9c6faf2e2a4076fce0e87bdd26d",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/EffectComposer.js",
+      "source_change": "added",
+      "source_sha256": "4b8c855f28eed2570bed898adc0ab89c585a8a281ecb6d905c09d00697f9f50a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/MaskPass.js",
+      "source_change": "added",
+      "source_sha256": "7cd08eee9d5d6f5578beaddbdcbe9c384f6873810af27f22ab7db3ceeb127aa3",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/OutputPass.js",
+      "source_change": "added",
+      "source_sha256": "f5b81c96e76b6b28b4b3ba8c41c4aeb982b1e03f3d82883242d951b2ab082fa2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/Pass.js",
+      "source_change": "added",
+      "source_sha256": "444b409c235ead986893c472e720da1b779a56985c7d10b279c7944b52bd61c5",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/RenderPass.js",
+      "source_change": "added",
+      "source_sha256": "fd91229aacc5830e3984b0f2bdefcf566163ea028f4c1f1ab233fa6665a133ac",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/ShaderPass.js",
+      "source_change": "added",
+      "source_sha256": "e2500a5913b26bbf5148ceaae644c6edcff06a18b01494ee37bf856353d2ab9d",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/postprocessing/UnrealBloomPass.js",
+      "source_change": "added",
+      "source_sha256": "d92742959879b461f25348b2abddc7ca0d48527e7718340bcfa29fa771e2799a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/shaders/CopyShader.js",
+      "source_change": "added",
+      "source_sha256": "a33057d5ac91c43304c186ac0e8816e62bb2ed471d3a00ff3018dfd5c0389718",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/shaders/FXAAShader.js",
+      "source_change": "added",
+      "source_sha256": "b8303d179f9d5d40a052483e8cfb49c29afb6e60396080e472a6950b51700dac",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/shaders/LuminosityHighPassShader.js",
+      "source_change": "added",
+      "source_sha256": "5044f780b6e6cf863947f64c36fe1587132f7fbe395ada863cd1e5f0388dcf1e",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/shaders/OutputShader.js",
+      "source_change": "added",
+      "source_sha256": "353479f77a8d7e2629d49ccac9fc2f5dbfdda5442e0adf867b00377a2fcb0cb2",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/addons/utils/BufferGeometryUtils.js",
+      "source_change": "added",
+      "source_sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/three.core.js",
+      "source_change": "added",
+      "source_sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "public/vendor/three/three.module.js",
+      "source_change": "added",
+      "source_sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a",
+      "integration": "ported; native auth and server-managed secrets retained where required"
+    },
+    {
+      "path": "scripts/build-worker.mjs",
+      "source_change": "changed",
+      "source_sha256": "52875cb59469aee2ef8cd803ba6ba69371d82cff5527d04069e6fc2014c0daf8",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-bingo-board.mjs",
+      "source_change": "changed",
+      "source_sha256": "13937b21a13b32df5ebf25e08a8328e6925a7987bac903667264170a90e6aa4e",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-bingo-orders.mjs",
+      "source_change": "added",
+      "source_sha256": "2f47ab6ba50abce541e0c5b182b30791f31ddd55fb764e863ddd777d176953d0",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-bingo-scenes.mjs",
+      "source_change": "changed",
+      "source_sha256": "06ef5c7a2095e8556448e7053cf7474ac4c406b26baa46a3c1248c9a28bb2251",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-bingo.mjs",
+      "source_change": "changed",
+      "source_sha256": "3a2bda05d339e798e7057a54f7e447a8aaa6f827f71bfe5ac32ee66b77f39c4d",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-brand-contract.mjs",
+      "source_change": "changed",
+      "source_sha256": "76f3265028ee71a2264535c398ec506ec2199336f2da8f1bdf0307ae5993dc3a",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-broadcast-shell.mjs",
+      "source_change": "changed",
+      "source_sha256": "abe7911c8b58993acf6121e336672740ac71ab90c119a21da7dbabfaafd2e60a",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-calls.mjs",
+      "source_change": "changed",
+      "source_sha256": "508ab0c3c6e4000bdaa6f4b2f88d109ddcdd9517834d49c1b9205646b58a9521",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-characters.mjs",
+      "source_change": "changed",
+      "source_sha256": "5cba14b67d3908b113b92229fc739d920af3b5fcd940fc1d4f3c6ed2f2ba7809",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-director-whisper-runtime.mjs",
+      "source_change": "added",
+      "source_sha256": "8cfdcedff4ffd753b95cfe053266325daeefc68982aa70e7e0686c9b8045b2fc",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-director-whisper-server.mjs",
+      "source_change": "added",
+      "source_sha256": "a29894218cf24119ae672d3ef00ccf67e828e544e9f23f0997b99ecb69436f07",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-director-whisper-ui.mjs",
+      "source_change": "added",
+      "source_sha256": "5717d332e1ed5627b04fe5a078c73ebc7fd2f7f7b5472359a7bf24100cb36e26",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-family-consolation.mjs",
+      "source_change": "added",
+      "source_sha256": "0e1d73b0ec4844c4e0e00104b33b7d4d71e8c59308e8df8de5d0d0cf4dc83edd",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-family-demo.mjs",
+      "source_change": "changed",
+      "source_sha256": "30cbc18990aed0c83b21cca77c30bdcff293ae90e40684b2ca4f737270a327b6",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-festive-mouth.mjs",
+      "source_change": "changed",
+      "source_sha256": "bbbb033dc468ecc9f6344e16bc89bb24b75c864dd91c2b8fa478535cbf0cffcc",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-finale-layer.mjs",
+      "source_change": "changed",
+      "source_sha256": "e3ad1b70646157b4d0eb3090f90a9002fcccf2b3e245abfb8e03f90a0db23c22",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-gpt-live.mjs",
+      "source_change": "changed",
+      "source_sha256": "1e9b5afc451954cc4e90bddac09375ae2514ddc889673620764904ca5d4bbb96",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-live-calls.mjs",
+      "source_change": "changed",
+      "source_sha256": "1ed2588fb7bdac2f40c827051ee38b5cabacbf68bb8d5480605a03b88f5cba48",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-live-chat.mjs",
+      "source_change": "changed",
+      "source_sha256": "76e69b311457e18ba3640f4e79f3c110bc42d9463a8c05511152b5a36e88d7c4",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-live-director-whisper.mjs",
+      "source_change": "added",
+      "source_sha256": "9e418054c4919247de456ca26817ffb684271baade94bb81c66852d9d2d07532",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-magic-catalog.mjs",
+      "source_change": "added",
+      "source_sha256": "545b612c43b58f67fefee7291ec6b40fe8d2a8b25f35a9994f2d63d840dc41ca",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-brand-isolation.mjs",
+      "source_change": "changed",
+      "source_sha256": "1a79d16195e6fc22022c552f42ab444854bcc2d3a6185720d364686f3f56720e",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-effect-continuity.mjs",
+      "source_change": "changed",
+      "source_sha256": "2fceb0f3f0eb7dfc02105c4fe7a9e07e5d0938f5d248637e24844db6257ba49e",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-leg-render.mjs",
+      "source_change": "added",
+      "source_sha256": "d5d19440dcd66939f8a085307a3490bb0cc6372ccd1c60ad0b3005eb3d6a0888",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-magic-render.mjs",
+      "source_change": "added",
+      "source_sha256": "4287d2d36132792beb24fd2218135395d17f5c762c692b24e550addb6e3d9449",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-minigame-catalog.mjs",
+      "source_change": "changed",
+      "source_sha256": "dd7d4cc3d298a3319ee27b6c2617961531e38463a5f893d130a69048e4c71d70",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-minigame-render.mjs",
+      "source_change": "changed",
+      "source_sha256": "24d61186e28f70e174f895a5fe579ec8419400c83e0611916b23596e443df9af",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-minigame-server.mjs",
+      "source_change": "changed",
+      "source_sha256": "488faa59a7688272c8055772077c8f937403c9be62d1b012e9348244d42aca2f",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-motion.mjs",
+      "source_change": "changed",
+      "source_sha256": "6b8e8d390071ab3455090b1818c6c8e5dadb72d5fac4dfe257229520392be2d0",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-puppet-render.mjs",
+      "source_change": "changed",
+      "source_sha256": "83b3a6d4f8f136cebdd00413bd20bc402134d7302449fa17de46c66243b6b17f",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-studio-render.mjs",
+      "source_change": "changed",
+      "source_sha256": "58c94347e59b414fc66e4ba439f2a44431caf5be45490da27ba86ec09b00fd02",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-milo-studio-tour.mjs",
+      "source_change": "added",
+      "source_sha256": "8596502c8d9152e974ca8e7181a078ef9d3a1a5514311673c7796af42648c216",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-minigame-temporal-render.mjs",
+      "source_change": "changed",
+      "source_sha256": "3df861cda6dfd8a8a6778ed0cc78001bae2c7ec56b96367f6f024cff29edb70a",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-openai.mjs",
+      "source_change": "changed",
+      "source_sha256": "dfc8f1c1cbd535999271668d5226f816928e2cfc423baed5918a11d23f51d004",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-order-demo.mjs",
+      "source_change": "added",
+      "source_sha256": "51b1d9f9155c57e6f53a15f333437c84cc9c95a757ccde59dd654e3087b062d7",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-planner-api.mjs",
+      "source_change": "changed",
+      "source_sha256": "a74215f750c66568c4a0652fd8fb83e58a2ba2657f0fd0a65790fad8cc3f8721",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-planner-ui.mjs",
+      "source_change": "changed",
+      "source_sha256": "60ea2642426c68547d7c43af8973bb72da05722a655149b6e24ef55cfe874955",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-player-auth.mjs",
+      "source_change": "changed",
+      "source_sha256": "fb9b072c387cd7fecc376626a836d5698fbf07765c1e44761a312a15204cd984",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-premium-scenes.mjs",
+      "source_change": "changed",
+      "source_sha256": "c36e0d26320d12eee82ba4e6041ffd5406a7da968f7267dd4fc6da49ac760548",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-presentation.mjs",
+      "source_change": "changed",
+      "source_sha256": "0fe3964a0eadd0bec1c90dd94d9cb2db6322da14b9c594165a322e1f7ad2b0d6",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-production.mjs",
+      "source_change": "changed",
+      "source_sha256": "145d8c37119fc46b76af2fa1c976b9ba341debd6892a65a3f4119c64d4473e4e",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-regie-panels.mjs",
+      "source_change": "changed",
+      "source_sha256": "c1f476b104e8212c379189692ba28f70d0fad8739109610649249d79825e3854",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-regie-workspace.mjs",
+      "source_change": "changed",
+      "source_sha256": "624875038a427235a7f658fb279ceca884b6f31975e1b119ddba6414e4e48a14",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-secrets.mjs",
+      "source_change": "changed",
+      "source_sha256": "395bc799389f2ca9daf7b6ae7e6c4f801d63289b44c95c1f8bbe8b2bb6d5c1b9",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-show-cue-ui.mjs",
+      "source_change": "changed",
+      "source_sha256": "1cdcdeac79cc95ff655eafa9ba16a38a9b16d279f031aae1574951487e2205f1",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-show-cues.mjs",
+      "source_change": "changed",
+      "source_sha256": "c963fae7eda26efe9fb7398262044998e594d926ec8cc639dedfb9917477135f",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-show-graphics.mjs",
+      "source_change": "changed",
+      "source_sha256": "ec78de089e541959c8f51c6f22614dff6aea1e8f4d60d534f9350bcedb1419e3",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-show-worlds.mjs",
+      "source_change": "changed",
+      "source_sha256": "150bbc8681251553134f621bf466b88ba5cdb3747154cdb0104d61fc8868ebc6",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-showtime.mjs",
+      "source_change": "changed",
+      "source_sha256": "bb226e5849567629be0daf78dccdacd037f0228d74ed350c3645f935d972fee8",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-studio-polish.mjs",
+      "source_change": "changed",
+      "source_sha256": "fe51e49885f4990ed399df3e892798429d32788431bd10b0c9f96ec41a32264d",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-studio25d.mjs",
+      "source_change": "changed",
+      "source_sha256": "b8282011bed557cffd526ffa213836ee8317a012d927e004d377ee844f4b42f7",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/check-workspace-navigation.mjs",
+      "source_change": "added",
+      "source_sha256": "18c9224f593ce924c6f2d2f6bfd1941d42bae319b87be06b09c725b3390f126a",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/handoff-fixture-state.mjs",
+      "source_change": "added",
+      "source_sha256": "837fabcbfe9e89173c314270b0717fff30c106509979d8ecc0122bd5c2c097d0",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/handoff-fixtures.mjs",
+      "source_change": "added",
+      "source_sha256": "9de0ed4e4fb34f863c7f8b3ecfd29a4c76a005b62009a6561a91c2ebe4b0ac08",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "scripts/live-calls-fixture.mjs",
+      "source_change": "changed",
+      "source_sha256": "e84112fbe45d27bc21938df836d8b155318f95971b1edab9e4947c051e5d6d9f",
+      "integration": "feature regressions selectively ported; native CI/deploy remains authoritative"
+    },
+    {
+      "path": "server/bingo-model.js",
+      "source_change": "changed",
+      "source_sha256": "3bccc7fff5b53031231887c8385cddb22ea27f683a175b7b4fe1f7e866fa5d3f",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/bingo-order-mail.js",
+      "source_change": "added",
+      "source_sha256": "f057b74eef739dfd451657b96e21cd819aacaa9e1029cd55e68c238c3359bc18",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/bingo-order-model.js",
+      "source_change": "added",
+      "source_sha256": "e2aaaddeaef552ce7b550b951e541f230deafa65bc6500b399ba22c3af90153a",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/bingo-orders.js",
+      "source_change": "added",
+      "source_sha256": "f290c08ebf30055fbcec42dd61a6a81c772814864657da345ed5857ae9a5f116",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/bingo.js",
+      "source_change": "changed",
+      "source_sha256": "d46f38c5bb2433b180c82de54af6a1d9a2d5ba3c6c92aab85874e935c75b9493",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/character-settings.js",
+      "source_change": "changed",
+      "source_sha256": "b645bcc8dc866daea328a5e1b8ba99dbdebf8c27aec327248f4a213737ddc3e8",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/characters.js",
+      "source_change": "changed",
+      "source_sha256": "6719ff817aaf2b249cc4f2154df93d22892e8d9dcaa8aaa3ec4de713785a2d5c",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/director-whisper.js",
+      "source_change": "added",
+      "source_sha256": "07fa17bd67562aed7a76296a78a0e7b44f7e48d288a39ac40dde3bd6bbe36fc6",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/live-calls.js",
+      "source_change": "changed",
+      "source_sha256": "cf17272de59a4d00272a04c76d86b7ff03feb7ad991108d0e71cee460e4efeec",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/live-director-whisper.js",
+      "source_change": "added",
+      "source_sha256": "98811ac2ee438b21c5f98d9cd883da007c55e981217265d512133761e94d44e0",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/livekit.js",
+      "source_change": "changed",
+      "source_sha256": "3a50ee66185ec277ab1474b0a5ccff31a8b441189c5b97c95d74cbbb640ef3a5",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/magic-cues.js",
+      "source_change": "added",
+      "source_sha256": "da4c41b08adfc36fccbbb18862eb4d9d8a16194d4e786d4462c081526ed171d7",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/openai.js",
+      "source_change": "changed",
+      "source_sha256": "d74effea8ff6c8555aaed2cc06f787314152eed52d1c6f21986b26771589489f",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/output.js",
+      "source_change": "changed",
+      "source_sha256": "b0fb487b5cd949eae2623d492b891ac0ecb1ccb3377a40fc984e951c61e99ee7",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/plan-model.js",
+      "source_change": "changed",
+      "source_sha256": "7c6a9c3bf4ae18853515f198e631ce216bc359628ae87f9bcc0c040d4bef8423",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/planner.js",
+      "source_change": "changed",
+      "source_sha256": "4d7565851cef3e6ecfd766be82a71347d0c97d5f15aa91de79107ebb0a9c751c",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/player-auth.js",
+      "source_change": "changed",
+      "source_sha256": "5f580e58949b5d15f125da1ea9c9666c09397cca9e0b8a46224bb4d2b4a335b2",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/player-identity.js",
+      "source_change": "changed",
+      "source_sha256": "ffa9d20aa3bb0e16ee99829679b40fd7338571f4c5eae90e5e20948463c5b1ea",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/presentation.js",
+      "source_change": "changed",
+      "source_sha256": "c3e5c687ccce2e2a74b64e76878c1440dd11c7d94a6c0a165382b591d43574b8",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/production-model.js",
+      "source_change": "changed",
+      "source_sha256": "90983bb309fd4a93fb095070d3ffbda4f898fac795ea10f4ecb425632c081791",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/production.js",
+      "source_change": "changed",
+      "source_sha256": "12b9db14b6086ea6cf5df8b9d6fd4f19951631fb5510f5f2b8cca5f37ecc576c",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    },
+    {
+      "path": "server/secrets.js",
+      "source_change": "changed",
+      "source_sha256": "daedbdba3dc74582bdbf1ecc51479c1bd6f67a3ecff03d6e61b55e540cce5be6",
+      "integration": "retain native target: source differences concern superseded Sites auth or browser secret handling"
+    },
+    {
+      "path": "server/show-cues.js",
+      "source_change": "changed",
+      "source_sha256": "9c2451e68cb4ce31ee278b65438eef08ec731a72b62c05704d4a8e82125c12c4",
+      "integration": "port feature changes; preserve verified native identity and provider adapter"
+    }
+  ],
+  "package_sha256": "ceb092d90c574c7a3a8596233a9fe400502daea3cdd70313d67c5ff6bf72b60d",
+  "manifest_sha256": "4bbb533631498f2c7a36c47a0e76381376991cd6cfc6ed5ec649f321fe608462"
+}

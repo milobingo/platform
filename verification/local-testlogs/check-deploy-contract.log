@@ -1,18 +1,19 @@
-✔ release selection accepts only a complete immutable source SHA (1.218966ms)
-✔ CI proof binds successful required workflow to its own repository, branch and exact SHA (1.09574ms)
-✔ a later failed CI run cannot be hidden behind an older passing run or a pull request run (0.467227ms)
-✔ dedicated runner and wrapper configuration fail closed on identity or unreviewed metadata (0.598636ms)
-✔ runtime configuration is staging-only, keeps all privileged keys server-side and forces loopback (2.545125ms)
-✔ release metadata and local-mode overrides cannot override a verified runtime boundary (0.371472ms)
-✔ DG wrapper receives only approved runtime keys and basic process metadata (0.669664ms)
-✔ workflow keeps deployment manual, gates host mutation on CI, and isolates database-apply credentials (0.670365ms)
-✔ runtime accepts the separate backend LOGIN and rejects administrative role flags and memberships (0.429679ms)
-✔ runtime database verification uses verified TLS and read-only role/table checks before releasing the connection (1.861469ms)
-ℹ tests 10
+✔ release selection accepts only a complete immutable source SHA (1.084693ms)
+✔ reviewed native entry transitively pins its exact helper before database apply (0.937609ms)
+✔ CI proof binds successful required workflow to its own repository, branch and exact SHA (0.900653ms)
+✔ a later failed CI run cannot be hidden behind an older passing run or a pull request run (0.542732ms)
+✔ dedicated runner and wrapper configuration fail closed on identity or unreviewed metadata (0.490492ms)
+✔ runtime configuration is staging-only, keeps all privileged keys server-side and forces loopback (2.444101ms)
+✔ release metadata and local-mode overrides cannot override a verified runtime boundary (0.291711ms)
+✔ DG wrapper receives only approved runtime keys and basic process metadata (0.736176ms)
+✔ workflow keeps deployment manual, gates host mutation on CI, and isolates database-apply credentials (1.536526ms)
+✔ runtime accepts the separate backend LOGIN and rejects administrative role flags and memberships (0.450583ms)
+✔ runtime database verification uses verified TLS and read-only role/table checks before releasing the connection (1.635877ms)
+ℹ tests 11
 ℹ suites 0
-ℹ pass 10
+ℹ pass 11
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 16.310936
+ℹ duration_ms 21.670168

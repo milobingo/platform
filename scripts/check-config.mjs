@@ -1,6 +1,7 @@
 import {existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {decodePostgresCa} from '../server/node-postgres-tls.js';
+import {createOrderMailDelivery} from '../server/node-mail-gateway.js';
 
 // Validate names/presence and formats only. Never print configuration values.
 const options=Object.fromEntries(process.argv.slice(2).map(argument=>{
@@ -107,6 +108,9 @@ if(phase==='runtime'&&['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'].som
       if(url.protocol!=='wss:'||!url.hostname.endsWith('.livekit.cloud')||url.port||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw new Error();
     }catch{errors.push('LIVEKIT_URL: verwacht een wss:// LiveKit Cloud-projectorigin.');}
   }
+}
+if(phase==='runtime'&&has('MAIL_MODE')&&environment.MAIL_MODE!=='disabled'&&!createOrderMailDelivery(environment)){
+  errors.push('MAIL_MODE/MAIL_ENVIRONMENT/SEND_EMAIL_HOOK_SECRET/MAIL_ALLOWED_RECIPIENTS: de gesigneerde DG-mailgatewayconfiguratie is onvolledig of ongeldig. Staging vereist een ontvangerlijst; live verzending vereist productie.');
 }
 
 if(errors.length){

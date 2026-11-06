@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "environment": "production",
+  "repository": "milobingo/platform",
+  "branch": "main",
+  "siteId": null,
+  "appUrl": null,
+  "host": null,
+  "runnerName": null,
+  "runnerUser": null,
+  "buildUser": null,
+  "appUser": null,
+  "buildLockGroup": null,
+  "workspace": null,
+  "port": null,
+  "supabaseRef": null,
+  "bucket": null,
+  "configVersion": null,
+  "mailMode": "disabled"
+}

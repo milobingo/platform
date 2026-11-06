@@ -1,0 +1,43 @@
+{
+  "handoff": "2026-11-06-v6",
+  "sourceCommit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+  "nativeBaseline": "d10f923108b28cbf0c332374394d3ab8091ea47a",
+  "checkedAt": "2026-11-06T02:49:02.734Z",
+  "node": "v24.18.0",
+  "localChecks": {
+    "programs": 62,
+    "failed": 0,
+    "report": "verification/local-tests.json",
+    "nodeReported": {
+      "tests": 380,
+      "skipped": 4,
+      "reason": "Four remote PostgreSQL integration checks require the isolated local test service; exact-SHA CI supplies it."
+    }
+  },
+  "standaloneBrowser": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "report": "verification/browser-tests.json",
+    "authenticatedWorkspaceTransport": "simulated in browser routing only",
+    "realProviders": false
+  },
+  "build": true,
+  "lint": true,
+  "typecheck": true,
+  "nativeWrapperTests": 23,
+  "sqlMigrationsAdded": 0,
+  "externalPaymentsOrMailSent": false,
+  "production": {
+    "authorized": true,
+    "deployed": false,
+    "targetConfigured": false,
+    "missing": [
+      "real production URL/host/site/runner",
+      "separate Supabase project and production environment configuration",
+      "Milo gateway/worker/sender/signing and reconciliation contract",
+      "same-SHA real account, order/PDF, mail and live show acceptance"
+    ]
+  },
+  "productionScaffoldTests": 9
+}

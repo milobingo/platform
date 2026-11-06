@@ -8,8 +8,12 @@ const legacyChecks=[
   'check-regie-workspace','check-regie-panels','check-brand-contract','check-secrets',
   'check-youtube-player','check-startup-recovery','check-gpt-live',
   'check-calls','check-planner-api','check-planner-ui','check-openai','check-production','check-milo-brand-isolation','check-presentation',
+  'check-claim-priority','check-family-consolation','check-bingo-orders','check-order-demo',
+  'check-workspace-navigation','check-character-navigation','check-administration-ui','check-broadcast-shell','check-show-cue-ui',
+  'check-magic-catalog','check-milo-studio-tour','check-milo-leg-render','check-milo-magic-render','check-milo-puppet-render','check-milo-effect-continuity',
+  'check-livekit','check-director-whisper-runtime','check-director-whisper-ui','check-director-whisper-server','check-live-director-whisper',
 ];
-const checks=[...legacyChecks.map(name=>`scripts/${name}.mjs`),'tests/check-node-storage.mjs','tests/check-node-provider-fetch.mjs','tests/check-node-postgres-tls.mjs','tests/check-deploy-contract.mjs','tests/check-deploy-database.mjs','tests/check-provision-runtime.mjs'];
+const checks=[...legacyChecks.map(name=>`scripts/${name}.mjs`),'tests/check-node-storage.mjs','tests/check-node-runtime.mjs','tests/check-node-provider-fetch.mjs','tests/check-node-mail-gateway.mjs','tests/check-node-postgres-tls.mjs','tests/check-deploy-contract.mjs','tests/check-production-deploy.mjs','tests/check-deploy-database.mjs','tests/check-provision-runtime.mjs'];
 await mkdir('verification/local-testlogs',{recursive:true});
 const results=[];
 for(const path of checks){

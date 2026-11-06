@@ -202,3 +202,4 @@
 [data-brand=milo] .rd-workspace .rd-camera-description small{color:#b29cc4}
 [data-brand=milo] :is(.rd-eyebrow,.rd-cue-meta,.rd-cue small,.rd-rundown>footer>p,.rd-up-next>span,.rd-scene-help){color:#aa94bd}
 [data-brand=milo] .rd-dock-tabs>button{color:#bca7cf}.rd-camera-image>.mf-shot-preview{border-radius:inherit}
+.rd-consolation-list{display:grid;gap:5px;padding:12px;margin:12px 0;border:1px solid #c7a2e338;border-radius:12px;background:#a77bcc0c;text-align:left}.rd-consolation-list>strong{font-size:11px;color:#d9b6ee}.rd-consolation-list>small{display:block;font-size:12px;color:#d5c7df}

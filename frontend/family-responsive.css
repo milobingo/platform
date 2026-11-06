@@ -1,4 +1,5 @@
 /* Shared responsive rules for every family tab, loaded after the show layout. */
+.family-app .fam-consolation-label { display: block; margin-top: 2px; }
 .family-app .fam-watch-workspace,
 .family-app .fam-content,
 .family-app .fam-page-heading > div,

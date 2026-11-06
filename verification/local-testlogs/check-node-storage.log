@@ -1,13 +1,13 @@
-✔ durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior (225.709483ms)
-✔ local data, private objects and roles survive a new storage instance (17.525885ms)
-✔ local object CAS coordinates separate processes and recovers a process-killed lock (122.445363ms)
-✔ PostgreSQL translator numbers placeholders outside quoted literals and rejects unknown JSON shapes (1.191384ms)
-✔ PostgreSQL adapter executes the same persistence/concurrency contract with RLS and shared object CAS (524.563005ms)
+✔ durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior (224.396719ms)
+✔ local data, private objects and roles survive a new storage instance (25.070366ms)
+✔ local object CAS coordinates separate processes and recovers a process-killed lock (122.027992ms)
+✔ PostgreSQL translator numbers placeholders outside quoted literals and rejects unknown JSON shapes (1.206637ms)
+﹣ PostgreSQL adapter executes the same persistence/concurrency contract with RLS and shared object CAS (0.113261ms) # SKIP
 ℹ tests 5
 ℹ suites 0
-ℹ pass 5
+ℹ pass 4
 ℹ fail 0
 ℹ cancelled 0
-ℹ skipped 0
+ℹ skipped 1
 ℹ todo 0
-ℹ duration_ms 898.22043
+ℹ duration_ms 378.042772

@@ -121,12 +121,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3000,
+                  "duration": 3220,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:42.708Z",
+                  "startTime": "2026-11-06T02:46:58.998Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -155,12 +155,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 3190,
+                  "duration": 3169,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:42.723Z",
+                  "startTime": "2026-11-06T02:46:58.987Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -186,15 +186,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 3136,
+                  "duration": 3135,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:45.779Z",
+                  "startTime": "2026-11-06T02:47:02.229Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -220,15 +220,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3236,
+                  "duration": 3177,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:45.983Z",
+                  "startTime": "2026-11-06T02:47:02.302Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -254,15 +254,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 3163,
+                  "duration": 3641,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:48.925Z",
+                  "startTime": "2026-11-06T02:47:05.374Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -288,15 +288,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 123,
+                  "duration": 142,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:49.228Z",
+                  "startTime": "2026-11-06T02:47:05.496Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -322,15 +322,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 20,
+                  "duration": 22,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:49.358Z",
+                  "startTime": "2026-11-06T02:47:05.650Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -356,15 +356,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 540,
+                  "duration": 638,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-05T15:58:49.386Z",
+                  "startTime": "2026-11-06T02:47:05.684Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -378,13 +378,191 @@
           "column": 1
         }
       ]
+    },
+    {
+      "title": "handoff-v6.spec.mjs",
+      "file": "handoff-v6.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13157,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:06.360Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-c9e4c46bb44e9205a341",
+          "file": "handoff-v6.spec.mjs",
+          "line": 81,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 13546,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:09.036Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-ef2022479e99c3b4934d",
+          "file": "handoff-v6.spec.mjs",
+          "line": 81,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 short-screen workspace and family modals; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2359,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:19.527Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-8fa3f98422c860e1f4bc",
+          "file": "handoff-v6.spec.mjs",
+          "line": 138,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 family orders, retained broadcast and whisper dialog; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2310,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:21.893Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-33024b4c5dfcadf3e5b3",
+          "file": "handoff-v6.spec.mjs",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 actual tour transport, new magic reveal and order detail; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 5688,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:22.591Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-1c4a7e6e6770bbf9184e",
+          "file": "handoff-v6.spec.mjs",
+          "line": 183,
+          "column": 1
+        }
+      ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-05T15:58:40.439Z",
-    "duration": 11841.156,
-    "expected": 8,
+    "startTime": "2026-11-06T02:46:56.450Z",
+    "duration": 32044.585,
+    "expected": 13,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

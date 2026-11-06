@@ -1,7 +1,7 @@
-import {canvasRuntime} from './canvas-runtime.mjs';
 // Pixel-level QA of the real Milo Canvas puppet. No browser, provider or game server.
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {canvasRuntime} from './canvas-runtime.mjs';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {motionEnvelope} from '../public/mf-show-effects.js';

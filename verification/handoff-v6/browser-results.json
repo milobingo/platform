@@ -1,0 +1,570 @@
+{
+  "config": {
+    "argv": [
+      "/home/codex/.nvm/versions/node/v24.18.0/bin/node",
+      "/home/codex/repos/milobingo/node_modules/.pnpm/@playwright+test@1.64.1/node_modules/@playwright/test/cli.js",
+      "test"
+    ],
+    "configFile": "/home/codex/repos/milobingo/playwright.config.mjs",
+    "rootDir": "/home/codex/repos/milobingo/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/codex/repos/milobingo/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/codex/repos/milobingo/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "snapshotDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4175",
+          "headless": true,
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "verification/browser-tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": {
+      "command": "node scripts/start-standalone-test.mjs",
+      "url": "http://127.0.0.1:4175/spelen",
+      "timeout": 60000,
+      "reuseExistingServer": false,
+      "gracefulShutdown": {
+        "signal": "SIGTERM",
+        "timeout": 15000
+      }
+    }
+  },
+  "suites": [
+    {
+      "title": "family.spec.mjs",
+      "file": "family.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "family demo 320px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3220,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:46:58.998Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-7b4895033c819a4f6b92",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 390px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3169,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:46:58.987Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-5e68cd79428826fb8409",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 430px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3135,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:02.229Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-bcf849f6d61573226f9d",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 768px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3177,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:02.302Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-9035ce2a45628c29d5f5",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 1280px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3641,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:05.374Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-e1b41764246f14e8b50e",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "real API rejects forged Sites identity and demo flag",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 142,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:05.496Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-557c6dbe208c8fdf6c35",
+          "file": "family.spec.mjs",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "production cannot create a local regie session",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:05.650Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-d8c7042c85de2eaa68d9",
+          "file": "family.spec.mjs",
+          "line": 46,
+          "column": 1
+        },
+        {
+          "title": "ordinary family entry uses real sign-in, legacy link preserves selected show",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 638,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:05.684Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-c92a64e3be0c8f5c400a",
+          "file": "family.spec.mjs",
+          "line": 54,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "handoff-v6.spec.mjs",
+      "file": "handoff-v6.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13157,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:06.360Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-c9e4c46bb44e9205a341",
+          "file": "handoff-v6.spec.mjs",
+          "line": 81,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 13546,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:09.036Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-ef2022479e99c3b4934d",
+          "file": "handoff-v6.spec.mjs",
+          "line": 81,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 short-screen workspace and family modals; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2359,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:19.527Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-8fa3f98422c860e1f4bc",
+          "file": "handoff-v6.spec.mjs",
+          "line": 138,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 family orders, retained broadcast and whisper dialog; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2310,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:21.893Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-33024b4c5dfcadf3e5b3",
+          "file": "handoff-v6.spec.mjs",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 actual tour transport, new magic reveal and order detail; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 5688,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T02:47:22.591Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-1c4a7e6e6770bbf9184e",
+          "file": "handoff-v6.spec.mjs",
+          "line": 183,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T02:46:56.450Z",
+    "duration": 32044.585,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

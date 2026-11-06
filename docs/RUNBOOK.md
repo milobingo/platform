@@ -1,6 +1,6 @@
 # Lokaal draaien en staging releasen
 
-Dit runbook hoort bij de lokale port. Het actuele projectprofiel staat in `PROJECTPROFIEL.json` in de root; de oorspronkelijke documenten staan onder `docs/overdracht/`. Het DG-masterdocument is `docs/DG-Webservices-Masterprompt-Bouw-en-Deploy.txt`. De afgesproken scope omvat de lokale bouw, synchronisatie naar `main` van `milobingo/platform` en deployment naar staging. De gebruiker heeft staging op 5 november 2026 expliciet opgedragen. Productie valt buiten deze opdracht.
+Dit runbook hoort bij de lokale port. Het actuele projectprofiel staat in `PROJECTPROFIEL.json` in de root; de oorspronkelijke documenten staan onder `docs/overdracht/`. Het DG-masterdocument is `docs/DG-Webservices-Masterprompt-Bouw-en-Deploy.txt`. De afgesproken scope omvat de lokale bouw, synchronisatie naar `main` van `milobingo/platform` en staging plus productie. De gebruiker heeft staging op 5 november en productie op 6 november 2026 expliciet opgedragen. De zes nieuwe wijzigingen staan in [het integratierapport](WIJZIGINGEN-1-6-INTEGRATIE.md); de productieprocedure staat in [PRODUCTIE-DEPLOY.md](PRODUCTIE-DEPLOY.md). De echte productiebestemming moet nog worden aangeleverd.
 
 ## Lokaal
 

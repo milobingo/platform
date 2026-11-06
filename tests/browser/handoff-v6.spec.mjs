@@ -1,0 +1,213 @@
+import {test,expect} from '@playwright/test';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {CHARACTERS} from '../../server/characters.js';
+import {defaultPresentation} from '../../server/presentation-model.js';
+
+// Browser-only transport fixtures: actual Next/React/CSS/Canvas and local assets,
+// with no server auth bypass, provider request or persisted backend mutation.
+const output='verification/handoff-v6';
+const routes=['overview','shows','script','live','audience','studio','characters','library','books','orders','people','settings'];
+const characterIds=Object.keys(CHARACTERS).filter(id=>id!=='vlampie');
+const tabs={
+ script:['Draaiboek','Cast & stemmen','Rondes & patronen','Prijzen','Startcheck'],
+ audience:['Live chat','Kijkersvragen','Belregie'],
+ library:['Beweging & magie','Scènes & momenten','Beslisspellen','Voorprogramma','Verhaallijnen','Geluid & stemmen','Prijzen & afsluiting'],
+ people:['Boekjes & uitgifte','Gezinnen','Prijzen & verslag','Herstel'],
+ settings:['AI & stemmen','Deze show','E-mail & bellen','Profielen & spelregels','Herstel & controle'],
+};
+const characterTabs=['Stem & uitspraak','Karakter & wereld','Trucjes & show','Gesprek met kinderen','Kennis & geheugen','Beweging'];
+
+async function simulatedTransport(page,testInfo){
+ page.setDefaultTimeout(10000);
+ const errors=[],external=[],writes=[],unexpected=[];
+ const origin=new URL(testInfo.project.use.baseURL).origin;
+ page.on('pageerror',error=>errors.push(error.message));
+ page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
+ await page.route('**/*',async route=>{
+  const request=route.request(),url=new URL(request.url());
+  if(url.origin!==origin){external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
+  if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
+  if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
+  if(request.method()!=='GET'){
+   writes.push({path:url.pathname,method:request.method()});
+   return route.fulfill({status:403,json:{error:{message:'Simulated browser QA blocks backend writes.'}}});
+  }
+  let body;
+  if(url.pathname==='/api/auth/session')body={authenticated:true,user:'qa-browser-regie',email:'regie@example.test',role:'regie',local:false,configured:true,localAvailable:false};
+  else if(url.pathname==='/api/bingo/games')body={games:[]};
+  else if(url.pathname==='/api/characters')body={characters:Object.values(CHARACTERS),revision:0};
+  else if(url.pathname==='/api/openai/status')body={configured:false,canManage:false,revision:null,liveVerified:false};
+  else if(url.pathname==='/api/output')body={state:null,serverTime:Date.now()};
+  else if(url.pathname==='/api/presentation/document')body={document:defaultPresentation(),revision:0};
+  else if(url.pathname==='/api/bingo/families')body={families:[]};
+  else if(url.pathname==='/api/livekit/settings')body={source:'environment',canManage:false,configured:false,url:'',apiKey:'',apiKeyConfigured:false,secretConfigured:false,revision:null,connectionTest:null};
+  else if(url.pathname.includes('/archive'))body={total:0,items:[]};
+  else {unexpected.push(url.pathname+url.search);return route.fulfill({status:404,json:{error:{message:'Unexpected simulated QA endpoint.'}}});}
+  return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
+ });
+ return {errors,external,writes,unexpected};
+}
+
+const noOverflow=page=>expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth),{timeout:3000}).toBeLessThanOrEqual(1);
+async function openRoute(page,id){
+ await page.evaluate(value=>{location.hash='/'+value;},id);
+ await expect(page.locator(`.mf-route-view[data-route="${id}"]`)).toBeVisible();
+ await page.waitForTimeout(220);
+ await page.evaluate(()=>{window.scrollTo(0,0);document.querySelector('main#mf-main')?.scrollTo(0,0);});
+ await noOverflow(page);
+ await expect(page.getByText('De studio kon niet starten.',{exact:true})).toHaveCount(0);
+}
+async function chooseTab(scope,label){
+ const control=scope.getByRole('tab',{name:label,exact:false}).or(scope.getByRole('button',{name:label,exact:false})).first();
+ await control.click();
+ await expect(control).toBeVisible();
+}
+async function screenshot(page,name){
+ await mkdir(output+'/screenshots',{recursive:true});
+ // Keep the real viewport: a stitched long page moves fixed sidebars away from
+ // their on-screen position after a control has scrolled into view.
+ await page.screenshot({path:`${output}/screenshots/qa-simulated-${name}.png`,fullPage:false});
+}
+async function inViewport(page,locator){
+ await expect(locator).toBeVisible();
+ const box=await locator.boundingBox(),viewport=page.viewportSize();
+ expect(box).not.toBeNull();
+ expect(box.x).toBeGreaterThanOrEqual(-1);expect(box.y).toBeGreaterThanOrEqual(-1);
+ expect(box.x+box.width).toBeLessThanOrEqual(viewport.width+1);
+ expect(box.y+box.height).toBeLessThanOrEqual(viewport.height+1);
+}
+
+for(const width of [390,1366]){
+ test(`handoff v6 actual browser ${width}px: routes, nested tabs and controls; simulated transport`,async({page},testInfo)=>{
+  test.setTimeout(180000);
+  await page.setViewportSize({width,height:width===1366?720:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  const proof=await simulatedTransport(page,testInfo),visited=[],nested=[],modules=[];
+  await page.goto('/#/overview');
+  const main=page.locator('main#mf-main');await expect(main).toBeVisible();
+  await expect(page.locator('nav[aria-label="Hoofdnavigatie"]>a')).toHaveCount(12);
+  for(const id of routes){
+   await openRoute(page,id);visited.push(id);
+   if(id==='live'){
+    await inViewport(page,main.getByRole('button',{name:'TAKE',exact:true}));
+    await inViewport(page,main.getByRole('button',{name:'Laat spreken',exact:true}).first());
+    await inViewport(page,main.getByRole('button',{name:'Volgende bal',exact:false}).first());
+    const gestures=main.locator('.rd-quick-gestures>button');await expect(gestures).toHaveCount(4);
+    for(let index=0;index<4;index++){await inViewport(page,gestures.nth(index));expect(await gestures.nth(index).evaluate(node=>node.scrollWidth-node.clientWidth)).toBeLessThanOrEqual(1);}
+    const controls=main.locator('[data-module-id]');await expect(controls).toHaveCount(7);
+    for(let index=0;index<7;index++){
+     const control=controls.nth(index),moduleId=await control.getAttribute('data-module-id');
+     if(width<1100)await main.getByRole('combobox',{name:'Mobiel werkpaneel'}).selectOption(moduleId);else await control.click();await expect(main.locator(`[data-panel-id="${moduleId}"]`)).toBeVisible();modules.push(moduleId);await noOverflow(page);
+    }
+    await screenshot(page,`regie-${width}`);
+   }
+   if(id==='characters')await expect(main.locator('a[href^="#/characters/"]')).toHaveCount(12);
+   if(tabs[id])for(const label of tabs[id]){
+    const scope=id==='script'?main.locator('.mf-tabs[role="tablist"]').first():id==='audience'?main.locator('nav[aria-label="Publiekswerkplek"]'):id==='library'?main.locator('nav[aria-label="Showbibliotheek"]'):id==='people'?main.locator('[role="tablist"][aria-label="Deelnemersadministratie"]'):main;
+    if(width===390&&id==='library')await main.getByRole('combobox',{name:'Onderdeel van de showbibliotheek'}).selectOption({label});else await chooseTab(scope,label);nested.push(id+':'+label);await noOverflow(page);
+    if(id==='settings'&&label==='AI & stemmen')await expect(main.locator('input[type="password"]')).toHaveCount(0);
+    if(id==='settings'&&label==='E-mail & bellen'){
+     await expect(main.locator('input[type="password"]')).toHaveCount(0);
+     await expect(main.getByText('Aanmelden voor gezinnen',{exact:true})).toBeVisible();
+    }
+    if(id==='settings'&&label==='Profielen & spelregels'){
+     const presentation=main.locator('[role="tablist"][aria-label="Presentatie-instellingen"]');
+     for(const name of ['Presentatieprofielen','Spelregels','Deze show']){await chooseTab(presentation,name);nested.push('presentation:'+name);await noOverflow(page);}
+    }
+   }
+   if(['library','orders'].includes(id))await screenshot(page,`${id}-${width}`);
+  }
+  for(const id of characterIds){await openRoute(page,'characters/'+id);visited.push('characters/'+id);}
+  await openRoute(page,'characters/milo');
+  const cast=main.locator('nav[aria-label="Personage-instellingen"],.cp-nav').first();
+  for(const label of characterTabs){await chooseTab(cast,label);nested.push('character:'+label);await noOverflow(page);}
+  expect(nested).toHaveLength(33);expect(visited).toHaveLength(24);
+  if(width===390){
+   const trigger=page.getByRole('button',{name:'Menu openen',exact:true});
+   await trigger.click();await expect(page.locator('aside').getByRole('link',{name:'Overzicht',exact:true})).toBeVisible();
+   await page.keyboard.press('Escape');await expect(trigger).toBeFocused();
+  }
+  const before=page.url();await page.locator('.mf-skip').focus();await page.keyboard.press('Enter');
+  expect(page.url()).toBe(before);await expect(main).toBeFocused();
+  expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+  await mkdir(output,{recursive:true});
+  await writeFile(`${output}/browser-workspace-${width}.json`,JSON.stringify({simulatedBrowserTransport:true,realAuthOrProvidersVerified:false,viewport:page.viewportSize(),routes:visited,nestedTabs:nested,modules,errors:proof.errors,externalRequests:proof.external,backendWrites:proof.writes},null,2)+'\n');
+ });
+}
+
+test('handoff v6 short-screen workspace and family modals; simulated transport',async({page},testInfo)=>{
+ const proof=await simulatedTransport(page,testInfo);
+ await page.setViewportSize({width:390,height:568});await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('/#/overview');await expect(page.locator('main#mf-main')).toBeVisible();
+ await page.getByRole('button',{name:'Nieuwe show',exact:true}).click();
+ const dialog=page.getByRole('dialog');await expect(dialog).toBeVisible();
+ await inViewport(page,dialog.getByRole('button',{name:'Sluiten',exact:true}));
+ await dialog.locator('input').first().fill('Een lange Nederlandse naam voor de korte schermcontrole');
+ await dialog.getByRole('button',{name:'Show aanmaken',exact:false}).scrollIntoViewIfNeeded();
+ await expect(dialog.getByRole('button',{name:'Show aanmaken',exact:false})).toBeVisible();
+ await noOverflow(page);await screenshot(page,'new-show-short-phone');
+ await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);
+ await page.goto('/spelen?demo=1');await expect(page.getByRole('navigation',{name:'Spelersomgeving'})).toBeVisible();
+ await page.getByRole('button',{name:'Account en instellingen'}).click();
+ await expect(page.getByRole('dialog')).toBeVisible();
+ await inViewport(page,page.getByRole('dialog').getByRole('button',{name:'Sluiten',exact:true}));
+ await noOverflow(page);await screenshot(page,'family-account-short-phone');
+ await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+});
+
+test('handoff v6 family orders, retained broadcast and whisper dialog; simulated transport',async({page},testInfo)=>{
+ test.setTimeout(90000);
+ const proof=await simulatedTransport(page,testInfo);await page.setViewportSize({width:390,height:844});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('/spelen?demo=1');const stage=page.locator('.fam-demo-video');await expect(stage).toBeVisible();
+ await stage.evaluate(node=>node.dataset.handoffMount='retained');
+ await screenshot(page,'family-phone');
+ await page.getByRole('navigation',{name:'Spelersomgeving'}).getByRole('button',{name:'Boekjes',exact:false}).click();
+ const subnav=page.getByRole('navigation',{name:'Boekjes en bestellingen'});
+ for(const name of ['Mijn boekjes','Bingobladen bestellen','Mijn bestellingen']){
+  await subnav.getByRole('button',{name,exact:true}).click();await expect(stage).toHaveAttribute('data-handoff-mount','retained');await noOverflow(page);
+  if(name==='Bingobladen bestellen')await screenshot(page,'family-order-phone');
+ }
+ await page.goto('/#/live');await expect(page.locator('main#mf-main')).toBeVisible();
+ await page.getByRole('button',{name:/^Fluister naar /}).first().click();
+ const whisper=page.getByRole('dialog');await expect(whisper).toBeVisible();
+ await whisper.locator('textarea').fill('Bouw op een vrolijke manier wat spanning op, zonder een uitslag te verzinnen.');
+ await screenshot(page,'whisper-private-phone');
+ await whisper.getByRole('button',{name:'Fluister in',exact:true}).click();
+ await expect(whisper.getByText(/Gesimuleerd|Simulatie/i).first()).toBeVisible();
+ await noOverflow(page);await screenshot(page,'whisper-simulated-proposal-phone');
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+});
+
+test('handoff v6 actual tour transport, new magic reveal and order detail; simulated transport',async({page},testInfo)=>{
+ test.setTimeout(90000);
+ const proof=await simulatedTransport(page,testInfo);await page.setViewportSize({width:1366,height:720});
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.goto('/#/library');const library=page.locator('.sc-library');await expect(library).toBeVisible();
+ await library.locator('.sc-card').filter({hasText:'Milo’s studiorondje'}).click();
+ const preview=library.locator('.sc-preview');await expect(preview.getByRole('heading',{name:'Milo’s studiorondje'})).toBeVisible();
+ await preview.getByRole('button',{name:'Voorbeeld afspelen',exact:true}).click();
+ await expect(preview.getByRole('button',{name:'Voorbeeld pauzeren',exact:true})).toBeVisible();
+ await page.waitForTimeout(300);await preview.getByRole('button',{name:'Voorbeeld pauzeren',exact:true}).click();
+ const position=preview.getByRole('slider',{name:'Tijdpositie voorbeeld'});
+ await position.fill('32');await expect(position).toHaveValue('32');await screenshot(page,'studio-tour-preview-desktop');
+ await preview.getByRole('button',{name:'Start dit moment live',exact:true}).click();
+ const active=library.getByRole('region',{name:'Actief showmoment'});await expect(active).toBeVisible();
+ await active.getByRole('button',{name:'Showmoment pauzeren',exact:true}).click();
+ await expect(active.getByRole('button',{name:'Showmoment hervatten',exact:true})).toBeVisible();
+ await active.getByRole('button',{name:'Showmoment hervatten',exact:true}).click();
+ await active.getByRole('button',{name:'Stop showmoment',exact:true}).click();
+ await expect(active).toHaveCount(0,{timeout:6000});
+ const rings=library.locator('.sc-card').filter({hasText:'De onmogelijke sterrenringen'});await rings.click();
+ const art=rings.locator('img');await expect(art).toHaveAttribute('src',/linking-rings\.webp$/);
+ await expect.poll(()=>art.evaluate(node=>node.complete&&node.naturalWidth>0)).toBe(true);
+ await position.fill('14');await expect(preview.locator('.sc-magic-phases>.active')).toHaveText('Onthulling');
+ await expect(preview.locator('canvas')).toBeVisible();await screenshot(page,'linking-rings-reveal-desktop');
+ await openRoute(page,'orders');await page.locator('.oa-order-row').first().click();
+ const detail=page.getByRole('dialog');await expect(detail).toBeVisible();
+ await expect(detail.getByText('Fictief voorbeeld',{exact:true})).toBeVisible();
+ await expect(detail.locator('.oa-timeline>li')).toHaveCount(4);
+ await screenshot(page,'order-detail-desktop');await page.keyboard.press('Escape');await expect(detail).toHaveCount(0);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+});

@@ -1,7 +1,7 @@
-✔ legacy Milo stock cues migrate without changing cue IDs/order, rounds, books or custom Vlampie appearances (29.518763ms)
-✔ new/reloaded Milo cues use active production and selected character; Vlampie stays original (0.981388ms)
-✔ Milo production templates are separate while custom memory and profile text stay intact (0.437292ms)
-✔ shared store interprets Milo defaults without GET writes; a real mutation logs canonical title and retains card identities (6.13949ms)
+✔ legacy Milo stock cues migrate without changing cue IDs/order, rounds, books or custom Vlampie appearances (33.186898ms)
+✔ new/reloaded Milo cues use active production and selected character; Vlampie stays original (1.040386ms)
+✔ Milo production templates are separate while custom memory and profile text stay intact (0.445805ms)
+✔ shared store interprets Milo defaults without GET writes; a real mutation logs canonical title and retains card identities (4.879609ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 42.447918
+ℹ duration_ms 46.656817
