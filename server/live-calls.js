@@ -1,6 +1,6 @@
 import {playerIdentity} from './player-identity.js';
 import {BingoStore} from './bingo-store.js';
-import {CallStore,realtimeCharacterVoice} from './calls.js';
+import {CallStore,realtimeCharacterVoice,unresolvedCallResources} from './calls.js';
 import {callActive} from './calls-model.js';
 import {savedCharacter} from './character-settings.js';
 import {createLivePeer,liveSession,hangupLive} from './gpt-live.js';
@@ -16,11 +16,12 @@ const START_RESERVATION_MS=30000;
 const matchingHold=(game,call)=>game?.state?.drawHold?.callId===call.id||game?.state?.drawHold?.id===call.id;
 const keyFingerprint=async key=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(key))),b=>b.toString(16).padStart(2,'0')).join('');
 class LiveCallStore extends CallStore{
+ constructor(db,{requireConfirmedCleanup=false}={}){super(db);this.requireConfirmedCleanup=requireConfirmedCleanup;}
  async prepare(owner,gameId,bingo,build){
   await this.db.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) VALUES (?,?,0,?) ON CONFLICT(owner_id) DO NOTHING').bind(owner,gameId,'null').run();
   for(let attempt=0;attempt<8;attempt++){
    const callRow=await this.get(owner),gameRow=await bingo.game(gameId),previous=callRow.data;
-   if(previous&&(previous.transport==='livekit'?liveCallActive(previous):callActive(previous)))throw livekitError('Rond eerst het bestaande belmoment en de terugkeer naar YouTube af.');
+   if(previous&&((previous.transport==='livekit'?liveCallActive(previous):callActive(previous))||this.requireConfirmedCleanup&&unresolvedCallResources(previous)))throw livekitError('Rond eerst het bestaande belmoment, de bevestigde audio-opruiming en de terugkeer naar YouTube af.');
    if(!gameRow||gameRow.owner_id!==owner)throw livekitError('Deze show is niet beschikbaar.',404);
    const game=structuredClone(gameRow.data),call=build(game),marker=crypto.randomUUID();call.version=(previous?.version||0)+1;call.holdConfirmed=true;
    game.revision=gameRow.revision+1;game.lastOp=marker;game.ops=[...(game.ops||[]),marker].slice(-250);
@@ -66,7 +67,7 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
   const role=body.role||url.searchParams.get('role')||'player',clientId=body.clientId||url.searchParams.get('clientId'),gameId=body.gameId||url.searchParams.get('gameId'),action=body.action;
   if(!['host','player','output'].includes(role)||!uuid(clientId)||!uuid(gameId))throw livekitError('Kies de show en open de belbediening opnieuw.',400);
   if(role!=='player'&&!identity.admin)throw livekitError('Alleen de regie kan deze belbediening gebruiken.',403);
-  bingo=new BingoStore(env.DB);store=new LiveCallStore(env.DB);const row=await bingo.game(gameId);if(!row)throw livekitError('Deze show bestaat niet.',404);owner=row.owner_id;
+  bingo=new BingoStore(env.DB);store=new LiveCallStore(env.DB,{requireConfirmedCleanup:!!env.NATIVE_PROVIDER_SETTINGS});const row=await bingo.game(gameId);if(!row)throw livekitError('Deze show bestaat niet.',404);owner=row.owner_id;
   if(role!=='player'&&owner!==identity.user)throw livekitError('Deze show hoort bij een andere regie.',403);
   const output=role==='player'?null:await outputState(env,owner),now=Date.now();
   c=(await store.get(owner))?.data;

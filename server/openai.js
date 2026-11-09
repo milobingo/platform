@@ -1,6 +1,7 @@
 import {showBrand,brandText} from './show-brands.js';
 import {FIXED_SPEECH,voiceKey,voicePath} from './voice-cache.js';
-import {readSecret,saveSecret,settingsReady} from './secrets.js';
+import {readSecret,saveSecret,saveNativeSecret,settingsReady,secretFingerprint,assertProviderSettingsLease} from './secrets.js';
+import {withProviderSettingsLock,assertProviderRotationAllowed,reserveNativePreview,bindNativePreview,closeNativePreview,ownedNativePreview,cancelNativePreview} from './node-provider-settings.js';
 import {PRESENTATION_CORE,presentationCore,speechStyle} from './presentation-model.js';
 import {presentationContext,PresentationError} from './presentation-context.js';
 import {ALL_CHARACTER_IDS,characterSpeechStyle,characterIdentity,liveVoice} from './characters.js';
@@ -76,8 +77,8 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
   }
   let saved;try{saved=await readSecret(env);}catch{return fail(503,'settings_unavailable','De beveiligde sleutelopslag kan niet worden gelezen. Probeer opnieuw of laat de verbinding herstellen.');}
   const key=saved.key;
-  if(route==='status')return json({configured:!!key,voice:VOICE,aiGenerated:true,revision:saved.revision,source:saved.source,canManage:!env.OPENAI_ENV_ONLY&&settingsReady(env),speechEngine:'gpt-live',model:LIVE_MODEL,liveVerified:false});
-  if(!key)return fail(503,'not_configured',env.OPENAI_ENV_ONLY?'De centrale OpenAI-koppeling is nog niet ingesteld. Laat de serveromgeving configureren.':'Voer je OpenAI API-sleutel in bij API-instellingen en kies Opslaan en testen.');
+  if(route==='status')return json({configured:!!key,voice:VOICE,aiGenerated:true,revision:saved.revision,source:saved.source,canManage:(!env.OPENAI_ENV_ONLY||env.NATIVE_PROVIDER_SETTINGS===true)&&settingsReady(env),...(env.NATIVE_PROVIDER_SETTINGS?{environmentConfigured:saved.environmentConfigured,disabled:saved.disabled,connectionTest:saved.connectionTest||{tested:false,testedAt:null}}:{}),speechEngine:'gpt-live',model:LIVE_MODEL,liveVerified:false});
+  if(!key)return fail(503,'not_configured',env.NATIVE_PROVIDER_SETTINGS?'Stel de centrale OpenAI-sleutel in bij API-instellingen in de regie.':env.OPENAI_ENV_ONLY?'De centrale OpenAI-koppeling is nog niet ingesteld. Laat de serveromgeving configureren.':'Voer je OpenAI API-sleutel in bij API-instellingen en kies Opslaan en testen.');
   const release=throttle(user);if(!release)return fail(429,'busy','Even wachten: er lopen al aanvragen of er zijn veel verzoeken verstuurd.');
   try{
     if(route==='live-test'){const response=await call('/models/'+LIVE_MODEL,key,null,request,fetcher);if(!response.ok){await response.body?.cancel();return upstreamError(response.status);}await response.body?.cancel();return json({model:LIVE_MODEL,modelAccessible:true,audioVerified:false,message:'GPT-Live-modeltoegang bevestigd. Beluister een stemproef om de audio te testen.'});}
@@ -96,20 +97,23 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
       let closeDiagnostic=null;
       // Keep closure on the individual record. Closing an old tab must never clear a newer test.
       const closeOwned=async(record,clientObserved=false)=>{
-       if(record.closedAt)return true;
-       if(!clientObserved&&!await hangupLive(key,record.id,fetcher,{onFailure:d=>{closeDiagnostic=d;}})){
+       if(record.closedAt){await closeNativePreview(env,{reservationId:record.nativeReservationId,sessionId:record.id});return true;}
+       if(record.credentialFingerprint&&record.credentialFingerprint!==await secretFingerprint(key))return false;
+       if(!clientObserved&&!await hangupLive(key,record.id,env.PROVIDER_CLEANUP_FETCH||fetcher,{onFailure:d=>{closeDiagnostic=d;}})){
         await env.SETTINGS.put(recordPath(record.id),JSON.stringify({...record,closeState:'unconfirmed',lastCloseAttemptAt:Date.now(),lastCloseFailure:closeDiagnostic}));return false;
        }
-       await env.SETTINGS.put(recordPath(record.id),JSON.stringify({...record,closedAt:Date.now(),closeConfirmation:clientObserved?'client_terminal':'server',...(clientObserved?{clientObservedClosedAt:Date.now()}:{})}));return true;
+       await env.SETTINGS.put(recordPath(record.id),JSON.stringify({...record,closedAt:Date.now(),closeConfirmation:clientObserved?'client_terminal':'server',...(clientObserved?{clientObservedClosedAt:Date.now()}:{})}));await closeNativePreview(env,{reservationId:record.nativeReservationId,sessionId:record.id});return true;
       };
       if(route==='live-preview-stop'){
        if(body.latest===true&&body.sessionId!==undefined)return fail(400,'invalid_session','Kies de huidige of de vorige gesprekstest.');
        if(body.closed!==undefined&&(typeof body.closed!=='boolean'||body.latest===true))return fail(400,'invalid_session','De afsluitmelding hoort bij de testsessie in dit venster.');
-       const id=body.latest===true?previous?.id:body.sessionId;
+       const pending=await ownedNativePreview(env,user,{sessionId:body.sessionId,latest:body.latest===true});
+       if(body.latest===true&&pending&&!pending.sessionId){await cancelNativePreview(env,pending.id,user);return json({closed:false,pending:true,message:'Het stopverzoek is opgeslagen. Een late testsessie wordt eerst afgesloten; de sleutel blijft geblokkeerd.'});}
+       const id=body.latest===true?pending?.sessionId||previous?.id:body.sessionId;
        if(body.latest===true&&!id)return json({closed:true,alreadyClosed:true});
        if(!validLiveSessionId(id))return fail(400,'invalid_session','Deze testsessie bestaat niet.');
-       const owned=await env.SETTINGS?.get(recordPath(id));if(!owned)return fail(409,'session_changed','Deze testsessie hoort niet bij dit venster.');
-       const record=await owned.json();if(record.id!==id)return fail(409,'session_changed','De opgeslagen gesprekstest kan niet worden gecontroleerd.');
+       const owned=await env.SETTINGS?.get(recordPath(id));if(!owned&&!pending)return fail(409,'session_changed','Deze testsessie hoort niet bij dit venster.');
+       const record=owned?await owned.json():{id,nativeReservationId:pending.id,credentialFingerprint:pending.fingerprint,createdAt:pending.createdAt};if(record.id!==id)return fail(409,'session_changed','De opgeslagen gesprekstest kan niet worden gecontroleerd.');
        if(!await closeOwned(record,body.closed===true)){
         const unavailable=[closeDiagnostic?.restStatus,closeDiagnostic?.attachStatus].some(s=>[502,503,504].includes(s));
         return json({error:{code:unavailable?'close_unavailable':'close_failed',message:unavailable?'Afsluiten bij de spraakdienst lukt tijdelijk niet (503). Je kunt met Start microfoontest een nieuwe testverbinding openen. De oude afsluiting blijft onbevestigd.':'De vorige afsluiting is onbevestigd. Met Start microfoontest kun je een vervangende verbinding openen.',diagnostic:closeDiagnostic}},unavailable?503:502);
@@ -130,11 +134,16 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
        else if(!await closeOwned(record))unconfirmedPrevious=record;
       }
       const settings=await savedCharacter(env,user,body.characterId),session=liveSession(settings,{input:[{type:'message',role:'developer',content:[{type:'input_text',text:'Dit is een korte repetitie met de regie. Begroet de luisteraar als jezelf. Voer daarna een spontaan, kindvriendelijk gesprek. Er worden geen echte nummers getrokken en je bestuurt geen show.'}]}]});
-      const result=await createLivePeer(key,body.sdp,session,fetcher);
-      try{const record=JSON.stringify({id:result.realtimeId,characterId:settings.id,createdAt:Date.now(),...(unconfirmedPrevious?{replacesSessionId:unconfirmedPrevious.id}:{})});await env.SETTINGS.put(recordPath(result.realtimeId),record);
+      const fingerprint=env.NATIVE_PROVIDER_SETTINGS?await secretFingerprint(key):null,reservationId=await reserveNativePreview(env,user,fingerprint);
+      let result;
+      try{assertProviderSettingsLease(env);result=await createLivePeer(key,body.sdp,session,fetcher);}
+      catch(error){if(reservationId&&error instanceof LiveServiceError&&[400,401,403,404,422,429].includes(error.diagnostic?.status))await closeNativePreview(env,{reservationId});throw error;}
+      try{const cancelled=await bindNativePreview(env,reservationId,result.realtimeId),details={id:result.realtimeId,characterId:settings.id,createdAt:Date.now(),...(reservationId?{nativeReservationId:reservationId,credentialFingerprint:fingerprint}:{}),...(unconfirmedPrevious?{replacesSessionId:unconfirmedPrevious.id}:{})};
+       if(cancelled){const stopped=await hangupLive(key,result.realtimeId,env.PROVIDER_CLEANUP_FETCH||fetcher);await env.SETTINGS.put(recordPath(result.realtimeId),JSON.stringify({...details,...(stopped?{closedAt:Date.now(),closeConfirmation:'server'}:{closeState:'unconfirmed'})}));if(stopped)await closeNativePreview(env,{reservationId,sessionId:result.realtimeId});return fail(409,'preview_cancelled',stopped?'De gestopte microfoontest is bij de provider afgesloten.':'De microfoontest is gestopt; de afsluiting bij de provider moet nog worden bevestigd.');}
+       const record=JSON.stringify(details);await env.SETTINGS.put(recordPath(result.realtimeId),record);
        if(unconfirmedPrevious){const old=await env.SETTINGS.get(recordPath(unconfirmedPrevious.id));await env.SETTINGS.put(recordPath(unconfirmedPrevious.id),JSON.stringify({...await old.json(),replacedBy:result.realtimeId,replacedAt:Date.now()}));}
        await env.SETTINGS.put(path,record);
-      }catch{await hangupLive(key,result.realtimeId,fetcher);return fail(503,'storage_failed','De testsessie kon niet veilig worden bijgehouden. Er is geprobeerd deze af te sluiten.');}
+      }catch{const stopped=await hangupLive(key,result.realtimeId,env.PROVIDER_CLEANUP_FETCH||fetcher);if(stopped)await closeNativePreview({...env,PROVIDER_SETTINGS_LOCKED:false},{reservationId,sessionId:result.realtimeId}).catch(()=>{});return fail(503,'storage_failed','De testsessie kon niet veilig worden bijgehouden. Er is geprobeerd deze af te sluiten.');}
       return json({...result,characterId:settings.id,characterRevision:settings.revision,replacedPrevious:!!unconfirmedPrevious});
     }
     if(route==='design-voice'){
@@ -180,6 +189,7 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
 }
 
 async function handleSettings(request,env,fetcher,user,url){
+  if(env.NATIVE_PROVIDER_SETTINGS)return withProviderSettingsLock(env,locked=>handleNativeSettings(request,locked,fetcher,user,url));
   if(env.OPENAI_ENV_ONLY)return fail(409,'server_secret_required','Beheer de OpenAI-sleutel in de serveromgeving.');
   if(request.headers.get('origin')!==url.origin||request.headers.get('x-vlampie-settings')!=='1')return fail(403,'origin','Sla de sleutel op vanuit de instellingen in Vlampie Studio.');
   if(!settingsReady(env))return fail(503,'settings_unavailable','De beveiligde sleutelopslag is nog niet beschikbaar.');
@@ -202,6 +212,39 @@ async function handleSettings(request,env,fetcher,user,url){
     return json({...saved,connected:!!key,voice:VOICE,message:key?'Sleutel getest en veilig opgeslagen. Probeer nu een korte uitspraak.':'De opgeslagen sleutel is verwijderd en de OpenAI-koppeling is uitgeschakeld.'});
   }catch{return fail(503,'settings_failed','Opslaan is niet bevestigd. Controleer de verbinding en probeer opnieuw.');}
   finally{release();}
+}
+
+async function handleNativeSettings(request,env,fetcher,user,url){
+ if(request.headers.get('origin')!==url.origin||request.headers.get('x-vlampie-settings')!=='1'||request.headers.get('x-vlampie-player')==='1'||url.searchParams.get('player')==='1')return fail(403,'origin','Sla de sleutel op vanuit de instellingen in de regie.');
+ if(!settingsReady(env))return fail(503,'settings_unavailable','De beveiligde sleutelopslag is nog niet beschikbaar.');
+ const release=throttle(user);if(!release)return fail(429,'busy','Even wachten: probeer de sleutel straks opnieuw op te slaan.');
+ try{
+  let body;try{body=await readBody(request);}catch{return fail(400,'invalid_body','De instellingen konden niet worden gelezen.');}
+  if(!['save','test','remove','environment'].includes(body.action)||!(body.revision===null||typeof body.revision==='string'&&body.revision.length>0&&body.revision.length<=128))return fail(400,'invalid_settings','Ververs de instellingen en probeer opnieuw.');
+  const current=await readSecret(env);if(body.revision!==current.revision)return fail(409,'settings_conflict','De instellingen zijn intussen gewijzigd. Ververs de pagina voordat je opnieuw opslaat.');
+  let key=current.key,mode=current.mode,connectionTest=null,providerStatus,providerFailed=false;
+  if(body.action==='test'){
+   if(body.key!==undefined)return fail(400,'invalid_settings','Sla een gewijzigde sleutel eerst op; testen gebruikt alleen de opgeslagen koppeling.');
+   if(!key)return fail(503,'not_configured','Sla eerst een OpenAI-sleutel op.');
+   try{const response=await call('/models',key,null,request,fetcher);providerStatus=response.status;await response.body?.cancel();connectionTest={tested:response.ok,testedAt:Date.now()};}
+   catch{providerFailed=true;connectionTest={tested:false,testedAt:Date.now()};}
+  }else{
+   await assertProviderRotationAllowed(env);
+   if(body.action==='save'){
+    key=typeof body.key==='string'?body.key.trim():'';
+    if(!/^sk-[A-Za-z0-9_-]{16,509}$/.test(key))return fail(400,'invalid_key','Plak een volledige OpenAI API-sleutel die begint met sk-.');
+    mode='regie';
+   }else if(body.action==='remove'){mode='disabled';key='';}
+   else{mode='environment';key=(env.OPENAI_API_KEY||'').trim();}
+  }
+  if(request.signal.aborted)return fail(408,'cancelled','De aanvraag is geannuleerd.');
+  const saved=await saveNativeSecret(env,{mode,key,connectionTest},current.revision);
+  if(!saved)return fail(409,'settings_conflict','De instellingen zijn intussen gewijzigd. Ververs de pagina voordat je opnieuw opslaat.');
+  if(providerFailed)return fail(502,'connection','De verbinding met OpenAI kon niet worden bevestigd. De opgeslagen sleutel is behouden.');
+  if(providerStatus&&!connectionTest.tested)return upstreamError(providerStatus);
+  return json({saved:true,revision:saved.revision,configured:!!key,connected:connectionTest?.tested===true,source:mode==='regie'?'regie':key?'environment':'none',environmentConfigured:!!(env.OPENAI_API_KEY||'').trim(),disabled:mode==='disabled',canManage:true,connectionTest:connectionTest||{tested:false,testedAt:null},message:body.action==='test'?'De opgeslagen sleutel is getest.':body.action==='remove'?'De OpenAI-koppeling is bewust uitgeschakeld.':body.action==='environment'?'De serverinstellingen worden gebruikt.':'De sleutel is veilig opgeslagen. Test de koppeling apart.'});
+ }catch(error){return fail(error.status||503,error.code||'settings_failed',error.status?error.message:'Opslaan of lezen is niet bevestigd. De bestaande koppeling is niet vervangen.');}
+ finally{release();}
 }
 
 

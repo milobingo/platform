@@ -152,6 +152,21 @@ jobs:
             --expected-project-ref=lfsdgxcpdyghidzkzzvn \
             --apply \
             "--reviewed-manifest-sha256=$manifest_sha"
+      - name: Verify real mail templates and editable provider settings without writes or provider contact
+        env:
+          NODE_ENV: production
+          APP_URL: ${{ vars.APP_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}
+          SUPABASE_DB_CA_BASE64: ${{ vars.SUPABASE_DB_CA_BASE64 }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VLAMPIE_SETTINGS_KEY: ${{ secrets.VLAMPIE_SETTINGS_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIVEKIT_URL: ${{ vars.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        run: node scripts/deploy/staging-workspace-preflight.mjs
       - name: Audit ready database and deploy through the reviewed four-argument DG interface
         # The hash-reviewed wrapper must isolate next build from runtime secrets,
         # honor DG_RUNTIME_ENV_KEYS, lock the shared build and retain rollback.

@@ -11,6 +11,7 @@ import { createStorageEnvironment, createSupabaseObjectStore, postgresSql } from
 import { BingoStore } from '../server/bingo-store.js';
 import { ChatStore } from '../server/chat-store.js';
 import { PresentationStore } from '../server/presentation-store.js';
+import { handleMailAPI } from '../server/mail-api.js';
 
 const game = (id = randomUUID()) => ({ id, ownerId: 'host', books: [], ops: [], status: 'draft', counter: 0 });
 const execFileAsync = promisify(execFile);
@@ -135,6 +136,51 @@ async function objectContract(SETTINGS) {
   await SETTINGS.delete([key, 'missing']); assert.equal(await SETTINGS.get(key), null);
 }
 
+test('Supabase missing-object envelopes allow first-open mail templates and conditional creation', async t => {
+  const { DB } = await localFixture(t), objects = new Map(), requests = [];
+  const SETTINGS = createSupabaseObjectStore({
+    url: 'https://storage.example.test', secretKey: 'fixture-secret', bucket: 'milo-private',
+    database: { withObjectLock: async (_key, operation) => operation() },
+    fetcher: async (url, options = {}) => {
+      requests.push(options.method || 'GET');
+      if (options.method === 'POST') { objects.set(url, options.body); return Response.json({}); }
+      return objects.has(url) ? new Response(objects.get(url)) : Response.json({statusCode:'404',code:'NoSuchKey',error:'not_found',message:'Object not found'}, {status:400});
+    },
+  });
+  const env = { DB, SETTINGS, MAIL_MODE:'disabled', AUTH_IDENTITY:{user:'host',email:'host@example.test',admin:true} };
+  for (const brand of ['milo','vlampie']) {
+    const response = await handleMailAPI(new Request('https://studio.example/api/mail/state?brand='+brand), env, () => { throw Error('No mail providers allowed'); });
+    assert.equal(response.status, 200);
+    const state = await response.json();
+    assert.equal(state.templates.length, 17); assert.equal(state.provider.configured, false);
+    assert.equal(state.templates.find(item => item.id === 'auth-code').editable, false);
+    assert.equal(state.brandId, brand);
+  }
+  assert(requests.every(method => method === 'GET'), 'Opening templates must not create objects or send mail');
+  assert.equal(await SETTINGS.get('new-private-setting'), null);
+  const saved = await SETTINGS.put('new-private-setting', 'encrypted-fixture', {onlyIf:{etagDoesNotMatch:'*'}});
+  assert.ok(saved.etag);
+  assert.equal(await (await SETTINGS.get('new-private-setting')).text(), 'encrypted-fixture');
+  assert.equal(await SETTINGS.put('new-private-setting', 'overwrite', {onlyIf:{etagDoesNotMatch:'*'}}), null);
+});
+
+test('Supabase object reads preserve bucket, permission, server and malformed-response failures', async () => {
+  const failures = [
+    [400,{statusCode:'404',code:'NoSuchBucket',error:'Bucket not found'}],
+    [400,{statusCode:'403',code:'AccessDenied',error:'not_found'}],
+    [400,{statusCode:'401',code:'InvalidJWT'}],
+    [400,{statusCode:'404',message:'Object not found'}],
+    [400,{statusCode:'403',code:'NoSuchKey'}],
+    [403,{statusCode:'404',code:'NoSuchKey'}],
+    [500,{statusCode:'404',code:'NoSuchKey'}],
+    [400,'invalid json'],
+  ];
+  for (const [status,body] of failures) {
+    const SETTINGS = createSupabaseObjectStore({url:'https://storage.example.test',secretKey:'fixture-secret',bucket:'milo-private',database:{withObjectLock:async(_key,operation)=>operation()},fetcher:async()=>typeof body==='string'?new Response(body,{status}):Response.json(body,{status})});
+    await assert.rejects(SETTINGS.get('private/setting'), /Supabase Storage lezen mislukt/);
+  }
+});
+
 test('durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior', async t => {
   const { DB, SETTINGS } = await localFixture(t);
   await persistenceContract(DB); await atomicContract(DB); await chatContract(DB); await objectContract(SETTINGS);
@@ -211,6 +257,19 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
   directory = await mkdtemp(join(tmpdir(), 'milo-pg-objects-'));
   storage = await createStorageEnvironment({ DATABASE_URL: source.toString(), OBJECT_STORAGE_PATH: directory });
   await persistenceContract(storage.DB); await atomicContract(storage.DB); await chatContract(storage.DB);
+  await assert.rejects(storage.DB.withObjectLock('invalid-timeout',()=>assert.fail('Invalid lease must not execute'),{idleTimeoutMs:180001}),RangeError);
+  await storage.DB.withObjectLock('bounded-lease',async lease=>{
+    assert.equal(lease.signal.aborted,false);
+    const remaining=lease.deadline-Date.now();assert(remaining>170000&&remaining<=175000);
+  },{idleTimeoutMs:180000});
+  const signalKey='disconnect-'+randomUUID();
+  await assert.rejects(storage.DB.withObjectLock(signalKey,async lease=>{
+    const lock=(await admin.query("SELECT pid FROM pg_locks WHERE locktype='advisory' AND database=(SELECT oid FROM pg_database WHERE datname=current_database()) AND ((classid::bigint << 32) | objid::bigint)=hashtextextended($1,0)",['milo-object:'+signalKey])).rows[0];
+    assert.ok(lock?.pid,'Only the exact own fixture lock may be terminated');
+    const aborted=new Promise(resolve=>lease.signal.addEventListener('abort',resolve,{once:true}));
+    await admin.query('SELECT pg_terminate_backend($1)',[lock.pid]);
+    await aborted;assert.equal(lease.signal.aborted,true);
+  },{idleTimeoutMs:180000}),/objectlockverbinding/);
   const secured = await admin.query('SELECT bool_and(relrowsecurity) AS enabled,count(*)::int AS count FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind=$2', [schema, 'r']);
   assert.equal(secured.rows[0].enabled, true); assert.equal(secured.rows[0].count, 23);
   await storage.DB.prepare('INSERT INTO app_user_roles (user_id,role) VALUES (?,?)').bind('real-regie-account', 'regie').run();

@@ -54,6 +54,8 @@ De concrete inventaris staat in [Projectgegevens, accounts en secrets](docs/PROJ
 
 Staging draait op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); de openbare [familiedemo](https://milo-staging.dgwebservices.nl/spelen?demo=1) is direct te openen. De native releaseprocedure, databasebackup met echte herstelproef, beperkte runtime-login en publieke nacontrole zijn ingericht. Zie [het actuele resultaat en bewijs](docs/STAGING-RESULTAAT.md), [de volgende deployment uitvoeren](docs/STAGING-DEPLOY.md) en [de hostinrichting](docs/STAGING-HOST.md).
 
+OpenAI en LiveKit zijn vanuit de regie te beheren via **Instellingen → AI & stemmen** en **Instellingen → E-mail & bellen**. Sleutels worden versleuteld opgeslagen en niet teruggestuurd. [Bediening en verbindingstests](docs/REGIE-SLEUTELS.md).
+
 Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De gesigneerde DG-bestelmailadapter is gebouwd; de eigen Milo-gateway/worker, afzender, signing secret en het reconciliatiecontract moeten nog worden ingericht. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md). Productie is geautoriseerd; de echte bestemming wordt gevalideerd via [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
 
 De oorspronkelijke overdrachtsdocumenten staan onder `docs/overdracht/`, de oorspronkelijke README onder `docs/overdracht/README-bron.md`. Het Cloudflare-buildpad is historische bron; de standaardbuild is nu Next.js. `.openai/hosting.json` hoort bij de oude Site en wordt niet gebruikt voor DG-releases.
