@@ -8,7 +8,7 @@ export const TEMPLATE_PINS=Object.freeze({
  'infra/staging/deploy-helper.py':'ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8',
  'infra/staging/milobingo-staging.service.example':'bf87320ca8c307bf69fdd9d97511f0129348d050edd516bd38efc6ad37333402',
  'infra/staging/Caddyfile.example':'5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e',
- 'scripts/deploy/provision-runtime.mjs':'44ef6ead26075d7d93ec1dc19a1e90fef56ce21e8e67ed4ff58596170ff6c4c9',
+ 'scripts/deploy/provision-runtime.mjs':'c7fa35fd1ebc354189083dcba1d80d128cc1a8f206147ff00ff645ad65795222',
 });
 function change(source,from,to){if(!source.includes(from))fail('De beoordeelde native template is gewijzigd; herbeoordeling vereist.');return source.replaceAll(from,to);}
 export async function renderProductionBundle(profile,{sourceRoot=root}={}){

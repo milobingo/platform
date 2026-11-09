@@ -26,14 +26,16 @@ export function createOrderMailDelivery(env,{fetcher=fetch,now=Date.now,randomId
   // The deployed gateway's reconciliation/retention contract has not yet been
   // supplied for Milo. Never invent a provider idempotency guarantee.
   idempotencyWindowMs:0,
+  supportsMarketing:false,
   async send({message,context,idempotencyKey,signal}){
    const recipient=message?.to?.length===1?String(message.to[0]).trim().toLowerCase():'';
    if(!validEmail(recipient)||mode==='allowlist'&&!allowed.has(recipient))return {accepted:false,uncertain:false};
-   if(!['payment','ready'].includes(context?.kind)||typeof idempotencyKey!=='string'||!idempotencyKey||idempotencyKey.length>200)return {accepted:false,uncertain:false};
+   const studio=context?.kind==='studio'&&['welcome','order-received','org-order-new','payment-reported','order-cancelled','order-rejected','show-changed','show-rescheduled','show-cancelled','refund-confirmed','prize-confirmed','payment-link','books-ready','auth-code'].includes(context.templateId);
+   if(!['payment','ready'].includes(context?.kind)&&!studio||context?.marketing||typeof idempotencyKey!=='string'||!idempotencyKey||idempotencyKey.length>200)return {accepted:false,uncertain:false};
    if(typeof message.subject!=='string'||!message.subject||message.subject.length>200||typeof message.text!=='string'||!message.text||typeof message.html!=='string'||!message.html)return {accepted:false,uncertain:false};
    // Stable correlation stays under the gateway's 100-character bound.
    const outboxId='milo-'+createHash('sha256').update(idempotencyKey).digest('hex');
-   const body=JSON.stringify({kind:'transactional',message:{to:recipient,subject:message.subject,text:message.text,html:message.html,outboxId,messageType:'milo_order_'+context.kind,providerProbe:false}});
+   const body=JSON.stringify({kind:'transactional',message:{to:recipient,subject:message.subject,text:message.text,html:message.html,outboxId,messageType:studio?'milo_studio_'+context.templateId.replaceAll('-','_'):'milo_order_'+context.kind,providerProbe:false}});
    if(Buffer.byteLength(body)>128000)return {accepted:false,uncertain:false};
    const id='msg_'+randomId(),timestamp=String(Math.floor(now()/1000));
    const signature=createHmac('sha256',key).update(`${id}.${timestamp}.${body}`).digest('base64');

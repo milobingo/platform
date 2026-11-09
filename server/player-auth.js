@@ -1,4 +1,5 @@
 import {brandId} from './show-brands.js';
+import {recordAccountWelcome,recoverAccountWelcome} from './account-mail.js';
 import {BingoStore} from './bingo-store.js';
 import {playerIdentity,birthAge,refreshAges} from './player-identity.js';
 
@@ -27,16 +28,18 @@ export async function handlePlayerAuth(request,env={}){
   }
   if(path==='/onboarding'&&request.method==='POST'){
    if(!identity.user)fail('Log eerst in.',401);
-   const name=String(body.name||'').trim(),dateOfBirth=body.dateOfBirth;let age;
+   const name=String(body.name||'').trim(),dateOfBirth=body.dateOfBirth,welcomeBrand=body.brandId||'milo';let age;
+   if(!['milo','vlampie'].includes(welcomeBrand))fail('Kies een geldige showwereld.');
    try{age=birthAge(dateOfBirth);}catch(error){fail(error.message);}
    if(!name||name.length>40||/[<>\x00-\x1f]/.test(name))fail('Vul je voornaam in (maximaal 40 tekens).');
    const saved=await new BingoStore(env.DB).editFamily(identity.user,identity.email,f=>{
     let profile=f.profiles.find(p=>p.id===(body.profileId||f.accountProfileId));
     if(body.profileId&&!profile)fail('Deze speler hoort niet bij jouw account.',403);
     if(!profile){if(f.profiles.length>=30)fail('Dit account heeft al 30 spelers.');profile={id:crypto.randomUUID()};f.profiles.unshift(profile);f.accountProfileId=profile.id;}
-    Object.assign(profile,{name,dateOfBirth,age});f.accountProfileId=profile.id;f.ownerName=name;f.onboardingComplete=true;
+    Object.assign(profile,{name,dateOfBirth,age});f.accountProfileId=profile.id;f.ownerName=name;f.onboardingComplete=true;recordAccountWelcome(f,{accountId:identity.user,email:identity.email,brandId:welcomeBrand,name});
    });
-   return json({family:refreshAges(saved.family)});
+   const welcome=await recoverAccountWelcome({env,family:saved.family,identity,brandId:welcomeBrand,origin:url.origin});
+   return json({family:refreshAges(saved.family),welcomeMail:{status:welcome.status}});
   }
   fail('Deze functie bestaat niet.',404);
  }catch(error){return json({error:{message:error.status?error.message:'Aanmelden is tijdelijk niet beschikbaar. Probeer opnieuw.'}},error.status||503);}

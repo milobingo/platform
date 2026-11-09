@@ -1,20 +1,20 @@
-✔ soundcheck, staged ringing, answer, mute, natural wrap and delayed close preserve the bingo hold (52.490032ms)
-✔ only the selected account and bound host/output can signal or control a call; private fields stay private (7.859203ms)
-✔ missed and declined calls retain their short outro before final teardown (8.341622ms)
-✔ API failure clears the show hold, and a stopped in-flight Realtime session is closed on arrival (10.57871ms)
-✔ a newer show can be prepared after a terminal call from an older show (5.548152ms)
-✔ a provider response arriving after replacement is hung up without altering the new call (9.707402ms)
-✔ TURN credentials are short-lived; settings stay encrypted and settings reads never expose the token (7.506838ms)
-✔ disconnected output and withdrawn consent terminate calls and keep draws paused (6.800609ms)
-✔ the bingo backend refuses resume, drawing, round switches and finishing while a call holds the game (9.472637ms)
-✔ the local director never advances or changes scenes during a call (0.810337ms)
-✔ client state accepts empty initial polls and rejects older versions (0.234807ms)
-✔ guest audio is never in the broadcast or AI input during checking, ready or ringing, and model voice has direct return only after answer (0.21123ms)
-✔ player microphone stays off until that player explicitly answers (0.163077ms)
-✔ a call freezes the selected saved character, shares the global key, and never exposes its private book (12.953457ms)
-✔ Realtime compatibility is explicit and all character choices resolve to a supported voice (0.253475ms)
-✔ invalid or cross-production character choices create no call or upstream request (4.849525ms)
-✔ removing the global key after soundcheck ends the call without contacting the provider (5.394859ms)
+✔ soundcheck, staged ringing, answer, mute, natural wrap and delayed close preserve the bingo hold (61.839365ms)
+✔ only the selected account and bound host/output can signal or control a call; private fields stay private (9.163757ms)
+✔ missed and declined calls retain their short outro before final teardown (9.303098ms)
+✔ API failure clears the show hold, and a stopped in-flight Realtime session is closed on arrival (9.955617ms)
+✔ a newer show can be prepared after a terminal call from an older show (7.394656ms)
+✔ a provider response arriving after replacement is hung up without altering the new call (14.491132ms)
+✔ TURN credentials are short-lived; settings stay encrypted and settings reads never expose the token (7.764177ms)
+✔ disconnected output and withdrawn consent terminate calls and keep draws paused (7.308355ms)
+✔ the bingo backend refuses resume, drawing, round switches and finishing while a call holds the game (12.078645ms)
+✔ the local director never advances or changes scenes during a call (0.855046ms)
+✔ client state accepts empty initial polls and rejects older versions (0.27038ms)
+✔ guest audio is never in the broadcast or AI input during checking, ready or ringing, and model voice has direct return only after answer (0.292655ms)
+✔ player microphone stays off until that player explicitly answers (0.234275ms)
+✔ a call freezes the selected saved character, shares the global key, and never exposes its private book (15.877311ms)
+✔ Realtime compatibility is explicit and all character choices resolve to a supported voice (0.216798ms)
+✔ invalid or cross-production character choices create no call or upstream request (8.04954ms)
+✔ removing the global key after soundcheck ends the call without contacting the provider (7.32477ms)
 ℹ tests 17
 ℹ suites 0
 ℹ pass 17
@@ -22,4 +22,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 149.540827
+ℹ duration_ms 179.665476

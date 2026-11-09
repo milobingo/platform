@@ -68,7 +68,7 @@ jobs:
         run: env -i HOME="$HOME" PATH="$PATH" CI=true pnpm install --frozen-lockfile
       - name: Read schema, history and private bucket without changing them
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SUPABASE_STORAGE_BUCKET: ${{ vars.SUPABASE_STORAGE_BUCKET }}

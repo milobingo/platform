@@ -30,15 +30,15 @@ export class LiveCallAudio {
   if(this.callId!==call?.id){this.clearGuest();this.clearPresenter();this.listening=false;}
   this.callId=call?.id||null;this.phase=call?.phase||null;this.expectedGuest=call?.guestIdentity||call?.participantIdentity||null;
   this.enabled=enabled&&this.phase==='live'&&call?.transport==='livekit'&&call?.simulated!==true;
-  this.muted=!!call?.muted;this.voice=Math.max(0,Math.min(1,Number(voice)||0));this.gate();
+  this.muted=!!call?.muted;this.aiMuted=!!call?.aiMuted;this.voice=Math.max(0,Math.min(1,Number(voice)||0));this.gate();
  }
  setListening(value){this.listening=!!value;this.gate();}
  gate(){
   const on=this.enabled&&!this.disposed;
   if(this.guestGain)this.guestGain.gain.value=on&&!this.muted ? .95 : 0;
-  if(this.guestInputGain)this.guestInputGain.gain.value=on&&!this.muted&&this.listening?1:0;
-  if(this.presenterGain)this.presenterGain.gain.value=on?(this.voice??1):0;
-  if(this.presenterReturnGain)this.presenterReturnGain.gain.value=on?1:0;
+  if(this.guestInputGain)this.guestInputGain.gain.value=on&&!this.muted&&!this.aiMuted&&this.listening?1:0;
+  if(this.presenterGain)this.presenterGain.gain.value=on&&!this.aiMuted?(this.voice??1):0;
+  if(this.presenterReturnGain)this.presenterReturnGain.gain.value=on&&!this.aiMuted?1:0;
  }
  attachGuest(track,{identity,target='live',removed=false}={}){
   if(removed){if(this.guestTrack===track)this.clearGuest();return false;}

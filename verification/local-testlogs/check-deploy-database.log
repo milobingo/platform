@@ -1,16 +1,18 @@
-✔ database preflight binds API and TLS database to the explicitly confirmed project (1.660194ms)
-✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (273.691752ms)
-✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (2.815624ms)
-✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (32.380667ms)
-✔ CLI failures do not echo malformed secret values (57.230359ms)
-✔ backup capacity uses measured available filesystem bytes and database size (0.360766ms)
-﹣ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (0.23787ms) # SKIP
-﹣ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (0.120834ms) # SKIP
-ℹ tests 8
+✔ database preflight binds API and TLS database to the explicitly confirmed project (2.351564ms)
+✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (266.534425ms)
+✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (3.981714ms)
+✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (34.507484ms)
+✔ CLI failures do not echo malformed secret values (64.180012ms)
+✔ backup capacity uses measured available filesystem bytes and database size (0.399365ms)
+✔ v70 upgrade pins both reviewed manifests and keeps the historical source migration byte-identical (1.632654ms)
+✔ v70 isolated PostgreSQL upgrade proves actual encrypted restore before DDL, rejects unmanaged additions, preserves data and is idempotent (2386.734442ms)
+✔ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (1873.676037ms)
+✔ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (4523.745667ms)
+ℹ tests 10
 ℹ suites 0
-ℹ pass 6
+ℹ pass 10
 ℹ fail 0
 ℹ cancelled 0
-ℹ skipped 2
+ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 373.435366
+ℹ duration_ms 9163.427499

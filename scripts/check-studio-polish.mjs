@@ -17,7 +17,7 @@ const studio=new VlampieStudio25D(canvas,{canvasFactory:createCanvas,loadImage:l
 const base={motion:'welcome',age:1200,energy:65,idle:true,time:2,speaking:true,mouth:{open:.5,round:.2},lightShow:true,bingoNumber:42,bingoDrawn:[1,4,7,12,20,24,29,33,44,54,60,62,66,71,75]};
 let frames=0;
 for(const [brand,theme] of [['vlampie','showtime'],['vlampie','sinterklaas'],['rocco','royale'],['milo','magico']]){
- const b=SHOW_BRANDS[brand],game=makeGame({brandId:brand,date:'2026-12-05T19:00'},'host','https://studio.example');generateBooks(game,1,'polish');await studio.setBrand(brand,false);await studio.setTheme(theme,false);
+ const b=SHOW_BRANDS[brand],game=makeGame({brandId:brand,timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00'},'host','https://studio.example');generateBooks(game,1,'polish');await studio.setBrand(brand,false);await studio.setTheme(theme,false);
  const shots=[...SCENES,{id:'winner',camera:'portrait'},{id:'rejected',camera:'desk'},{id:'call',camera:'portrait'},{id:'lobby',camera:'wide'},...Object.keys(SHOTS).map(camera=>({id:'camera-'+camera,camera}))];
  const sheet=createCanvas(1920,Math.ceil(shots.length/3)*392),c=sheet.getContext('2d');c.fillStyle=b.palette.base;c.fillRect(0,0,sheet.width,sheet.height);
  for(const [i,scene] of shots.entries()){

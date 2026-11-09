@@ -8,8 +8,9 @@ export function validLiveSessionId(id){return typeof id==='string'&&id.length>0&
 export function liveSession(settings,{instructions,input=[]}={}){
  return {model:LIVE_MODEL,instructions:instructions||characterLiveInstructions(settings),audio:{output:{voice:liveVoice(settings)}},input,store:false};
 }
-export async function createLivePeer(key,sdp,session,fetcher=fetch){
- const r=await fetcher('https://api.openai.com/v1/live/sessions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({session,transport:{type:'webrtc',sdp}}),signal:AbortSignal.timeout(25000)});
+export async function createLivePeer(key,sdp,session,fetcher=fetch,{requestId}={}){
+ if(requestId!==undefined&&(typeof requestId!=='string'||!/^[a-f0-9-]{36}$/.test(requestId)))throw Error('Ongeldige correlatie voor de stemreservering.');
+ const r=await fetcher('https://api.openai.com/v1/live/sessions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json',...(requestId?{'X-Client-Request-Id':requestId}:{})},body:JSON.stringify({session,transport:{type:'webrtc',sdp}}),signal:AbortSignal.timeout(25000)});
  if(!r.ok){const diagnostic=await liveFailureDiagnostic(r,[key]);console.warn('gpt_live_start_failed',diagnostic);throw new LiveServiceError(r.status,diagnostic);}
  const data=await r.json();
  if(!validLiveSessionId(data?.session?.id)||typeof data?.transport?.sdp!=='string'||!data.transport.sdp.startsWith('v=0')){if(validLiveSessionId(data?.session?.id))await hangupLive(key,data.session.id,fetcher);throw Error('GPT-Live gaf geen bevestigde sessie en SDP terug.');}

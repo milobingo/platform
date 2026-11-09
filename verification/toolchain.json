@@ -2,7 +2,7 @@
   "node": "v24.18.0",
   "packageManager": "pnpm@11.25.0",
   "next": "16.4.5",
-  "sourceCommit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+  "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
   "initialSourceCommit": "08e1a652a78586d2e791179eead388acad8a3266",
-  "handoffVersion": "2026-11-06-v6"
+  "handoffVersion": "2026-11-09-v70"
 }

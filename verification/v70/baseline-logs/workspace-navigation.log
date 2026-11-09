@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: All twelve main workspaces must remain in the shell
+
+13 !== 12
+
+    at file:///tmp/milobingo-v70-source/.sites-checkout/scripts/check-workspace-navigation.mjs:78:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 13,
+  expected: 12,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.18.0

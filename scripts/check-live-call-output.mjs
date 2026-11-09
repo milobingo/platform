@@ -57,6 +57,10 @@ test('demonstration and missing output activation cannot masquerade as a real co
  h.engine.demo=true;await h.output.sync({...c,simulated:true});assert.equal(h.output.status,'demonstration');assert.equal(h.calls.length,0);assert.equal(h.output.getState().connected,false);await h.output.dispose();
 });
 
+test('an untrusted free AI prize claim mutes locally and requests a held failure instead of an official announcement',async()=>{
+ const h=setup(),c=call();await ready(h.output,c);h.output.event({type:'session.output_transcript.delta',delta:'Jij hebt een prijs gewonnen!'});assert.equal(h.output.audio.enabled,false);assert.equal(h.output.peer,null);await flush();assert(h.calls.some(r=>r.action==='fail'));assert.equal(h.calls.some(r=>r.action==='resume-draw'),false);await h.output.dispose();
+});
+
 test('a skipped return snapshot cannot retain a previous caller in the next live session',async()=>{
  const h=setup(),a=call();await ready(h.output,a);const oldGuest=h.output.audio.guestSource,oldPeer=h.output.peer,b=call('call-direct-next','Noor');
  await h.output.sync(b);assert(oldPeer.closed);assert.equal(oldGuest.edges.size,0);await flush();await ready(h.output,b);

@@ -9,12 +9,18 @@ import { promisify } from 'node:util';
 import { createServer, connect } from 'node:tls';
 import { Pool } from 'pg';
 import { Readable } from 'node:stream';
-import { scramVerifier, deriveRuntimeUrl, validateRestoreProof, provisionRuntime } from '../scripts/deploy/provision-runtime.mjs';
+import { scramVerifier, deriveRuntimeUrl, validateRestoreProof, provisionRuntime,assertMigrationProofHistory } from '../scripts/deploy/provision-runtime.mjs';
 import { applyDatabase, loadManifest, encryptBackup } from '../scripts/deploy/database.mjs';
 
 const ref = 'lfsdgxcpdyghidzkzzvn', releaseSha = 'a'.repeat(40), role = 'milo_staging_runtime';
 const backupId = `milo-${ref}-20261105T160000000Z-${randomUUID()}`;
 const configuration = () => ({ DATABASE_URL: `postgresql://migration:test-only@db.${ref}.supabase.co:5432/postgres?sslmode=verify-full`, SUPABASE_URL: `https://${ref}.supabase.co`, SUPABASE_SECRET_KEY: 'sb_secret_test_only', SUPABASE_STORAGE_BUCKET: 'milo-staging', RELEASE_SHA: releaseSha, BACKUP_ENCRYPTION_KEY: 'ab'.repeat(32), RESTORE_TEST_DATABASE_URL: 'postgresql://fixture:test-only@127.0.0.1/milo_restore_test_runtime', DATABASE_BACKUP_DIRECTORY: '/tmp/runtime-proof-contract' });
+
+test('runtime proof binds the newest exact migration while preserving known earlier backup/release identities',async()=>{
+ const manifest=await loadManifest(),history=manifest.migrations.map((migration,index)=>({filename:migration.filename,checksum:migration.checksum,project_ref:ref,backup_id:index?'current-proof':'earlier-proof',release_sha:index?releaseSha:'b'.repeat(40)}));
+ const before=structuredClone(history);assertMigrationProofHistory(history,manifest,'current-proof',releaseSha);assert.deepEqual(history,before);
+ for(const altered of [history.slice(1),[...history,{...history[0],filename:'unknown_migration.sql'}],history.map((r,i)=>i?{...r,backup_id:'wrong-proof'}:r),history.map((r,i)=>i?{...r,release_sha:'c'.repeat(40)}:r),history.map((r,i)=>i?r:{...r,checksum:'0'.repeat(64)}),history.map((r,i)=>i?r:{...r,project_ref:'wrong-project'})])assert.throws(()=>assertMigrationProofHistory(altered,manifest,'current-proof',releaseSha),error=>error.code==='runtime_backup_history');
+});
 async function proofFixture(t, major = 17) {
   const directory = await mkdtemp(join(tmpdir(), 'milo-runtime-proof-'));
   t.after(() => rm(directory, { force: true, recursive: true }));
@@ -116,6 +122,11 @@ test('real PostgreSQL accepts the generated SCRAM login, enforces backend-only r
   };
   const env = configuration(), manifest = await loadManifest();
   await applyDatabase({ env, expectedProjectRef: ref, reviewedManifestSha256: manifest.digest, manifest, poolFactory, fetcher, backupProvider: async () => fixture.proof });
+  // An additive upgrade preserves the first migration's original proof and
+  // release. Only the newest exact migration belongs to this restore proof.
+  const historicalBackup=backupId.replace('20261105T160000000Z','20261104T160000000Z'),historicalRelease='b'.repeat(40),firstMigration=manifest.migrations[0].filename;
+  await source.query('UPDATE milo_deploy.migrations SET backup_id=$1,release_sha=$2 WHERE filename=$3',[historicalBackup,historicalRelease,firstMigration]);
+  const originalHistory=(await source.query('SELECT * FROM milo_deploy.migrations WHERE filename=$1',[firstMigration])).rows[0];
   const runtimePoolFactory = options => {
     const requested = new URL(options.connectionString), local = new URL(url);
     local.username = requested.username; local.password = requested.password;
@@ -129,6 +140,7 @@ test('real PostgreSQL accepts the generated SCRAM login, enforces backend-only r
   await source.query('REVOKE CREATE ON SCHEMA public FROM milo_backend');
   const result = await provisionRuntime({ env, backupId, directory: fixture.directory, poolFactory, runtimePoolFactory, fetcher });
   assert.equal(result.ok, true); assert.equal(result.runtimeVerified, true); assert.equal(JSON.stringify(result).includes('DATABASE_URL'), false);
+  assert.deepEqual((await source.query('SELECT * FROM milo_deploy.migrations WHERE filename=$1',[firstMigration])).rows[0],originalHistory,'runtime provisioning never rewrites the earlier migration proof');
   const output = join(fixture.directory, 'runtime-output.json'), body = JSON.parse(await readFile(output, 'utf8'));
   assert.deepEqual(Object.keys(body), ['DATABASE_URL']); assert.equal((await stat(output)).mode & 0o777, 0o600);
   const derived = new URL(body.DATABASE_URL), localRuntime = new URL(url); localRuntime.username = derived.username; localRuntime.password = derived.password;

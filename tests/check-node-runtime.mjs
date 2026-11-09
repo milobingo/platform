@@ -35,8 +35,9 @@ test('local role choice operates durable real bingo APIs with separate family ow
  await h.call('/auth/local',{role:'regie'});
  assert.equal((await h.call('/api/auth/session')).data.role,'regie');
  const regieCookies={...h.cookies};
- const {data:{game}}=await h.call('/api/bingo/games',{brandId:'milo',title:'Lokale repetitie',date:'2026-12-05T19:00',roundCount:1},201);
+ const {data:{game}}=await h.call('/api/bingo/games',{brandId:'milo',title:'Lokale repetitie',timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00',roundCount:1},201);
  assert.equal(game.ownerId,'local-regie');
+ await h.call(`/api/bingo/games/${game.id}/publish-rules`,{});
  const generatedResult=(await h.call(`/api/bingo/games/${game.id}/generate`,{count:1},201)).data;
  const generated=generatedResult.game,book=generated.books[0],pdfPath=`/api/bingo/games/${game.id}/books/${book.id}/pdf`;
  const originalPut=h.env.SETTINGS.put.bind(h.env.SETTINGS);let pdfWrites=0;

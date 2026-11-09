@@ -1,0 +1,19 @@
+✔ no viewer/backstage AI sessions; first live greeting waits for actual selected guest playback readiness (4.832083ms)
+✔ return/failure immediately silences programme and AI, stale callbacks cannot attach old audio (0.822246ms)
+✔ a delayed SDP after stop is discarded and explicitly closed instead of opening a late voice (1.709361ms)
+✔ next caller replaces active name/session and mute never feeds the AI input (1.348024ms)
+✔ demonstration and missing output activation cannot masquerade as a real connection (0.409861ms)
+✔ an untrusted free AI prize claim mutes locally and requests a held failure instead of an official announcement (1.597341ms)
+✔ a skipped return snapshot cannot retain a previous caller in the next live session (0.836037ms)
+✔ a suspended audio context immediately closes live audio and never releases the draw hold (0.771048ms)
+✔ studio mouth samples the real presenter analyser on every snapshot without waiting for a poll (0.899934ms)
+✔ starting live invalidates a scripted voice decode already in flight (1.854751ms)
+✔ a pending resume cannot resurrect scripted speech over a live caller; pause does not suspend the programme context (0.334185ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22.029154

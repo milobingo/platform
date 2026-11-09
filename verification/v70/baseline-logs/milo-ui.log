@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(voice)
+
+    at checkAdmin (file:///tmp/milobingo-v70-source/.sites-checkout/scripts/check-milo-ui.mjs:80:175)
+    at async file:///tmp/milobingo-v70-source/.sites-checkout/scripts/check-milo-ui.mjs:110:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.18.0

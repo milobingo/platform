@@ -64,6 +64,13 @@
       "when": 1792510200000,
       "tag": "0008_character_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1794228478022,
+      "tag": "0009_studio_mail_v70",
+      "breakpoints": true
     }
   ]
 }

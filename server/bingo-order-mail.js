@@ -1,17 +1,18 @@
 import {orderById} from './bingo-order-model.js';
 import {showBrand} from './show-brands.js';
+import {showTimeParts} from './show-time.js';
+import {readEffectiveMailTemplate} from './mail-service.js';
+import {renderMailTemplate} from './mail-templates.js';
+import {mailConfig} from './mail-config.js';
 
-const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const euro=cents=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'}).format(cents/100);
-export function orderMailPayload(game,order,kind,origin){
- const brand=showBrand(game),accountUrl=new URL('/spelen',origin);accountUrl.searchParams.set('spel',game.id);accountUrl.searchParams.set('bestelling',order.id);
- const ready=kind==='ready',subject=ready?`Je bingobladen voor ${order.show.title} staan klaar`:`Voltooi je bestelling voor ${order.show.title}`;
- const intro=ready?'De organisatie heeft je betaling gecontroleerd en je unieke bingobladen klaargezet.':'De organisatie heeft een betaallink klaargezet voor jouw bestelling.';
- const details=`Bestelling ${order.number} · ${order.quantity} bingoblad${order.quantity===1?'':'en'}\nShow: ${order.show.title}\nDatum: ${order.show.date}${ready?'':`\nTe betalen: ${euro(order.amountCents)}`}`;
- const text=`Hallo ${order.customerName},\n\n${intro}\n\n${details}\n\n${ready?'Download kleur of zwart-wit en koppel de bladen aan je gezinsleden in je account.':`Betaal veilig via: ${order.paymentUrl}\nNa controle door de organisatie worden de bingobladen vrijgegeven.`}${order.note?`\n\n${order.note}`:''}\n\nBekijk je bestelling: ${accountUrl.href}\n\n${brand.title}`;
- const ctaUrl=ready?accountUrl.href:order.paymentUrl,cta=ready?'Open mijn bingobladen':'Open de betaallink';
- const html=`<div style="background:#21122f;padding:32px 16px;font-family:Arial,sans-serif;color:#fff4de"><div style="max-width:560px;margin:auto;border:1px solid #a47b3c;border-radius:24px;overflow:hidden;background:#2b173c"><div style="padding:28px 30px;background:linear-gradient(120deg,#4a2362,#241331)"><p style="margin:0;color:#efcf92;letter-spacing:2px;font-size:11px">${escape(brand.title.toUpperCase())}</p><h1 style="font-size:27px;line-height:1.2;margin:15px 0 0">${ready?'Je magische boekjes staan klaar.':'Jullie plek in de show wacht.'}</h1></div><div style="padding:28px 30px"><p>Hallo ${escape(order.customerName)},</p><p style="line-height:1.7">${escape(intro)}</p><div style="padding:18px;background:#ffffff09;border:1px solid #efcf9226;border-radius:14px;line-height:1.8"><strong>${escape(order.show.title)}</strong><br>Datum: ${escape(order.show.date)}<br>${order.quantity} bingoblad${order.quantity===1?'':'en'} · ${escape(order.number)}${ready?'':`<br><strong>Te betalen: ${escape(euro(order.amountCents))}</strong>`}</div>${order.note?`<p style="line-height:1.7">${escape(order.note)}</p>`:''}<p style="margin:26px 0"><a href="${escape(ctaUrl)}" style="display:inline-block;padding:15px 22px;border-radius:12px;background:#edca81;color:#291637;font-weight:bold;text-decoration:none">${cta}</a></p><p style="font-size:13px;line-height:1.8;color:#d6c4e2">${ready?'Je kunt dezelfde unieke bladen downloaden in kleur en zwart-wit. Koppelen aan gezinsleden doe je veilig in je account.':'Na je betaling controleert de organisatie het bedrag. Alleen na goedkeuring komen de bingobladen in je account beschikbaar.'}</p><p><a href="${escape(accountUrl.href)}" style="color:#efcf92">Bekijk je bestelling in de familie-app</a></p></div></div></div>`;
- return {to:[order.email],subject,text,html};
+export function orderMailContext(game,order,origin){
+ const accountUrl=new URL('/spelen',origin);accountUrl.searchParams.set('spel',game.id);accountUrl.searchParams.set('bestelling',order.id);
+ const when=showTimeParts(order.show.date);
+ return {gezinsnaam:order.customerName||'Jullie gezin',show_naam:order.show.title,show_datum:when.date,show_tijd:when.time,bestelnummer:order.number,aantal_bladen:String(order.quantity),bedrag:euro(order.amountCents),betaallink:order.paymentUrl||'',account_link:accountUrl.href,afwijsreden:order.rejectionReason||'',betaalnotitie:order.note||'',organisatie_link:new URL('/#/orders',origin).href};
+}
+export function orderMailPayload(game,order,kind,origin,template,assetBaseUrl,from='organisatie@voorbeeld.invalid'){
+ return renderMailTemplate(kind==='ready'?'books-ready':'payment-link',{brandId:showBrand(game).id,template,context:orderMailContext(game,order,origin),origin,assetBaseUrl,from,to:order.email});
 }
 function eligible(order,kind){return kind==='payment'?['payment_pending','payment_reported'].includes(order.status)&&!!order.paymentUrl:order.status==='fulfilled';}
 /** A server-owned adapter chooses its approved sender and transport. A successful
@@ -32,22 +33,22 @@ function deliveryAdapter(env){
 export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,now=Date.now()}){
  const field=kind==='payment'?'paymentMail':'readyMail',row=await store.game(gameId),existing=orderById(row.data,orderId);
  if(!eligible(existing,kind)||existing[field]?.status==='sent')return;
- const adapter=deliveryAdapter(env);
+ const config=(await mailConfig(env)).value,adapter=config.contactReady?deliveryAdapter(env):null;
  if(!adapter){
   await store.mutate(gameId,{},game=>{
    const order=orderById(game,orderId),mail=order[field];
    if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return;
-   if(!eligible(order,kind)||mail?.status==='sent'||mail?.status==='sending'&&mail.leaseUntil>now)return;
+   if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return;
    order[field]={...mail,...(mail?.status==='sending'?{uncertain:true}:{}),status:'failed',error:'De e-mailkoppeling is nog niet ingesteld. De bestelling blijft bewaard.'};
   });return;
  }
- const generated=orderMailPayload(row.data,existing,kind,origin),attemptId=crypto.randomUUID();
+ let generated;try{const template=await readEffectiveMailTemplate(env,showBrand(row.data).id,kind==='ready'?'books-ready':'payment-link');if(!template.enabled)return;generated=orderMailPayload(row.data,existing,kind,origin,template,env.MAIL_ASSET_BASE_URL,config.from);}catch{await store.mutate(gameId,{},game=>{const mail=orderById(game,orderId)[field];if(mail&&!['sent','sending','offering'].includes(mail.status)){mail.status='failed';mail.error='Het mailtemplate vraagt controle; de bestelling blijft bewaard.';}});return;}const attemptId=crypto.randomUUID();
  const claim=await store.mutate(gameId,{},game=>{
   const order=orderById(game,orderId),mail=order[field];
   if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return null;
-  if(!eligible(order,kind)||mail?.status==='sent'||mail?.status==='sending'&&mail.leaseUntil>now)return null;
+  if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return null;
   // A crash between acceptance and its saved receipt leaves an uncertain send.
-  if(mail?.status==='sending')mail.uncertain=true;
+  if(['offering','sending'].includes(mail?.status))mail.uncertain=true;
   if(mail?.uncertain){
    const window=Math.min(mail.idempotencyWindowMs??0,adapter.window);
    if(mail.adapterId!==adapter.id||!window||!mail.firstAttemptAt||now-mail.firstAttemptAt>=window){
@@ -55,10 +56,13 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,no
    }
   }
   const payload=mail?.payload||generated,version=kind==='payment'?order.paymentVersion:1;
-  order[field]={...mail,payload,version,adapterId:adapter.id,idempotencyWindowMs:mail?.uncertain?Math.min(mail.idempotencyWindowMs,adapter.window):adapter.window,status:'sending',attemptId,attempts:(mail?.attempts||0)+1,firstAttemptAt:mail?.firstAttemptAt||now,leaseUntil:now+30000,error:null};
+  order[field]={...mail,payload,version,adapterId:adapter.id,idempotencyWindowMs:mail?.uncertain?Math.min(mail.idempotencyWindowMs,adapter.window):adapter.window,status:'claimed',attemptId,attempts:(mail?.attempts||0)+1,firstAttemptAt:mail?.firstAttemptAt||now,leaseUntil:now+30000,error:null};
   return {payload,version};
  });
  if(!claim.result)return;
+ const template=await readEffectiveMailTemplate(env,showBrand(row.data).id,kind==='ready'?'books-ready':'payment-link');
+ const offered=await store.mutate(gameId,{},game=>{const current=orderById(game,orderId),mail=current[field];if(mail?.attemptId!==attemptId||mail.status!=='claimed')return false;if(!eligible(current,kind)||kind==='payment'&&current.paymentVersion!==claim.result.version||template.enabled===false){mail.status='blocked';mail.leaseUntil=0;mail.error='De bestelling of mailinstelling is gewijzigd vóór aanbieding.';return false;}mail.status='offering';return true;});
+ if(!offered.result)return;
  let accepted=false,providerId=null,uncertain=true;
  const error='De mailgateway heeft de verzending niet bevestigd. De bestelling blijft bewaard.',signal=AbortSignal.timeout(12000);
  let onAbort;

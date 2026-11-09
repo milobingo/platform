@@ -212,7 +212,7 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
   storage = await createStorageEnvironment({ DATABASE_URL: source.toString(), OBJECT_STORAGE_PATH: directory });
   await persistenceContract(storage.DB); await atomicContract(storage.DB); await chatContract(storage.DB);
   const secured = await admin.query('SELECT bool_and(relrowsecurity) AS enabled,count(*)::int AS count FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind=$2', [schema, 'r']);
-  assert.equal(secured.rows[0].enabled, true); assert.equal(secured.rows[0].count, 18);
+  assert.equal(secured.rows[0].enabled, true); assert.equal(secured.rows[0].count, 23);
   await storage.DB.prepare('INSERT INTO app_user_roles (user_id,role) VALUES (?,?)').bind('real-regie-account', 'regie').run();
   await admin.query(`GRANT USAGE ON SCHEMA ${schema} TO ${browserRole}`);
   const browser = await admin.connect();

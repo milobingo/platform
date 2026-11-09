@@ -1,8 +1,8 @@
-✔ ten separate illusions are finite, deterministic, visible and isolated from their caller (1029.352294ms)
-✔ all new Milo magic performances remain continuous and have their own arm choreography (149.829313ms)
-✔ reduced motion holds a complete still tableau throughout the middle of every extra act (636.875702ms)
+✔ ten separate illusions are finite, deterministic, visible and isolated from their caller (562.651891ms)
+✔ all new Milo magic performances remain continuous and have their own arm choreography (144.962566ms)
+✔ reduced motion holds a complete still tableau throughout the middle of every extra act (266.282282ms)
 {"renderer":"actual mountStudio + articulated Milo + approved decor","acts":10,"distinctFrames":10,"paused":"identical pixels","state":"unchanged","thumbnails":"pass --generate to write","contactSheet":null}
-✔ actual studio magic holds preview pixels, preserves game fields, accepts custom duration and creates unique broadcast thumbnails (477.092916ms)
+✔ actual studio magic holds preview pixels, preserves game fields, accepts custom duration and creates unique broadcast thumbnails (494.15775ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -10,4 +10,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 2333.725424
+ℹ duration_ms 1475.306078

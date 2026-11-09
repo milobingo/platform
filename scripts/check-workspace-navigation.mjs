@@ -70,12 +70,12 @@ const main=()=>h.document.querySelector('main#mf-main');
 const expect=(selector,message)=>assert(main()?.querySelector(selector),message||'Missing '+selector);
 const buttons=(selector='button')=>[...main().querySelectorAll(selector)];
 const clickExact=async(label,scope=main())=>{const options=[...scope.querySelectorAll('button')],el=options.find(e=>e.textContent.trim()===label)||options.find(e=>e.textContent.trim().startsWith(label));assert(el,'Missing reachable control: '+label);h.event(el,'click');await wait(240);return el;};
-const routeIds=['overview','shows','script','live','audience','studio','characters','library','books','orders','people','settings'];
+const routeIds=['overview','shows','script','live','audience','studio','characters','library','books','orders','mail','people','settings'];
 try{
  h.run(await bundle({entryPoints:[root+'/frontend/main.jsx']}));await wait(900);
  const beforeSkip=h.context.location.hash,skip=h.document.querySelector('a.mf-skip'),skipEvent=new h.window.Event('click',{bubbles:true,cancelable:true});assert(skip);skip.dispatchEvent(skipEvent);if(!skipEvent.defaultPrevented)h.context.location.hash=skip.getAttribute('href');await wait(240);assert.equal(h.context.location.hash,beforeSkip,'Skip-to-content must not replace the workspace hash route');assert.equal(h.document.activeElement,main(),'Skip-to-content must focus the main landmark');
  const nav=[...h.document.querySelectorAll('nav[aria-label="Hoofdnavigatie"]>a')];
- assert.equal(nav.length,12,'All twelve main workspaces must remain in the shell');
+ assert.equal(nav.length,13,'All thirteen workspaces including the mail studio must remain in the shell');
  assert.deepEqual(nav.map(a=>a.getAttribute('href').replace('#/','')).sort(),[...routeIds].sort());
  let pages=0,nested=0;
  for(const id of routeIds){

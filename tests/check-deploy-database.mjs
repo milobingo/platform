@@ -10,7 +10,7 @@ import { promisify } from 'node:util';
 import { createServer as createTlsServer, connect as connectTls } from 'node:tls';
 import { Socket } from 'node:net';
 import { Pool } from 'pg';
-import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls, readExtensionMetadata, restoreExtensionOwners } from '../scripts/deploy/database.mjs';
+import { validateTarget, validateApplyPrerequisites, loadManifest, encryptBackup, decryptBackup, auditDatabase, applyDatabase, backupAndRestore, assertBackupCapacity, verifyDatabaseClientTls, readExtensionMetadata, restoreExtensionOwners,manifestThrough,upgradeV70Database,validateV70UpgradeManifest,V70_BASELINE_FILENAME } from '../scripts/deploy/database.mjs';
 import { validateRestoreProof } from '../scripts/deploy/provision-runtime.mjs';
 
 const projectRef = 'lfsdgxcpdyghidzkzzvn';
@@ -125,8 +125,8 @@ test('apply fails before any connection when backup, scratch restore or reviewed
     { DATABASE_BACKUP_DIRECTORY: process.cwd() }, { DATABASE_BACKUP_DIRECTORY: 'relative' }, { RELEASE_SHA: 'short' },
   ]) await assert.rejects(applyDatabase({ env: configuration(overrides), expectedProjectRef: projectRef, poolFactory: never }));
   const manifest = await loadManifest();
-  assert.equal(manifest.tables.size, 18);
-  assert.equal(manifest.migrations.length, 1);
+  assert.equal(manifest.tables.size, 23);
+  assert.equal(manifest.migrations.length, 2);
   assert.equal(manifest.migrations[0].checksum, sha(await readFile(new URL('../supabase/migrations/20261104115830_milo_friends_server_schema.sql', import.meta.url))));
   await assert.rejects(applyDatabase({ env: configuration(), expectedProjectRef: projectRef, manifest, poolFactory: never, reviewedManifestSha256: '0'.repeat(64) }), error => error.code === 'manifest_review_required');
   assert.ok(validateApplyPrerequisites(configuration()));
@@ -169,6 +169,51 @@ test('backup capacity uses measured available filesystem bytes and database size
 });
 
 const testDatabase = process.env.MILO_TEST_DATABASE_URL;
+test('v70 upgrade pins both reviewed manifests and keeps the historical source migration byte-identical',async()=>{
+ const manifest=await loadManifest(),baseline=manifestThrough(manifest,V70_BASELINE_FILENAME);
+ assert.equal(baseline.tables.size,18);assert.equal(manifest.tables.size,23);assert.equal(baseline.migrations[0].checksum,'8451a8aaf928dd7d58114d71741d4a76acb917c26c9d5e205d0436d5e306cc16');
+ assert.equal(validateV70UpgradeManifest(manifest,baseline.digest,manifest.digest).digest,baseline.digest);
+ for(const [oldHash,newHash] of [[undefined,manifest.digest],[baseline.digest,'0'.repeat(64)],['0'.repeat(64),manifest.digest]])assert.throws(()=>validateV70UpgradeManifest(manifest,oldHash,newHash),e=>e.code==='v70_manifest_review_required');
+ assert.throws(()=>validateV70UpgradeManifest({...manifest,migrations:manifest.migrations.slice(1)},baseline.digest,manifest.digest),e=>e.code==='v70_manifest_contract');
+});
+
+test('v70 isolated PostgreSQL upgrade proves actual encrypted restore before DDL, rejects unmanaged additions, preserves data and is idempotent',{skip:!testDatabase,timeout:60000},async t=>{
+ const {socket}=await tlsFixture(t),adminUrl=new URL(testDatabase);assert(['localhost','127.0.0.1','[::1]'].includes(adminUrl.hostname));assert.match(adminUrl.pathname,/test/);
+ const admin=new Pool({connectionString:testDatabase}),suffix=randomUUID().replaceAll('-',''),sourceName='milo_v70_source_test_'+suffix,restoreName='milo_restore_test_v70_'+suffix;
+ const directory=await mkdtemp(join(tmpdir(),'milo-v70-upgrade-proof-')),pools=[];
+ let source;
+ t.after(async()=>{for(const pool of pools)if(!pool.ending)await pool.end();if(source)await source.end();for(const name of [sourceName,restoreName])await dropFixtureDatabase(admin,name);await admin.end();await rm(directory,{recursive:true,force:true});});
+ await admin.query(`CREATE DATABASE "${sourceName}"`);await admin.query(`CREATE DATABASE "${restoreName}"`);
+ const sourceUrl=new URL(adminUrl);sourceUrl.pathname='/'+sourceName;const restoreUrl=new URL(adminUrl);restoreUrl.pathname='/'+restoreName;
+ source=new Pool({connectionString:sourceUrl.toString()});const manifest=await loadManifest(),baseline=manifestThrough(manifest,V70_BASELINE_FILENAME),env=configuration({DATABASE_BACKUP_DIRECTORY:directory,RESTORE_TEST_DATABASE_URL:restoreUrl.toString()});
+ let newDdl=false,poisonPostcondition=false;
+ const poolFactory=(connectionString)=>{
+  const real=new Pool({connectionString:connectionString===env.DATABASE_URL?sourceUrl.toString():connectionString});pools.push(real);
+  return {end:()=>real.end(),async connect(){const client=await real.connect();return {connection:{stream:socket},release:()=>client.release(),query(sql,values){if(sql===manifest.migrations[1].sql){newDdl=true;if(poisonPostcondition)sql+='\nALTER TABLE public.studio_mail_records DISABLE ROW LEVEL SECURITY;';}return client.query(sql,values);}};}};
+ };
+ const fetcher=async()=>Response.json({id:'milo-staging',name:'milo-staging',public:false});
+ await applyDatabase({env,expectedProjectRef:projectRef,manifest:baseline,reviewedManifestSha256:baseline.digest,poolFactory,fetcher,backupProvider:async()=>({restoreVerified:true,projectRef,releaseSha:env.RELEASE_SHA,backupId:'fixture-baseline-setup',encryptedSha256:'a'.repeat(64)})});
+ await source.query("INSERT INTO public.bingo_games(id,owner_id,revision,document,updated_at) VALUES ('preserve-v70','fixture-parent',1,'{\"books\":[\"keep-original\"],\"orders\":[\"keep-original\"]}',1)");
+ const args={env,expectedProjectRef:projectRef,manifest,reviewedBaselineManifestSha256:baseline.digest,reviewedManifestSha256:manifest.digest,poolFactory,fetcher};
+ await assert.rejects(applyDatabase({...args,backupProvider:()=>assert.fail('bootstrap must not adopt the existing18')}),e=>e.code==='apply_preflight_blocked'||e.code==='existing_database_upgrade_review');
+ await source.query('CREATE TABLE public.studio_mail_records(id text PRIMARY KEY)');
+ await assert.rejects(upgradeV70Database({...args,backupProvider:()=>assert.fail('an existing new table stops before backup')}),e=>e.code==='v70_existing_new_objects');await source.query('DROP TABLE public.studio_mail_records');
+ await assert.rejects(upgradeV70Database({...args,backupProvider:async()=>({restoreVerified:false})}),e=>e.code==='backup_proof_invalid');assert.equal(newDdl,false);
+ poisonPostcondition=true;
+ await assert.rejects(upgradeV70Database({...args,backupProvider:async()=>({restoreVerified:true,projectRef,releaseSha:env.RELEASE_SHA,backupId:'fixture-postcondition-fault-injection',encryptedSha256:'a'.repeat(64)})}),e=>e.code==='v70_postcondition');
+ assert.equal((await source.query("SELECT to_regclass('public.studio_mail_records') AS relation")).rows[0].relation,null,'the failed postcondition rolls all five additions back');
+ assert.equal((await source.query('SELECT count(*)::int AS n FROM milo_deploy.migrations')).rows[0].n,1,'failed upgrade writes no new migration history');
+ poisonPostcondition=false;newDdl=false;
+ let restoreProof;
+ const container=process.env.MILO_TEST_POSTGRES_CONTAINER;
+ const spawnTool=container?(executable,toolArgs,options)=>{const pg=Object.fromEntries(Object.entries(options.env).filter(([name,value])=>name.startsWith('PG')&&value!==undefined));pg.PGHOST='127.0.0.1';pg.PGPORT='5432';pg.PGSSLMODE='disable';delete pg.PGSSLROOTCERT;pg.PGUSER=decodeURIComponent(adminUrl.username);pg.PGPASSWORD=decodeURIComponent(adminUrl.password);if(executable==='pg_dump')pg.PGDATABASE=sourceName;return spawn('docker',['exec','-i',...Object.entries(pg).flatMap(([name,value])=>['-e',name+'='+value]),container,executable,...toolArgs],{...options,env:{PATH:process.env.PATH}});}:spawn;
+ const result=await upgradeV70Database({...args,backupProvider:async options=>{assert.equal(newDdl,false);restoreProof=await backupAndRestore({...options,spawnTool});assert.equal(restoreProof.restoreVerified,true);assert.equal(newDdl,false);return restoreProof;}});
+ assert.equal(result.ok,true);assert.equal(result.applicationTables.length,23);assert.equal(result.backup.restoreVerified,true);assert.equal(newDdl,true);
+ const kept=(await source.query("SELECT document FROM public.bingo_games WHERE id='preserve-v70'")).rows[0].document;assert(kept.includes('keep-original'));
+ const restored=new Pool({connectionString:restoreUrl.toString()});try{assert.equal((await restored.query("SELECT document FROM public.bingo_games WHERE id='preserve-v70'")).rows[0].document,kept);assert.equal((await restored.query("SELECT to_regclass('public.studio_mail_records') AS relation")).rows[0].relation,null,'the proof restored the18-table pre-upgrade snapshot');}finally{await restored.end();}
+ assert.equal((await source.query('SELECT count(*)::int AS n FROM milo_deploy.migrations')).rows[0].n,2);
+ assert.equal((await upgradeV70Database({...args,backupProvider:()=>assert.fail('a verified complete upgrade does not repeat backup or DDL')})).changed,false);
+});
 test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift', { skip: !testDatabase, timeout: 30_000 }, async t => {
   const { socket: verifiedSocket } = await tlsFixture(t);
   const adminUrl = new URL(testDatabase);
@@ -223,7 +268,7 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
   const fresh = await fixture();
   await fresh.pool.query("CREATE TABLE public.preexisting_context (id text PRIMARY KEY, value text NOT NULL); INSERT INTO public.preexisting_context VALUES ('preserve','original-context'); CREATE SCHEMA storage; CREATE TABLE storage.buckets (id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[])");
   const initial = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, ...fresh });
-  assert.equal(initial.ok, false); assert.equal(initial.applicationTables.length, 0); assert.equal(initial.pending.length, 1);
+  assert.equal(initial.ok, false); assert.equal(initial.applicationTables.length, 0); assert.equal(initial.pending.length, 2);
   assert.ok(fresh.requests.every(request => request.method === 'GET'));
   assert.ok(fresh.seenTls.every(options => options.verifiedTls === true && options.caBase64 === env.SUPABASE_DB_CA_BASE64), 'verified source pools receive the configured public CA');
   let backups = 0;
@@ -242,7 +287,7 @@ test('real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, t
   assert.equal((await fresh.pool.query('SELECT value FROM public.preexisting_context')).rows[0].value, 'original-context');
 
   const applied = await applyDatabase({ env, expectedProjectRef: projectRef, manifest, reviewedManifestSha256: manifest.digest, ...fresh, backupProvider });
-  assert.equal(applied.ok, true); assert.equal(applied.changed, true); assert.equal(applied.applicationTables.length, 18);
+  assert.equal(applied.ok, true); assert.equal(applied.changed, true); assert.equal(applied.applicationTables.length, 23);
   assert.equal(applied.pending.length, 0); assert.equal(applied.backup.restoreVerified, true);
   assert.equal(fresh.buckets.get('milo-staging').public, false, 'the authoritative bucket is created separately from the immutable migration');
   assert.equal((await fresh.pool.query("SELECT count(*)::int AS count FROM storage.buckets WHERE id='milo-private'")).rows[0].count, 1, 'the original migration is unchanged');

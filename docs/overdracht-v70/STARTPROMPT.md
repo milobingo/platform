@@ -1,0 +1,32 @@
+# Codex-opdracht · Milo & Friends v70 overnemen en de auditpunten uitvoeren
+
+Ik wil de bestaande Bingoshow doorontwikkelen vanaf de exact geïdentificeerde Sites-versie **70** (`f81d0c1c60cbe1422d43ce46d896af6cd4d2939c`). De overdrachtsmap bevat de bronreferentie, alle 14 mailtemplates met voorbeelden, het auditrapport en uitvoerbare werkpakketten. **Voer de wijzigingen door op een werkbranch in de bestaande doelrepo en maak ze toetsbaar op staging.** Het doel is een veilige, repeteerbare show en een duidelijke go/no-go; lever geen tweede losse demo op.
+
+## Start met een betrouwbare vergelijking
+
+- Lees de `AGENTS.md`-bestanden, de huidige branch, lockfile, CI, migraties, routing, auth, opslag, secretsnamen en stagingworkflow in de doelrepo. Het Sites-prototype is React/Motion + esbuild, Cloudflare Worker, D1/SQLite en R2. Als de doelrepo Next.js/Supabase gebruikt, behoud die architectuur en port de gedragscontracten met passende adapters. Importeer de Sites-hostingmanifestatie niet als productieconfiguratie in een andere omgeving.
+- Koppel elke relevante route en elk datamodel aan de v70-bron. Als de doelrepo nieuwer is, controleer per issue of de fout nog bestaat; behoud reeds bewezen correcties en nieuwere functionaliteit. Overschrijf geen productiegegevens, rollen, accounts, kindprofielen, boek-/QR-identiteit, resultaten, mailvoorkeuren of providerconfiguratie. Gebruik opt-in tests met fictieve accounts en providerstubs.
+- Open `work/01-SPEL-LIVE-EN-FAMILIE.md`, `work/02-BESTELLINGEN-EN-MAIL.md` en `work/03-REPETITIE-EN-VRIJGAVE.md`. Maak per taak een status: gereproduceerd, gecorrigeerd, getest, nog te repeteren of geblokkeerd. Rapporteer de gebruikte commit en omgeving.
+
+## Bouw in deze volgorde
+
+1. **Spel en privacy (blokkerend).** Reproduceer eerst gesloten/afgewezen venster → volgende geldige melding, oude claimdialoog, ongeldige free-center-patronen, dubbel afhandelen van een prijsstap, voortijdig afsluiten en een herhaald verzoek voor een ander gezin. Leg uit welke serverinvarianten dit nu voorkomen. Voeg regressietests toe voor beide merken, retries, races en dubbele regie. Publiceer de bindende spelregels vóór deelname uit de instellingen; houd marketingtekst apart. Een gespeelde en opgeslagen uitslag is onveranderlijk in de reguliere regie.
+2. **Regie, familieapp en liveketen.** Zorg voor één gezaghebbende ballenstatus, BINGO en timer bij Kijken én Boekjes, rondehistorie, startcontrole, altijd bereikbare pauze/mute en een storingsbeeld. Bouw herstel na verversen, leaseoverdracht en onderbroken media-aanmaak. Hou trekken geblokkeerd bij onbekende of niet afgesloten audio. Meet terugkeer naar het juiste livepunt. Test gescheiden backstage, geselecteerde beller, oudertoestemming, naamcontext, veilige fluistering en de officiële prijsuitspraak. Zet gewone YouTube-kijkers niet op LiveKit/OpenAI.
+3. **Orders en communicatie.** Gebruik Nederlandse showtijd met expliciete zone. Scheid betaalmelding, verificatie, intrekking, annulering, terugbetaling en uitgifte. Valideer rekening/boekjeseigenaar ook bij generieke boekacties en downloads. Behoud exact de mailstudio van v70, inclusief Milo en Vlampie, onderwerpsregel, preheader, HTML/tekst, shortcodevalidatie, 14 templates, bestaande edits en afzonderlijke toestemming per merk. Voeg eerst veilig mailherstel toe; daarna noodzakelijke servicemails bij verplaatsen/annuleren/refund en bij definitieve prijs. Lever nieuwe triggers met vaste berichtsleutels en auditbewijs. Nieuwsbriefmodule staat aan; verzend uitsluitend naar geldige vrijwillige inschrijvingen.
+4. **Schaal, beheer en overdracht.** Ontkoppel onbegrensde order-/mail-/eventgroei van live showmutaties, hergebruik historische IDs en test de migratie met kopieën/fixtures. Vervang brede polling door een beperkte geversioneerde livefeed met reconnect. Rond daarna QR-herstel, rustige beweging, toegankelijkheid en optionele terugblik af. Voorkom kruisbesmetting tussen merk, show, audio, resultaten, mail en boekjes.
+
+## Bestaand gedrag dat je moet behouden
+
+- 75 unieke trekkingen per ronde, vijf rijen van vijftien, één server voor officiële ballen, originele 5×5-kaarten en vrije middenpositie. Reservering/preview telt niet; alleen commit telt. Binnen één ronde blijven getrokken ballen staan tussen prijsstappen. Standaard venster 30 s, terugkijkmarge drie trekkingen inclusief de grens. Verifieer serverdatum en juiste prijsstap bij elk verzoek.
+- De vroegste geldige voltooiing wint; gelijke vroegste boekjes worden één keer geloot. Minigame onthult die winnaar. Geen reroll bij verversen; een geldige latere claim kan bij geactiveerde troostprijs maximaal één prijs per kind per uitslag krijgen, zonder vroegste finalisten. Verander het aantal lotingskansen per kind/boekje alleen na expliciete productkeuze en vooraf gepubliceerd reglement.
+- Milo blijft de hoofdhost. Behoud de gekozen studio, 12 personages, centrale OpenAI-koppeling met aparte karakterinstellingen, bestaande bewegingen en trucs, 5×15 in beeld, modulair regiepaneel, gezinsorders, kleur/inktarm, en fluisteren. Vlampie houdt zijn eigen merk en de twee bestaande studio’s.
+- Geen echte verzending, betaling, nieuwe publieke toegang of providerwijziging vanuit deze overdracht. Maak staging aantoonbaar geïsoleerd en gebruik stubs in CI. Test echte accounts later met bewust aangewezen volwassen testpersonen en testadressen. Goedkeuring voor een demo is geen toestemming voor publieke deelname of betalingen.
+
+## Lever op
+
+- Afgebakende commits of een reviewbare PR met koppeling naar de werkpakketten, bijgewerkte technische documentatie en status per acceptatiecriterium. Lever uitvoerbare regressietests en behoud een expliciete beschrijving van de zeven rode scripts uit de v70-nulmeting; corrigeer verouderde verwachtingen alleen op basis van bewezen nieuw gedrag.
+- Voor databasewerk: reproduceerbare, compatibele migratie en aantoonbare herstelprocedure voor productie met behoud van bestaand spelverloop. Lever een aparte controle voor terugdraaien zonder een reeds uitgereikte prijs of verstuurde mail opnieuw te verwerken.
+- Maak per functie onderscheid tussen lokaal bewezen, staging met stubs bewezen en met echte providers gerepeteerd. Meld exact wat nog nodig is. Maak een concrete vrijgavebeslissing per poort; laat betaalde deelname, live bellen en echte campagnes uit zolang de betreffende poort niet groen is.
+
+Lees nu `work/` en begin met de P0-tests voor spel en privacy.
+

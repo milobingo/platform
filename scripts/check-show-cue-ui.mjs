@@ -20,7 +20,7 @@ const {window}=parseHTML('<html><body><div id="root"></div></body></html>'),{doc
 document.oninput=null;
 let now=0,id=0;const frames=new Map(),timers=new Set(),calls=[],requests=[];
 const raf=fn=>{frames.set(++id,fn);return id;},cancel=id=>frames.delete(id),timeout=(fn,ms,...args)=>{const t=setTimeout(()=>{timers.delete(t);fn(...args);},ms);timers.add(t);return t;};
-const game=makeGame({brandId:'milo',title:'Showcue repetitie',date:'2026-11-01T14:00',roundCount:1},'owner','https://bingo.example');
+const game=makeGame({brandId:'milo',title:'Showcue repetitie',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:1},'owner','https://bingo.example');
 window.state={production:'milo',demo:true,game,characters:Object.values(CHARACTERS),voicePhase:'idle',runner:{active:false},stage:{production:'milo',hostId:'milo',speakerId:'milo',camera:'wide',motion:'idle',paused:true,drawn:[]}};
 window.engine={director:{pending:null},playShowCue:id=>calls.push(['play',id]),magicMoment:id=>calls.push(['magic',id]),setMotion:id=>calls.push(['motion',id]),addShowCue:id=>{const c=SHOW_CUES.find(c=>c.id===id);game.plan.blocks.push({id:'test-'+id,type:'show',showCueId:id,duration:c.duration});calls.push(['add',id]);},pause:value=>calls.push(['pause',value]),stopShowCue:()=>calls.push(['stop'])};
 const observer=class{observe(){}unobserve(){}disconnect(){}};

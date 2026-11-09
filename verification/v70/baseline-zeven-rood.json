@@ -1,0 +1,234 @@
+{
+  "format": 1,
+  "recordedAt": "2026-11-09T12:42:36.921774+00:00",
+  "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+  "baselineRuntime": "v24.18.0",
+  "originalHandoffReportedTotals": {
+    "passed": 94,
+    "total": 101,
+    "independentlyReranAll101Here": false
+  },
+  "independentReproduction": {
+    "scripts": 7,
+    "passed": 0,
+    "failed": 7,
+    "sourceWasNotPatchedToMakeTestsPass": true,
+    "trackedSourceCleanAtInventory": true,
+    "resultsLog": "verification/v70/baseline-logs/results.json",
+    "resultsLogSha256": "d1106848460bcf55a53dc6582e908bc04edea1164a549023c23039a343678dce"
+  },
+  "currentPortContext": {
+    "headAtDocumentation": "d8306ed134c494f84e6c80d57a3fdff6ace6d4d4",
+    "workingTreeContainsUncommittedImplementation": true,
+    "runtime": "v24.18.0",
+    "runSummary": "Four pass, two fail; seventh showtime counterpart deliberately not executed in this subtask. Dated observation only.",
+    "results": "verification/v70/port-seven-results.json",
+    "sourceAndNativeTargetAreDifferentArchitectures": true
+  },
+  "scopeLimits": [
+    "Historical source classification is not a current release verdict.",
+    "Corrected expectations require maintained behavior assertions.",
+    "Unknown/late provider starts require separate durable cleanup proof.",
+    "No actual provider, mail delivery, database deployment or production outcome is proven."
+  ],
+  "checks": [
+    {
+      "script": "scripts/check-broadcast-shell.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "821bcc5070ed14eb020e6970483c90690568cca2",
+      "sourceScriptSha256": "abe7911c8b58993acf6121e336672740ac71ab90c119a21da7dbabfaafd2e60a",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/broadcast-shell.log",
+      "logSha256": "a92e04f0694043ee4cbe203b111783f2f8fb6fbe1dd5fea14a1848753016921f",
+      "observedError": "13 !== 12",
+      "sourceLine": 77,
+      "comparison": {
+        "actual": 13,
+        "expected": 12
+      },
+      "classification": "obsolete_navigation_count",
+      "pureObsoleteExpectation": true,
+      "reason": "Dertien hoofdwerkplekken inclusief mailstudio; bereikbaarheid moet behouden blijven.",
+      "originalTestCounts": null,
+      "currentPortCounterpart": {
+        "script": "scripts/check-broadcast-shell.mjs",
+        "exitCode": 0,
+        "ms": 1970,
+        "log": "verification/v70/port-logs/broadcast-shell.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-workspace-navigation.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "92d7eaf40ffde715979b8faab42ee8b9b2e5bf59",
+      "sourceScriptSha256": "18c9224f593ce924c6f2d2f6bfd1941d42bae319b87be06b09c725b3390f126a",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/workspace-navigation.log",
+      "logSha256": "a578e1376098912645fa1eb65edafe7bc54a56e21f85344f71e6a08f38ce7749",
+      "observedError": "All twelve main workspaces must remain in the shell; 13 !== 12",
+      "sourceLine": 78,
+      "comparison": {
+        "actual": 13,
+        "expected": 12
+      },
+      "classification": "obsolete_navigation_count",
+      "pureObsoleteExpectation": true,
+      "reason": "Zelfstandige controle van dezelfde uitbreiding naar dertien hoofdwerkplekken.",
+      "originalTestCounts": null,
+      "currentPortCounterpart": {
+        "script": "scripts/check-workspace-navigation.mjs",
+        "exitCode": 0,
+        "ms": 16103,
+        "log": "verification/v70/port-logs/workspace-navigation.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-calls.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "3e2f6630cf14087f131d05baa2216284f601b312",
+      "sourceScriptSha256": "508ab0c3c6e4000bdaa6f4b2f88d109ddcdd9517834d49c1b9205646b58a9521",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/calls.log",
+      "logSha256": "de586d3b76bbe61086ab5fe0cf9e81b040dc8c26951ebd7d9748a7fd909bee28",
+      "observedError": "'verse' !== 'marin'",
+      "sourceLine": 97,
+      "comparison": {
+        "actual": "verse",
+        "expected": "marin"
+      },
+      "classification": "obsolete_voice_expectation",
+      "pureObsoleteExpectation": true,
+      "reason": "Canonieke Milo-cast van dezelfde bron gebruikt verse; geen vervangende stem of providerpass afleiden.",
+      "originalTestCounts": {
+        "total": 17,
+        "passed": 16,
+        "failed": 1
+      },
+      "currentPortCounterpart": {
+        "script": "scripts/check-calls.mjs",
+        "exitCode": 0,
+        "ms": 380,
+        "log": "verification/v70/port-logs/calls.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-livekit.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "b40324e9a269aeaaf6948e16271dfb48f72f319f",
+      "sourceScriptSha256": "e33beb354d0f5a959fe2c7d5f9f8e6812f934d74c18ac8a6ec49f3d1c7ab3191",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/livekit.log",
+      "logSha256": "ae1498b406a2370d159d20932cc5f1000b044ba62ef97ccd51254674460cfedd",
+      "observedError": "503 !== 409",
+      "sourceLine": 43,
+      "comparison": {
+        "actual": 503,
+        "expected": 409
+      },
+      "classification": "protocol_fixture_and_unsafe_unknown_start_error_path",
+      "pureObsoleteExpectation": false,
+      "reason": "Oude stub levert tekst-SDP/Realtime Location terwijl GPT-Live JSON wordt gelezen; oude onbekende start kan zonder sluitingsbewijs failed/closed worden. Vereist gerichte late-cancel/recovery-/holdtests, geen statusnummerfix.",
+      "originalTestCounts": {
+        "total": 6,
+        "passed": 5,
+        "failed": 1
+      },
+      "currentPortCounterpart": {
+        "script": "scripts/check-livekit.mjs",
+        "exitCode": 1,
+        "ms": 198,
+        "log": "verification/v70/port-logs/livekit.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-milo-ui.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "8bc1d0c309ad705da65317cfc237adc044f44391",
+      "sourceScriptSha256": "5ed1888ea078b805e4196547744378f4793085f87f090ccc1e68413544f7f7dc",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/milo-ui.log",
+      "logSha256": "2ab5b7d070ad2f301165fe9f495af552673d11d03c2dcf61b8e02e9ceab2b2e6",
+      "observedError": "assert.ok(voice)",
+      "sourceLine": 80,
+      "comparison": {
+        "actual": "undefined",
+        "expected": "voice control"
+      },
+      "classification": "obsolete_voice_control_selector",
+      "pureObsoleteExpectation": true,
+      "reason": "Test zoekt Stemidentiteit-select; canonieke UI heeft Basisstem en eigen OpenAI-stem-ID. Echte wijzigen/opslaan-regressie behouden.",
+      "originalTestCounts": null,
+      "currentPortCounterpart": {
+        "script": "scripts/check-milo-ui.mjs",
+        "exitCode": 1,
+        "ms": 2386,
+        "log": "verification/v70/port-logs/milo-ui.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-planner-ui.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "cd12eed698527f7dac27cfe0a10bb39a53e9f8b3",
+      "sourceScriptSha256": "60ea2642426c68547d7c43af8973bb72da05722a655149b6e24ef55cfe874955",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/planner-ui.log",
+      "logSha256": "75d5c227872e413ad243be562b95c0daa27a4faf2df8c106b0fa06a2e94328ea",
+      "observedError": "11 !== 8",
+      "sourceLine": 21,
+      "comparison": {
+        "actual": 11,
+        "expected": 8
+      },
+      "classification": "obsolete_widget_catalog_count",
+      "pureObsoleteExpectation": true,
+      "reason": "Elf beschikbare widgets; slepen, herschikken, kopiëren, configureren en opslaan blijven vereist.",
+      "originalTestCounts": {
+        "total": 4,
+        "passed": 3,
+        "failed": 1
+      },
+      "currentPortCounterpart": {
+        "script": "scripts/check-planner-ui.mjs",
+        "exitCode": 0,
+        "ms": 454,
+        "log": "verification/v70/port-logs/planner-ui.log"
+      },
+      "realProviderOrProductionSuccessProven": false
+    },
+    {
+      "script": "scripts/check-showtime.mjs",
+      "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sourceScriptBlob": "7c0ec54d6fd43c641696b71688b58ef306e4937d",
+      "sourceScriptSha256": "bb226e5849567629be0daf78dccdacd037f0228d74ed350c3645f935d972fee8",
+      "baselineExitCode": 1,
+      "log": "verification/v70/baseline-logs/showtime.log",
+      "logSha256": "db62ae8a4274bed5438266f467f30d954b5903ea9ec6f74f45719688e842fcd3",
+      "observedError": "MODULE_NOT_FOUND: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/@napi-rs/canvas",
+      "sourceLine": 10,
+      "comparison": {
+        "actual": "missing absolute module path",
+        "expected": "canvas runtime loaded"
+      },
+      "classification": "missing_hardcoded_canvas_runtime",
+      "pureObsoleteExpectation": false,
+      "reason": "Renderingasserties zijn niet bereikt. Een expliciete lokale runtimeadapter is vereist; geen scènefout of renderpass bewezen.",
+      "originalTestCounts": null,
+      "currentPortCounterpart": {
+        "script": "scripts/check-showtime.mjs",
+        "executedInThisCounterpartRun": false,
+        "reason": "showtime canvas adapter handled separately by root"
+      },
+      "realProviderOrProductionSuccessProven": false
+    }
+  ],
+  "additionalOriginalLog": {
+    "path": "verification/v70/baseline-logs/showtime-supported-runtime.log",
+    "sha256": "db62ae8a4274bed5438266f467f30d954b5903ea9ec6f74f45719688e842fcd3",
+    "observedResult": "same missing hardcoded canvas module; not a passing supported-runtime proof"
+  }
+}

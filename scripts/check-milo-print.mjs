@@ -5,7 +5,7 @@ import {makeGame,generateBooks,cardSignature} from '../server/bingo-model.js';
 import {bookPdf,printVersion,PRINT_VERSION} from '../server/bingo-pdf.js';
 import {MILO_PRINT_VERSION,miloPrintBackground} from '../server/milo-print-layout.js';
 const mm=72/25.4;
-const make=()=>{const game=makeGame({brandId:'milo',title:'Milo & Friends - De magische eerste show',date:'2026-11-01T14:00',roundCount:4},'test-host','https://bingo.example');generateBooks(game,3,'print-rehearsal');return game;};
+const make=()=>{const game=makeGame({brandId:'milo',title:'Milo & Friends - De magische eerste show',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4},'test-host','https://bingo.example');generateBooks(game,3,'print-rehearsal');return game;};
 
 test('Milo PDFs preserve all generated book/card identities and use a separate template revision',async()=>{
  const game=make(),before=JSON.stringify(game),ids=game.books.map(b=>b.id),signatures=game.books.flatMap(b=>b.cards.map(cardSignature));

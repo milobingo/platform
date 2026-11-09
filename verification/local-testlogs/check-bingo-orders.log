@@ -1,27 +1,32 @@
-✔ orders are future-show specific, owner scoped, server priced and permanently idempotent (48.814075ms)
-✔ family mode on a platform organizer shows only own orders and never host-only details (27.215326ms)
-✔ payment mail has a trusted recipient, escaped content and real provider acceptance semantics (17.20843ms)
-✔ approval is explicit, atomic and permanently one-time; stored sheets render in both colors (1819.775422ms)
-✔ paid sheets can only be assigned to their owner’s children, including via existing QR registration (27.48326ms)
-✔ active order snapshots lock title, date, rounds and brand; cancellation preserves history (10.051442ms)
-✔ failed mail retries freeze body and key, and require a gateway acceptance receipt (9.553407ms)
-✔ expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee (6.112818ms)
-✔ outbox lease prevents parallel sends and payment-link replacement while sending (9.175745ms)
-✔ a manually generated batch cannot capture fulfillment or replace existing ownership (15.164436ms)
-✔ missing delivery configuration preserves the requested order and ready sheets with failed mail states (86.299432ms)
-✔ uncertain mail cannot cross delivery identities or invent an idempotency guarantee (13.693476ms)
-✔ an explicit gateway rejection can retry without claiming any guaranteed idempotency window (9.266574ms)
-✔ reading and updating legacy settings preserves stored cards, orders and custom prizes (13.098897ms)
-✔ native session dispatch injects delivery and protects the complete order and cached PDF flow (92.079727ms)
-✔ an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections (16.51466ms)
-✔ replacing an uncertain payment mail preserves its frozen attempt and alerts only the owning admin (11.860071ms)
-✔ an expired sending lease is archived as uncertain while retaining its original receipt metadata (7.906103ms)
-✔ the payment version limit rejects before any mutation and still permits an unchanged final-version retry (39.387459ms)
-ℹ tests 19
+✔ ORD-01 published participation rules lock order quantity while sales settings remain editable (37.030108ms)
+✔ ORD-02 issued order books cannot be transferred by generic book administration or downloaded after revocation (47.021579ms)
+✔ ORD-03 cancelling a reported payment preserves a visible unresolved reconciliation instead of forgetting the report (22.379094ms)
+✔ ORD-03 payment evidence is exact, globally unique across shows and a late closed payment creates a refund case without books (52.252266ms)
+✔ ORD-01 deadline equality closes ordering and controlled rescheduling preserves issued numbers while refreshing PDF identity (26.793935ms)
+✔ orders are future-show specific, owner scoped, server priced and permanently idempotent (30.892536ms)
+✔ family mode on a platform organizer shows only own orders and never host-only details (31.197819ms)
+✔ payment mail has a trusted recipient, escaped content and real provider acceptance semantics (22.763438ms)
+✔ approval is explicit, atomic and permanently one-time; stored sheets render in both colors (1786.145493ms)
+✔ paid sheets can only be assigned to their owner’s children, including via existing QR registration (54.894181ms)
+✔ active order snapshots lock title, date, rounds and brand; cancellation preserves history (25.946631ms)
+✔ failed mail retries freeze body and key, and require a gateway acceptance receipt (23.148271ms)
+✔ expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee (19.76339ms)
+✔ outbox lease prevents parallel sends and payment-link replacement while sending (19.314199ms)
+✔ a manually generated batch cannot capture fulfillment or replace existing ownership (30.662208ms)
+✔ missing delivery configuration preserves the requested order and ready sheets with failed mail states (105.454542ms)
+✔ uncertain mail cannot cross delivery identities or invent an idempotency guarantee (33.715275ms)
+✔ an explicit gateway rejection can retry without claiming any guaranteed idempotency window (15.572039ms)
+✔ reading legacy settings preserves stored data and invalidated published rules refuse a silent rewrite (18.641661ms)
+✔ native session dispatch injects delivery and protects the complete order and cached PDF flow (89.665364ms)
+✔ an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections (26.595104ms)
+✔ replacing an uncertain payment mail preserves its frozen attempt and alerts only the owning admin (25.050663ms)
+✔ an expired sending lease is archived as uncertain while retaining its original receipt metadata (14.143263ms)
+✔ the payment version limit rejects before any mutation and still permits an unchanged final-version retry (76.937917ms)
+ℹ tests 24
 ℹ suites 0
-ℹ pass 19
+ℹ pass 24
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 2289.524627
+ℹ duration_ms 2648.375733

@@ -18,7 +18,8 @@ export function validateLivekit(input,saved={}){
 }
 const ENV_TEST='livekit-cloud-environment-test';
 const environmentManaged=env=>!!(env.LIVEKIT_URL||env.LIVEKIT_API_KEY||env.LIVEKIT_API_SECRET);
-const credentialFingerprint=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(JSON.stringify([value.url,value.apiKey,value.apiSecret])))),byte=>byte.toString(16).padStart(2,'0')).join('');
+export const livekitCredentialFingerprint=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(JSON.stringify([value.url,value.apiKey,value.apiSecret])))),byte=>byte.toString(16).padStart(2,'0')).join('');
+const credentialFingerprint=livekitCredentialFingerprint;
 export async function livekitSettings(env){
  if(environmentManaged(env)){
   let value={url:env.LIVEKIT_URL||'',apiKey:env.LIVEKIT_API_KEY||'',apiSecret:env.LIVEKIT_API_SECRET||''};

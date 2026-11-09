@@ -1,0 +1,37 @@
+[
+  {
+    "name": "broadcast-shell",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "workspace-navigation",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "calls",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "livekit",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "milo-ui",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "planner-ui",
+    "exitCode": 1,
+    "error": null
+  },
+  {
+    "name": "showtime",
+    "exitCode": 1,
+    "error": null
+  }
+]

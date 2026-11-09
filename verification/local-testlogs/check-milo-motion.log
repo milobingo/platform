@@ -1,18 +1,18 @@
-✔ all Milo performances sample finite, bounded, continuous poses including both magic acts (453.450872ms)
-✔ greeting visibly raises Milo’s hand and animates elbow and wrist independently (0.425485ms)
-✔ clapping brings actual palms together in front of the waistcoat (0.241977ms)
-✔ high energy preserves the physical clap and chin destinations (1.321822ms)
-✔ gesture blend returns to the same ongoing idle phase at both cue edges (1.019183ms)
-✔ talking adds slow expressive gesture beats and respects an active choreography (0.352624ms)
-✔ magical choreography follows two distinct acts rather than one looping hand pose (0.249477ms)
-✔ the critically damped pose settles without snapping, freezes exactly and allows deterministic seeking (5.330362ms)
-✔ reduced motion and zero energy freeze the full skeleton while leaving facial audio independent (0.516513ms)
-✔ walking alternates planted feet and raised swing legs without stretching their source geometry (11.024315ms)
-✔ walking is continuous at every contact and can follow the travelled distance in either direction (0.845851ms)
-✔ walk stride and energy settle safely without destroying the inverse-kinematic foot destinations (1.371527ms)
-✔ long idle acting stays continuous and non-repeating across many episode boundaries (76.316946ms)
-✔ conversation has expressive phrases separated by quieter rests (7.948799ms)
-✔ contextual attention follows a guest gently and yields to exact choreographed cues (0.469681ms)
+✔ all Milo performances sample finite, bounded, continuous poses including both magic acts (436.267979ms)
+✔ greeting visibly raises Milo’s hand and animates elbow and wrist independently (0.427798ms)
+✔ clapping brings actual palms together in front of the waistcoat (0.270309ms)
+✔ high energy preserves the physical clap and chin destinations (1.102611ms)
+✔ gesture blend returns to the same ongoing idle phase at both cue edges (1.065294ms)
+✔ talking adds slow expressive gesture beats and respects an active choreography (0.539948ms)
+✔ magical choreography follows two distinct acts rather than one looping hand pose (0.266264ms)
+✔ the critically damped pose settles without snapping, freezes exactly and allows deterministic seeking (3.130635ms)
+✔ reduced motion and zero energy freeze the full skeleton while leaving facial audio independent (0.560218ms)
+✔ walking alternates planted feet and raised swing legs without stretching their source geometry (9.4359ms)
+✔ walking is continuous at every contact and can follow the travelled distance in either direction (0.795135ms)
+✔ walk stride and energy settle safely without destroying the inverse-kinematic foot destinations (0.961407ms)
+✔ long idle acting stays continuous and non-repeating across many episode boundaries (62.699829ms)
+✔ conversation has expressive phrases separated by quieter rests (9.44943ms)
+✔ contextual attention follows a guest gently and yields to exact choreographed cues (0.477864ms)
 ℹ tests 15
 ℹ suites 0
 ℹ pass 15
@@ -20,4 +20,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 567.32813
+ℹ duration_ms 534.086559

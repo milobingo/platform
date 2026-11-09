@@ -1,0 +1,25 @@
+✔ S03: effective free centre rejects a centre-only pattern for either imported flag (7.768804ms)
+✔ S02: an acknowledged goal cannot reopen, reroll or reset the round deck (8.014355ms)
+✔ S02: a second regie tab cannot finish an unpublished saved result (33.165371ms)
+✔ S05: changed-input replay never returns another family claim (13.908759ms)
+✔ S01/S04: concurrent same-goal dialogs share one window; a historical open dialog cannot create its successor (13.559538ms)
+✔ S01: after a false window, another own book can announce after cooldown without deleting history (12.870644ms)
+✔ S04: stale goal, round, pattern and foreign-show contexts do not claim, sanction or change a deadline (11.38215ms)
+✔ S05: concurrent request collisions bind the authenticated actor, input and action without another family projection (15.505538ms)
+✔ S02: simultaneous refresh settlement persists one result and one winner, including an imported old result without goalKey (64.941928ms)
+✔ S03: imported invalid drafts fail publication, save and start; valid free centre completes at the last real ball (6.718811ms)
+✔ S05: public results use explicit aliases, own fields stay private and unrelated host family lists are scoped (4.833925ms)
+✔ L01 shared game invariant: every model draw path blocks callId and drawHold, including pending commit (4.166855ms)
+✔ S01/S04: real cooldown persists; at the exact server deadline no claim or false sanction is accepted (10.630109ms)
+✔ S04: an exact claim retry after window closure and progression returns its own immutable outcome without a second sanction (12.137896ms)
+✔ U01/S05: the published 150-book family limit applies to direct registration and host assignment atomically (93.223737ms)
+✔ S05: the original bound claim outcome survives more than 250 other operations without a growing replay cache (102.604254ms)
+✔ U01: a legacy draft above the family limit blocks publication and start without rewriting existing books (77.989652ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 500.315683

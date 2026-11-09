@@ -2,6 +2,10 @@ import {canvasRuntime} from './canvas-runtime.mjs';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {createRequire} from 'node:module';
+import {spawnSync} from 'node:child_process';
+import {transform} from 'esbuild';
+import {makeGame,activateBlock,reserveBall,commitBall} from '../server/bingo-model.js';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {ShowtimeStage,MACHINE_SCALE,MACHINE_POSITION} from '../public/showtime-stage.js';
@@ -50,16 +54,29 @@ for(let i=0;i<330;i++){stage.update(1/60);for(let j=0;j<stage.balls.count;j++){s
 assert.equal(stage.number,17);assert.equal(stage.nextNumber,null);
 const frozen=stage.time;stage.update(1,{running:false});assert.equal(stage.time,frozen);
 let cameras=0;for(const aspect of [16/9,4/3,9/16])for(const name of CAMERA_NAMES){const c=cameraPreset(name,aspect);assert([...c.position,...c.target].every(Number.isFinite));assert(c.position.distanceTo(c.target)>1);cameras++;}
-const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('./fixtures/legacy-studio.html',import.meta.url),'utf8');
-const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));for(const [,id]of app.matchAll(/\$\('#([^']+)'\)/g))assert(ids.has(id.split(/[ .>:[\]]/)[0]),`Missing #${id}`);
-// Persisted pagehide keeps GPU resources; pageshow resumes exactly one loop.
-const pageEvents={},lifecycle={animationFrame:71,lastTime:0,performance:{now:()=>1234},disposals:0,scheduled:0,cancelled:0,updates:0,window:{addEventListener:(name,fn)=>{pageEvents[name]=fn;}},stopSpeech(){},clearDemo(){},cancelAnimationFrame(){lifecycle.cancelled++;},requestAnimationFrame(){return ++lifecycle.scheduled;},draw(){},resizeObserver:{disconnect(){}},rig3D:{dispose(){lifecycle.disposals++;},resize(){}},channel:{close(){}},toolsLifecycle:{abort(){}},voiceList(){},updateUI(){lifecycle.updates++;}};
-vm.createContext(lifecycle);vm.runInContext(app.slice(app.indexOf("window.addEventListener('pagehide'"),app.lastIndexOf('init();')),lifecycle);
+// /klassiek is a native redirect to the active React studio. The historical
+// HTML fixture is not a production shell and cannot define its required IDs.
+const require=createRequire(import.meta.url),route=fs.readFileSync(new URL('../app/klassiek/page.tsx',import.meta.url),'utf8'),routeModule={exports:{}};
+const compiled=await transform(route,{loader:'tsx',format:'cjs'});
+vm.runInNewContext(compiled.code,{module:routeModule,exports:routeModule.exports,require:id=>{assert.equal(id,'next/navigation');return require(id);}});
+assert.throws(()=>routeModule.exports.default(),error=>error.digest==='NEXT_REDIRECT;replace;/;307;','The former classic URL must resolve to the active native studio');
+// Reuse the actual React Stage integration, with only its renderer boundary
+// mocked. It checks current UI settings, 14 camera bindings, pause and unmount
+// disposal. The real GLB/physics/rendering checks above remain independent.
+const activeUi=spawnSync(process.execPath,[new URL('./check-milo-ui.mjs',import.meta.url).pathname],{encoding:'utf8',timeout:30000,env:process.env});
+assert.equal(activeUi.status,0,(activeUi.stdout||'')+(activeUi.stderr||'')+(activeUi.error?.message||''));assert.match(activeUi.stdout,/Vlampie adapter:.*14 cameras, mouth, pause and cleanup/);
+// Keep the historical page-cache lifecycle regression explicitly scoped to its
+// two registered handlers. Running the rest of an obsolete app initializer
+// would require DOM that this native route intentionally no longer publishes.
+const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
+const lifecycleStart=app.indexOf("window.addEventListener('pagehide'"),lifecycleEnd=app.indexOf("document.addEventListener('visibilitychange'",lifecycleStart);assert(lifecycleStart>=0&&lifecycleEnd>lifecycleStart);
+const pageEvents={},lifecycle={animationFrame:71,lastTime:0,performance:{now:()=>1234},disposals:0,scheduled:0,cancelled:0,updates:0,window:{addEventListener:(name,fn)=>{pageEvents[name]=fn;}},narration:{cancel(){}},$:()=>({value:'private-fixture-key'}),cancelChat(){},isShow:false,bingoHost:{dispose(){}},outputBridge:{dispose(){}},showTimer:0,clearInterval(){},showAudio:{dispose(){}},previewStudio:{dispose(){}},dashboard:{dispose(){}},stopSpeech(){},clearDemo(){},cancelAnimationFrame(){lifecycle.cancelled++;},requestAnimationFrame(){return ++lifecycle.scheduled;},draw(){},resizeObserver:{disconnect(){}},rig3D:{dispose(){lifecycle.disposals++;},resize(){}},channel:{close(){}},toolsLifecycle:{abort(){}},voiceList(){},updateUI(){lifecycle.updates++;}};
+vm.createContext(lifecycle);vm.runInContext(app.slice(lifecycleStart,lifecycleEnd),lifecycle);
 pageEvents.pagehide({persisted:true});assert.equal(lifecycle.disposals,0);pageEvents.pageshow({persisted:true});pageEvents.pageshow({persisted:true});assert.equal(lifecycle.scheduled,1);assert.equal(lifecycle.lastTime,1234);pageEvents.pagehide({persisted:false});assert.equal(lifecycle.disposals,1);
-const context={state:{bingoPending:null,bingoElapsed:1000,bingoDrawn:[],bingoNumber:42},rig3D:{character:{}},stopped:false,isShow:false,crypto,Uint32Array,remaining:null,setMode(){},setBackground(){},setCamera(){},emit(){},studioSnapshot(){},updateUI(){},updateStudioUI(){},caption(){}};
-vm.createContext(context);
-const drawFunction=app.slice(app.indexOf('function drawBingo(){'),app.indexOf("$('#draw-ball').addEventListener"));
-vm.runInContext(drawFunction,context);
-for(let i=0;i<75;i++){vm.runInContext('drawBingo();advanceBingo(4.31)',context);assert.equal(context.state.bingoDrawn.length,i+1);}
-assert.equal(new Set(context.state.bingoDrawn).size,75);vm.runInContext('drawBingo()',context);assert.equal(context.state.bingoPending,null);
-console.log(JSON.stringify({status:'passed',setMeshes:meshes,setTriangles:triangles,cameraChecks:cameras,foundationFaces,directRendering:true,signLights,queuedResize:true,pixelBudget:true,renderFailureRecovery:true,browserCacheRecovery:true,ballsStayInside:true,drawsWithoutRepetition:75,numberReveal:true,pause:true,browserVerified:false}));
+// The obsolete drawBingo UI helper now delegates. Test the official server
+// reserve/commit boundary: a preview never counts and exact commit retry never
+// appends twice, through all 75 unique balls and the exhausted-deck boundary.
+const game=makeGame({brandId:'vlampie',date:'2027-12-05T19:00:00Z',roundCount:1},'showtime-fixture','https://studio.example');game.status='running';activateBlock(game,game.plan.blocks.findIndex(block=>block.type==='round'));
+for(let i=0;i<75;i++){const pending=reserveBall(game);assert.equal(game.state.drawn.length,i);const committed=commitBall(game,pending.token);assert.equal(game.state.drawn.length,i+1);assert.deepEqual(commitBall(game,pending.token),committed);assert.equal(game.state.drawn.length,i+1);}
+assert.equal(new Set(game.state.drawn).size,75);assert.deepEqual([...game.state.drawn].sort((a,b)=>a-b),Array.from({length:75},(_,index)=>index+1));assert.equal(game.state.pending,null);assert.throws(()=>reserveBall(game),/Alle 75 ballen/);
+console.log(JSON.stringify({status:'passed',setMeshes:meshes,setTriangles:triangles,cameraChecks:cameras,foundationFaces,directRendering:true,signLights,queuedResize:true,pixelBudget:true,renderFailureRecovery:true,browserCacheRecovery:true,legacyPageCacheHandlers:true,activeNativeRedirect:true,activeReactStageBindings:true,ballsStayInside:true,drawsWithoutRepetition:75,officialReserveCommit:true,numberReveal:true,pause:true,browserVerified:false}));

@@ -18,7 +18,7 @@ function setup(){
 // Claims use actual server card-completion checks. The earliest two cards tie;
 // later eligible cards include repeated books, another account and legacy books.
 function consolationFixture(enabled=true){
- const g=makeGame({date:'2026-12-05T19:00',settings:{retroBalls:3,cooldownSeconds:0,consolationEnabled:enabled,consolationPrizeTitle:'Een sterrensticker',minigames:['horses']}},'host','https://studio.example');
+ const g=makeGame({timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00',settings:{retroBalls:3,cooldownSeconds:0,consolationEnabled:enabled,consolationPrizeTitle:'Een sterrensticker',minigames:['horses']}},'host','https://studio.example');
  generateBooks(g,10,'consolation-fixture');g.status='running';activateBlock(g,g.plan.blocks.findIndex(b=>b.type==='round'));
  const goal=activeGoal(g);goal.pattern.cells=[0];goal.pattern.variant='fixed';g.state.drawn=[1,2,3,4,5,6];
  const values=[3,3,4,5,6,2,7,4,5,6],persons=['early-a','early-b','later','later','early-a','too-old','false','later',null,null],families={a:familyDefault(),b:familyDefault()};

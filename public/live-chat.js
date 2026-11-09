@@ -1,4 +1,5 @@
 import {bt} from './brand-ui.js?v=37';
+import {FAMILY_REACTIONS,familyReaction} from './family-reactions.js';
 const EMOJI = ['😀','🥳','🤩','😍','😂','👏','🙌','👍','❤️','🔥','🎉','🎁','⭐','🍀','🎯','🏆','🎄','🍪','👋','💃'];
 const ROLES = {host:'Host', moderator:'Moderator', player:'Speler'};
 const MUTE_OPTIONS = [[60,'1 minuut'],[300,'5 minuten'],[900,'15 minuten'],[3600,'1 uur'],[86400,'24 uur']];
@@ -10,17 +11,18 @@ const wait = (ms,signal) => new Promise((resolve,reject)=>{if(signal?.aborted)re
 
 /** Shared host/player chat. All author identity and permissions come from the server. */
 export class LiveChat {
- constructor({root,onVlampie=()=>{},hostView=false,compact=false,fetcher,streaming=true,simulated=false}={}) {
+ constructor({root,onVlampie=()=>{},hostView=false,compact=false,fetcher,streaming=true,simulated=false,quickReactions=false}={}) {
   this.root=typeof root==='string'?document.querySelector(root):root;
   if(!this.root)throw new Error('LiveChat heeft een container nodig.');
   this.onVlampie=onVlampie;this.hostView=hostView;this.compact=!!compact;this.fetcher=fetcher||((...args)=>fetch(...args));this.streaming=streaming!==false;this.simulated=!!simulated;this.gameId='';this.epoch=0;this.cursor=0;this.messages=new Map();this.deletedIds=new Set();this.members=new Map();this.nodes=new Map();this.self=null;this.selectedProfile='';this.disposed=false;this.sending=false;this.unread=0;this.pendingDraft=null;this.readyPromise=Promise.resolve();this.listenerController=new AbortController();this.serverOffset=0;this.selfVersion={cursor:-1,time:0};
-  this.mount();this.brandListener=()=>{this.updateComposer?.();this.renderMessages?.();};document.addEventListener('show-brand-changed',this.brandListener);
+  this.quickReactions=quickReactions;this.mount();this.brandListener=()=>{this.updateComposer?.();this.renderMessages?.();};document.addEventListener('show-brand-changed',this.brandListener);
  }
  mount(){
   this.root.classList.add('live-chat');this.root.dataset.chatState='empty';
   this.root.innerHTML=`<header class="lc-header"><div class="lc-heading"><span class="lc-eyebrow">SAMEN IN DE SHOW</span><h2>${this.simulated?'Demochat':'Live chat'} <span class="lc-status" data-ref="status" role="status">Kies een spel</span></h2></div><button type="button" class="lc-icon-button lc-manage" data-action="members" title="Chat beheren" aria-label="Chat beheren" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg></button></header><div class="lc-body"><div class="lc-messages" data-ref="messages" role="log" aria-label="Berichten in de showchat" aria-live="off" tabindex="0"></div><div class="lc-empty" data-ref="empty"><span class="lc-empty-icon" aria-hidden="true">✦</span><strong data-ref="emptyTitle">De show begint samen</strong><p data-ref="emptyText">Kies een spel om de chat te openen.</p><button type="button" class="lc-button" data-action="retry" data-ref="retry" hidden>Opnieuw verbinden</button></div><button type="button" class="lc-new-messages" data-action="latest" data-ref="latest" hidden></button></div><div class="lc-notice" data-ref="notice" role="status" hidden></div><form class="lc-composer" data-ref="form"><div class="lc-compose-meta"><label class="lc-person-label" data-ref="personLabel"><span>Je reageert als</span><select data-ref="profile" aria-label="Kies wie reageert" hidden></select><strong data-ref="identity">—</strong></label><span class="lc-char-count" data-ref="count">0 / 500</span></div><div class="lc-input-wrap"><textarea data-ref="input" rows="2" maxlength="500" placeholder="Typ een bericht of vraag met @${bt("Vlampie")}…" aria-label="Je chatbericht" disabled></textarea></div><div class="lc-compose-footer"><button type="button" class="lc-emoji-button" data-action="emoji" data-ref="emojiButton" aria-label="Emoji toevoegen" aria-expanded="false" disabled><span aria-hidden="true">☺</span><span>Emoji</span></button><span class="lc-compose-hint" data-ref="hint">Enter om te verzenden</span><button type="submit" class="lc-send" data-ref="send" disabled><span data-ref="sendLabel">Verstuur</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 4 17 8-17 8 3-8-3-8Z M7 12h14"/></svg></button></div><div class="lc-emoji-picker" data-ref="emoji" role="group" aria-label="Kies een emoji" hidden></div></form><section class="lc-overlay" data-ref="overlay" role="dialog" aria-modal="false" aria-label="Chat beheren" hidden><header><div><span class="lc-eyebrow">CHATBEHEER</span><h3 data-ref="overlayTitle">Deelnemers</h3></div><button type="button" class="lc-icon-button" data-action="close-overlay" aria-label="Chatbeheer sluiten">×</button></header><div class="lc-overlay-content" data-ref="overlayContent"></div></section><span class="lc-sr-only" data-ref="announcer" aria-live="polite" aria-atomic="true"></span>`;
   this.refs=Object.fromEntries([...this.root.querySelectorAll('[data-ref]')].map(node=>[node.dataset.ref,node]));
   this.refs.input.rows=this.compact?1:2;
+  if(this.quickReactions){const reactions=el('div','lc-quick-reactions');reactions.setAttribute('role','group');reactions.setAttribute('aria-label','Korte publieksreactie');for(const reaction of FAMILY_REACTIONS){const control=button(reaction.text,'quick-reaction','lc-quick-reaction');control.dataset.reactionId=reaction.id;control.setAttribute('aria-label','Reageer met '+reaction.label);control.disabled=true;reactions.append(control);}this.refs.form.before(reactions);this.reactionControls=[...reactions.querySelectorAll('button')];}
   this.manageButton=this.root.querySelector('.lc-manage');
   for(const emoji of EMOJI){const node=button(emoji,'insert-emoji','lc-emoji-option');node.dataset.emoji=emoji;node.setAttribute('aria-label',`Emoji ${emoji}`);this.refs.emoji.append(node);}
   const signal=this.listenerController.signal;
@@ -38,7 +40,7 @@ export class LiveChat {
   if(this.disposed)return Promise.resolve();
   const id=String(gameId||'');
   if(id===this.gameId){if(profiles&&this.self){this.self={...this.self,profiles};this.updateIdentity();}return this.readyPromise;}
-  this.stopTransport();this.gameId=id;this.epoch++;this.cursor=0;this.messages.clear();this.deletedIds.clear();this.members.clear();this.nodes.clear();this.self=null;this.sending=false;this.pendingDraft=null;this.selectedProfile='';this.unread=0;this.lastSync=0;this.failures=0;this.serverOffset=0;this.selfVersion={cursor:-1,time:0};this.initialFailures=0;this.initialBusy=false;this.terminalError=false;
+  this.stopTransport();this.gameId=id;this.epoch++;this.cursor=0;this.messages.clear();this.deletedIds.clear();this.members.clear();this.nodes.clear();this.self=null;this.sending=false;this.pendingDraft=null;this.pendingReaction=null;this.selectedProfile='';this.unread=0;this.lastSync=0;this.failures=0;this.serverOffset=0;this.selfVersion={cursor:-1,time:0};this.initialFailures=0;this.initialBusy=false;this.terminalError=false;
   this.refs.messages.replaceChildren();this.refs.input.value='';this.refs.announcer.textContent='';this.refs.latest.hidden=true;this.closeOverlay();this.toggleEmoji(false);this.notice('');
   this.controller=new AbortController();this.updateIdentity();
   if(!id){this.status('empty','Kies een spel','Selecteer een spel om de showchat te openen.');this.empty('De show begint samen','Kies een spel om de chat te openen.');this.readyPromise=Promise.resolve();return this.readyPromise;}
@@ -120,7 +122,7 @@ export class LiveChat {
   const input=this.refs.input,text=input.value||'',self=this.self,hasProfile=self?.role==='host'||!!this.selectedProfile;
   const muted=Number(self?.mutedUntil)>Date.now()+this.serverOffset;
   const canSend=!!this.gameId&&!!self?.canSend&&!muted&&hasProfile&&!this.disposed;
-  input.disabled=!canSend||this.sending;this.refs.profile.disabled=this.sending;this.refs.emojiButton.disabled=!canSend||this.sending;this.refs.send.disabled=!canSend||this.sending||!text.trim()||[...text].length>500;
+  input.disabled=!canSend||this.sending;this.refs.profile.disabled=this.sending;this.refs.emojiButton.disabled=!canSend||this.sending;this.refs.send.disabled=!canSend||this.sending||!text.trim()||[...text].length>500;for(const control of this.reactionControls||[])control.disabled=!canSend||this.sending;
   this.refs.count.textContent=`${[...text].length} / 500`;this.refs.count.classList.toggle('lc-count-over',[...text].length>500);this.refs.sendLabel.textContent=this.sending?'Versturen…':'Verstuur';
   this.refs.input.placeholder=!this.gameId?'Kies eerst een spel…':!self?'De chat wordt verbonden…':muted?'Je account is tijdelijk gemutet…':!self.canSend?'Reageren is nu niet mogelijk…':this.compact?'Typ je bericht…':bt('Typ een bericht of vraag met @Vlampie…');
   let reason=self?.reason||'';
@@ -185,21 +187,23 @@ export class LiveChat {
   finally{if(this.current(epoch)){this.pollBusy=false;if(this.pollActive)this.beginPolling(1500);}}
  }
  checkConnection(epoch){if(!this.current(epoch))return;this.updateComposer();if(Date.now()-this.lastSync>12000)this.beginPolling(0);if(Date.now()-this.lastSync>28000)this.status('offline','Verbinding herstellen…','De chat wacht op een bevestigde verbinding.');if(this.stream&&Date.now()-this.lastStreamSync>28000){this.stream.close();this.stream=null;this.beginPolling(0);this.scheduleStream(0);}}
- async send(){
-  const text=this.refs.input.value.trim();if(this.sending||this.refs.send.disabled||!text)return;const epoch=this.epoch,profileId=this.self?.role==='host'?null:this.selectedProfile;
-  const sameDraft=this.pendingDraft?.text===text&&this.pendingDraft.profileId===profileId;const payload=sameDraft?this.pendingDraft:{requestId:uuid(),profileId,text};this.pendingDraft=payload;this.sending=true;this.notice('');this.toggleEmoji(false);this.updateComposer();
+ async send(reactionId){
+  const reaction=reactionId===undefined?null:familyReaction(reactionId);if(reactionId!==undefined&&(!this.quickReactions||!reaction))return;
+  const text=reaction?reaction.text:this.refs.input.value.trim();if(this.sending||!text||(reaction?(!this.self?.canSend||!this.initialized):this.refs.send.disabled))return;const epoch=this.epoch,profileId=this.self?.role==='host'?null:this.selectedProfile,key=reaction?'pendingReaction':'pendingDraft';
+  const sameDraft=this[key]?.text===text&&this[key].profileId===profileId;const payload=sameDraft?this[key]:{requestId:uuid(),profileId,text};this[key]=payload;this.sending=true;this.notice('');this.toggleEmoji(false);this.updateComposer();
   try{
    const data=await this.api('',{method:'POST',body:payload},epoch);if(!this.current(epoch))return;if(!data.message?.id&&!data.events&&!data.messages)throw new Error('Het bericht is nog niet bevestigd.');
    if(data.message?.id){this.setMessage(data.message);this.renderMessages();this.scrollBottom();}
    this.acceptSelf(data);
    if(data.events||data.messages)this.apply(data);
-   if(this.refs.input.value.trim()===text)this.refs.input.value='';this.pendingDraft=null;this.notice('');this.beginPolling(0);
-  }catch(error){if(this.current(epoch)&&error.name!=='AbortError'){const uncertain=!error.status||error.retriable;this.notice(uncertain?'Het verzenden is nog niet bevestigd. Je bericht staat klaar; probeer veilig opnieuw.':error.message,true);if(!uncertain)this.pendingDraft=null;this.beginPolling(0);}}
+   if(!reaction&&this.refs.input.value.trim()===text)this.refs.input.value='';this[key]=null;this.notice(reaction?'Reactie bevestigd in de showchat.':'');this.beginPolling(0);
+  }catch(error){if(this.current(epoch)&&error.name!=='AbortError'){const uncertain=!error.status||error.retriable;this.notice(uncertain?(reaction?'Je reactie is nog niet bevestigd. Kies dezelfde reactie om veilig opnieuw te proberen.':'Het verzenden is nog niet bevestigd. Je bericht staat klaar; probeer veilig opnieuw.'):error.message,true);if(!uncertain)this[key]=null;this.beginPolling(0);}}
   finally{if(this.current(epoch)){this.sending=false;this.updateComposer();if(!this.refs.input.disabled)this.refs.input.focus();}}
  }
  click(event){
   const node=event.target.closest?.('[data-action]');if(!node||!this.root.contains(node))return;
   const action=node.dataset.action;
+  if(action==='quick-reaction')void this.send(node.dataset.reactionId);
   if(action==='latest')this.scrollBottom();
   if(action==='emoji')this.toggleEmoji(this.refs.emoji.hidden);
   if(action==='insert-emoji')this.insertEmoji(node.dataset.emoji);

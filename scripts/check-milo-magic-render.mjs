@@ -73,7 +73,7 @@ test('actual studio magic holds preview pixels, preserves game fields, accepts c
  globalThis.window={devicePixelRatio:1,addEventListener(){},removeEventListener(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}})};
  globalThis.Image=LocalImage;globalThis.ResizeObserver=undefined;globalThis.CustomEvent=class{};
  globalThis.fetch=async url=>({ok:true,json:async()=>JSON.parse(await readFile(assetPath(url),'utf8'))});
- let nextFrame,now=100,studio;
+ let nextFrame,now=100,studio;const rendered=[];
  globalThis.requestAnimationFrame=cb=>{nextFrame=cb;return 1;};globalThis.cancelAnimationFrame=()=>{};
  const tick=()=>{nextFrame(now+=40);return pixels(studio.canvas);};
  const output=resolve(process.env.TMPDIR||'/tmp','milo-magic-qa'),previewDir=resolve(root,'public/assets/milo-friends/studio/show-cues'),generate=process.argv.includes('--generate');
@@ -82,8 +82,8 @@ test('actual studio magic holds preview pixels, preserves game fields, accepts c
   assert.equal(MAGIC_MOMENTS.length,12);assert.deepEqual(MAGIC_MOMENTS.map(c=>c.id),MAGIC_CUES.map(c=>c.id));
   const official={drawn:[7,23,42],lastNumber:42,roundTitle:'Ronde 2',cards:[{id:'original-card'}],winners:[{id:'winner-on-server'}]};
   const errors=[];
-  studio=mountStudio(new Surface('div'),{onAssetError:(id,e)=>errors.push(`${id}: ${e.message}`),state:{...structuredClone(official),hostId:'milo',camera:'magic',movingCamera:false,paused:true,showRoundTitle:false,showCaptions:false,blink:false}});
-  await studio.preload(['milo']);await turn();await studio.preload(['milo']);await turn();assert.deepEqual(errors,[]);assert(studio.snapshot().ready);assert.equal(studio.snapshot().characterRigs.milo.kind,'articulated');
+  studio=mountStudio(new Surface('div'),{onFrameRendered:state=>rendered.push(state.outputVersion),onAssetError:(id,e)=>errors.push(`${id}: ${e.message}`),state:{outputVersion:{generation:'fixture-generation',seq:5},...structuredClone(official),hostId:'milo',camera:'magic',movingCamera:false,paused:true,showRoundTitle:false,showCaptions:false,blink:false}});
+  const preload=studio.preload(['milo']);tick();assert.equal(rendered.length,0,'Incomplete actor/assets cannot acknowledge a published frame');await preload;assert(studio.snapshot().characterRigs.milo,'One preload must await the in-flight actor and manifest');tick();assert.deepEqual(rendered.at(-1),{generation:'fixture-generation',seq:5});assert.deepEqual(errors,[]);assert(studio.snapshot().ready);assert.equal(studio.snapshot().characterRigs.milo.kind,'articulated');
   const sheet=createCanvas(1280,5*382),sc=sheet.getContext('2d'),hashes=new Set();sc.fillStyle='#160b28';sc.fillRect(0,0,sheet.width,sheet.height);
   if(generate){await mkdir(output,{recursive:true});await mkdir(previewDir,{recursive:true});}
   for(let i=0;i<EXTRA_MAGIC_IDS.length;i++){

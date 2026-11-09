@@ -74,7 +74,7 @@ try{
  assert(h.document.querySelector('.bs-show-hero .mf-stage-frame'));
  assert.equal(h.document.querySelectorAll('.bs-preflight>button').length,4);
  assert.equal(h.document.querySelectorAll('.mf-sidebar .mf-nav-label').length,4);
- assert.equal(h.document.querySelectorAll('.mf-sidebar nav>a').length,12);
+ assert.equal(h.document.querySelectorAll('.mf-sidebar nav>a').length,13);
  await h.navigate('studio');
  assert(h.document.querySelector('.bs-camera-monitor .mf-stage-frame'));
  assert(h.document.querySelectorAll('.bs-shot-grid>button').length>=9);
@@ -85,5 +85,5 @@ try{
  const refreshed=findSelect('Overgang tussen shots');Object.defineProperty(refreshed,'value',{configurable:true,value:'smooth'});h.event(refreshed,'change');await wait(30);
  assert(!findSelect('Duur van de beweging').disabled);
  assert.deepEqual(h.errors,[]);
- console.log('✓ Broadcast shell: overview, twelve reachable routes, four clear navigation groups, new studio monitor and actual cut/smooth camera controls');
+ console.log('✓ Broadcast shell: overview, thirteen reachable routes including mail, four clear navigation groups, new studio monitor and actual cut/smooth camera controls');
 }finally{h.close();}

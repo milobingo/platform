@@ -1,0 +1,12 @@
+✔ widgets can be inserted by click and drag, reordered, copied, and configured in the inspector (149.115749ms)
+✔ a custom pattern and prize upload can be saved and linked to a round (81.675998ms)
+✔ edits made during a save are serialized and cannot be lost by the earlier response (33.418179ms)
+✔ a conflicting tab preserves its own draft until the saved version is explicitly loaded (34.090016ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 303.012981

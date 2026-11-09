@@ -1,7 +1,7 @@
-✔ show data persists in SQLite and stale tabs cannot overwrite a newer preparation (31.013557ms)
-✔ owner identity, origin and write header are required before accessing preparation data (1.169001ms)
-✔ invalid patterns, arbitrary image links and oversized documents are rejected without writing (3.251445ms)
-✔ prize images persist separately and are accessible only within their owner namespace (4.13405ms)
+✔ show data persists in SQLite and stale tabs cannot overwrite a newer preparation (35.352917ms)
+✔ owner identity, origin and write header are required before accessing preparation data (1.518941ms)
+✔ invalid patterns, arbitrary image links and oversized documents are rejected without writing (3.572775ms)
+✔ prize images persist separately and are accessible only within their owner namespace (3.359301ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 44.255411
+ℹ duration_ms 50.767757

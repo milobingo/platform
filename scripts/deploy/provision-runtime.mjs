@@ -79,6 +79,14 @@ function sourcePoolFactory(connectionString, { caBase64 } = {}) {
   return pool;
 }
 
+export function assertMigrationProofHistory(history,manifest,backupId,releaseSha){
+  const expected=manifest.migrations,latest=history.at(-1);
+  // Prior additive migrations retain their own release/backup provenance.
+  // Every filename, checksum and project must still match the audited source;
+  // only the latest exact migration must reference the current restore proof.
+  if(!expected.length||history.length!==expected.length||history.some((row,index)=>row.filename!==expected[index].filename||row.checksum!==expected[index].checksum||row.project_ref!==projectRef||typeof row.backup_id!=='string'||!row.backup_id||!/^[a-f0-9]{40}$/.test(row.release_sha||''))||latest.backup_id!==backupId||latest.release_sha!==releaseSha)fail('runtime_backup_history','De volledige bekende migratiehistorie moet bij dit project horen; de nieuwste migratie moet naar dit herstelbewijs en deze release verwijzen.');
+}
+
 export async function provisionRuntime({ env = process.env, backupId, directory = backupDirectory, poolFactory = sourcePoolFactory, runtimePoolFactory = options => new Pool(options), fetcher = fetch } = {}) {
   const target = validateTarget(env, projectRef), manifest = await loadManifest();
   const parent = await open(directory, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
@@ -91,15 +99,15 @@ export async function provisionRuntime({ env = process.env, backupId, directory 
     output = await open(`/proc/self/fd/${parent.fd}/${outputName}`, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
     await output.chmod(0o600);
     const before = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, poolFactory, fetcher });
-    if (!before.ok || before.applicationTables.length !== 18 || !before.managed || !before.historyReadable || before.pending.length) fail('runtime_schema_unready', 'De beheerde stagingdatabase moet volledig gemigreerd en gecontroleerd zijn.');
+    if (!before.ok || before.applicationTables.length !== 23 || !before.managed || !before.historyReadable || before.pending.length) fail('runtime_schema_unready', 'De beheerde stagingdatabase moet volledig gemigreerd en gecontroleerd zijn.');
     pool = poolFactory(env.DATABASE_URL, { verifiedTls: true, caBase64: env.SUPABASE_DB_CA_BASE64 });
     client = await pool.connect(); verifyDatabaseClientTls(client, target.database.hostname);
     await client.query("SELECT pg_advisory_lock(hashtextextended('milo-controlled-schema-bootstrap',0))"); locked = true;
     const fresh = await auditDatabase({ env, expectedProjectRef: projectRef, manifest, poolFactory, fetcher });
-    if (!fresh.ok || fresh.applicationTables.length !== 18 || !fresh.managed || !fresh.historyReadable || fresh.pending.length || Math.floor(fresh.connection.version / 10000) !== proof.postgresMajor) fail('runtime_locked_audit', 'De gecontroleerde database of PostgreSQL-versie veranderde vóór runtimeprovisioning.');
+    if (!fresh.ok || fresh.applicationTables.length !== 23 || !fresh.managed || !fresh.historyReadable || fresh.pending.length || Math.floor(fresh.connection.version / 10000) !== proof.postgresMajor) fail('runtime_locked_audit', 'De gecontroleerde database of PostgreSQL-versie veranderde vóór runtimeprovisioning.');
     await validateRestoreProof(parent, backupId, env.RELEASE_SHA);
-    const history = (await client.query('SELECT backup_id,release_sha,project_ref FROM milo_deploy.migrations ORDER BY filename')).rows;
-    if (!history.length || history.some(row => row.backup_id !== backupId || row.release_sha !== env.RELEASE_SHA || row.project_ref !== projectRef)) fail('runtime_backup_history', 'De migratiehistorie verwijst niet naar dit herstelbewijs en deze release.');
+    const history = (await client.query('SELECT filename,checksum,backup_id,release_sha,project_ref FROM milo_deploy.migrations ORDER BY filename')).rows;
+    assertMigrationProofHistory(history,manifest,backupId,env.RELEASE_SHA);
     if ((await client.query('SELECT 1 FROM pg_roles WHERE rolname=$1', [runtimeRole])).rows.length) fail('runtime_role_exists', 'De vaste runtime-login bestaat al. Er wordt geen account of wachtwoord overschreven.');
     const password = randomBytes(32).toString('base64url'), verifier = scramVerifier(password);
     const runtimeUrl = deriveRuntimeUrl(env.DATABASE_URL, password);

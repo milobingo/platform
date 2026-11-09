@@ -51,7 +51,7 @@ export class LiveCallConnection{
  leave(){
   this.epoch++;this.commands++;
   // A best-effort close intentionally retains the persistent server draw hold.
-  if(!liveCallActive(this.call))return;
+  if(!liveCallActive(this.call)||this.role==='player'&&this.call.canControl===false)return;
   const body=this.bound({action:'fail',reason:'Dit belvenster is gesloten.'});
   void globalThis.fetch?.('/api/live-calls',{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Content-Type':'application/json','X-Vlampie-Call':'1',...(this.role==='player'?{'X-Vlampie-Player':'1'}:{})},body:JSON.stringify(body)}).catch(()=>{});
  }

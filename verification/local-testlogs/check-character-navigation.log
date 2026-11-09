@@ -1,7 +1,7 @@
-✔ the overview presenter button opens the actual Milo, Stella and Vlampie profiles (1246.586747ms)
-✔ a legacy undefined route restores Milo and sends the same canonical id to save, voice design and microphone (310.609511ms)
-✔ legacy recovery waits for the loaded show and preserves Stella as presenter (173.033193ms)
-✔ a malformed character route shows no editable Milo fallback and cannot request microphone access or profile writes (145.637856ms)
+✔ the overview presenter button opens the actual Milo, Stella and Vlampie profiles (1241.90113ms)
+✔ a legacy undefined route restores Milo and sends the same canonical id to save, voice design and microphone (305.796154ms)
+✔ legacy recovery waits for the loaded show and preserves Stella as presenter (166.366713ms)
+✔ a malformed character route shows no editable Milo fallback and cannot request microphone access or profile writes (149.314131ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1881.111199
+ℹ duration_ms 1868.537838

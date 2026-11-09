@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "scope": "isolated local PostgreSQL17 and SQLite; no hosted schema or provider mutation",
+  "sourceVersion": "Sites v70 f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+  "baselineTables": 18,
+  "targetTables": 23,
+  "baselineManifestSha256": "9d3373fbcd81337fbf0c80f95e4a566b4692c0022b2a815b444835e39e0a5f92",
+  "targetManifestSha256": "183e6712a781c64992bffe5c195931995350ffdfb2f1e6eb098fb2d61c937c4b",
+  "migrations": [
+    {
+      "filename": "20261104115830_milo_friends_server_schema.sql",
+      "sha256": "8451a8aaf928dd7d58114d71741d4a76acb917c26c9d5e205d0436d5e306cc16"
+    },
+    {
+      "filename": "20261109122605_studio_mail_v70.sql",
+      "sha256": "a67dc3b97288f7fa68d1a3a48eb71e8dfeaf65e7e209eb7f083924ace392366d"
+    }
+  ],
+  "postgres": {
+    "command": "node --test tests/check-deploy-database.mjs",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "log": "database-upgrade-postgres.log",
+    "verified": [
+      "actual encrypted full backup and scratch restore before upgrade DDL",
+      "pre-upgrade snapshot contains18 original tables and original document",
+      "unmanaged preexisting empty new table refuses before backup",
+      "invalid restore proof refuses before DDL",
+      "RLS postcondition fault rolls back all additive tables and new history",
+      "post-upgrade full23 audit and original document preservation",
+      "verified repeated upgrade makes no changes"
+    ]
+  },
+  "sqlite": {
+    "command": "node --test tests/check-v70-schema-upgrade.mjs",
+    "tests": 2,
+    "passed": 2,
+    "failed": 0
+  },
+  "hostedApplyPerformed": false
+}

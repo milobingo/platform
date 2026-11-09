@@ -78,7 +78,7 @@ function harness(fetcher=async()=>Response.json({}),pathname='/',production='mil
 const appBundle=await bundle({stdin:{contents:`import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';import App from './frontend/App.jsx';const root=createRoot(document.getElementById('root'));window.qaUnmount=()=>flushSync(()=>root.unmount());flushSync(()=>root.render(React.createElement(App)));`,resolveDir:root,loader:'jsx'},plugins:[rendererPlugin]});
 async function until(predicate,message){for(let i=0;i<160;i++){if(predicate())return;await wait(10);}assert.fail(message);}
 async function setup({host='milo',hash='',saved=true}={}){
- const production=host==='vlampie'?'vlampie':'milo',game=makeGame({brandId:production,title:'Navigatieregressie',date:'2026-11-01T14:00'},'qa-owner','https://bingo.example');game.plan.leadId=host;game.revision=1;
+ const production=host==='vlampie'?'vlampie':'milo',game=makeGame({brandId:production,title:'Navigatieregressie',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00'},'qa-owner','https://bingo.example');game.plan.leadId=host;game.revision=1;
  let revision=0;let characters=Object.values(CHARACTERS).map(c=>({...c}));
  const h=harness(({url,method,body})=>{
   if(url==='/api/bingo/games')return Response.json({games:saved?[game]:[]});

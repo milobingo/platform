@@ -1,0 +1,34 @@
+✔ JWTs are signed with project secret and room deletion uses the real roomCreate grant (24.95829ms)
+✔ LiveKit settings stay encrypted, blank secrets preserve credentials, tests contact real API and stale saves fail (26.414367ms)
+✔ only an opted-in family profile can run a short media-free preflight; ordinary viewers never join a call (16.407579ms)
+✔ concurrent prepare requests select exactly one child and one durable hold (12.105058ms)
+✔ a post-hold checkpoint-store failure retains a recoverable held call (9.585389ms)
+✖ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (24.191378ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.655382
+
+✖ failing tests:
+
+test at scripts/check-livekit.mjs:40:1
+✖ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (24.191378ms)
+  AssertionError [ERR_ASSERTION]: {"error":"De belaanvraag kon niet worden bevestigd. De trekking blijft geblokkeerd als het belmoment al was voorbereid."}
+  
+  503 !== 409
+  
+      at invoke (file:///tmp/milobingo-v70-source/.sites-checkout/scripts/live-calls-fixture.mjs:22:230)
+      at async TestContext.<anonymous> (file:///tmp/milobingo-v70-source/.sites-checkout/scripts/check-livekit.mjs:43:207)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 409,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -7,7 +7,7 @@ import {MILO_MAGIC_GAME_IDS,minigameDuration} from '../public/milo-minigame-plan
 
 const storage=new Map();globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,String(v))};
 function fixture(){
- const game=makeGame({brandId:'milo',title:'De echte première',date:'2026-11-01T14:00',roundCount:4},'owner','https://bingo.example');generateBooks(game,1,'runtime-test');
+ const game=makeGame({brandId:'milo',title:'De echte première',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4},'owner','https://bingo.example');generateBooks(game,1,'runtime-test');
  const calls=[],engine={game,production:'milo',demo:false,voicePhase:'idle',camera:'host',motion:'idle',hostId:'milo',characters:[{id:'milo',speed:1}],runner:{active:false},director:{paused:true,pending:null,flow:null,visual:()=>({scene:'host',age:17,paused:true,sceneRevision:3})},audio:{unlock:async()=>true,cue:id=>calls.push(['cue',id]),setLevels:levels=>calls.push(['levels',levels])},voice:{setVolume:v=>calls.push(['volume',v])},bridge:{sendLocal(){},cue:id=>calls.push(['remote-cue',id])},emit(){},notify(){},setCamera(id){this.camera=id;},fail(message){throw Error(message);},async post(action,body){calls.push([action,body]);return {game:this.game};},editPlan(fn){this.game.plan=structuredClone(this.game.plan);fn(this.game.plan);this.dirty=true;},async resultNext(){calls.push(['finish-result',this.game.state.resultId]);this.game.state.resultId=null;}};
  return {engine,calls,runtime:new ShowRuntime(engine)};
 }
