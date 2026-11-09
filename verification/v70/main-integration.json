@@ -1,0 +1,16 @@
+{
+  "pullRequest": "https://github.com/milobingo/platform/pull/1",
+  "mergeSha": "997aa8c77429f4be128f6878d5030ec29db7ad7b",
+  "mergedAt": "2026-11-09T13:16:30Z",
+  "mainCi": "https://github.com/milobingo/platform/actions/runs/42624037203",
+  "ciStatus": "failure",
+  "hostedMutationsPerformed": false,
+  "failure": {
+    "check": "check-staging-capacity-v70",
+    "code": "capacity_api_refused",
+    "elapsedMs": 62048,
+    "fixtureSchemaRemoved": true,
+    "publicTablesUnchanged": true,
+    "interpretation": "Investigating a refusal at the real 60s fixture window boundary; no release/deploy/migration authorized by this failed CI."
+  }
+}

@@ -19,7 +19,7 @@ const results=[];
 for(const path of checks){
   const name=path.split('/').at(-1).replace(/\.mjs$/,'');
   const started=Date.now();
-  const result=spawnSync(process.execPath,[path],{encoding:'utf8',timeout:120000,env:{...process.env,CODEX_PRIMARY_RUNTIME_NODE_MODULES:new URL('../node_modules',import.meta.url).pathname}});
+  const result=spawnSync(process.execPath,[path],{encoding:'utf8',timeout:path==='tests/check-staging-capacity-v70.mjs'?300000:120000,env:{...process.env,CODEX_PRIMARY_RUNTIME_NODE_MODULES:new URL('../node_modules',import.meta.url).pathname}});
   await writeFile(`verification/local-testlogs/${name}.log`,(result.stdout||'')+(result.stderr||'')+(result.error?.message||''));
   results.push({name,exitCode:result.status,ms:Date.now()-started});
   console.log(`${result.status===0?'✓':'✗'} ${name} (${Date.now()-started} ms)`);

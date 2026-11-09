@@ -1,0 +1,12 @@
+✔ capacity target pins numeric run identity, project and schema-only options before connecting (1.696662ms)
+✔ capacity SQL lexer fixes every relation while preserving string literals and refusing public/unknown relations or extra statements (0.757958ms)
+✔ capacity CLI binds its release and checkout before opening any database or exposing credentials (433.499525ms)
+✔ delayed deadline refusals are never CAS retries or successes, and diagnostics exclude response bodies and unrecognized codes (32.585883ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 707.702591
