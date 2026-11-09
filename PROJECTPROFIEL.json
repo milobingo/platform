@@ -87,6 +87,78 @@
     ],
     "staging_release": {
       "version": 1,
+      "sha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+      "id": "42627937885-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "port": 4173,
+      "artifactSha256": null,
+      "artifactHashNote": "Native wrapper/helper pins and CI source are verified; 93 public modules/assets exactly match this release. No new privileged host inventory claimed.",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "toolchain": {
+        "node": "24.18.0",
+        "pnpm": "11.25.0"
+      },
+      "path": "/srv/sites/milobingo-staging/releases/f32a854b408e-42627937885-1",
+      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42627937885"
+    },
+    "production_release": null,
+    "github_repository_url": "https://github.com/milobingo/platform",
+    "git_remote": "origin",
+    "git_remote_url": "https://github.com/milobingo/platform.git",
+    "staging_status": {
+      "deployed": true,
+      "observed_at": "2026-11-09T13:48:03.331054+00:00",
+      "source_sha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42625788676",
+      "ci_result": "success",
+      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42627937885",
+      "deploy_result": "success",
+      "database_mutated": true,
+      "database_upgrade": "https://github.com/milobingo/platform/actions/runs/42627576733",
+      "database_readonly_audit": "passed; additive 18-to-23 upgrade; 23 RLS tables, verified limited TLS runtime and private bucket",
+      "acceptance": {
+        "public_release_assets_and_access_boundaries": "passed; 93 public modules/assets exact; new public rules/unsubscribe refusal boundaries passed",
+        "browser_tests": {
+          "passed": 19,
+          "failed": 0,
+          "skipped": 0,
+          "flaky": 0,
+          "regie_backend": "simulated browser transport only; real unauthenticated host access boundaries"
+        },
+        "capacity_100_households": "failed on f32: 409 closed under concurrency100/pool10/real180s; fixture removed and all23 public table hashes unchanged; optimization under local review",
+        "default_30_second_peak_window": "not proven; fixture uses explicit 180s lease",
+        "real_family_google_otp_and_regie_accounts": "pending actual account rehearsal",
+        "mail_gateway_worker_and_delivery": "pending; mail disabled; staging wrapper fields and real gateway contract required",
+        "paid_provider_and_live_audio": "pending",
+        "production_promotion": "blocked by missing real target/config and full real integration acceptance"
+      },
+      "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
+      "evidence": {
+        "ci": "verification/v70/main-ci.json",
+        "ci_summary": "verification/v70/main-ci-summary.json",
+        "deploy": "verification/v70/staging-deploy.json",
+        "inventory": "verification/v70/staging-inventory.json",
+        "upgrade": "verification/v70/staging-upgrade.json",
+        "restore": "verification/v70/staging-restore.json",
+        "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
+        "public": "verification/v70/staging-public.json",
+        "public_assets": "verification/v70/staging-public-assets.json",
+        "public_routes": "verification/v70/staging-route-smoke.json",
+        "runtime_role": "verification/v70/staging-runtime-role.json",
+        "browser": "verification/staging-v70/f32a854b408ed750001f2f768fc0f454f102c4f9/42627937885-1/release-acceptance.json",
+        "capacity_first": "verification/v70/staging-capacity-first.json"
+      },
+      "result_document": "docs/STAGING-RESULTAAT.md"
+    },
+    "production_status": {
+      "authorized": true,
+      "configured": false,
+      "deployed": false,
+      "reason": "Real production URL/site/runner and separate Supabase project not supplied; production environment has zero variables and secrets at read-only audit on 2026-11-09. Practical feature acceptance remains separate.",
+      "evidence": "verification/v70/production-readiness.json"
+    },
+    "previous_staging_release": {
+      "version": 1,
       "sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
       "id": "42154203480-1",
       "configVersion": "staging-2026-11-05-v1",
@@ -100,48 +172,6 @@
       },
       "path": "/srv/sites/milobingo-staging/releases/16305c0d70ff-42154203480-1",
       "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42154203480"
-    },
-    "production_release": null,
-    "github_repository_url": "https://github.com/milobingo/platform",
-    "git_remote": "origin",
-    "git_remote_url": "https://github.com/milobingo/platform.git",
-    "staging_status": {
-      "deployed": true,
-      "observed_at": "2026-11-06T03:07:49.956Z",
-      "source_sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42153719888",
-      "ci_result": "success",
-      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42154203480",
-      "deploy_result": "success",
-      "database_mutated": false,
-      "database_readonly_audit": "passed; same schema/history; 18 tables; limited TLS runtime role",
-      "acceptance": {
-        "public_release_assets_and_access_boundaries": "passed; 25 assets exact",
-        "browser_tests": {
-          "passed": 13,
-          "failed": 0,
-          "skipped": 0,
-          "regie_backend": "simulated browser transport only"
-        },
-        "real_family_google_otp_and_regie_accounts": "pending",
-        "mail_gateway_worker_and_delivery": "pending; staging wrapper runtime-key upgrade and real gateway contract required",
-        "paid_provider_and_live_audio": "pending",
-        "production_promotion": "blocked by missing real target/config and full real integration acceptance"
-      },
-      "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
-      "evidence": {
-        "ci": "verification/handoff-v6/ci.json",
-        "deploy": "verification/handoff-v6/staging-deploy.json",
-        "public": "verification/handoff-v6/staging-public.json",
-        "browser": "verification/handoff-v6/staging-browser-results.json"
-      },
-      "result_document": "docs/STAGING-RESULTAAT.md"
-    },
-    "production_status": {
-      "authorized": true,
-      "configured": false,
-      "deployed": false,
-      "reason": "Real URL/host/site/runner and separate Supabase project not supplied; production environment empty at read-only audit on 2026-11-06."
     }
   },
   "configuration": {
@@ -213,6 +243,6 @@
     "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
     "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed.",
     "The user explicitly authorized production deployment on 2026-11-06. Production target fields remain unresolved until the real host, URL and isolated backend are supplied.",
-    "v70 audit changes use the existing native architecture on feat/v70-audit-20261109. No real email, payment, public admission or provider configuration is authorized by this handoff; staging release and remaining practical gates are reported separately."
+    "v70 integrated through reviewed pull requests into main and deployed to staging at the exact target.staging_release.sha. Handoff scope excludes real email/payment/provider changes or new public admission; remaining practical gates are recorded separately."
   ]
 }

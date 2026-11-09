@@ -1,0 +1,26 @@
+{
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42627576733",
+  "releaseSha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+  "backupId": "milo-lfsdgxcpdyghidzkzzvn-20261109T134136676Z-edc7f203-0897-45c1-9d60-1a80f43592ea",
+  "restoreVerified": true,
+  "sourceDataEqual": true,
+  "sourceSecurityEqual": true,
+  "postgresMajor": 17,
+  "encryptedSha256": "d36840905e96b486bd9f2e6b06861575dee9f6805651ec6d81375a72bed3a387",
+  "extensionMetadata": {
+    "format": 1,
+    "filename": "milo-lfsdgxcpdyghidzkzzvn-20261109T134136676Z-edc7f203-0897-45c1-9d60-1a80f43592ea.extensions.json.aesgcm",
+    "encryptedSha256": "c6f2c7280f81084564fa0026fc4eeb0f02f63d15b7f4db0d49ea9209ae0bf3ea",
+    "metadataSha256": "06abcfe8d2b74bda914889858c5bed661880fe78b4cca561d0e39ef2767b6a4f",
+    "relations": 4,
+    "extensions": 5,
+    "eventTriggers": 7,
+    "schemas": 10,
+    "schemaGrants": 63
+  },
+  "offhostEncryptedCopiesVerified": true,
+  "runtimeVerification": "workflow existing least-privilege runtime step passed",
+  "tablesAfter": 23,
+  "offhostEscrowDecryptionVerified": true,
+  "plaintextWrittenToDisk": false
+}

@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-11-09T13:44:22.427273+00:00",
+  "authorized": true,
+  "deployed": false,
+  "githubEnvironment": "production",
+  "variableNames": [],
+  "secretNames": [],
+  "configuredProductionUrl": null,
+  "configuredSiteId": null,
+  "configuredSupabaseRef": null,
+  "reason": "Production destination/configuration and separate practical acceptance not supplied; v70 handoff also does not admit new public participants."
+}

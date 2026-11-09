@@ -1,0 +1,20 @@
+{
+  "observedAt": "2026-11-09T13:43:38.034591+00:00",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42627576733",
+  "workerRelayClosed": true,
+  "workerPortsClosed": {
+    "54388": true,
+    "54389": true
+  },
+  "runnerRelayCleanupStep": "passed; exact matching process signalled by workflow after proof",
+  "scratchContainersRemoved": [
+    "milobingo-v70-restore-20261109-relay",
+    "milobingo-v70-restore-20261109"
+  ],
+  "scratchNetworkRemoved": "milobingo-v70-restore-20261109",
+  "privateScratchCredentialsRemoved": true,
+  "temporaryRestoreSecretRemoved": true,
+  "tailscalePolicyChanged": false,
+  "otherProjectsTouched": false,
+  "encryptedBackupAndEscrowRetained": true
+}

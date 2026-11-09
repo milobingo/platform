@@ -36,6 +36,40 @@ async function fixture(h,quantity=2){
 }
 const link=(h,f,extra={})=>h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/milo?order=123&token=secret',amountCents:500,note:'Dank je <gezin>!',...extra}));
 
+test('optional queue-injected order unit checks the real execution clock after the deadline and leaves the game unchanged',async t=>{
+ const h=setup(),f=await fixture(h,1);try{
+  const deadline=Date.now()+250;await h.store.mutate(f.game.id,{},g=>{g.ordering.deadline=new Date(deadline).toISOString();});const before=(await h.store.game(f.game.id)).data;
+  let queued=false;h.db.kind='postgres';h.db.withGameMutation=async(_id,operation)=>{queued=true;while(Date.now()<=deadline)await new Promise(done=>setTimeout(done,20));return operation();};
+  // Test-only opt-in: ordinary order/production routes deliberately do not join
+  // the native family-claim FIFO. Exercise their fresh-clock callback contract.
+  const mutate=BingoStore.prototype.mutate;t.mock.method(BingoStore.prototype,'mutate',function(id,options={},operation){return mutate.call(this,id,{...options,serializeLocal:true},operation);});
+  const response=await h.raw(f.route+'/orders',post({quantity:1},'family'));assert(queued);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'ordering_closed');assert.deepEqual((await h.store.game(f.game.id)).data,before);assert.equal(h.mail.length,0);
+ }finally{h.db.close();}
+});
+
+test('optional queue-injected production unit uses the execution clock after a real cooldown and records that fresh time',async t=>{
+ const h=setup(),f=await fixture(h,1);try{
+  await link(h,f,{amountCents:250});await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true}));
+  const releaseAt=Date.now()+250;await h.store.mutate(f.game.id,{},g=>{g.participationLimits={family:{at:releaseAt-2000,count:1}};});
+  h.db.kind='postgres';h.db.withGameMutation=async(_id,operation)=>{while(Date.now()<=releaseAt)await new Promise(done=>setTimeout(done,20));return operation();};
+  const mutate=BingoStore.prototype.mutate;t.mock.method(BingoStore.prototype,'mutate',function(id,options={},operation){return mutate.call(this,id,{...options,serializeLocal:true},operation);});
+  await h.call(f.route+'/participation',post({profileId:f.profile.id,kind:'greeting',enabled:true,consent:true},'family'));const saved=(await h.store.game(f.game.id)).data;
+  assert(saved.participation[0].greetingConsentAt>releaseAt);assert(saved.participation[0].updatedAt>releaseAt);assert.equal(saved.participationLimits.family.at,saved.participation[0].updatedAt);
+ }finally{h.db.close();}
+});
+
+test('order mail rejects lease or uncertain-guarantee expiry between claim and offering before any adapter contact',async t=>{
+ for(const expiry of ['lease','guarantee'])await t.test(expiry,async()=>{
+  const h=setup(),f=await fixture(h,1);try{
+   h.env.ORDER_MAIL_DELIVERY.idempotencyWindowMs=1000;
+   await h.store.mutate(f.game.id,{},g=>{setPaymentLink(g,g.orders[0],{paymentUrl:'https://pay.example.test/pre-offer',amountCents:250});if(expiry==='guarantee')Object.assign(g.orders[0].paymentMail,{status:'failed',uncertain:true,adapterId:'test-dg-mail',idempotencyWindowMs:1000,firstAttemptAt:Date.now()});});
+   const get=h.env.SETTINGS.get;let templateReads=0;h.env.SETTINGS.get=async key=>{if(key==='private/studio-mail-milo.v1'&&++templateReads===2)await h.store.mutate(f.game.id,{},g=>{const mail=g.orders[0].paymentMail;if(expiry==='lease')mail.leaseUntil=Date.now()-1;else mail.firstAttemptAt=Date.now()-1001;});return get(key);};
+   await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'payment',env:h.env,origin:'https://studio.example'});
+   const order=(await h.store.game(f.game.id)).data.orders[0];assert.equal(templateReads,2);assert.equal(h.mail.length,0);assert.equal(order.paymentVersion,1);assert.equal(order.paymentMail.status,'failed');assert.equal(order.paymentMail.leaseUntil,0);assert.equal(order.paymentMail.attempts,1);if(expiry==='lease')assert.match(order.paymentMail.error,/verlopen vóór aanbieding/);else{assert.equal(order.paymentMail.uncertain,true);assert.match(order.paymentMail.error,/Veilig automatisch/);}
+  }finally{h.db.close();}
+ });
+});
+
 test('ORD-01 published participation rules lock order quantity while sales settings remain editable',async()=>{
  const h=setup();try{
   const {game}=await h.call('/games',post({title:'Gepubliceerde bestellimiet',brandId:'milo',date:'2026-12-18T13:30',timeZone:'Europe/Amsterdam',roundCount:1}),201),route='/games/'+game.id;
@@ -204,8 +238,9 @@ test('failed mail retries freeze body and key, and require a gateway acceptance 
   const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/retry',amountCents:500}),200,provider);assert.equal(first.order.paymentMail.status,'failed');assert.equal(first.order.status,'payment_pending');
   h.env.IGNORED_BROWSER_MAIL_FROM='changed@example.test';
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,provider);assert.equal(failed.length,2);assert.deepEqual(failed[0].message,failed[1].message);assert.equal(failed[0].idempotencyKey,failed[1].idempotencyKey);assert(failed[1].message.from.endsWith('<host@example.test>'));assert.deepEqual(failed[1].context,{brandId:'milo',gameId:f.game.id,orderId:f.order.id,kind:'payment'});
-  const stored=(await h.store.game(f.game.id)).data.orders[0];assert(stored.paymentMail.uncertain);const old=stored.paymentMail.firstAttemptAt;
-  await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'payment',env:{...h.env,ORDER_MAIL_DELIVERY:{...h.env.ORDER_MAIL_DELIVERY,send:provider}},origin:'https://studio.example',now:old+86400001});assert.equal(failed.length,2);assert.match((await h.store.game(f.game.id)).data.orders[0].paymentMail.error,/Veilig automatisch/);
+  const stored=(await h.store.game(f.game.id)).data.orders[0];assert(stored.paymentMail.uncertain);
+  await h.store.mutate(f.game.id,{},g=>{g.orders[0].paymentMail.firstAttemptAt=Date.now()-86400001;});
+  await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'payment',env:{...h.env,ORDER_MAIL_DELIVERY:{...h.env.ORDER_MAIL_DELIVERY,send:provider}},origin:'https://studio.example'});assert.equal(failed.length,2);assert.match((await h.store.game(f.game.id)).data.orders[0].paymentMail.error,/Veilig automatisch/);
  }finally{h.db.close();}
 });
 

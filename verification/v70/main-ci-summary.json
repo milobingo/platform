@@ -1,0 +1,356 @@
+{
+  "releaseSha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42625788676",
+  "conclusion": "success",
+  "checkPrograms": [
+    {
+      "name": "check-family-demo",
+      "durationMs": 4746
+    },
+    {
+      "name": "check-family-extras",
+      "durationMs": 12691
+    },
+    {
+      "name": "check-family-brand",
+      "durationMs": 52
+    },
+    {
+      "name": "check-player-auth",
+      "durationMs": 2033
+    },
+    {
+      "name": "check-bingo",
+      "durationMs": 17655
+    },
+    {
+      "name": "check-live-chat",
+      "durationMs": 911
+    },
+    {
+      "name": "check-chat-client",
+      "durationMs": 2679
+    },
+    {
+      "name": "check-milo-print",
+      "durationMs": 2908
+    },
+    {
+      "name": "check-characters",
+      "durationMs": 170
+    },
+    {
+      "name": "check-cast-runner",
+      "durationMs": 73
+    },
+    {
+      "name": "check-milo-motion",
+      "durationMs": 954
+    },
+    {
+      "name": "check-milo-life",
+      "durationMs": 83
+    },
+    {
+      "name": "check-milo-minigame-catalog",
+      "durationMs": 1378
+    },
+    {
+      "name": "check-milo-minigame-server",
+      "durationMs": 401
+    },
+    {
+      "name": "check-milo-game-clock",
+      "durationMs": 276
+    },
+    {
+      "name": "check-call-draw-hold",
+      "durationMs": 116
+    },
+    {
+      "name": "check-live-call-audio",
+      "durationMs": 57
+    },
+    {
+      "name": "check-live-calls",
+      "durationMs": 520
+    },
+    {
+      "name": "check-player-live-call",
+      "durationMs": 62
+    },
+    {
+      "name": "check-regie-workspace",
+      "durationMs": 3868
+    },
+    {
+      "name": "check-regie-panels",
+      "durationMs": 912
+    },
+    {
+      "name": "check-brand-contract",
+      "durationMs": 2706
+    },
+    {
+      "name": "check-secrets",
+      "durationMs": 139
+    },
+    {
+      "name": "check-youtube-player",
+      "durationMs": 258
+    },
+    {
+      "name": "check-startup-recovery",
+      "durationMs": 53
+    },
+    {
+      "name": "check-gpt-live",
+      "durationMs": 269
+    },
+    {
+      "name": "check-calls",
+      "durationMs": 477
+    },
+    {
+      "name": "check-planner-api",
+      "durationMs": 109
+    },
+    {
+      "name": "check-planner-ui",
+      "durationMs": 542
+    },
+    {
+      "name": "check-openai",
+      "durationMs": 136
+    },
+    {
+      "name": "check-production",
+      "durationMs": 858
+    },
+    {
+      "name": "check-milo-brand-isolation",
+      "durationMs": 312
+    },
+    {
+      "name": "check-presentation",
+      "durationMs": 400
+    },
+    {
+      "name": "check-claim-priority",
+      "durationMs": 413
+    },
+    {
+      "name": "check-family-consolation",
+      "durationMs": 72
+    },
+    {
+      "name": "check-bingo-orders",
+      "durationMs": 3779
+    },
+    {
+      "name": "check-order-demo",
+      "durationMs": 90
+    },
+    {
+      "name": "check-workspace-navigation",
+      "durationMs": 16607
+    },
+    {
+      "name": "check-character-navigation",
+      "durationMs": 2939
+    },
+    {
+      "name": "check-administration-ui",
+      "durationMs": 2031
+    },
+    {
+      "name": "check-broadcast-shell",
+      "durationMs": 2604
+    },
+    {
+      "name": "check-show-cue-ui",
+      "durationMs": 2856
+    },
+    {
+      "name": "check-magic-catalog",
+      "durationMs": 94
+    },
+    {
+      "name": "check-milo-studio-tour",
+      "durationMs": 100
+    },
+    {
+      "name": "check-milo-leg-render",
+      "durationMs": 393
+    },
+    {
+      "name": "check-milo-magic-render",
+      "durationMs": 2048
+    },
+    {
+      "name": "check-milo-puppet-render",
+      "durationMs": 1668
+    },
+    {
+      "name": "check-milo-effect-continuity",
+      "durationMs": 3627
+    },
+    {
+      "name": "check-livekit",
+      "durationMs": 242
+    },
+    {
+      "name": "check-live-call-output",
+      "durationMs": 68
+    },
+    {
+      "name": "check-live-call-runtime",
+      "durationMs": 113
+    },
+    {
+      "name": "check-live-call-recovery",
+      "durationMs": 417
+    },
+    {
+      "name": "check-mail-templates",
+      "durationMs": 69
+    },
+    {
+      "name": "check-mail-service",
+      "durationMs": 288
+    },
+    {
+      "name": "check-mail-ui",
+      "durationMs": 3446
+    },
+    {
+      "name": "check-milo-ui",
+      "durationMs": 5343
+    },
+    {
+      "name": "check-showtime",
+      "durationMs": 5766
+    },
+    {
+      "name": "check-start-readiness",
+      "durationMs": 1851
+    },
+    {
+      "name": "check-director-whisper-runtime",
+      "durationMs": 217
+    },
+    {
+      "name": "check-director-whisper-ui",
+      "durationMs": 1640
+    },
+    {
+      "name": "check-director-whisper-server",
+      "durationMs": 268
+    },
+    {
+      "name": "check-live-director-whisper",
+      "durationMs": 329
+    },
+    {
+      "name": "check-node-storage",
+      "durationMs": 1081
+    },
+    {
+      "name": "check-node-runtime",
+      "durationMs": 1952
+    },
+    {
+      "name": "check-node-provider-fetch",
+      "durationMs": 346
+    },
+    {
+      "name": "check-node-mail-gateway",
+      "durationMs": 81
+    },
+    {
+      "name": "check-node-postgres-tls",
+      "durationMs": 87
+    },
+    {
+      "name": "check-deploy-contract",
+      "durationMs": 69
+    },
+    {
+      "name": "check-production-deploy",
+      "durationMs": 1346
+    },
+    {
+      "name": "check-deploy-database",
+      "durationMs": 7433
+    },
+    {
+      "name": "check-provision-runtime",
+      "durationMs": 1307
+    },
+    {
+      "name": "check-show-time",
+      "durationMs": 80
+    },
+    {
+      "name": "check-game-invariants",
+      "durationMs": 875
+    },
+    {
+      "name": "check-game-capacity",
+      "durationMs": 13236
+    },
+    {
+      "name": "check-family-claim-context",
+      "durationMs": 427
+    },
+    {
+      "name": "check-live-feed",
+      "durationMs": 172
+    },
+    {
+      "name": "check-live-feed-isolation",
+      "durationMs": 123
+    },
+    {
+      "name": "check-v70-schema-upgrade",
+      "durationMs": 58
+    },
+    {
+      "name": "check-show-time-audit",
+      "durationMs": 119
+    },
+    {
+      "name": "check-account-mail",
+      "durationMs": 447
+    },
+    {
+      "name": "check-staging-restore-relay",
+      "durationMs": 176
+    },
+    {
+      "name": "check-staging-restore-target",
+      "durationMs": 47
+    },
+    {
+      "name": "check-family-accessibility",
+      "durationMs": 600
+    },
+    {
+      "name": "check-v70-restart-safety",
+      "durationMs": 409
+    },
+    {
+      "name": "check-staging-capacity-v70",
+      "durationMs": 182691
+    }
+  ],
+  "nativeDeploymentChecks": 23,
+  "browserExpected": 19,
+  "browserPassed": 19,
+  "capacityFixture": {
+    "concurrency": 10,
+    "leaseSeconds": 180,
+    "actualHostedPath": false,
+    "default30SecondPeakProven": false
+  }
+}
