@@ -18,6 +18,7 @@ import {handlePublicRules} from './game-rules-api.js';
 import {handleLiveFeed} from './live-feed.js';
 import {withProviderSettingsLock} from './node-provider-settings.js';
 import {assertProviderSettingsLease} from './secrets.js';
+import {handleObsRequest,handleObsAccess} from './node-obs-access.js';
 
 const json=(message,status=503,code='unavailable')=>Response.json({error:{code,message}},{status});
 const authPaths=new Set(['/api/auth/session','/api/player/request-code','/api/player/verify-code','/api/player/logout']);
@@ -70,6 +71,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   const url=new URL(cleanRequest.url),path=url.pathname;
   if(path==='/spelregels'||path==='/api/bingo/rules')return handlePublicRules(cleanRequest,env);
   if(path==='/mail/afmelden')return handleMail(cleanRequest,env);
+  if(path.startsWith('/api/obs/')&&path!=='/api/obs/access')return handleObsRequest(cleanRequest,env,{providerFetch});
   context=await createAuthContext(cleanRequest,env,{clientFactory:authClientFactory});
   const finish=response=>applyAuthCookies(response,context);
   if(path.startsWith('/auth/')||authPaths.has(path))return finish(await handleNodeAuth(cleanRequest,env,context));
@@ -105,7 +107,8 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
    return handler({...locked,AUTH_IDENTITY:identity,PROVIDER_CLEANUP_FETCH:providerFetch},guardedFetch);
   });
   let response;
-  if(/^\/api\/characters(?:\/|$)/.test(path))response=await handleCharacterSettings(cleanRequest,verifiedEnv);
+  if(path==='/api/obs/access')response=await handleObsAccess(cleanRequest,verifiedEnv);
+  else if(/^\/api\/characters(?:\/|$)/.test(path))response=await handleCharacterSettings(cleanRequest,verifiedEnv);
   else if(path.startsWith('/api/mail/'))response=await handleMail(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/player/'))response=await handlePlayerAuth(cleanRequest,verifiedEnv);
   else if(path==='/api/output')response=await handleOutput(cleanRequest,verifiedEnv);
