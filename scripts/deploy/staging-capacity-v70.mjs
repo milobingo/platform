@@ -19,11 +19,31 @@ const quote=value=>'"'+value.replaceAll('"','""')+'"';
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const fail=code=>{throw Object.assign(new Error('De begrensde Milo-capaciteitsproef is gestopt. Geen credentials of speldocumenten worden gelogd.'),{code});};
 const check=(condition,code)=>{if(!condition)fail(code);};
-const SAFE_RESPONSE_CODES=new Set(['conflict','closed','context_changed','book_forbidden','blocked','cooldown','empty_cooldown','request_conflict','game_capacity','unavailable','invalid','origin','sign_in','rules_unpublished','draw_paused','call_draw_hold']);
+const SAFE_RESPONSE_CODES=new Set(['conflict','closed','context_changed','book_forbidden','blocked','cooldown','empty_cooldown','request_conflict','game_capacity','unavailable','invalid','origin','sign_in','rules_unpublished','draw_paused','call_draw_hold','game_queue_full','game_queue_timeout','game_queue_closed','game_queue_nested']);
 export function classifyCapacityResponse(response){
  const httpStatus=Number.isInteger(response?.status)&&response.status>=100&&response.status<=599?response.status:null;
  const rawCode=response?.data?.error?.code,serverErrorCode=SAFE_RESPONSE_CODES.has(rawCode)?rawCode:null;
  return {outcome:httpStatus===200?'success':httpStatus===409&&serverErrorCode==='conflict'?'retry':'refused',httpStatus,serverErrorCode};
+}
+const SAFE_PHASES=new Set(['fixture','families','begin','claim','boundaries','waiting_deadline','settlement','verification','complete']);
+const safeNumber=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=Number.MAX_SAFE_INTEGER?Math.round(value):null;
+const safeSignedNumber=value=>typeof value==='number'&&Number.isFinite(value)&&Math.abs(value)<=Number.MAX_SAFE_INTEGER?Math.round(value):null;
+const safeLatency=value=>Object.fromEntries(['count','p50','p95','max'].map(key=>[key,safeNumber(value?.[key])]));
+function latencySummary(values){const sorted=[...values].sort((a,b)=>a-b),at=percent=>sorted.length?sorted[Math.max(0,Math.ceil(sorted.length*percent)-1)]:null;return {count:sorted.length,p50:at(.5),p95:at(.95),max:sorted.at(-1)??null};}
+// Only aggregate numbers and a fixed phase vocabulary cross the evidence boundary.
+// Never spread an error, response, queue object or game document into an artifact.
+export function sanitizeCapacityProgress(value){
+ if(!value||typeof value!=='object')return null;
+ const result={phase:SAFE_PHASES.has(value.phase)?value.phase:'unknown'};
+ for(const key of ['elapsedMs','beginSuccesses','claimSuccesses','successfulOperations','apiAttempts','apiResponses','apiConflicts','retries','storageConflicts','peakDocumentBytes','claimProcessingElapsedMs'])result[key]=safeNumber(value[key]);
+ result.remainingWindowMs=safeSignedNumber(value.remainingWindowMs);result.claimsFinishedBeforeDeadline=typeof value.claimsFinishedBeforeDeadline==='boolean'?value.claimsFinishedBeforeDeadline:null;
+ for(const key of ['latencyMs','beginLatencyMs','claimLatencyMs','apiLatencyMs'])result[key]=safeLatency(value[key]);
+ if(value.nativeQueue?.enabled===true){result.nativeQueue={enabled:true};for(const key of ['pending','active','keys','enqueued','started','completed','failed','rejected','expired','maxDepth','totalWaitMs','maxWaitMs'])result.nativeQueue[key]=safeNumber(value.nativeQueue[key]);}
+ return result;
+}
+export function capacityLeaseSeconds(value){check(value===undefined||value==='30'||value==='180','capacity_lease_seconds');return value==='30'?30:180;}
+export function capacityClaimTiming({startedAt=null,finishedAt=null,endsAt=null,now=Date.now()}={}){
+ return {claimProcessingElapsedMs:startedAt===null?null:(finishedAt??now)-startedAt,remainingWindowMs:endsAt===null?null:endsAt-(finishedAt??now),claimsFinishedBeforeDeadline:finishedAt===null||endsAt===null?null:finishedAt<endsAt};
 }
 export function capacitySchema(runId){check(typeof runId==='string'&&/^[1-9][0-9]{0,19}$/.test(runId),'capacity_run_id');return 'milo_v70_fixture_'+runId;}
 export function capacityTarget(env,runId){
@@ -102,8 +122,11 @@ async function parallel(items,limit,operation){let index=0,error;await Promise.a
 
 export async function runCapacityScenario(database,{schema,leaseSeconds=180,concurrency=10,deadline=Date.now()+240000}={}){
  check([30,60,180].includes(leaseSeconds)&&Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=100,'capacity_bounds');
- const metrics={households:100,books:400,cardCount:1600,successfulOperations:0,apiAttempts:0,apiConflicts:0,retries:0,storageConflicts:0,peakDocumentBytes:0},db=fencedDatabase(database,metrics,schema),store=new BingoStore(db),started=performance.now(),latencies=[];
+ const metrics={households:100,books:400,cardCount:1600,beginSuccesses:0,claimSuccesses:0,successfulOperations:0,apiAttempts:0,apiResponses:0,apiConflicts:0,retries:0,storageConflicts:0,peakDocumentBytes:0},db=fencedDatabase(database,metrics,schema),store=new BingoStore(db),started=performance.now(),latencies=[],beginLatencies=[],claimLatencies=[],apiLatencies=[];
+ let phase='fixture',claimStartedAt=null,claimFinishedAt=null,windowEndsAt=null;
+ const progress=()=>{let nativeQueue;try{nativeQueue=db.gameMutationQueueStats?.();}catch{/* Optional diagnostics must not replace the actual failure. */}return sanitizeCapacityProgress({...metrics,phase,elapsedMs:performance.now()-started,...capacityClaimTiming({startedAt:claimStartedAt,finishedAt:claimFinishedAt,endsAt:windowEndsAt}),latencyMs:latencySummary(latencies),beginLatencyMs:latencySummary(beginLatencies),claimLatencyMs:latencySummary(claimLatencies),apiLatencyMs:latencySummary(apiLatencies),nativeQueue});};
  const budget=()=>check(Date.now()<deadline,'capacity_time_budget');
+ try{
  const game=makeGame({brandId:'milo',date:'2027-12-05T19:00:00Z',roundCount:4,settings:{claimSeconds:leaseSeconds}},'fixture-capacity-host','https://capacity.example.test');
  while(game.books.length<400)generateBooks(game,Math.min(150,400-game.books.length),'fixture-batch-'+game.books.length);
  for(const [i,book] of game.books.entries())Object.assign(book,{accountId:'fixture-family-'+Math.floor(i/4),profileId:'fixture-child-'+i,name:'Fixture '+i});
@@ -111,25 +134,26 @@ export async function runCapacityScenario(database,{schema,leaseSeconds=180,conc
  // The fixture uses the real current rules contract before any API action.
  const publication=structuredClone(game);publication.status='draft';publishGameRules(publication);game.rulesPublication=publication.rulesPublication;
  const identities=hash(game.books),captured=claimContext(game);check(gameCapacity(game).startReady,'capacity_fixture_oversized');await store.create(game);
- await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{budget();const family=familyDefault('fixture-family-'+i+'@example.test');family.ownerName='Fictief huishouden '+i;family.profiles=Array.from({length:4},(_,j)=>({id:'fixture-child-'+(i*4+j),name:'Fixture '+(i*4+j),age:8}));await db.prepare('INSERT INTO bingo_families (account_id,revision,document) VALUES (?,1,?)').bind('fixture-family-'+i,JSON.stringify(family)).run();});
+ phase='families';await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{budget();const family=familyDefault('fixture-family-'+i+'@example.test');family.ownerName='Fictief huishouden '+i;family.profiles=Array.from({length:4},(_,j)=>({id:'fixture-child-'+(i*4+j),name:'Fixture '+(i*4+j),age:8}));await db.prepare('INSERT INTO bingo_families (account_id,revision,document) VALUES (?,1,?)').bind('fixture-family-'+i,JSON.stringify(family)).run();});
  await db.prepare('INSERT INTO bingo_codes (code,game_id) SELECT value,? FROM json_each(?)').bind(game.id,JSON.stringify(game.books.map(book=>book.code))).run();
  const api=async(action,body,user,requestId,method='POST')=>{budget();const response=await handleBingo(new Request('https://capacity.example.test/api/bingo/games/'+game.id+(action?'/'+action:''),{method,headers:{Origin:'https://capacity.example.test','X-Vlampie-Bingo':'1','Content-Type':'application/json'},...(method==='POST'?{body:JSON.stringify({regieId:'fixture-capacity-regie',requestId,...body})}:{})}),{DB:db,AUTH_IDENTITY:{user,email:user+'@example.test',admin:user==='fixture-capacity-host',method:'isolated-capacity-fixture'}});return {status:response.status,data:await response.json()};};
- const operate=async(action,body,user,requestId)=>{const began=performance.now();for(let attempt=0;attempt<20;attempt++){budget();metrics.apiAttempts++;const response=await api(action,body,user,requestId),classification=classifyCapacityResponse(response);if(classification.outcome==='success'){metrics.successfulOperations++;latencies.push(performance.now()-began);return response.data;}if(classification.outcome==='refused'){const error=Object.assign(new Error('De capaciteits-API heeft deze operatie geweigerd.'),{code:'capacity_api_refused',capacityRefusal:{httpStatus:classification.httpStatus,serverErrorCode:classification.serverErrorCode}});throw error;}metrics.apiConflicts++;metrics.retries++;await new Promise(done=>setTimeout(done,25+attempt*10));}fail('capacity_retry_exhausted');};
- const windows=[];await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{const result=await operate('begin',{claimContext:captured},'fixture-family-'+i,'capacity-begin-'+i);windows.push(result.game.state.claimContext);});
+ const operate=async(action,body,user,requestId)=>{const began=performance.now();for(let attempt=0;attempt<20;attempt++){budget();metrics.apiAttempts++;const attemptStarted=performance.now(),response=await api(action,body,user,requestId),classification=classifyCapacityResponse(response);metrics.apiResponses++;apiLatencies.push(performance.now()-attemptStarted);if(classification.outcome==='success'){metrics.successfulOperations++;metrics[action==='begin'?'beginSuccesses':'claimSuccesses']++;const elapsed=performance.now()-began;latencies.push(elapsed);(action==='begin'?beginLatencies:claimLatencies).push(elapsed);return response.data;}if(classification.outcome==='refused'){const error=Object.assign(new Error('De capaciteits-API heeft deze operatie geweigerd.'),{code:'capacity_api_refused',capacityRefusal:{httpStatus:classification.httpStatus,serverErrorCode:classification.serverErrorCode}});throw error;}metrics.apiConflicts++;metrics.retries++;await new Promise(done=>setTimeout(done,25+attempt*10));}fail('capacity_retry_exhausted');};
+ phase='begin';const windows=[];await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{const result=await operate('begin',{claimContext:captured},'fixture-family-'+i,'capacity-begin-'+i);windows.push(result.game.state.claimContext);windowEndsAt??=result.game.state.window?.endsAt??null;});
  check(new Set(windows.map(w=>w.windowId)).size===1,'capacity_multiple_windows');const context=windows[0],claims=[];
- await parallel(game.books,concurrency,async(book,i)=>{const result=await operate('claim',{claimContext:context,bookId:book.id},book.accountId,'capacity-claim-'+i);check(result.claim?.status==='valid','capacity_invalid_claim');claims.push(result.claim);});
+ phase='claim';claimStartedAt=Date.now();await parallel(game.books,concurrency,async(book,i)=>{const result=await operate('claim',{claimContext:context,bookId:book.id},book.accountId,'capacity-claim-'+i);check(result.claim?.status==='valid','capacity_invalid_claim');claims.push(result.claim);});claimFinishedAt=Date.now();
  check(metrics.successfulOperations===500&&claims.length===400&&new Set(claims.map(c=>c.id)).size===400,'capacity_operation_count');
- const saved=(await store.game(game.id)).data;check(saved.state.window.claims.length===400&&saved.state.window.announcements.length===100&&hash(saved.books)===identities,'capacity_ids_or_claims_changed');
- const duplicate=await api('claim',{claimContext:context,bookId:game.books[0].id},game.books[0].accountId,'capacity-claim-0');check(duplicate.status===200&&duplicate.data.claim.id===claims.find(c=>c.bookId===game.books[0].id).id,'capacity_retry_changed_claim');
+ const saved=(await store.game(game.id)).data;check(saved.state.window.claims.length===400&&saved.state.window.announcements.length===100&&hash(saved.books)===identities,'capacity_ids_or_claims_changed');windowEndsAt=saved.state.window.endsAt;check(Number.isSafeInteger(windowEndsAt),'capacity_window_deadline');check(progress().claimsFinishedBeforeDeadline===true,'capacity_claims_finished_late');
+ phase='boundaries';const duplicate=await api('claim',{claimContext:context,bookId:game.books[0].id},game.books[0].accountId,'capacity-claim-0');check(duplicate.status===200&&duplicate.data.claim.id===claims.find(c=>c.bookId===game.books[0].id).id,'capacity_retry_changed_claim');
  const foreign=await api('claim',{claimContext:context,bookId:game.books[0].id},'fixture-family-1','capacity-foreign-claim');check(foreign.status===403,'capacity_foreign_claim');
- while(Date.now()<saved.state.window.endsAt){budget();await new Promise(done=>setTimeout(done,Math.min(1000,saved.state.window.endsAt-Date.now())));}
- const settlement=await Promise.all([api('',{},'fixture-capacity-host','capacity-settle-1','GET'),api('',{},'fixture-capacity-host','capacity-settle-2','GET')]);check(settlement.every(r=>r.status===200),'capacity_settlement_refused');
+ phase='waiting_deadline';while(Date.now()<saved.state.window.endsAt){budget();await new Promise(done=>setTimeout(done,Math.min(1000,saved.state.window.endsAt-Date.now())));}
+ phase='settlement';const settlement=await Promise.all([api('',{},'fixture-capacity-host','capacity-settle-1','GET'),api('',{},'fixture-capacity-host','capacity-settle-2','GET')]);check(settlement.every(r=>r.status===200),'capacity_settlement_refused');
  const settled=(await store.game(game.id)).data,winner=settled.results[0];check(settled.results.length===1&&winner.entrants.length===400&&settled.events.filter(e=>e.type==='window-closed').length===1&&hash(settled.books)===identities,'capacity_settlement_invariant');
- const after=await api('',{},'fixture-capacity-host','capacity-settle-repeat','GET');check(after.status===200&&after.data.game.results[0].id===winner.id&&after.data.game.results[0].winner.bookId===winner.winner.bookId,'capacity_redrawn_winner');
+ phase='verification';const after=await api('',{},'fixture-capacity-host','capacity-settle-repeat','GET');check(after.status===200&&after.data.game.results[0].id===winner.id&&after.data.game.results[0].winner.bookId===winner.winner.bookId,'capacity_redrawn_winner');
  const late=await api('claim',{claimContext:context,bookId:game.books[0].id},game.books[0].accountId,'capacity-after-deadline');check(late.status===409,'capacity_late_claim');
  const family=(await store.family(game.books[0].accountId)).data;check(!(family.falseCounts[game.id]>0),'capacity_boundary_sanction');
  const codes=(await db.prepare('SELECT code FROM bingo_codes WHERE game_id = ?').bind(game.id).all()).results;check(hash(codes.map(r=>r.code).sort())===hash(game.books.map(b=>b.code).sort()),'capacity_codes_changed');
- latencies.sort((a,b)=>a-b);return {...metrics,boundaryApiResponses:6,totalApiResponses:metrics.apiAttempts+6,elapsedMs:Math.round(performance.now()-started),concurrency,nativePoolMax:10,leaseSeconds,latencyMs:{p50:Math.round(latencies[249]),p95:Math.round(latencies[474]),max:Math.round(latencies.at(-1))},results:1,entrants:400,idsPreserved:true,realDeadlineObserved:true,boundaryChecks:{exactReplay:true,foreignBookRefused:true,lateClaimRefused:true,noBoundarySanction:true},providerCalls:0,fixtureIdentitiesOnly:true};
+ phase='complete';const snapshot=progress();return {...metrics,boundaryApiResponses:6,totalApiResponses:metrics.apiAttempts+6,elapsedMs:snapshot.elapsedMs,claimProcessingElapsedMs:snapshot.claimProcessingElapsedMs,remainingWindowMs:snapshot.remainingWindowMs,claimsFinishedBeforeDeadline:snapshot.claimsFinishedBeforeDeadline,concurrency,nativePoolMax:10,leaseSeconds,latencyMs:snapshot.latencyMs,progress:snapshot,results:1,entrants:400,idsPreserved:true,realDeadlineObserved:true,boundaryChecks:{exactReplay:true,foreignBookRefused:true,lateClaimRefused:true,noBoundarySanction:true},providerCalls:0,fixtureIdentitiesOnly:true};
+ }catch(error){error.capacityProgress=progress();throw error;}
 }
 
 export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=180,concurrency=100,poolFactory=options=>new Pool(options),databaseFactory=createPostgresDatabase,tlsVerifier=verifyDatabaseClientTls,scenario=runCapacityScenario}={}){
@@ -137,7 +161,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
  check(Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=100,'capacity_bounds');
  if(env.RELEASE_SHA!==undefined)check(/^[a-f0-9]{40}$/.test(env.RELEASE_SHA),'capacity_release_sha');
  const {schema,target}=capacityTarget(env,runId),tls=postgresTlsOptions(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64}),pool=poolFactory({...tls,max:1,connectionTimeoutMillis:10000,statement_timeout:15000,lock_timeout:5000,idle_in_transaction_session_timeout:30000});
- let client,created,db,before,after,result,error,refusedResponse=null,cleaned=false,publicUnchanged=false;
+ let client,created,db,before,after,result,error,progress=null,refusedResponse=null,cleaned=false,publicUnchanged=false;
  try{
   client=await pool.connect();tlsVerifier(client,target.database.hostname);
   const identity=(await client.query('SELECT r.oid::text AS oid,r.rolsuper OR r.rolbypassrls AS bypass FROM pg_roles r WHERE r.rolname=current_user')).rows[0];
@@ -149,8 +173,8 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   // All subsequent scenario relations are lexically pinned to our schema;
   // correctness does not depend on a pooler's startup search_path behavior.
   db=await databaseFactory(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64});
-  check(Date.now()<workDeadline,'capacity_time_budget');result=await scenario(db,{schema,leaseSeconds,concurrency,deadline:workDeadline});
- }catch(cause){error=cause;if(cause.capacityRefusal){const safe=classifyCapacityResponse({status:cause.capacityRefusal.httpStatus,data:{error:{code:cause.capacityRefusal.serverErrorCode}}});refusedResponse={httpStatus:safe.httpStatus,serverErrorCode:safe.serverErrorCode};}}
+  check(Date.now()<workDeadline,'capacity_time_budget');result=await scenario(db,{schema,leaseSeconds,concurrency,deadline:workDeadline});progress=sanitizeCapacityProgress(result.progress);
+ }catch(cause){error=cause;progress=sanitizeCapacityProgress(cause.capacityProgress);if(cause.capacityRefusal){const safe=classifyCapacityResponse({status:cause.capacityRefusal.httpStatus,data:{error:{code:cause.capacityRefusal.serverErrorCode}}});refusedResponse={httpStatus:safe.httpStatus,serverErrorCode:safe.serverErrorCode};}}
  finally{
   try{await db?.close();}catch(cause){error=cause;}
   try{if(created){await removeFixtureSchema(client,schema,created);cleaned=true;}}catch(cause){error=cause;}
@@ -158,7 +182,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   finally{client?.release();await pool.end();}
  }
  if(Date.now()-startedAt>300000)error=Object.assign(new Error('De proef overschreed de vijfminutengrens.'),{code:'capacity_time_budget'});
- if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,concurrency,nativePoolMax:10,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],refusedResponse,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
+ if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,concurrency,nativePoolMax:10,leaseSeconds,elapsedMs:Date.now()-startedAt,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],refusedResponse,progress,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
  return {ok:true,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:true,publicTables:before,storage:'native PostgreSQL adapter against isolated staging schema',...result};
 }
 
@@ -166,7 +190,8 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).hr
  try{
   check(process.argv.length===3&&process.argv[2]==='--run-id='+process.env.GITHUB_RUN_ID&&process.env.GITHUB_REPOSITORY==='milobingo/platform'&&process.env.GITHUB_REF==='refs/heads/main'&&process.env.GITHUB_EVENT_NAME==='workflow_dispatch','capacity_workflow_identity');
   check(/^[a-f0-9]{40}$/.test(process.env.RELEASE_SHA||''),'capacity_release_sha');
+  const leaseSeconds=capacityLeaseSeconds(process.env.MILO_CAPACITY_LEASE_SECONDS);
   const head=execFileSync('/usr/bin/git',['rev-parse','--verify','HEAD'],{encoding:'utf8',stdio:['ignore','pipe','ignore'],env:{PATH:'/usr/bin:/bin',GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_SYSTEM:'/dev/null'}}).trim();check(head===process.env.RELEASE_SHA,'capacity_checkout_sha');
-  const result=await stagingCapacityProof({runId:process.env.GITHUB_RUN_ID});await writeFile('staging-v70-capacity.json',JSON.stringify(result,null,2)+'\n',{mode:0o600});console.log(JSON.stringify({ok:true,concurrency:result.concurrency,nativePoolMax:result.nativePoolMax,successfulOperations:result.successfulOperations,apiAttempts:result.apiAttempts,apiConflicts:result.apiConflicts,peakDocumentBytes:result.peakDocumentBytes,elapsedMs:result.elapsedMs,fixtureSchemaRemoved:result.fixtureSchemaRemoved,publicTablesUnchanged:true}));
+  const result=await stagingCapacityProof({runId:process.env.GITHUB_RUN_ID,leaseSeconds});await writeFile('staging-v70-capacity.json',JSON.stringify(result,null,2)+'\n',{mode:0o600});console.log(JSON.stringify({ok:true,concurrency:result.concurrency,nativePoolMax:result.nativePoolMax,leaseSeconds:result.leaseSeconds,successfulOperations:result.successfulOperations,apiAttempts:result.apiAttempts,apiConflicts:result.apiConflicts,peakDocumentBytes:result.peakDocumentBytes,elapsedMs:result.elapsedMs,claimsFinishedBeforeDeadline:result.claimsFinishedBeforeDeadline,claimProcessingElapsedMs:result.claimProcessingElapsedMs,remainingWindowMs:result.remainingWindowMs,fixtureSchemaRemoved:result.fixtureSchemaRemoved,publicTablesUnchanged:true}));
  }catch(error){if(error.capacityEvidence)await writeFile('staging-v70-capacity.json',JSON.stringify(error.capacityEvidence,null,2)+'\n',{mode:0o600});console.error(JSON.stringify({ok:false,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed',message:'De geïsoleerde capaciteitsproef is gestopt. Controleer cleanup en behoud de bestaande release; geen credential- of driverdetails gelogd.'}));process.exitCode=1;}
 }

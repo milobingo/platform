@@ -1,0 +1,32 @@
+{
+  "observedAt": "2026-11-09T13:25:16.150Z",
+  "scope": "read only before v70 migration/deployment",
+  "requests": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "revision": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+        "releaseId": "42154203480-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "checks": [
+          "http"
+        ]
+      }
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 200,
+      "body": {
+        "authenticated": false,
+        "user": null,
+        "email": "",
+        "role": null,
+        "local": false,
+        "configured": true,
+        "localAvailable": false
+      }
+    }
+  ]
+}

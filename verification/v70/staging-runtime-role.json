@@ -1,0 +1,7 @@
+{
+  "gate": "runtime-database-role",
+  "status": "passed",
+  "verifiedTls": true,
+  "readableTables": 23,
+  "credentialsPrinted": false
+}

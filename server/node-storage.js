@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, mkdirSync, chmodSync, writeFileSync, renameS
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve, join } from 'node:path';
 import { postgresTlsOptions } from './node-postgres-tls.js';
+import { createGameMutationQueue } from './node-game-queue.js';
 
 // next start/dev run from the project root; webpack must not treat this path
 // as a directory asset when bundling the server route.
@@ -172,6 +173,7 @@ export function postgresSql(sql) {
 
 export async function createPostgresDatabase(connectionString, { caBase64, allowLoopback = false } = {}) {
   const tls = postgresTlsOptions(connectionString, { caBase64, allowLoopback });
+  const gameQueue = createGameMutationQueue();
   const { Pool, types } = await import('pg');
   const pool = new Pool({ ...tls, max: 10, connectionTimeoutMillis: 10_000,
     idleTimeoutMillis: 30_000, statement_timeout: 15_000, lock_timeout: 10_000, idle_in_transaction_session_timeout: 45_000,
@@ -191,6 +193,8 @@ export async function createPostgresDatabase(connectionString, { caBase64, allow
   };
   const database = {
     kind: 'postgres',
+    withGameMutation(id, operation) { return gameQueue.run(id, operation); },
+    gameMutationQueueStats() { return gameQueue.snapshot(); },
     prepare(sql) { return prepared(database, sql); },
     execute,
     async batch(statements) {
@@ -223,7 +227,7 @@ export async function createPostgresDatabase(connectionString, { caBase64, allow
       } catch (error) { await client.query('ROLLBACK'); throw error; }
       finally { client.release(); }
     },
-    async close() { await pool.end(); },
+    async close() { await gameQueue.close(); await pool.end(); },
   };
   try { await pool.query('SELECT 1 FROM bingo_games LIMIT 0'); }
   catch (error) { await pool.end(); throw error; }

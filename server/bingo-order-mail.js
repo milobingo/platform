@@ -30,12 +30,12 @@ function deliveryAdapter(env){
 /** Persist before sending: a short lease prevents concurrent sends, and the
  * frozen payload/key is reusable only within the adapter's declared guarantee.
  */
-export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,now=Date.now()}){
+export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin}){
  const field=kind==='payment'?'paymentMail':'readyMail',row=await store.game(gameId),existing=orderById(row.data,orderId);
  if(!eligible(existing,kind)||existing[field]?.status==='sent')return;
  const config=(await mailConfig(env)).value,adapter=config.contactReady?deliveryAdapter(env):null;
  if(!adapter){
-  await store.mutate(gameId,{},game=>{
+  await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
    const order=orderById(game,orderId),mail=order[field];
    if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return;
    if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return;
@@ -43,7 +43,7 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,no
   });return;
  }
  let generated;try{const template=await readEffectiveMailTemplate(env,showBrand(row.data).id,kind==='ready'?'books-ready':'payment-link');if(!template.enabled)return;generated=orderMailPayload(row.data,existing,kind,origin,template,env.MAIL_ASSET_BASE_URL,config.from);}catch{await store.mutate(gameId,{},game=>{const mail=orderById(game,orderId)[field];if(mail&&!['sent','sending','offering'].includes(mail.status)){mail.status='failed';mail.error='Het mailtemplate vraagt controle; de bestelling blijft bewaard.';}});return;}const attemptId=crypto.randomUUID();
- const claim=await store.mutate(gameId,{},game=>{
+ const claim=await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
   const order=orderById(game,orderId),mail=order[field];
   if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return null;
   if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return null;
@@ -61,7 +61,14 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,no
  });
  if(!claim.result)return;
  const template=await readEffectiveMailTemplate(env,showBrand(row.data).id,kind==='ready'?'books-ready':'payment-link');
- const offered=await store.mutate(gameId,{},game=>{const current=orderById(game,orderId),mail=current[field];if(mail?.attemptId!==attemptId||mail.status!=='claimed')return false;if(!eligible(current,kind)||kind==='payment'&&current.paymentVersion!==claim.result.version||template.enabled===false){mail.status='blocked';mail.leaseUntil=0;mail.error='De bestelling of mailinstelling is gewijzigd vóór aanbieding.';return false;}mail.status='offering';return true;});
+ const offered=await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
+  const current=orderById(game,orderId),mail=current[field];if(mail?.attemptId!==attemptId||mail.status!=='claimed')return false;
+  if(!(mail.leaseUntil>now)){mail.status='failed';mail.leaseUntil=0;mail.error='De verzendreservering is verlopen vóór aanbieding. Controleer de mailstatus voordat je opnieuw probeert.';return false;}
+  const guarantee=Math.min(mail.idempotencyWindowMs??0,adapter.window);
+  if(mail.uncertain&&(mail.adapterId!==adapter.id||!guarantee||!mail.firstAttemptAt||now-mail.firstAttemptAt>=guarantee)){mail.status='failed';mail.leaseUntil=0;mail.error='De vorige verzendpoging is onzeker. Veilig automatisch opnieuw aanbieden kan niet worden bevestigd. Controleer eerst de e-mailstatus bij de organisatie.';return false;}
+  if(!eligible(current,kind)||kind==='payment'&&current.paymentVersion!==claim.result.version||template.enabled===false){mail.status='blocked';mail.leaseUntil=0;mail.error='De bestelling of mailinstelling is gewijzigd vóór aanbieding.';return false;}
+  mail.status='offering';return true;
+ });
  if(!offered.result)return;
  let accepted=false,providerId=null,uncertain=true;
  const error='De mailgateway heeft de verzending niet bevestigd. De bestelling blijft bewaard.',signal=AbortSignal.timeout(12000);
@@ -74,8 +81,8 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin,no
   else uncertain=receipt?.accepted!==false||receipt.uncertain!==false;
  }catch{uncertain=true;}
  finally{signal.removeEventListener('abort',onAbort);}
- await store.mutate(gameId,{},game=>{
+ await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
   const order=orderById(game,orderId),mail=order[field];if(mail?.attemptId!==attemptId)return;
-  Object.assign(mail,{status:accepted?'sent':'failed',sentAt:accepted?Date.now():null,providerId,acceptedByProvider:accepted,error:accepted?null:error,uncertain,leaseUntil:0});
+  Object.assign(mail,{status:accepted?'sent':'failed',sentAt:accepted?now:null,providerId,acceptedByProvider:accepted,error:accepted?null:error,uncertain,leaseUntil:0});
  });
 }

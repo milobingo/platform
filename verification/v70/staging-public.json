@@ -1,0 +1,19 @@
+{
+  "gate": "public",
+  "status": "passed",
+  "releaseSha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+  "releaseId": "42627937885-1",
+  "configVersion": "staging-2026-11-05-v1",
+  "checks": [
+    "exact-health-identity",
+    "demo-assets",
+    "unauthenticated-access",
+    "local-login-disabled"
+  ],
+  "notTested": [
+    "real-otp-email",
+    "google-oauth-account",
+    "paid-provider-access",
+    "live-broadcast-audio"
+  ]
+}

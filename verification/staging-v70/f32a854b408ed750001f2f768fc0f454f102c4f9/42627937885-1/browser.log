@@ -1,0 +1,24 @@
+
+Running 19 tests using 2 workers
+
+  ✓   2 ../../../../tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (3.6s)
+  ✓   1 ../../../../tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (3.6s)
+  ✓   3 ../../../../tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   4 ../../../../tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (3.6s)
+  ✓   6 ../../../../tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (244ms)
+  ✓   7 ../../../../tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (174ms)
+  ✓   8 ../../../../tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (916ms)
+  ✓   5 ../../../../tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (3.5s)
+  ✓   9 ../../../../tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport (29.4s)
+  ✓  11 ../../../../tests/browser/handoff-v6.spec.mjs:143:1 › handoff v6 short-screen workspace and family modals; simulated transport (2.8s)
+  ✓  10 ../../../../tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport (30.6s)
+  ✓  12 ../../../../tests/browser/handoff-v6.spec.mjs:164:1 › handoff v6 family orders, retained broadcast and whisper dialog; simulated transport (2.7s)
+  ✓  14 ../../../../tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 320px: real BINGO from Books, retained show and one shared countdown (3.6s)
+  ✓  13 ../../../../tests/browser/handoff-v6.spec.mjs:188:1 › handoff v6 actual tour transport, new magic reveal and order detail; simulated transport (6.1s)
+  ✓  15 ../../../../tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown (2.9s)
+  ✓  16 ../../../../tests/browser/handoff-v70.spec.mjs:54:1 › v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot (2.9s)
+  ✓  17 ../../../../tests/browser/handoff-v70.spec.mjs:92:1 › v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie (2.1s)
+  ✓  19 ../../../../tests/browser/handoff-v70.spec.mjs:119:1 › v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences (222ms)
+  ✓  18 ../../../../tests/browser/handoff-v70.spec.mjs:105:1 › v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions (3.0s)
+
+  19 passed (53.7s)

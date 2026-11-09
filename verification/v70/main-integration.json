@@ -2,15 +2,26 @@
   "pullRequest": "https://github.com/milobingo/platform/pull/1",
   "mergeSha": "997aa8c77429f4be128f6878d5030ec29db7ad7b",
   "mergedAt": "2026-11-09T13:16:30Z",
-  "mainCi": "https://github.com/milobingo/platform/actions/runs/42624037203",
-  "ciStatus": "failure",
-  "hostedMutationsPerformed": false,
+  "mainCi": "https://github.com/milobingo/platform/actions/runs/42625788676",
+  "ciStatus": "success",
+  "hostedMutationsPerformed": true,
   "failure": {
     "check": "check-staging-capacity-v70",
     "code": "capacity_api_refused",
     "elapsedMs": 62048,
     "fixtureSchemaRemoved": true,
     "publicTablesUnchanged": true,
-    "interpretation": "Investigating a refusal at the real 60s fixture window boundary; no release/deploy/migration authorized by this failed CI."
-  }
+    "interpretation": "Historical 60s capacity fixture refusal; exact-main follow-up CI passed using a real 180s lease at concurrency10. Application default30 unchanged; actual hosted100 remains separate.",
+    "ciRun": "https://github.com/milobingo/platform/actions/runs/42624037203"
+  },
+  "followUpPullRequest": "https://github.com/milobingo/platform/pull/2",
+  "releaseSha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+  "observedAt": "2026-11-09T13:39:53.941494+00:00",
+  "hostedChanges": [
+    "additive 18-to-23 schema upgrade after verified encrypted backup/full restore",
+    "exact CI-approved native staging app release"
+  ],
+  "realMailSent": false,
+  "realPaymentPerformed": false,
+  "realProviderRehearsal": false
 }

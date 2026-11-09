@@ -24,6 +24,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  if(admin&&row.owner_id!==user)throw new BingoError('Deze show hoort bij een andere organisatie.',403);
  const requireHost=()=>{if(!admin)throw new BingoError('Alleen de organisatie kan deze bestelling goedkeuren of een betaallink instellen.',403);};
  const scopedId=`${user}:${request.method}:${path}:${requestId}`;
+ // Time-sensitive model checks use the fresh clock supplied for each CAS attempt.
  const receiptClaim=(_game,result)=>result?.payment?.state==='verified'?{receiptHash:result.payment.receiptHash,orderId:result.id}:null;
  const response=async(orderId,status=200,family=null)=>{
   const game=(await store.game(gameId)).data,order=orderId?orderById(game,orderId):null;
@@ -32,7 +33,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  if(!part){
   if(request.method==='GET')return json(snapshots(row.data,user,admin,now));
   if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
-  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:user,email},(game,family)=>createOrder(game,family,{accountId:user,email,requestId,quantity:body.quantity,profileIds:body.profileIds},now));
+  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:user,email},(game,family,now=Date.now())=>createOrder(game,family,{accountId:user,email,requestId,quantity:body.quantity,profileIds:body.profileIds},now));
   const order=saved.result||(saved.game.orders||[]).find(o=>o.accountId===user&&o.createRequestId===requestId);
   if(!order)throw new BingoError('De bestelling kon nog niet worden bevestigd.',409);
   await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});
@@ -42,7 +43,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
   requireHost();if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
   if(body.preview===true){const draft=structuredClone(row.data);changeOrderedShow(draft,body,now);return json({preview:true,revision:row.data.revision,previousDate:row.data.date,nextDate:draft.date,affectedOrders:draft.orders?.filter(o=>o.showHistory?.length).length||0,booksPreserved:body.operation==='reschedule',refundReviewRequired:body.operation==='cancel-show'});}
   if(body.confirm!==true)throw new BingoError('Controleer eerst de wijziging en bevestig deze bewust.',409);
-  const saved=await store.mutate(gameId,{requestId:scopedId},game=>changeOrderedShow(game,body,now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(null);
+  const saved=await store.mutate(gameId,{requestId:scopedId},(game,_family,now=Date.now())=>changeOrderedShow(game,body,now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(null);
  }
  if(part==='config'){
   requireHost();if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
@@ -66,26 +67,26 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  }
  if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
  if(action==='payment-link'){
-  requireHost();await store.mutate(gameId,{requestId:scopedId},game=>setPaymentLink(game,orderById(game,order.id),body,now));
+  requireHost();await store.mutate(gameId,{requestId:scopedId},(game,_family,now=Date.now())=>setPaymentLink(game,orderById(game,order.id),body,now));
   await dispatchOrderMail({store,gameId,orderId:order.id,kind:'payment',env,origin:url.origin,now});return response(order.id);
  }
  if(action==='approve'){
-  requireHost();const receiptHash=order.status==='fulfilled'?order.payment?.receiptHash:await paymentReceiptHash(row.data,body.paymentEvidence);const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email,receiptClaim},(game,family)=>fulfillOrder(game,family,orderById(game,order.id),{paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
+  requireHost();const receiptHash=order.status==='fulfilled'?order.payment?.receiptHash:await paymentReceiptHash(row.data,body.paymentEvidence);const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email,receiptClaim},(game,family,now=Date.now())=>fulfillOrder(game,family,orderById(game,order.id),{paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
   await dispatchOrderMail({store,gameId,orderId:order.id,kind:'ready',env,origin:url.origin,now});return response(order.id,200,saved.family);
  }
  if(action==='assign'){
-  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email},(game,family)=>{const current=orderById(game,order.id);if(!admin&&current.accountId!==user)throw new BingoError('Deze bestelling hoort niet bij jouw account.',403);return assignOrderBook(game,family,current,body,now);});return response(order.id,200,saved.family);
+  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email},(game,family,now=Date.now())=>{const current=orderById(game,order.id);if(!admin&&current.accountId!==user)throw new BingoError('Deze bestelling hoort niet bij jouw account.',403);return assignOrderBook(game,family,current,body,now);});return response(order.id,200,saved.family);
  }
  if(action==='reconcile'){
-  requireHost();const receiptHash=body.operation==='confirm-payment'?await paymentReceiptHash(row.data,body.evidence):null;const saved=await store.mutate(gameId,{requestId:scopedId,receiptClaim:body.operation==='confirm-payment'?receiptClaim:null},game=>reconcileOrderPayment(game,orderById(game,order.id),{...body,receiptHash,hostId:user},now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
+  requireHost();const receiptHash=body.operation==='confirm-payment'?await paymentReceiptHash(row.data,body.evidence):null;const saved=await store.mutate(gameId,{requestId:scopedId,receiptClaim:body.operation==='confirm-payment'?receiptClaim:null},(game,_family,now=Date.now())=>reconcileOrderPayment(game,orderById(game,order.id),{...body,receiptHash,hostId:user},now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
  }
  if(action==='paid'){
   if(admin)throw new BingoError('Een betaalmelding komt van het gezin. Gebruik goedkeuren nadat je de betaling hebt gecontroleerd.',409);
-  const saved=await store.mutate(gameId,{requestId:scopedId},game=>reportOrderPaid(game,orderById(game,order.id),now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
+  const saved=await store.mutate(gameId,{requestId:scopedId},(game,_family,now=Date.now())=>reportOrderPaid(game,orderById(game,order.id),now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
  }
  if(action==='cancel'||action==='reject'){
   if(action==='reject')requireHost();
-  const saved=await store.mutate(gameId,{requestId:scopedId},game=>closeOrder(orderById(game,order.id),action==='cancel'?'cancelled':'rejected',body.reason,now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
+  const saved=await store.mutate(gameId,{requestId:scopedId},(game,_family,now=Date.now())=>closeOrder(orderById(game,order.id),action==='cancel'?'cancelled':'rejected',body.reason,now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
  }
  if(action==='mail'){
   requireHost();const kind=emailKind(body.kind);
