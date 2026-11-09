@@ -19,6 +19,12 @@ const quote=value=>'"'+value.replaceAll('"','""')+'"';
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const fail=code=>{throw Object.assign(new Error('De begrensde Milo-capaciteitsproef is gestopt. Geen credentials of speldocumenten worden gelogd.'),{code});};
 const check=(condition,code)=>{if(!condition)fail(code);};
+const SAFE_RESPONSE_CODES=new Set(['conflict','closed','context_changed','book_forbidden','blocked','cooldown','empty_cooldown','request_conflict','game_capacity','unavailable','invalid','origin','sign_in','rules_unpublished','draw_paused','call_draw_hold']);
+export function classifyCapacityResponse(response){
+ const httpStatus=Number.isInteger(response?.status)&&response.status>=100&&response.status<=599?response.status:null;
+ const rawCode=response?.data?.error?.code,serverErrorCode=SAFE_RESPONSE_CODES.has(rawCode)?rawCode:null;
+ return {outcome:httpStatus===200?'success':httpStatus===409&&serverErrorCode==='conflict'?'retry':'refused',httpStatus,serverErrorCode};
+}
 export function capacitySchema(runId){check(typeof runId==='string'&&/^[1-9][0-9]{0,19}$/.test(runId),'capacity_run_id');return 'milo_v70_fixture_'+runId;}
 export function capacityTarget(env,runId){
  const schema=capacitySchema(runId),target=validateTarget(env,PROJECT);
@@ -108,7 +114,7 @@ export async function runCapacityScenario(database,{schema,leaseSeconds=180,conc
  await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{budget();const family=familyDefault('fixture-family-'+i+'@example.test');family.ownerName='Fictief huishouden '+i;family.profiles=Array.from({length:4},(_,j)=>({id:'fixture-child-'+(i*4+j),name:'Fixture '+(i*4+j),age:8}));await db.prepare('INSERT INTO bingo_families (account_id,revision,document) VALUES (?,1,?)').bind('fixture-family-'+i,JSON.stringify(family)).run();});
  await db.prepare('INSERT INTO bingo_codes (code,game_id) SELECT value,? FROM json_each(?)').bind(game.id,JSON.stringify(game.books.map(book=>book.code))).run();
  const api=async(action,body,user,requestId,method='POST')=>{budget();const response=await handleBingo(new Request('https://capacity.example.test/api/bingo/games/'+game.id+(action?'/'+action:''),{method,headers:{Origin:'https://capacity.example.test','X-Vlampie-Bingo':'1','Content-Type':'application/json'},...(method==='POST'?{body:JSON.stringify({regieId:'fixture-capacity-regie',requestId,...body})}:{})}),{DB:db,AUTH_IDENTITY:{user,email:user+'@example.test',admin:user==='fixture-capacity-host',method:'isolated-capacity-fixture'}});return {status:response.status,data:await response.json()};};
- const operate=async(action,body,user,requestId)=>{const began=performance.now();for(let attempt=0;attempt<20;attempt++){budget();metrics.apiAttempts++;const response=await api(action,body,user,requestId);if(response.status===200){metrics.successfulOperations++;latencies.push(performance.now()-began);return response.data;}check(response.status===409&&response.data.error?.code==='conflict','capacity_api_refused');metrics.apiConflicts++;metrics.retries++;await new Promise(done=>setTimeout(done,25+attempt*10));}fail('capacity_retry_exhausted');};
+ const operate=async(action,body,user,requestId)=>{const began=performance.now();for(let attempt=0;attempt<20;attempt++){budget();metrics.apiAttempts++;const response=await api(action,body,user,requestId),classification=classifyCapacityResponse(response);if(classification.outcome==='success'){metrics.successfulOperations++;latencies.push(performance.now()-began);return response.data;}if(classification.outcome==='refused'){const error=Object.assign(new Error('De capaciteits-API heeft deze operatie geweigerd.'),{code:'capacity_api_refused',capacityRefusal:{httpStatus:classification.httpStatus,serverErrorCode:classification.serverErrorCode}});throw error;}metrics.apiConflicts++;metrics.retries++;await new Promise(done=>setTimeout(done,25+attempt*10));}fail('capacity_retry_exhausted');};
  const windows=[];await parallel(Array.from({length:100},(_,i)=>i),concurrency,async i=>{const result=await operate('begin',{claimContext:captured},'fixture-family-'+i,'capacity-begin-'+i);windows.push(result.game.state.claimContext);});
  check(new Set(windows.map(w=>w.windowId)).size===1,'capacity_multiple_windows');const context=windows[0],claims=[];
  await parallel(game.books,concurrency,async(book,i)=>{const result=await operate('claim',{claimContext:context,bookId:book.id},book.accountId,'capacity-claim-'+i);check(result.claim?.status==='valid','capacity_invalid_claim');claims.push(result.claim);});
@@ -130,7 +136,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
  const startedAt=Date.now(),workDeadline=startedAt+240000;
  if(env.RELEASE_SHA!==undefined)check(/^[a-f0-9]{40}$/.test(env.RELEASE_SHA),'capacity_release_sha');
  const {schema,target}=capacityTarget(env,runId),tls=postgresTlsOptions(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64}),pool=poolFactory({...tls,max:1,connectionTimeoutMillis:10000,statement_timeout:15000,lock_timeout:5000,idle_in_transaction_session_timeout:30000});
- let client,created,db,before,after,result,error,cleaned=false,publicUnchanged=false;
+ let client,created,db,before,after,result,error,refusedResponse=null,cleaned=false,publicUnchanged=false;
  try{
   client=await pool.connect();tlsVerifier(client,target.database.hostname);
   const identity=(await client.query('SELECT r.oid::text AS oid,r.rolsuper OR r.rolbypassrls AS bypass FROM pg_roles r WHERE r.rolname=current_user')).rows[0];
@@ -143,7 +149,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   // correctness does not depend on a pooler's startup search_path behavior.
   db=await databaseFactory(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64});
   check(Date.now()<workDeadline,'capacity_time_budget');result=await scenario(db,{schema,leaseSeconds,concurrency:10,deadline:workDeadline});
- }catch(cause){error=cause;}
+ }catch(cause){error=cause;if(cause.capacityRefusal){const safe=classifyCapacityResponse({status:cause.capacityRefusal.httpStatus,data:{error:{code:cause.capacityRefusal.serverErrorCode}}});refusedResponse={httpStatus:safe.httpStatus,serverErrorCode:safe.serverErrorCode};}}
  finally{
   try{await db?.close();}catch(cause){error=cause;}
   try{if(created){await removeFixtureSchema(client,schema,created);cleaned=true;}}catch(cause){error=cause;}
@@ -151,7 +157,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   finally{client?.release();await pool.end();}
  }
  if(Date.now()-startedAt>300000)error=Object.assign(new Error('De proef overschreed de vijfminutengrens.'),{code:'capacity_time_budget'});
- if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
+ if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],refusedResponse,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
  return {ok:true,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:true,publicTables:before,storage:'native PostgreSQL adapter against isolated staging schema',...result};
 }
 
