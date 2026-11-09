@@ -1,0 +1,132 @@
+$ node scripts/run-checks.mjs
+✓ check-family-demo (4155 ms)
+✓ check-family-extras (11153 ms)
+✓ check-family-brand (49 ms)
+✓ check-player-auth (1692 ms)
+✓ check-bingo (13601 ms)
+✓ check-live-chat (725 ms)
+✓ check-chat-client (2613 ms)
+✓ check-milo-print (2205 ms)
+✓ check-characters (138 ms)
+✓ check-cast-runner (62 ms)
+✓ check-milo-motion (595 ms)
+✓ check-milo-life (66 ms)
+✓ check-milo-minigame-catalog (1031 ms)
+✓ check-milo-minigame-server (343 ms)
+✓ check-milo-game-clock (201 ms)
+✓ check-call-draw-hold (96 ms)
+✓ check-live-call-audio (51 ms)
+✓ check-live-calls (361 ms)
+✓ check-player-live-call (70 ms)
+✓ check-regie-workspace (2920 ms)
+✓ check-regie-panels (638 ms)
+✓ check-brand-contract (1948 ms)
+✓ check-secrets (108 ms)
+✓ check-youtube-player (253 ms)
+✓ check-startup-recovery (47 ms)
+✓ check-gpt-live (219 ms)
+✓ check-calls (375 ms)
+✓ check-planner-api (96 ms)
+✓ check-planner-ui (393 ms)
+✓ check-openai (148 ms)
+✓ check-production (702 ms)
+✓ check-milo-brand-isolation (280 ms)
+✓ check-presentation (371 ms)
+✓ check-claim-priority (398 ms)
+✓ check-family-consolation (75 ms)
+✓ check-bingo-orders (3344 ms)
+✓ check-order-demo (85 ms)
+✓ check-workspace-navigation (15977 ms)
+✓ check-character-navigation (2361 ms)
+✓ check-administration-ui (1478 ms)
+✓ check-broadcast-shell (1902 ms)
+✓ check-show-cue-ui (2090 ms)
+✓ check-magic-catalog (89 ms)
+✓ check-milo-studio-tour (68 ms)
+✓ check-milo-leg-render (270 ms)
+✓ check-milo-magic-render (1686 ms)
+✓ check-milo-puppet-render (1405 ms)
+✓ check-milo-effect-continuity (2529 ms)
+✓ check-livekit (231 ms)
+✓ check-live-call-output (64 ms)
+✓ check-live-call-runtime (93 ms)
+✓ check-live-call-recovery (338 ms)
+✓ check-mail-templates (63 ms)
+✓ check-mail-service (239 ms)
+✓ check-mail-ui (6630 ms)
+✓ check-provider-settings-ui (4361 ms)
+✓ check-milo-ui (4465 ms)
+✓ check-showtime (4818 ms)
+✓ check-start-readiness (890 ms)
+✓ check-director-whisper-runtime (180 ms)
+✓ check-director-whisper-ui (1166 ms)
+✗ check-director-whisper-server (227 ms)
+✔ director hints require owner, exact origin, regie header, own show and permitted character before spending credit (28.790881ms)
+✔ a natural reaction uses saved cast identity and only server facts; hint and game state stay private (11.382495ms)
+✔ all twelve Milo presenters and Vlampie use their own permitted cast without requiring the stored lead (33.358512ms)
+✔ same id is a durable encrypted reply and a changed hint never reuses it (5.839577ms)
+✔ parallel preparation shares one CAS claim and an uncertain attempt is not silently regenerated (6.391623ms)
+✔ moderation, private echoes, invented numbers, results and incomplete provider output cannot become a prepared reply (34.037311ms)
+✔ normal hints remain possible during private backstage without guest data, but never bypass LiveKit drawHold or switching (5.929674ms)
+✔ a show epoch change or backstage-to-live transition during generation discards the reaction and preserves the hold (4.149797ms)
+✖ real handler ignores forged identity headers and environment mode cannot save or substitute provider keys (1.442075ms)
+✔ a short raw whisper echo remains private when the provider changes punctuation, case or accents (8.370082ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.205512
+
+✖ failing tests:
+
+test at scripts/check-director-whisper-server.mjs:106:1
+✖ real handler ignores forged identity headers and environment mode cannot save or substitute provider keys (1.442075ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + undefined
+  - false
+
+      at TestContext.<anonymous> (file:///home/codex/repos/milobingo/scripts/check-director-whisper-server.mjs:112:130)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+✓ check-live-director-whisper (268 ms)
+✓ check-node-storage (1154 ms)
+✓ check-node-game-queue (1068 ms)
+✓ check-queued-bingo-time (363 ms)
+✓ check-node-runtime (1665 ms)
+✓ check-regie-provider-settings (978 ms)
+✓ check-staging-workspace-preflight (221 ms)
+✓ check-node-provider-fetch (320 ms)
+✓ check-node-mail-gateway (83 ms)
+✓ check-node-postgres-tls (73 ms)
+✓ check-deploy-contract (60 ms)
+✓ check-production-deploy (1417 ms)
+✓ check-deploy-database (8836 ms)
+✓ check-provision-runtime (1336 ms)
+✓ check-show-time (82 ms)
+✓ check-game-invariants (721 ms)
+✓ check-game-capacity (10620 ms)
+✓ check-family-claim-context (367 ms)
+✓ check-live-feed (144 ms)
+✓ check-live-feed-isolation (114 ms)
+✓ check-v70-schema-upgrade (64 ms)
+✓ check-show-time-audit (120 ms)
+✓ check-account-mail (398 ms)
+✓ check-staging-restore-relay (175 ms)
+✓ check-staging-restore-target (44 ms)
+✓ check-family-accessibility (552 ms)
+✓ check-v70-restart-safety (339 ms)
+✓ check-staging-capacity-v70 (183165 ms)
+[ELIFECYCLE] Test failed. See above for more details.

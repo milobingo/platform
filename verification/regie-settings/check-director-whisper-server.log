@@ -1,0 +1,18 @@
+✔ director hints require owner, exact origin, regie header, own show and permitted character before spending credit (34.581553ms)
+✔ a natural reaction uses saved cast identity and only server facts; hint and game state stay private (13.896051ms)
+✔ all twelve Milo presenters and Vlampie use their own permitted cast without requiring the stored lead (34.616578ms)
+✔ same id is a durable encrypted reply and a changed hint never reuses it (5.845409ms)
+✔ parallel preparation shares one CAS claim and an uncertain attempt is not silently regenerated (6.277283ms)
+✔ moderation, private echoes, invented numbers, results and incomplete provider output cannot become a prepared reply (34.098112ms)
+✔ normal hints remain possible during private backstage without guest data, but never bypass LiveKit drawHold or switching (6.173377ms)
+✔ a show epoch change or backstage-to-live transition during generation discards the reaction and preserves the hold (4.702278ms)
+✔ real handler ignores forged identity headers and environment mode cannot save or substitute provider keys (4.061706ms)
+✔ a short raw whisper echo remains private when the provider changes punctuation, case or accents (9.187876ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 158.47794

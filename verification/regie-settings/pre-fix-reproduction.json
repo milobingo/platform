@@ -1,0 +1,27 @@
+{
+  "baselineReleaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "scope": "Local real adapter/API and React reproductions, with simulated Storage responses; no actual staging Auth or provider calls",
+  "mailApi": [
+    {
+      "missingObjectResponse": "HTTP404",
+      "apiStatus": 200,
+      "templates": 17
+    },
+    {
+      "missingObjectResponse": "HTTP400 + statusCode404/codeNoSuchKey",
+      "apiStatus": 503,
+      "errorCode": "mail_unavailable"
+    }
+  ],
+  "uiFailureObserved": [
+    "401",
+    "503",
+    "network failure",
+    "invalid JSON HTTP200",
+    "empty HTTP200 object"
+  ],
+  "uiResultBeforeFix": "zero templates and misleading empty search; tab navigation cleared the load error",
+  "regressionAddedBeforeAdapterFix": "new first-open adapter/API regression failed with503 !==200",
+  "providerRequests": 0,
+  "remoteWrites": 0
+}

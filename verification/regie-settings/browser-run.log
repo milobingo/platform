@@ -1,0 +1,109 @@
+✓ Lockfile passes supply-chain policies (verified 7h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Done in 890ms using pnpm v11.25.0
+$ playwright test
+
+Running 21 tests using 2 workers
+
+(node:3402327) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3402328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   2 tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   3 tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (3.0s)
+  ✓   4 tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   6 tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (154ms)
+  ✓   7 tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (22ms)
+  ✓   8 tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (657ms)
+  ✓   5 tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (3.4s)
+  ✓   9 tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport (27.0s)
+  ✓  11 tests/browser/handoff-v6.spec.mjs:143:1 › handoff v6 short-screen workspace and family modals; simulated transport (2.3s)
+  ✓  10 tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport (28.6s)
+  ✓  12 tests/browser/handoff-v6.spec.mjs:164:1 › handoff v6 family orders, retained broadcast and whisper dialog; simulated transport (2.2s)
+  ✓  14 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 320px: real BINGO from Books, retained show and one shared countdown (3.4s)
+  ✓  13 tests/browser/handoff-v6.spec.mjs:188:1 › handoff v6 actual tour transport, new magic reveal and order detail; simulated transport (5.7s)
+  ✓  15 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown (2.6s)
+  ✓  16 tests/browser/handoff-v70.spec.mjs:54:1 › v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot (2.7s)
+  ✓  17 tests/browser/handoff-v70.spec.mjs:92:1 › v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie (1.9s)
+  ✓  19 tests/browser/handoff-v70.spec.mjs:119:1 › v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences (32ms)
+  ✓  18 tests/browser/handoff-v70.spec.mjs:105:1 › v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions (2.7s)
+  ✘  20 tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 390px; simulated API (5.2s)
+  ✘  21 tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 1366px; simulated API (5.5s)
+
+
+  1) tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 390px; simulated API
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 6
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "location": "http://127.0.0.1:4175/api/bingo/games/qa-regie-settings-saved-show/chat",
+    +     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    +   },
+    + ]
+
+      146 |    expect(proof.gets['/api/openai/status']).toBeGreaterThan(0);
+      147 |    expect(proof.gets['/api/livekit/settings']).toBeGreaterThan(0);
+    > 148 |    expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+          |                         ^
+      149 |   }finally{
+      150 |    await mkdir(output,{recursive:true});
+      151 |    await writeFile(`${output}/regie-settings-${width}.json`,JSON.stringify({observedAt:new Date().toISOString(),viewport:page.viewportSize(),simulatedAuthAndApiTransport:true,actualAccountOrProviderAcceptance:false,actualBackendWrites:false,savedShowBranch:true,...proof,expectedSandboxScriptBlocks:proof.expectedSandboxScriptBlocks.length},null,2)+'\n');
+        at /home/codex/repos/milobingo/tests/browser/regie-settings.spec.mjs:148:25
+
+    Error Context: test-results/regie-settings-saved-show--8f9be-ettings-390px-simulated-API/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/regie-settings-saved-show--8f9be-ettings-390px-simulated-API/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/regie-settings-saved-show--8f9be-ettings-390px-simulated-API/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 1366px; simulated API
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 6
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "location": "http://127.0.0.1:4175/api/bingo/games/qa-regie-settings-saved-show/chat",
+    +     "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    +   },
+    + ]
+
+      146 |    expect(proof.gets['/api/openai/status']).toBeGreaterThan(0);
+      147 |    expect(proof.gets['/api/livekit/settings']).toBeGreaterThan(0);
+    > 148 |    expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+          |                         ^
+      149 |   }finally{
+      150 |    await mkdir(output,{recursive:true});
+      151 |    await writeFile(`${output}/regie-settings-${width}.json`,JSON.stringify({observedAt:new Date().toISOString(),viewport:page.viewportSize(),simulatedAuthAndApiTransport:true,actualAccountOrProviderAcceptance:false,actualBackendWrites:false,savedShowBranch:true,...proof,expectedSandboxScriptBlocks:proof.expectedSandboxScriptBlocks.length},null,2)+'\n');
+        at /home/codex/repos/milobingo/tests/browser/regie-settings.spec.mjs:148:25
+
+    Error Context: test-results/regie-settings-saved-show--7191a-ttings-1366px-simulated-API/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/regie-settings-saved-show--7191a-ttings-1366px-simulated-API/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/regie-settings-saved-show--7191a-ttings-1366px-simulated-API/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 390px; simulated API
+    tests/browser/regie-settings.spec.mjs:87:2 › saved-show mail recovery and editable redacted provider settings 1366px; simulated API
+  19 passed (59.3s)
+[ELIFECYCLE] Command failed with exit code 1.

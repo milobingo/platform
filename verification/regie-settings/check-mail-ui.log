@@ -1,0 +1,1 @@
+✓ Mail UI:17 templates, protected Auth/CTA, strict preview sandbox, dirty clearing, campaign confirmation/pause/no restart, four actual UI→API save contracts, both brands failing 401/503/offline/invalid or empty 200 with explicit retry, refresh loading, and late-production response isolation. No mail provider was called.

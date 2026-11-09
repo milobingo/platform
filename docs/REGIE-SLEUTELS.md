@@ -24,6 +24,8 @@ Alleen een opnieuw gecontroleerde regierol mag deze instellingen wijzigen. Ieder
 
 Tijdens een actief belmoment, onzekere provideropruiming, open microfoontest of nog niet vrijgegeven belblokkade blijven sleutelwijzigingen geblokkeerd. Intrekken van toestemming en opruimen moeten bereikbaar blijven. Sleutels wijzigen hervat geen trekking en start geen gesprek.
 
+Na gebruik van native regiesleutels hoort een terugrolrelease deze instellingen ook te ondersteunen. De eerdere app `cb84f03` kent deze objectnamen niet en gebruikt haar serverwaarden; zij is dan geen geschikte terugrolrelease. Gebruik een compatibele correctie vooruit.
+
 ## Mailtemplates en controle vóór uitrol
 
 De mailstudio bevat zeventien templates: de veertien oorspronkelijke templates en drie operationele aanvullingen. Zij zijn leesbaar zonder actieve mailgateway. Het inlogcodevoorbeeld blijft alleen-lezen; de echte inlogmail wordt door Supabase Auth beheerd.

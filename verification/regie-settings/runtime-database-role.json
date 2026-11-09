@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-11-09T21:39:18.806135+00:00",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42704066094",
+  "releaseSha": "a2723018022a96849dcc769cdc21aac3864ef659",
+  "gate": "runtime-database-role",
+  "status": "passed",
+  "verifiedTls": true,
+  "readableTables": 23,
+  "credentialsPrinted": false
+}

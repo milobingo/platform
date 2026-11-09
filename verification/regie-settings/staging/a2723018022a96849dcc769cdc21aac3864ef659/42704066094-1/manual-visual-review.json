@@ -1,0 +1,192 @@
+{
+  "format": 1,
+  "kind": "manual-staging-regie-settings-visual-review",
+  "observedAt": "2026-11-09T21:41:16.314Z",
+  "status": "passed",
+  "releaseSha": "a2723018022a96849dcc769cdc21aac3864ef659",
+  "releaseId": "42704066094-1",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "configVersion": "staging-2026-11-05-v1",
+  "scope": {
+    "actualStagingHtmlCssCanvasAndAssets": true,
+    "simulatedAuthAndApiTransport": true,
+    "realAccountAcceptance": false,
+    "realProviderAcceptance": false,
+    "realDbOrProviderOrMailWrites": false,
+    "screenshotInspectionOnly": true
+  },
+  "automatedAcceptance": {
+    "status": "passed",
+    "stats": {
+      "startTime": "2026-11-09T21:39:27.292Z",
+      "duration": 55173.297,
+      "expected": 21,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "preHealth": {
+      "observedAt": "2026-11-09T21:39:26.838Z",
+      "httpStatus": 200,
+      "status": "ok",
+      "revision": "a2723018022a96849dcc769cdc21aac3864ef659",
+      "releaseId": "42704066094-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "checks": [
+        "http"
+      ]
+    },
+    "postHealth": {
+      "observedAt": "2026-11-09T21:40:22.610Z",
+      "httpStatus": 200,
+      "status": "ok",
+      "revision": "a2723018022a96849dcc769cdc21aac3864ef659",
+      "releaseId": "42704066094-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "checks": [
+        "http"
+      ]
+    },
+    "localEvidencePreserved": true,
+    "testSourcesUnchanged": true,
+    "cases": [
+      {
+        "width": 390,
+        "requestedMailState": 2,
+        "mailResponses": [
+          503,
+          200
+        ],
+        "requestedSavedGame": 2,
+        "unexpectedConsoleErrors": 0,
+        "expectedMailLoadConsoleErrors": 1,
+        "expectedSandboxScriptBlocks": 2,
+        "externalRequests": 0,
+        "backendWrites": 0,
+        "unexpectedApiRequests": 0
+      },
+      {
+        "width": 1366,
+        "requestedMailState": 2,
+        "mailResponses": [
+          503,
+          200
+        ],
+        "requestedSavedGame": 2,
+        "unexpectedConsoleErrors": 0,
+        "expectedMailLoadConsoleErrors": 1,
+        "expectedSandboxScriptBlocks": 2,
+        "externalRequests": 0,
+        "backendWrites": 0,
+        "unexpectedApiRequests": 0
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-mail-load-error.png",
+      "sha256": "3570dbc4bbdead9055c9bafb73e4de138fc12d723502e6e73d082cbdcdb9c601",
+      "width": 390,
+      "height": 844,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "Dedicated Dutch load-failure heading and Opnieuw laden button are fully readable.",
+        "The failed load is not presented as zero templates or an empty search result.",
+        "No horizontally clipped error card at the captured phone viewport."
+      ]
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-mail-recovered-preview.png",
+      "sha256": "b746854650c5ee3b04bcf5fb7e609532666a5260eaf83e72fb412164a0b0b43d",
+      "width": 390,
+      "height": 844,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "Recovered books-ready mail visibly renders the Milo logo, heading and Hallo Danny sample copy.",
+        "Preview copy wraps within the phone width; no fabricated real recipient or delivery claim."
+      ]
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-openai-environment-editable.png",
+      "sha256": "3f5b982db3af06a4f1d2763a0b1345055ebe82622ed243541a8d4f65f045deca",
+      "width": 390,
+      "height": 844,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "Environment-source explanation and replacement password field are visible.",
+        "Only the stored-key placeholder is displayed; no credential value is visible.",
+        "Save control appears disabled for the empty replacement input."
+      ]
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-livekit-environment-editable.png",
+      "sha256": "c91394fe302be52b0c29bbe46e9dd2d56ffdbdbcfdeeeec9d84dbc6c16e2795c",
+      "width": 390,
+      "height": 844,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "Project URL, API-key and API-secret fields are all visible in the captured phone viewport.",
+        "Key and secret show placeholders instead of stored credentials.",
+        "Save and explicit test are distinct controls; warning distinguishes stored credentials from a tested real call."
+      ]
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-1366-mail-recovered-preview.png",
+      "sha256": "8127f0c26f6c4f6e2d9c49eaf5d0a90f5ae266bdfaedbf1da5049e5c5e86e7ea",
+      "width": 1366,
+      "height": 768,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "Template library, books-ready editor and rendered mail preview appear in three usable desktop columns.",
+        "Selected template and preview agree; the preview visibly substitutes the fictitious first name."
+      ]
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-1366-livekit-environment-editable.png",
+      "sha256": "d8cbcdd7fc34fcfe724437c938a33af951bae780328c4577cdb6028ac06924c1",
+      "width": 1366,
+      "height": 768,
+      "inspection": "view_image",
+      "blockingVisualIssues": [],
+      "findings": [
+        "E-mail & bellen tab shows separate family sign-in and LiveKit panels.",
+        "LiveKit server-environment explanation, untested status and project URL field are readable.",
+        "This viewport ends below the URL; key and secret controls are verified in the phone capture and automated DOM assertions, not claimed visible here."
+      ]
+    }
+  ],
+  "proofFiles": [
+    {
+      "path": "release-acceptance.json",
+      "sha256": "bcebcf72dc33eabcb753a965ad31ad60ea538f1f34451684bcf54f0d59c396b6"
+    },
+    {
+      "path": "browser-tests.json",
+      "sha256": "4c95400fa902614d63d3bac611b0f69e8583580c5cd5d5c83a771c5c1afb854a"
+    },
+    {
+      "path": "browser.log",
+      "sha256": "dc643aba70e7375f0e9409551f803e73b48ae4eea464112c83e966240fa58839"
+    },
+    {
+      "path": "regie-settings/regie-settings-390.json",
+      "sha256": "0e8ddfe1cf15696e44d090529c428266cf7a7939b7841cabf4f68501836e479b"
+    },
+    {
+      "path": "regie-settings/regie-settings-1366.json",
+      "sha256": "bc856bb003ef2617ca4e3e66dc50a09257553aa28665619f008acf5d4b819a06"
+    }
+  ],
+  "blockingVisualIssues": [],
+  "limitations": [
+    "Authentication and API responses in these regie browser cases are explicit fixtures.",
+    "Empty input values and absence of credential fields in fixture JSON are checked by browser assertions; screenshots alone do not prove real server credential redaction.",
+    "No real account sign-in, provider connection, microphone call or inbox delivery was exercised."
+  ],
+  "sourceSha": "a2723018022a96849dcc769cdc21aac3864ef659"
+}

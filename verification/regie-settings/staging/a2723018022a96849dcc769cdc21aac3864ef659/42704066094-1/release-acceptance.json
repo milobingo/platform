@@ -1,0 +1,92 @@
+{
+  "format": 1,
+  "kind": "actual-staging-browser-acceptance",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "a2723018022a96849dcc769cdc21aac3864ef659",
+  "releaseId": "42704066094-1",
+  "deployWorkflowRun": 42704066094,
+  "deployWorkflow": {
+    "url": "https://github.com/milobingo/platform/actions/runs/42704066094",
+    "headSha": "a2723018022a96849dcc769cdc21aac3864ef659",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "release-gate",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "verify-public",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "startedAt": "2026-11-09T21:39:26.840Z",
+  "preHealth": {
+    "observedAt": "2026-11-09T21:39:26.838Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "a2723018022a96849dcc769cdc21aac3864ef659",
+    "releaseId": "42704066094-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "testSourceSha256": {
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0",
+    "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
+    "tests/browser/handoff-v6.spec.mjs": "790c58ecd2564eecba206628a46ab4cd74cf965dbbf70e03048a2ec20a26c01b",
+    "tests/browser/handoff-v70.spec.mjs": "16030585adb4639e2697dfe62a5cf47afdf06fe5f3f779c4df329376e6829c07",
+    "tests/browser/regie-settings.spec.mjs": "ffc8145624359ba2e8034232936e4ff5f7ef07af166def9fa86d31d58fff398a"
+  },
+  "localEvidenceSha256Before": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/regie-settings/browser-run-final.log": "64bc56db75f370cf4a558d07b727fa52b182e9acb803c45116f5150fc7c60a04"
+  },
+  "scope": {
+    "actualStagingHtmlCssCanvasAndAssets": true,
+    "actualUnauthenticatedAuthChecks": true,
+    "regieAndFamilyApiTransportSimulated": true,
+    "providersSimulatedOrBlocked": true,
+    "realAccountAcceptance": false,
+    "realCaptionTrackVerified": false,
+    "realDbOrProviderOrMailWrites": false
+  },
+  "finishedAt": "2026-11-09T21:40:22.612Z",
+  "postHealth": {
+    "observedAt": "2026-11-09T21:40:22.610Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "a2723018022a96849dcc769cdc21aac3864ef659",
+    "releaseId": "42704066094-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "healthFailure": null,
+  "exitCode": 0,
+  "stats": {
+    "startTime": "2026-11-09T21:39:27.292Z",
+    "duration": 55173.297,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "localEvidenceSha256After": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/regie-settings/browser-run-final.log": "64bc56db75f370cf4a558d07b727fa52b182e9acb803c45116f5150fc7c60a04"
+  },
+  "localEvidencePreserved": true,
+  "testSourcesUnchanged": true,
+  "status": "passed"
+}

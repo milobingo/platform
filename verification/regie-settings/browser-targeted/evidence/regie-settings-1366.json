@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-11-09T21:23:56.726Z",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountOrProviderAcceptance": false,
+  "actualBackendWrites": false,
+  "savedShowBranch": true,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "a17bff53-9967-4bf7-845c-2935b8ffea36",
+  "requestedMailState": 2,
+  "requestedSavedGame": 2,
+  "gets": {
+    "/api/auth/session": 2,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 2,
+    "/api/bingo/games/a17bff53-9967-4bf7-845c-2935b8ffea36": 2,
+    "/api/mail/state": 2,
+    "/api/live-calls": 3,
+    "/api/bingo/games/a17bff53-9967-4bf7-845c-2935b8ffea36/chat": 1,
+    "/api/bingo/games/a17bff53-9967-4bf7-845c-2935b8ffea36/chat/stream": 11,
+    "/api/livekit/settings": 1
+  },
+  "mailResponses": [
+    503,
+    200
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [],
+  "unexpected": [],
+  "expectedSandboxScriptBlocks": 2,
+  "expectedMailLoadConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ]
+}

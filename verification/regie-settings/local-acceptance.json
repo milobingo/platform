@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-11-09T21:27:17.517970+00:00",
+  "testedSourceCommit": "2c2a0ba93f617c0476a0af1ced3fb757780dc618",
+  "mainMergeCommit": "a2723018022a96849dcc769cdc21aac3864ef659",
+  "sourceTreesEqual": true,
+  "cleanEnvironmentStandaloneBuild": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "configuration": "passed",
+  "nativeDeploymentChecks": {
+    "passed": 23,
+    "failed": 0
+  },
+  "browser": {
+    "startTime": "2026-11-09T21:24:45.753Z",
+    "duration": 56501.766,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "providerCalls": 0,
+  "realAccountAcceptance": false,
+  "notes": [
+    "The first complete local run had89 passes and one legacy canManage boolean failure; its result is preserved. After source corrections, all90 programs passed in one complete final run.",
+    "The first full browser run passed19 existing tests and failed2 new cases due to an omitted chat fixture; the fixture was corrected, both targeted cases and all21 final browser tests passed.",
+    "A final read-only review found a late-cleanup race; the new meaningful regression reproduced it before the identity-bound fix.16 provider regressions, including actual PostgreSQL, and37 existing focused checks passed."
+  ],
+  "programs": {
+    "passed": 90,
+    "failed": 0,
+    "skippedPrograms": 0,
+    "allInSingleFinalRun": true,
+    "postgresFixture": "actual own PostgreSQL17; cleaned up"
+  },
+  "textLogNormalization": "Trailing whitespace removed from archived textual logs; outcomes, messages and numbers preserved."
+}

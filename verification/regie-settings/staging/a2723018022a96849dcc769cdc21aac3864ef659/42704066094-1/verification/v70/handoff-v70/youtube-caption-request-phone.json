@@ -1,0 +1,31 @@
+{
+  "realReactAndBrowser": true,
+  "realAccountOrProviderAcceptance": false,
+  "transport": "browser-route-simulator-with-local-YouTube-API-stub",
+  "realYouTubeTrackVerified": false,
+  "captionRequestParametersVerified": true,
+  "noAutomaticVideoRemount": true,
+  "errors": [],
+  "external": [],
+  "api": [
+    "/api/player/session",
+    "/api/player/brand",
+    "/api/bingo/games",
+    "/api/bingo/games/d19fc4ab-f214-443a-bca8-cd6f656d2dec/live",
+    "/api/bingo/games/d19fc4ab-f214-443a-bca8-cd6f656d2dec/chat",
+    "/api/live-calls",
+    "/api/bingo/games/d19fc4ab-f214-443a-bca8-cd6f656d2dec/chat/stream",
+    "/api/bingo/games/d19fc4ab-f214-443a-bca8-cd6f656d2dec/chat",
+    "/api/bingo/me",
+    "/api/bingo/games",
+    "/api/bingo/games/d19fc4ab-f214-443a-bca8-cd6f656d2dec/live",
+    "/api/live-calls",
+    "/api/mail/preferences"
+  ],
+  "writes": [],
+  "unexpected": [],
+  "blockedSimulatedMedia": [
+    "https://www.youtube-nocookie.com/embed/abcdefghijk",
+    "https://www.youtube-nocookie.com/embed/abcdefghijk"
+  ]
+}

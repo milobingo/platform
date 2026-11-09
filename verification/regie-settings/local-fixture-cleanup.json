@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-11-09T21:29:52.325719+00:00",
+  "container": "milobingo-regie-settings-pg-20261109",
+  "containerStoppedAndAutoRemoved": true,
+  "loopbackPort": 54391,
+  "portClosed": true,
+  "ownPrivateFixtureFilesRemoved": true,
+  "passwordOccurrencesInEvidence": 0,
+  "otherContainersOrBackupsChanged": false
+}

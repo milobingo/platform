@@ -1,0 +1,18 @@
+✔ OpenAI environment credentials are redacted but replaceable; save, connection test and model test remain separate (299.656636ms)
+✔ a successful OpenAI save clears the typed secret even when its following status read fails (186.722241ms)
+✔ both settings forms retain failed edits, refresh a stale revision, and retry only after a deliberate save (593.190109ms)
+✔ canManage false removes credential editing and rotation controls while permitting an explicit stored-connection test (244.953341ms)
+✔ LiveKit never prefills returned key material and preserves blank credentials only for the unchanged project (125.675664ms)
+✔ LiveKit requires a new secret after URL or key changes and tests only the explicitly saved project (327.410361ms)
+✔ remove and environment fallback require explicit confirmation, preserve revision binding, and never resend typed secrets (894.021845ms)
+✔ an initial failed status load offers a real retry for either provider without enabling credential writes first (234.855798ms)
+✔ an explicitly disabled connection can deliberately return to existing server settings (306.781362ms)
+✔ late operation success or failure after unmount cannot update another view, reload settings or repeat a request (876.80006ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4096.540629
