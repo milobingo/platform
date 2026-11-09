@@ -8,7 +8,7 @@ import {join} from 'node:path';
 import {execFile,spawn} from 'node:child_process';
 import {promisify} from 'node:util';
 import {createPostgresDatabase} from '../server/node-storage.js';
-import {capacitySchema,capacityTarget,stagingCapacityProof,qualifyCapacitySql,classifyCapacityResponse} from '../scripts/deploy/staging-capacity-v70.mjs';
+import {capacitySchema,capacityTarget,stagingCapacityProof,qualifyCapacitySql,classifyCapacityResponse,runCapacityScenario} from '../scripts/deploy/staging-capacity-v70.mjs';
 import {loadManifest} from '../scripts/deploy/database.mjs';
 
 const ref='lfsdgxcpdyghidzkzzvn',testUrl=process.env.MILO_TEST_DATABASE_URL;
@@ -45,6 +45,13 @@ test('delayed deadline refusals are never CAS retries or successes, and diagnost
  assert.deepEqual(classifyCapacityResponse({status:200,data:{}}),{outcome:'success',httpStatus:200,serverErrorCode:null});
 });
 
+test('capacity refuses concurrency outside1..100 before any native connection or fixture operation',async()=>{
+ for(const concurrency of [0,-1,101,1.5]){
+  await assert.rejects(runCapacityScenario(null,{concurrency}),e=>e.code==='capacity_bounds');
+  await assert.rejects(stagingCapacityProof({concurrency,poolFactory:()=>assert.fail('invalid concurrency must not connect')}),e=>e.code==='capacity_bounds');
+ }
+});
+
 async function fixture(t){
  const local=new URL(testUrl);assert(['127.0.0.1','localhost','[::1]'].includes(local.hostname));assert.match(local.pathname,/test/i);
  const admin=new Pool({connectionString:testUrl}),name='milo_capacity_test_'+randomUUID().replaceAll('-','');await admin.query('CREATE DATABASE "'+name+'"');local.pathname='/'+name;
@@ -63,7 +70,7 @@ async function fixture(t){
 
 test('C01 actual local PostgreSQL serves500 successful API operations for100households/400books, observes a real180s deadline, saves one draw and preserves public data',{skip:!testUrl,timeout:300000},async t=>{
  const h=await fixture(t),runId=String(Date.now()),fetch=globalThis.fetch;globalThis.fetch=async()=>{assert.fail('No network provider may be called by capacity fixtures.');};t.after(()=>{globalThis.fetch=fetch;});
- const result=await stagingCapacityProof({...h.options,runId,leaseSeconds:180});assert.equal(result.successfulOperations,500);assert(result.apiAttempts>=500);assert.equal(result.apiAttempts,500+result.retries);assert.equal(result.apiConflicts,result.retries);assert.equal(result.totalApiResponses,result.apiAttempts+6);assert.equal(result.results,1);assert.equal(result.entrants,400);assert.equal(result.idsPreserved,true);assert.equal(result.providerCalls,0);assert.equal(result.realDeadlineObserved,true);assert.equal(result.leaseSeconds,180);assert(result.elapsedMs>=180000);assert.equal(result.publicTables.length,23);assert.equal(result.publicTablesUnchanged,true);assert.equal(result.fixtureSchemaRemoved,true);
+ const result=await stagingCapacityProof({...h.options,runId,leaseSeconds:180,concurrency:10});assert.equal(result.concurrency,10);assert.equal(result.nativePoolMax,10);assert.equal(result.successfulOperations,500);assert(result.apiAttempts>=500);assert.equal(result.apiAttempts,500+result.retries);assert.equal(result.apiConflicts,result.retries);assert.equal(result.totalApiResponses,result.apiAttempts+6);assert.equal(result.results,1);assert.equal(result.entrants,400);assert.equal(result.idsPreserved,true);assert.equal(result.providerCalls,0);assert.equal(result.realDeadlineObserved,true);assert.equal(result.leaseSeconds,180);assert(result.elapsedMs>=180000);assert.equal(result.publicTables.length,23);assert.equal(result.publicTablesUnchanged,true);assert.equal(result.fixtureSchemaRemoved,true);
  assert.equal((await h.source.query('SELECT to_regnamespace($1) AS schema',[capacitySchema(runId)])).rows[0].schema,null);assert.equal((await h.source.query('SELECT document FROM public.bingo_games')).rows[0].document,'{"sourceData":"must-stay"}');
  console.log('LOCAL_POSTGRES_CAPACITY '+JSON.stringify({successfulOperations:result.successfulOperations,apiAttempts:result.apiAttempts,apiConflicts:result.apiConflicts,storageConflicts:result.storageConflicts,peakDocumentBytes:result.peakDocumentBytes,elapsedMs:result.elapsedMs,latencyMs:result.latencyMs,fixtureSchemaRemoved:result.fixtureSchemaRemoved,publicTablesUnchanged:true,hostedTlsVerified:false}));
 });

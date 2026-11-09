@@ -101,7 +101,7 @@ function fencedDatabase(db,metrics,schema){
 async function parallel(items,limit,operation){let index=0,error;await Promise.all(Array.from({length:limit},async()=>{while(!error){const current=index++;if(current>=items.length)return;try{await operation(items[current],current);}catch(cause){error=cause;}}}));if(error)throw error;}
 
 export async function runCapacityScenario(database,{schema,leaseSeconds=180,concurrency=10,deadline=Date.now()+240000}={}){
- check([30,60,180].includes(leaseSeconds)&&Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=10,'capacity_bounds');
+ check([30,60,180].includes(leaseSeconds)&&Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=100,'capacity_bounds');
  const metrics={households:100,books:400,cardCount:1600,successfulOperations:0,apiAttempts:0,apiConflicts:0,retries:0,storageConflicts:0,peakDocumentBytes:0},db=fencedDatabase(database,metrics,schema),store=new BingoStore(db),started=performance.now(),latencies=[];
  const budget=()=>check(Date.now()<deadline,'capacity_time_budget');
  const game=makeGame({brandId:'milo',date:'2027-12-05T19:00:00Z',roundCount:4,settings:{claimSeconds:leaseSeconds}},'fixture-capacity-host','https://capacity.example.test');
@@ -129,11 +129,12 @@ export async function runCapacityScenario(database,{schema,leaseSeconds=180,conc
  const late=await api('claim',{claimContext:context,bookId:game.books[0].id},game.books[0].accountId,'capacity-after-deadline');check(late.status===409,'capacity_late_claim');
  const family=(await store.family(game.books[0].accountId)).data;check(!(family.falseCounts[game.id]>0),'capacity_boundary_sanction');
  const codes=(await db.prepare('SELECT code FROM bingo_codes WHERE game_id = ?').bind(game.id).all()).results;check(hash(codes.map(r=>r.code).sort())===hash(game.books.map(b=>b.code).sort()),'capacity_codes_changed');
- latencies.sort((a,b)=>a-b);return {...metrics,boundaryApiResponses:6,totalApiResponses:metrics.apiAttempts+6,elapsedMs:Math.round(performance.now()-started),concurrency,leaseSeconds,latencyMs:{p50:Math.round(latencies[249]),p95:Math.round(latencies[474]),max:Math.round(latencies.at(-1))},results:1,entrants:400,idsPreserved:true,realDeadlineObserved:true,boundaryChecks:{exactReplay:true,foreignBookRefused:true,lateClaimRefused:true,noBoundarySanction:true},providerCalls:0,fixtureIdentitiesOnly:true};
+ latencies.sort((a,b)=>a-b);return {...metrics,boundaryApiResponses:6,totalApiResponses:metrics.apiAttempts+6,elapsedMs:Math.round(performance.now()-started),concurrency,nativePoolMax:10,leaseSeconds,latencyMs:{p50:Math.round(latencies[249]),p95:Math.round(latencies[474]),max:Math.round(latencies.at(-1))},results:1,entrants:400,idsPreserved:true,realDeadlineObserved:true,boundaryChecks:{exactReplay:true,foreignBookRefused:true,lateClaimRefused:true,noBoundarySanction:true},providerCalls:0,fixtureIdentitiesOnly:true};
 }
 
-export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=180,poolFactory=options=>new Pool(options),databaseFactory=createPostgresDatabase,tlsVerifier=verifyDatabaseClientTls,scenario=runCapacityScenario}={}){
+export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=180,concurrency=100,poolFactory=options=>new Pool(options),databaseFactory=createPostgresDatabase,tlsVerifier=verifyDatabaseClientTls,scenario=runCapacityScenario}={}){
  const startedAt=Date.now(),workDeadline=startedAt+240000;
+ check(Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=100,'capacity_bounds');
  if(env.RELEASE_SHA!==undefined)check(/^[a-f0-9]{40}$/.test(env.RELEASE_SHA),'capacity_release_sha');
  const {schema,target}=capacityTarget(env,runId),tls=postgresTlsOptions(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64}),pool=poolFactory({...tls,max:1,connectionTimeoutMillis:10000,statement_timeout:15000,lock_timeout:5000,idle_in_transaction_session_timeout:30000});
  let client,created,db,before,after,result,error,refusedResponse=null,cleaned=false,publicUnchanged=false;
@@ -148,7 +149,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   // All subsequent scenario relations are lexically pinned to our schema;
   // correctness does not depend on a pooler's startup search_path behavior.
   db=await databaseFactory(env.DATABASE_URL,{caBase64:env.SUPABASE_DB_CA_BASE64});
-  check(Date.now()<workDeadline,'capacity_time_budget');result=await scenario(db,{schema,leaseSeconds,concurrency:10,deadline:workDeadline});
+  check(Date.now()<workDeadline,'capacity_time_budget');result=await scenario(db,{schema,leaseSeconds,concurrency,deadline:workDeadline});
  }catch(cause){error=cause;if(cause.capacityRefusal){const safe=classifyCapacityResponse({status:cause.capacityRefusal.httpStatus,data:{error:{code:cause.capacityRefusal.serverErrorCode}}});refusedResponse={httpStatus:safe.httpStatus,serverErrorCode:safe.serverErrorCode};}}
  finally{
   try{await db?.close();}catch(cause){error=cause;}
@@ -157,7 +158,7 @@ export async function stagingCapacityProof({env=process.env,runId,leaseSeconds=1
   finally{client?.release();await pool.end();}
  }
  if(Date.now()-startedAt>300000)error=Object.assign(new Error('De proef overschreed de vijfminutengrens.'),{code:'capacity_time_budget'});
- if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],refusedResponse,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
+ if(error){error.capacityEvidence={ok:false,runId,releaseSha:env.RELEASE_SHA||null,concurrency,nativePoolMax:10,fixtureSchema:schema,fixtureCreated:!!created,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:publicUnchanged,publicTables:before||[],refusedResponse,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed'};throw error;}
  return {ok:true,runId,releaseSha:env.RELEASE_SHA||null,fixtureSchema:schema,fixtureSchemaRemoved:cleaned,publicTablesUnchanged:true,publicTables:before,storage:'native PostgreSQL adapter against isolated staging schema',...result};
 }
 
@@ -166,6 +167,6 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).hr
   check(process.argv.length===3&&process.argv[2]==='--run-id='+process.env.GITHUB_RUN_ID&&process.env.GITHUB_REPOSITORY==='milobingo/platform'&&process.env.GITHUB_REF==='refs/heads/main'&&process.env.GITHUB_EVENT_NAME==='workflow_dispatch','capacity_workflow_identity');
   check(/^[a-f0-9]{40}$/.test(process.env.RELEASE_SHA||''),'capacity_release_sha');
   const head=execFileSync('/usr/bin/git',['rev-parse','--verify','HEAD'],{encoding:'utf8',stdio:['ignore','pipe','ignore'],env:{PATH:'/usr/bin:/bin',GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_SYSTEM:'/dev/null'}}).trim();check(head===process.env.RELEASE_SHA,'capacity_checkout_sha');
-  const result=await stagingCapacityProof({runId:process.env.GITHUB_RUN_ID});await writeFile('staging-v70-capacity.json',JSON.stringify(result,null,2)+'\n',{mode:0o600});console.log(JSON.stringify({ok:true,successfulOperations:result.successfulOperations,apiAttempts:result.apiAttempts,apiConflicts:result.apiConflicts,peakDocumentBytes:result.peakDocumentBytes,elapsedMs:result.elapsedMs,fixtureSchemaRemoved:result.fixtureSchemaRemoved,publicTablesUnchanged:true}));
+  const result=await stagingCapacityProof({runId:process.env.GITHUB_RUN_ID});await writeFile('staging-v70-capacity.json',JSON.stringify(result,null,2)+'\n',{mode:0o600});console.log(JSON.stringify({ok:true,concurrency:result.concurrency,nativePoolMax:result.nativePoolMax,successfulOperations:result.successfulOperations,apiAttempts:result.apiAttempts,apiConflicts:result.apiConflicts,peakDocumentBytes:result.peakDocumentBytes,elapsedMs:result.elapsedMs,fixtureSchemaRemoved:result.fixtureSchemaRemoved,publicTablesUnchanged:true}));
  }catch(error){if(error.capacityEvidence)await writeFile('staging-v70-capacity.json',JSON.stringify(error.capacityEvidence,null,2)+'\n',{mode:0o600});console.error(JSON.stringify({ok:false,code:typeof error.code==='string'&&error.code.startsWith('capacity_')?error.code:'capacity_failed',message:'De geïsoleerde capaciteitsproef is gestopt. Controleer cleanup en behoud de bestaande release; geen credential- of driverdetails gelogd.'}));process.exitCode=1;}
 }
