@@ -17,7 +17,11 @@ export function startReadiness(s,live={}){
  if(draft){
   rows.push(checked('plan','Rondes, patronen en prijzen',()=>normalizeBingoPlan(game.plan),'Het draaiboek bevat geldige rondes, patronen en prijzen.'));
   if(native){
-   rows.push(checked('rules','Bindende spelregels',()=>assertRulesCurrent(game),'De gepubliceerde versie hoort bij deze actuele voorbereiding.'));
+   const rules=checked('rules','Bindende spelregels',()=>assertRulesCurrent(game),'');
+   if(rules.status==='ready')rules.detail=`Versie ${game.rulesPublication.version} is gepubliceerd en hoort bij deze voorbereiding.`;
+   else if(!game.rulesPublication)rules.detail='De spelregels voor deze show zijn nog niet gepubliceerd. Bekijk ze en kies Publiceer spelregels.';
+   else rules.detail=`De voorbereiding wijkt af van de gepubliceerde regelsversie ${game.rulesPublication.version}. Controleer de gewijzigde regels hieronder.`;
+   rows.push(rules);
    rows.push(checked('schedule','Showtijd',()=>normalizeShowTime(game.date,{timeZone:game.timeZone}),'De showtijd heeft een vastgelegde tijdzone.'));
    rows.push(checked('accounts','Boekjes en deelname',()=>{assertBookAccountsReady(game);if(!game.books.some(book=>book.accountId&&book.admitted&&!book.revokedAt))throw new Error('Koppel minstens één toegelaten boekje voordat de show begint.');},`${game.books.filter(book=>book.accountId&&book.admitted&&!book.revokedAt).length} toegelaten boekjes; maximaal 150 per gezin.`));
   }
