@@ -58,6 +58,8 @@ OpenAI en LiveKit zijn vanuit de regie te beheren via **Instellingen → AI & st
 
 De regels voor een opgeslagen show publiceer je onder **Draaiboek → Startcheck**, direct bij **Bindende spelregels**. Daar kun je de uit de show samengestelde regels bekijken en expliciet publiceren. De rij toont daarna de actuele versie; bij gewijzigde regels of bestaande deelname geeft de startcheck de passende vervolgstap.
 
+Voor OBS maak je onder **Studio & camera’s → OBS-browserbron** een aparte uitzendlink. Die opent zonder Google-aanmelding in OBS en is vanuit de regie te vervangen of in te trekken. Zie [de OBS-instructies](docs/OBS-UITZENDING.md) voor beeld, geluid en geldigheid.
+
 Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De gesigneerde DG-bestelmailadapter is gebouwd; de eigen Milo-gateway/worker, afzender, signing secret en het reconciliatiecontract moeten nog worden ingericht. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md). Productie is geautoriseerd; de echte bestemming wordt gevalideerd via [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
 
 De oorspronkelijke overdrachtsdocumenten staan onder `docs/overdracht/`, de oorspronkelijke README onder `docs/overdracht/README-bron.md`. Het Cloudflare-buildpad is historische bron; de standaardbuild is nu Next.js. `.openai/hosting.json` hoort bij de oude Site en wordt niet gebruikt voor DG-releases.

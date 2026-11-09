@@ -1,10 +1,11 @@
+import {obsFetch} from '../public/obs-access.js';
 // Call control remains server-owned. This client never releases a draw hold
 // because of a timer, a dropped connection, or a locally completed demo.
 export const LIVE_CALL_PHASES=Object.freeze(['preparing','ringing','backstage','staged','live','returning','returned','completed']);
 export const liveCallActive=call=>!!call&&call.phase!=='completed';
 export async function requestLiveCall(path,body,{fetcher=globalThis.fetch,signal}={}){
  const player=body?.role==='player'||body===undefined&&new URL(path,globalThis.location?.origin||'https://studio.invalid').searchParams.get('role')==='player';
- const response=await fetcher(path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json','X-Vlampie-Call':'1'}),...(player?{'X-Vlampie-Player':'1'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:signal||AbortSignal.timeout(path.endsWith('/realtime')?30000:20000)});
+ const response=await obsFetch(path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json','X-Vlampie-Call':'1'}),...(player?{'X-Vlampie-Player':'1'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:signal||AbortSignal.timeout(path.endsWith('/realtime')?30000:20000)},{fetcher});
  let result;try{result=await response.json();}catch{throw new Error('De belbediening is tijdelijk niet bereikbaar. Er is geen trekking vrijgegeven.');}
  if(!response.ok)throw Object.assign(new Error(typeof result.error==='string'?result.error:result.error?.message||'De belactie kon niet worden bevestigd.'),{status:response.status,code:result.code||result.error?.code});
  return result;
@@ -53,7 +54,7 @@ export class LiveCallConnection{
   // A best-effort close intentionally retains the persistent server draw hold.
   if(!liveCallActive(this.call)||this.role==='player'&&this.call.canControl===false)return;
   const body=this.bound({action:'fail',reason:'Dit belvenster is gesloten.'});
-  void globalThis.fetch?.('/api/live-calls',{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Content-Type':'application/json','X-Vlampie-Call':'1',...(this.role==='player'?{'X-Vlampie-Player':'1'}:{})},body:JSON.stringify(body)}).catch(()=>{});
+  void obsFetch('/api/live-calls',{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Content-Type':'application/json','X-Vlampie-Call':'1',...(this.role==='player'?{'X-Vlampie-Player':'1'}:{})},body:JSON.stringify(body)}).catch(()=>{});
  }
  dispose(){this.disposed=true;this.epoch++;this.commands++;this.listeners.clear();this.onChange=()=>{};this.onError=()=>{};}
 }
