@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {parseHTML} from 'linkedom';
-import {CHARACTERS} from '../server/characters.js';
+import {CHARACTERS,LIVE_VOICES} from '../server/characters.js';
 import {makeGame} from '../server/bingo-model.js';
 
 const root=fileURLToPath(new URL('..',import.meta.url));
@@ -77,10 +77,10 @@ async function checkAdmin(){
   h.click('Nieuwe show');await wait(35);const form=h.document.querySelector('[role=dialog] form');assert.ok(form,'New-show modal form missing');
   form.querySelector('input[name=title]').value='Regressie familiepremière';h.event(form,'submit');await wait(420);
   const create=h.requests.find(r=>r.url==='/api/bingo/games'&&r.method==='POST');assert.equal(create?.body.title,'Regressie familiepremière');assert.equal(saved.title,'Regressie familiepremière');
-  await h.navigate('characters/milo');const voice=[...h.document.querySelectorAll('label')].find(e=>e.textContent.includes('Stemidentiteit'))?.querySelector('select');assert.ok(voice);
+  await h.navigate('characters/milo');h.click('Stem & uitspraak');await wait(25);assert.match(h.document.querySelector('.cp-nav [aria-current="page"]').textContent,/Stem & uitspraak/);assert.match(h.document.querySelector('.cp-content').textContent,/GPT-Live/);const voice=[...h.document.querySelectorAll('.cp-content label')].find(e=>e.textContent.includes('Basisstem'))?.querySelector('select');assert.ok(voice,'The active GPT-Live voice tab must expose the saved base voice');assert.deepEqual([...voice.options].map(option=>option.getAttribute('value')),LIVE_VOICES,'All supported saved GPT-Live voices remain selectable');
   // linkedom does not infer an option value from its text like a browser does.
   [...voice.options].forEach(o=>o.selected=o.textContent==='cedar');Object.defineProperty(voice,'value',{configurable:true,value:'cedar'});h.event(voice,'change');await wait(25);h.click('Personage opslaan');await wait(100);
-  const update=h.requests.find(r=>r.url==='/api/characters/milo'&&r.method==='PUT');assert.equal(update?.body.settings.voice,'cedar');assert.equal(update?.body.revision,0);assert.equal(characters[0].voice,'cedar');
+  const update=h.requests.find(r=>r.url==='/api/characters/milo'&&r.method==='PUT');assert.equal(update?.body.settings.voice,'cedar');assert.equal(update?.body.revision,0);assert.equal(characters[0].voice,'cedar');assert.equal(h.requests.filter(r=>r.url==='/api/characters/milo'&&r.method==='PUT').length,1,'Saving the selected voice performs one revision-checked update');
   await h.navigate('script');h.click('Draaiboek');await wait(30);
   const cues=h.document.querySelectorAll('.mf-cue-list>button').length;assert.ok(cues>0,'Initial show cues missing');
   for(let i=0;i<cues;i++){h.click('Verwijderen');await wait(25);}await wait(40);

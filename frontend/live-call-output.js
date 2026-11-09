@@ -56,7 +56,7 @@ export class LiveCallOutput {
    if(this.sessionCall)void this.fail(Error('Het uitzendgeluid is niet meer actief. De trekking blijft geblokkeerd.'));
    else{this.status='waiting-audio';this.render();this.emit();}return Promise.resolve();
   }
-  if(this.sessionCall?.id===call.id){this.audio?.setSession(call,{enabled:true,voice:(this.engine.bridge.mixer?.voice??100)/100});this.checkGuestReady();this.render();return this.starting||Promise.resolve();}
+  if(this.sessionCall?.id===call.id){this.audio?.setSession(call,{enabled:true,voice:(this.engine.bridge.mixer?.voice??100)/100});this.setVAD(!call.aiMuted);this.checkGuestReady();this.render();return this.starting||Promise.resolve();}
   if(this.starting)return this.starting;
   const token=++this.epoch;this.sessionCall={...call,context:call.context?{...call.context}:null};this.status='connecting';this.error='';this.transcript='';this.level=0;
   const promise=this.start(call,token).catch(error=>{if(this.current(call.id,token))return this.fail(error);}).finally(()=>{if(this.starting===promise)this.starting=null;});
@@ -127,7 +127,7 @@ export class LiveCallOutput {
  }
  event(event){
   if(event.type==='session.started'){this.sessionReady=true;this.greet();}
-  if(event.type==='session.output_transcript.delta')this.transcript=(this.transcript+String(event.delta||'')).slice(-700);
+  if(event.type==='session.output_transcript.delta'){this.transcript=(this.transcript+String(event.delta||'')).slice(-700);if(/\b(?:je|jij|jullie)\b.{0,35}\b(?:bingo|gewonnen|winnaar|wint|winnen)\b|\b(?:prijs|bingo)\b.{0,30}\b(?:gewonnen|winnaar|voor jou|voor jullie)\b/iu.test(this.transcript)){void this.fail(Error('De vrije AI-reactie bevat een onbevestigde speluitspraak. Alleen de vaste spelserveraankondiging mag een prijs of bingo bevestigen.'));return;}}
   if(event.type==='session.closed'){if(this.sessionCall)void this.fail(Error('GPT-Live heeft het gesprek beëindigd. Controleer de terugkeer naar de show.'));return;}
   if(event.type==='session.delegation.created'){
    this.send({type:'session.thinking.append',delegation_id:event.delegation_id||event.id||null,content:'Er zijn tijdens dit belmoment geen spelacties of opzoekfuncties beschikbaar. Verwijs een spelvraag kort naar de regie en hervat het vriendelijke gesprek.'});

@@ -12,7 +12,7 @@ class PrivateBucket{
  async put(path,body,{onlyIf}={}){const old=this.items.get(path);if(onlyIf?.etagDoesNotMatch==='*'&&old||onlyIf?.etagMatches&&old?.etag!==onlyIf.etagMatches)return null;const etag='revision-'+(++this.seq);this.items.set(path,{body,etag});return {etag};}
 }
 function fixture(){
- const owner=crypto.randomUUID(),game=makeGame({brandId:'milo',title:'Milo’s testshow',date:'2026-11-18T13:30'},owner,'https://studio.example');game.status='running';game.state.epoch='epoch-1';game.state.drawn=[3,17,53];game.state.lastCommit={number:53};
+ const owner=crypto.randomUUID(),game=makeGame({brandId:'milo',title:'Milo’s testshow',timeZone:'Europe/Amsterdam',date:'2026-11-18T13:30'},owner,'https://studio.example');game.status='running';game.state.epoch='epoch-1';game.state.drawn=[3,17,53];game.state.lastCommit={number:53};
  const bucket=new PrivateBucket(),f={owner,game,call:null,requests:[],mode:'ok',reply:'Pak jullie boekjes maar. We maken er samen een magisch moment van!',fetches:0};
  f.env={VLAMPIE_ADMIN_EMAIL:'owner@example.test',VLAMPIE_SETTINGS_KEY:'00'.repeat(32),OPENAI_API_KEY:'test-not-a-real-secret',SETTINGS:bucket,DB:{prepare(sql){return {bind(...args){return {async first(){if(sql.includes('FROM bingo_games'))return args[0]===game.id?{id:game.id,owner_id:owner,revision:1,document:JSON.stringify(game)}:null;if(sql.includes('FROM show_character_settings'))return null;if(sql.includes('FROM studio_calls'))return f.call?{owner_id:owner,game_id:f.call.gameId,revision:1,document:JSON.stringify(f.call)}:null;throw Error('Unexpected database write/query: '+sql);}};}};}}};
  f.body={gameId:game.id,characterId:'milo',instruction:'Bouw rustig spanning op voor het volgende magische moment.',requestId:crypto.randomUUID()};

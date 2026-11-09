@@ -1,7 +1,7 @@
-✔ consolation settings are opt-in and validate the saved title and boolean (16.153444ms)
-✔ consolations keep earliest priority, exclude false/late/tied players and deduplicate children without rerolling (12.909018ms)
-✔ only the owning host can mark each consolation delivered, with independent state and idempotent retries (46.883381ms)
-✔ legacy books without child identities cannot multiply consolation awards for one account (20.535068ms)
+✔ consolation settings are opt-in and validate the saved title and boolean (15.809599ms)
+✔ consolations keep earliest priority, exclude false/late/tied players and deduplicate children without rerolling (12.191877ms)
+✔ only the owning host can mark each consolation delivered, with independent state and idempotent retries (48.333599ms)
+✔ legacy books without child identities cannot multiply consolation awards for one account (18.668311ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 104.112681
+ℹ duration_ms 103.464389

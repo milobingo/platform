@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-11-09T13:15:44.384Z",
+  "sourceCommit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+  "branch": "feat/v70-audit-20261109",
+  "scope": "local frozen native source; no hosted mutation or real provider acceptance",
+  "node": "v24.18.0",
+  "checkPrograms": 85,
+  "failedPrograms": 0,
+  "postgres": "isolated PostgreSQL17: adapter, schema/RLS, full encrypted backup/restore/upgrade, 100 households/400 books/real deadline and exact cleanup",
+  "nativeDeployerTests": 23,
+  "browser": {
+    "startTime": "2026-11-09T13:11:23.269Z",
+    "duration": 55221.937,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "config": "passed",
+  "workflows": "actionlint passed",
+  "realMailSent": false,
+  "realPaymentPerformed": false,
+  "realProviderRehearsal": false
+}

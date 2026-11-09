@@ -35,7 +35,7 @@ function result(game,{id,name,ticket,bookId,accountId=ACCOUNT_ID,title,descripti
  return {id,type:'bingo',roundIndex,goalIndex,completeAt:18,pattern:copy(game.plan.patterns.find(p=>p.id==='patroon-hoeken')||game.plan.patterns[0]),prize:{id:'demo-prijs-'+id,title,description,image:''},winner:entrant,entrants:[entrant],createdAt:now-720000,acknowledged:true,acknowledgedAt:now-690000,delivered,deliveredAt:delivered?now-660000:null,simulated:true};
 }
 function createGame(family,{id,brandId='milo',finished=false},now){
- const game=makeGame({brandId,title:brandId==='vlampie'?'Vlampie’s Bingo · Demovoorbeeld':finished?'Milo’s Magische BingoShow · Terugblik (demo)':'Milo’s Magische BingoShow · Live demovoorbeeld',date:'2026-11-11T13:30',roundCount:4},'family-demo-studio','https://family-demo.invalid',now);
+ const game=makeGame({timeZone:'Europe/Amsterdam',brandId,title:brandId==='vlampie'?'Vlampie’s Bingo · Demovoorbeeld':finished?'Milo’s Magische BingoShow · Terugblik (demo)':'Milo’s Magische BingoShow · Live demovoorbeeld',date:'2026-11-11T13:30',roundCount:4},'family-demo-studio','https://family-demo.invalid',now);
  game.id=id;game.revision=1;
  game.books=family.profiles.map((profile,index)=>({id:id+'-boek-'+profile.id,code:'DEMO'+(1041+index),ticket:String(1041+index),token:'demo-niet-geldig-'+index,accountId:ACCOUNT_ID,profileId:profile.id,name:profile.name,age:profile.age,admitted:true,issueStatus:'assigned',batchId:'demo-batch',cards:Array.from({length:4},(_,round)=>demoCard((brandId==='vlampie'?7200:1041)+index*137+round*311))}));
  const rounds=game.plan.blocks.filter(block=>block.type==='round'),roundIndex=finished?3:1;
@@ -88,7 +88,7 @@ async function dispatch(input,{method='GET',body,signal}={}){
  const match=path.match(/^\/api\/bingo\/games\/([^/]+)(.*)$/),game=match&&s.games.get(decodeURIComponent(match[1]));
  if(!game)throw error('Deze functie is niet aangesloten in de demostand. Er is geen echte aanvraag verstuurd.',404,'demo_unsupported');
  const suffix=match[2],now=Date.now();
- if(!suffix&&verb==='GET')return snapshot(s,game);
+ if(!suffix&&verb==='GET'||suffix==='/live'&&verb==='GET')return {...snapshot(s,game),complete:true,familyRevision:1,booksVersion:'demo/'+game.revision};
  if(suffix==='/chat'&&verb==='GET')return chatSnapshot(s,game);
  if(suffix==='/chat'&&verb==='POST'){
   const text=String(data.text||'').trim(),profile=s.family.profiles.find(p=>p.id===data.profileId);
@@ -112,8 +112,8 @@ async function dispatch(input,{method='GET',body,signal}={}){
  }
  if(suffix==='/begin'&&verb==='POST'){
   if(game.status!=='running'||game.state.paused||game.state.drawHold)throw error('Deze voorbeeldshow staat niet klaar voor een bingomelding.');
-  if(data.epoch!==game.state.epoch)throw error('Dit voorbeeldpatroon is gewijzigd. Open je melding opnieuw.');
-  if(!game.state.window||game.state.window.status!=='open'||game.state.window.endsAt<=now)game.state.window={id:game.id+'-meldvenster-'+(++s.counter),status:'open',startedAt:now,endsAt:now+30000,frozenAt:game.state.drawn.length,announcements:[{accountId:ACCOUNT_ID,status:'accepted'}],claims:[]};
+  if((data.claimContext?.epoch??data.epoch)!==game.state.epoch)throw error('Dit voorbeeldpatroon is gewijzigd. Open je melding opnieuw.');
+  if(!game.state.window||game.state.window.status!=='open'||game.state.window.endsAt<=now){game.state.windowSequence=(game.state.windowSequence||0)+1;game.state.window={id:game.id+'-meldvenster-'+(++s.counter),status:'open',startedAt:now,endsAt:now+30000,frozenAt:game.state.drawn.length,announcements:[{accountId:ACCOUNT_ID,status:'accepted'}],claims:[]};}
   game.state.phase='window';game.revision++;return snapshot(s,game);
  }
  if(suffix==='/claim'&&verb==='POST'){

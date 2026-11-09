@@ -1,0 +1,29 @@
+test_failed_new_release_restores_healthy_prior_app_and_env (__main__.Activation.test_failed_new_release_restores_healthy_prior_app_and_env) ... ok
+test_failed_rollback_stops_service (__main__.Activation.test_failed_rollback_stops_service) ... ok
+test_first_failed_release_stops_and_removes_current (__main__.Activation.test_first_failed_release_stops_and_removes_current) ... ok
+test_success_atomically_pairs_artifact_and_runtime_and_retains_prior (__main__.Activation.test_success_atomically_pairs_artifact_and_runtime_and_retains_prior) ... ok
+test_unsafe_existing_current_cannot_trigger_service_operations (__main__.Activation.test_unsafe_existing_current_cannot_trigger_service_operations) ... ok
+test_absolute_and_parent_escape_links_rejected (__main__.Sealing.test_absolute_and_parent_escape_links_rejected) ... ok
+test_artifact_digest_changes_when_same_length_file_content_changes (__main__.Sealing.test_artifact_digest_changes_when_same_length_file_content_changes) ... ok
+test_directory_open_does_not_follow_symlink (__main__.Sealing.test_directory_open_does_not_follow_symlink) ... ok
+test_file_swapped_to_outside_symlink_before_open_is_not_followed (__main__.Sealing.test_file_swapped_to_outside_symlink_before_open_is_not_followed) ... ok
+test_hardlinks_fifo_and_env_files_rejected (__main__.Sealing.test_hardlinks_fifo_and_env_files_rejected) ... ok
+test_indirect_link_escape_and_cycles_rejected (__main__.Sealing.test_indirect_link_escape_and_cycles_rejected) ... ok
+test_regular_nested_and_internal_relative_link_are_sealed (__main__.Sealing.test_regular_nested_and_internal_relative_link_are_sealed) ... ok
+test_allowlist_matches_workflow_contract_and_entry (__main__.Validation.test_allowlist_matches_workflow_contract_and_entry) ... ok
+test_build_uses_different_uid_empty_environment_and_cgroup_cleanup (__main__.Validation.test_build_uses_different_uid_empty_environment_and_cgroup_cleanup) ... {"site": "milobingo-staging", "buildStage": "install", "isolatedUser": "build-mil-stg"}
+ok
+test_capacity_requires_dynamic_copy_headroom (__main__.Validation.test_capacity_requires_dynamic_copy_headroom) ... ok
+test_entry_passes_only_runtime_json_on_stdin_and_no_provider_environment_to_sudo (__main__.Validation.test_entry_passes_only_runtime_json_on_stdin_and_no_provider_environment_to_sudo) ... ok
+test_fixed_site_workspace_sha_run (__main__.Validation.test_fixed_site_workspace_sha_run) ... ok
+test_json_duplicate_and_env_quoting (__main__.Validation.test_json_duplicate_and_env_quoting) ... ok
+test_private_env_file_is_exclusive_and_does_not_follow_preexisting_links (__main__.Validation.test_private_env_file_is_exclusive_and_does_not_follow_preexisting_links) ... ok
+test_real_public_ca_and_runtime_are_accepted (__main__.Validation.test_real_public_ca_and_runtime_are_accepted) ... ok
+test_real_tar_filter_rejects_parent_escape_and_absolute_symlink (__main__.Validation.test_real_tar_filter_rejects_parent_escape_and_absolute_symlink) ... ok
+test_runtime_injection_and_wrong_boundary_rejected (__main__.Validation.test_runtime_injection_and_wrong_boundary_rejected) ... ok
+test_tls_downgrade_duplicate_and_shadow_options_rejected (__main__.Validation.test_tls_downgrade_duplicate_and_shadow_options_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 2.154s
+
+OK

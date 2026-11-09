@@ -1,3 +1,4 @@
+import {gameRequestFixture} from './game-request-fixture.mjs';
 import {verifiedTestEnvironment} from './verified-test-identity.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -26,7 +27,7 @@ test('new Milo games are available only to Milo while legacy selections remain i
 });
 
 test('new shows use their brand defaults without expanding an explicitly saved game pool',()=>{
- const input={date:'2026-11-11T13:30',roundCount:1};
+ const input={timeZone:'Europe/Amsterdam',date:'2026-11-11T13:30',roundCount:1};
  for(const brandId of ['milo','vlampie','rocco']){
   const game=makeGame({...input,brandId},'host','https://studio.example');
   assert.deepEqual(game.settings.minigames,minigamesForBrand(brandId).map(g=>g.id));
@@ -55,19 +56,19 @@ test('every chosen Milo game persists one authoritative tied-bingo result and ne
  });
 });
 
-test('raffle retry keeps its winner and brand switch removes only future foreign game choices',async t=>{
+test("raffle retry keeps its winner and an active show cannot change brand",async t=>{
  const h=await fixture(t);await h.bingo.mutate(h.game.id,{},g=>g.settings.minigames=['potion']);
  const body={regieId:h.ids.host,requestId:'milo-raffle-once',prize:'De magische toverdoos'},path='/api/bingo/games/'+h.game.id+'/raffle';
  const request=()=>handleBingo(h.req('host',body,{path}),h.env);
  assert.equal((await request()).status,200);const after=(await h.bingo.game(h.game.id)).data,result=structuredClone(after.results.at(-1));
  assert.equal(result.minigame,'potion');assert.equal((await request()).status,200);
  assert.deepEqual((await h.bingo.game(h.game.id)).data.results,after.results);
- const response=await handleBingo(h.req('host',{regieId:h.ids.host,brandId:'vlampie'},{path:'/api/bingo/games/'+h.game.id+'/brand'}),h.env);assert.equal(response.status,200);
- const switched=(await h.bingo.game(h.game.id)).data;assert(!switched.settings.minigames.some(id=>miloOnly.includes(id)));
- assert.deepEqual(switched.results.at(-1),result,'An explicit production switch must not rewrite an existing reveal or winner');
+ const response=await handleBingo(h.req('host',{regieId:h.ids.host,brandId:'vlampie'},{path:'/api/bingo/games/'+h.game.id+'/brand'}),h.env);assert.equal(response.status,409);
+ const switched=(await h.bingo.game(h.game.id)).data;assert.equal(switched.brandId,'milo');assert.deepEqual(switched.settings.minigames,after.settings.minigames);
+ assert.deepEqual(switched.results.at(-1),result,'A rejected production switch cannot rewrite an existing reveal or winner');
  assert.deepEqual(switched.books,after.books);assert.deepEqual(switched.state.drawn,after.state.drawn);
  const me=await handleBingo(h.req('host',undefined,{path:'/api/bingo/me'}),h.env);assert.equal((await me.json()).minigames.length,12);
  const miloMe=await handleBingo(new Request('https://studio.example/api/bingo/me?brand=milo',{headers:{'oai-authenticated-user-id':'host','oai-authenticated-user-email':'host@example.test'}}),h.env);assert.equal((await miloMe.json()).minigames.length,16);
 });
 
-function handleBingo(request,env,...args){return verifiedhandleBingo(request,verifiedTestEnvironment(request,env),...args);}
+function handleBingo(request,env,...args){return gameRequestFixture(verifiedhandleBingo,request,verifiedTestEnvironment(request,env),...args);}

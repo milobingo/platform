@@ -1,0 +1,16 @@
+✔ U03: unpaid requests stay playable; each unresolved financial state agrees with the atomic API guard (80.985713ms)
+✔ U03: fulfilled orders require the same complete, owned, nonrevoked issuance as the server (14.854102ms)
+✔ U03: rules, effective patterns, schedule and admission remain current server-derived checks (14.406192ms)
+✔ U03: start reserve displays measured bytes and every reported shortage blocks the start (1.970026ms)
+✔ U03/L01: an active call, incomplete cleanup and a persisted hold cannot start a show (10.013334ms)
+✔ U03: key/configuration/output never claim audible success; disabled optional calls do not block offline rehearsal (2.011258ms)
+✔ U03: actual StartCheck disables blocked native starts, exposes reasons and permits an explicit healthy start (289.362516ms)
+✔ U03: fixed Program/Preview transport keeps pause and explicit voice/guest mute available independently of modules (191.555179ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 610.507929

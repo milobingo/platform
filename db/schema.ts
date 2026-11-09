@@ -1,4 +1,4 @@
-import {sqliteTable,text,integer,uniqueIndex,primaryKey} from 'drizzle-orm/sqlite-core';
+import {sqliteTable,text,integer,uniqueIndex,primaryKey,index} from 'drizzle-orm/sqlite-core';
 
 export const showWorkspaces=sqliteTable('show_workspaces',{
  ownerId:text('owner_id').primaryKey(),
@@ -45,3 +45,20 @@ export const playerAuthLimits=sqliteTable('player_auth_limits',{key:text('key').
 
 // Per-owner cast preferences; API credentials remain exclusively in the global secret store.
 export const showCharacterSettings=sqliteTable('show_character_settings',{ownerId:text('owner_id').primaryKey(),revision:integer('revision').notNull(),document:text('document').notNull(),updatedAt:text('updated_at').notNull()});
+
+// Communication history is independent of the frequently updated show document.
+export const studioMailRecords=sqliteTable('studio_mail_records',{
+ id:text('id').primaryKey(),kind:text('kind').notNull(),brandId:text('brand_id').notNull(),ownerId:text('owner_id').notNull(),revision:integer('revision').notNull(),document:text('document').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[index('studio_mail_records_brand').on(t.kind,t.brandId,t.updatedAt)]);
+export const studioMailSubscriptions=sqliteTable('studio_mail_subscriptions',{
+ accountId:text('account_id').notNull(),brandId:text('brand_id').notNull(),email:text('email').notNull(),name:text('name').notNull().default(''),subscribed:integer('subscribed').notNull().default(0),consentVersion:text('consent_version'),consentAt:integer('consent_at'),updatedAt:integer('updated_at').notNull(),
+},t=>[primaryKey({columns:[t.accountId,t.brandId]}),index('studio_mail_subscriptions_email').on(t.email,t.brandId)]);
+export const studioMailSuppressions=sqliteTable('studio_mail_suppressions',{
+ email:text('email').notNull(),brandId:text('brand_id').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.email,t.brandId]})]);
+export const studioMailUnsubscribe=sqliteTable('studio_mail_unsubscribe',{
+ tokenHash:text('token_hash').primaryKey(),email:text('email').notNull(),brandId:text('brand_id').notNull(),createdAt:integer('created_at').notNull(),
+});
+export const bingoPaymentReceipts=sqliteTable('bingo_payment_receipts',{
+ receiptHash:text('receipt_hash').primaryKey(),gameId:text('game_id').notNull(),orderId:text('order_id').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[index('bingo_payment_receipts_order').on(t.gameId,t.orderId)]);

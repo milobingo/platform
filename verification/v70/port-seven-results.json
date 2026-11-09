@@ -1,0 +1,42 @@
+{
+  "runtime": "v24.18.0",
+  "scope": "Current native port; only six original counterparts; showtime runtime adapter owned by root; no provider calls intended, fixtures/stubs only",
+  "checks": [
+    {
+      "script": "scripts/check-broadcast-shell.mjs",
+      "exitCode": 0,
+      "ms": 1970,
+      "log": "verification/v70/port-logs/broadcast-shell.log"
+    },
+    {
+      "script": "scripts/check-workspace-navigation.mjs",
+      "exitCode": 0,
+      "ms": 16103,
+      "log": "verification/v70/port-logs/workspace-navigation.log"
+    },
+    {
+      "script": "scripts/check-calls.mjs",
+      "exitCode": 0,
+      "ms": 380,
+      "log": "verification/v70/port-logs/calls.log"
+    },
+    {
+      "script": "scripts/check-livekit.mjs",
+      "exitCode": 1,
+      "ms": 198,
+      "log": "verification/v70/port-logs/livekit.log"
+    },
+    {
+      "script": "scripts/check-milo-ui.mjs",
+      "exitCode": 1,
+      "ms": 2386,
+      "log": "verification/v70/port-logs/milo-ui.log"
+    },
+    {
+      "script": "scripts/check-planner-ui.mjs",
+      "exitCode": 0,
+      "ms": 454,
+      "log": "verification/v70/port-logs/planner-ui.log"
+    }
+  ]
+}

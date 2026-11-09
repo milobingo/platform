@@ -15,12 +15,12 @@ class SilentConnection {
  async poll(){} async heartbeat(){return {}} leave(){} dispose(){this.disposed=true;}
 }
 function fixture({demo=true,Connection=SilentConnection,Media,Output}={}){
- const game=makeGame({brandId:'milo',title:'Runtime controle',roundCount:1,date:'2026-10-20T19:00'},'owner','https://bingo.example');
+ const game=makeGame({brandId:'milo',title:'Runtime controle',roundCount:1,date:'2026-10-20T19:00',timeZone:'Europe/Amsterdam'},'owner','https://bingo.example');
  generateBooks(game,2,'runtime-books');
  for(const [i,book] of game.books.entries())Object.assign(book,{accountId:'parent-family',profileId:i?'child-daan':'child-sophie',name:i?'Daan':'Sophie'});
  game.state.drawn=[3,7,42];game.state.epoch='epoch-one';
  game.participation=game.books.map(book=>({id:'entry-'+book.profileId,accountId:book.accountId,profileId:book.profileId,name:book.name,callConsentAt:1,callStatus:'accepted',micChecked:true,connectionChecked:true}));
- game.results=[{id:'confirmed-result',type:'bingo',winner:{accountId:'parent-family',profileId:'child-sophie'},prize:{title:'Een toverdoos'},roundIndex:0,createdAt:123}];
+ game.results=[{id:'confirmed-result',type:'bingo',acknowledged:true,winner:{accountId:'parent-family',profileId:'child-sophie'},prize:{title:'Een toverdoos'},roundIndex:0,createdAt:123}];
  const calls=[],failures=[],notices=[];
  const engine={demo,isOutput:false,game,clientId:'director-browser',hostId:'milo',voicePhase:'idle',magic:null,camera:'wide',speakerId:'milo',dirty:false,
   director:{scene:'entertainment',sceneAge:12,paused:false,pending:null,flow:null,drawBlocked:false,configure:value=>calls.push({method:'configure',value}),setScene(scene){this.scene=scene;calls.push({method:'scene',scene});},pause(){this.paused=true;}},

@@ -1,0 +1,11 @@
+✔ viewing preferences persist only booleans per device and brand and default to the system motion preference (1.481846ms)
+✔ fixed family chat reactions preserve a typed draft, use the selected profile and retry with one stable request ID (387.782772ms)
+✔ family reaction requests use real chat authorization, rate limits and moderator removal without publishing to the programme (20.432575ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 413.682642

@@ -16,7 +16,7 @@ const base={motion:'welcome',age:1200,energy:65,idle:true,time:2,speaking:false,
 let count=0;const timings=[];
 for(const brand of ['rocco','milo']){
  const b=SHOW_BRANDS[brand];assert.equal(brandId(b),brand);assert.equal(brandText('Vraag aan Vlampie',b),'Vraag aan '+b.name);assert(brandMention(b.mention+' hoe gaat het?',b));
- const game=makeGame({brandId:brand,date:'2026-12-05T19:00'},'host','https://studio.example');assert.equal(playerGame(game,'guest').brandId,brand);assert(speechStyle(showPresentation(game).profile).includes(b.name));assert(callInstructions(game,'James').includes(b.name));generateBooks(game,2,'brands');
+ const game=makeGame({brandId:brand,timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00'},'host','https://studio.example');assert.equal(playerGame(game,'guest').brandId,brand);assert(speechStyle(showPresentation(game).profile).includes(b.name));assert(callInstructions(game,'James').includes(b.name));generateBooks(game,2,'brands');
  assert.equal(game.plan.blocks.find(x=>x.type==='welcome').text,b.intro);const custom=defaultPlan();custom.blocks[1].text='Mijn eigen tekst blijft staan.';assert.equal(switchPlanBrand(custom,'vlampie',brand).blocks[1].text,custom.blocks[1].text);
  const d=new ShowDirector({config:{voice:true}});d.theme=b.theme;d.brandId=brand;for(let i=0;i<6;i++){assert(d.draw());for(let j=0;j<100;j++)d.tick(1,{voiceBusy:false});}assert.equal(d.drawn.length,6);
  await studio.setBrand(brand,false);await studio.setTheme(b.theme,false);assert.equal(studio.brandId,brand);

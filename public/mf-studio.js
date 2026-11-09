@@ -70,16 +70,17 @@ export function mountStudio(container,options={}){
     if(disposed)return;scenery.room=room;scenery.desk=desk;scenicReady=true;loading.hidden=true;options.onReady?.();
   }).catch(error=>{if(disposed)return;scenicError=error.message;loading.textContent='Het decor kon niet worden geladen. Vernieuw om het opnieuw te proberen.';options.onAssetError?.('sterrenplein-decor',error);});
   const cameraRig=new CameraRig({shot:state.camera,moving:state.movingCamera,reducedMotion:prefersReduced||!!state.show?.reducedMotion});let cam={...CAMERA_PRESETS[state.camera]||CAMERA_PRESETS.wide};
-  const actors=new Map(),pending=new Set(),actorErrors=new Set();
+  const actors=new Map(),pending=new Map(),actorErrors=new Set();
   let manifest={};
   const particles=Array.from({length:72},(_,i)=>({x:(Math.sin(i*129.9)*43758.5%1+1)%1*W,y:(Math.sin(i*79.1+5)*9132.5%1+1)%1*680,r:1.4+(i%5)*.5,speed:.7+(i%9)*.17,phase:i*1.83}));
   let oldCaption='';
   let boardScreen={top:ARENA_LAYOUT.board.y,bottom:ARENA_LAYOUT.board.y+ARENA_LAYOUT.board.height},captionScreen=null;
 
-  async function loadActor(id){
-    if(!id||actors.has(id)||pending.has(id))return;
-    pending.add(id);
-    try{
+  function loadActor(id){
+    if(!id||actors.has(id))return Promise.resolve();
+    if(pending.has(id))return pending.get(id);
+    const loading=(async()=>{try{
+      await actorManifestLoaded;
       const img=await loadImage(ASSETS+id+'.png');
       let talk=null;try{talk=await loadImage(ASSETS+id+'-talk.png');}catch{}
       if(disposed)return;
@@ -90,11 +91,12 @@ export function mountStudio(container,options={}){
       if(id==='milo')try{const [img,talk]=await Promise.all([loadImage('/assets/hosts/milo-mascot.png'),loadImage('/assets/hosts/milo-talking.png')]);if(!disposed)actors.set(id,{rig:createCutoutRig(img,{id,talkImage:talk}),image:img,talk,phase:0});}catch{actorErrors.add(id);}
       else actorErrors.add(id);
       options.onAssetError?.(id,error);
-    }finally{pending.delete(id);}
+    }finally{pending.delete(id);}})();
+    pending.set(id,loading);return loading;
   }
   const needed=()=>[state.hostId,state.cohostId,state.guestId,magic?'milo':null].filter(Boolean);
   function ensureActors(){needed().forEach(loadActor);}
-  Promise.all(['rigs-a.json','profiles-b.json'].map(name=>fetch(ASSETS+name).then(r=>r.ok?r.json():{}).catch(()=>({})))).then(list=>{if(disposed)return;manifest=Object.assign({},...list.map(data=>data.characters||data.profiles||data));for(const id of actors.keys()){actors.get(id).rig.dispose();actors.delete(id);}ensureActors();}).catch(()=>{});
+  const actorManifestLoaded=Promise.all(['rigs-a.json','profiles-b.json'].map(name=>fetch(ASSETS+name).then(r=>r.ok?r.json():{}).catch(()=>({})))).then(list=>{if(disposed)return;manifest=Object.assign({},...list.map(data=>data.characters||data.profiles||data));for(const id of actors.keys()){actors.get(id).rig.dispose();actors.delete(id);}ensureActors();}).catch(()=>{});
 
   function resize(){
     const rect=root.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.5);
@@ -305,6 +307,7 @@ export function mountStudio(container,options={}){
     if(state.show){const source={...state.show,brandId:'milo',paused:!!state.paused||!!state.show.paused};const show=source.scene==='minigame'?gameMotionClock.read(source,now):gameMotionClock.read({...source,age:Math.max(0,Number(source.age)||0)+(state.paused?0:Math.max(0,sceneTime-showAgeAt))},now);gameAge=show.scene==='minigame'?show.age:null;drawShowGraphics(brandedContext(ctx,'milo'),{show},{logo:overlayLogo,prize:prizeImage,gameAssets:overlayAssets});}
     hud();
     if(transition){const t=Math.min(1,(now-transition.start)/transition.duration);if(t>=1)transition=null;else{ctx.save();ctx.globalAlpha=transition.kind==='slide'?1:1-t;ctx.drawImage(transition.image,transition.kind==='slide'?-W*smooth(t):0,0,W,H);ctx.restore();if(transition.kind==='logo'&&overlayLogo){ctx.save();ctx.globalAlpha=Math.sin(t*Math.PI)*.9;const width=620,height=width*overlayLogo.height/overlayLogo.width;ctx.drawImage(overlayLogo,(W-width)/2,(H-height)/2,width,height);ctx.restore();}}}
+    if(scenicReady&&!scenicError&&needed().every(id=>actors.has(id)&&!actorErrors.has(id)))options.onFrameRendered?.(state);
   }
   function snapshot(){return {state:{...state},time:sceneTime,showCue:activeShowCue(),movement:activeMovement(),tour:state.hostId==='milo'?studioTourAt(activeShowCue(),{homeX:state.cohostId?805:ARENA_LAYOUT.host.x,reducedMotion:reducedMotion()}):null,magic:magic?{id:magic.id,elapsed:sceneTime-magic.start,duration:magic.duration}:null,ready:scenicReady,assetError:scenicError,studio:'sterrenplein-grand',presenterLayout:{...ARENA_LAYOUT.host},characters:[...actors.keys()],characterRigs:Object.fromEntries([...actors].map(([id,a])=>[id,a.rig.stats])),performerTime,gameAge,camera:{...cam},deskBoard:{...boardScreen},caption:captionScreen,width:cv.width,height:cv.height};}
   function destroy(){if(disposed)return;disposed=true;cancelAnimationFrame(raf);observer?.disconnect();motionPreference?.removeEventListener?.('change',motionPreferenceChanged);window.removeEventListener('resize',resize);for(const a of actors.values())a.rig.dispose();actors.clear();root.remove();}

@@ -1,25 +1,25 @@
-✔ a normal hint stays a private proposal until explicit approval and waits for the current utterance (5.77775ms)
-✔ raw instructions never enter captions, text controls, logs or the output bridge; echoed hints are rejected (1.522376ms)
-✔ short and Unicode-normalized instruction echoes never become an approvable proposal (0.932222ms)
-✔ safe playback waits for draws, claim windows, results, cues and pauses without changing server state (2.493446ms)
-✔ backstage entertainment is allowed while the persistent draw hold remains intact (0.358182ms)
-✔ a pending go-live command cannot race an approved backstage reply into the studio (0.433787ms)
-✔ show, production, host, caller, guest-name and goal changes invalidate prepared proposals (0.806692ms)
-✔ cancel, context changes and disposal ignore late provider results (0.565106ms)
-✔ normal network recovery is manual, uses the same request ID and never automatically regenerates (0.355258ms)
-✔ a live whisper uses the pinned existing call and confirms receipt only, never local speech (0.416139ms)
-✔ live timeouts and rejected appends cannot be retried automatically; cancellation cannot retract an append (0.668943ms)
-✔ a mismatched show or live ACK cannot be presented as delivered (0.373715ms)
-✔ demo proposals and live receipts remain local and silent with explicit simulation labels (0.308438ms)
-✔ autoplay readiness resumes only owned speech; stopping or replacing it cannot complete a stale reply (0.365633ms)
-✔ a ready reaction rechecks every current priority before permission or global voice resume (2.886561ms)
-✔ a higher-priority window pauses an owned reaction without replaying or releasing the game (0.444202ms)
-✔ actual audio controller defers decoded local and output audio when a later priority blocks playback (17.97441ms)
-✔ actual paired output bridges recheck a later priority at ready ACK and direct resume before source.start (4.789273ms)
-✔ output windows cannot send hints, and Vlampie remains within his own production (0.306063ms)
-✔ actual engine snapshot is private and a failed approved response cannot replay on resume or a host switch (20.463198ms)
-✔ default live transport preserves definitive rejection flags from the server (13.189775ms)
-✔ ordinary director cancellation preserves private proposals and waiting replies but stops owned playback (12.044481ms)
+✔ a normal hint stays a private proposal until explicit approval and waits for the current utterance (17.244854ms)
+✔ raw instructions never enter captions, text controls, logs or the output bridge; echoed hints are rejected (1.533043ms)
+✔ short and Unicode-normalized instruction echoes never become an approvable proposal (1.034338ms)
+✔ safe playback waits for draws, claim windows, results, cues and pauses without changing server state (1.232058ms)
+✔ backstage entertainment is allowed while the persistent draw hold remains intact (0.359626ms)
+✔ a pending go-live command cannot race an approved backstage reply into the studio (0.425525ms)
+✔ show, production, host, caller, guest-name and goal changes invalidate prepared proposals (0.801614ms)
+✔ cancel, context changes and disposal ignore late provider results (0.560189ms)
+✔ normal network recovery is manual, uses the same request ID and never automatically regenerates (0.390292ms)
+✔ a live whisper uses the pinned existing call and confirms receipt only, never local speech (0.469522ms)
+✔ live timeouts and rejected appends cannot be retried automatically; cancellation cannot retract an append (0.728764ms)
+✔ a mismatched show or live ACK cannot be presented as delivered (0.392886ms)
+✔ demo proposals and live receipts remain local and silent with explicit simulation labels (0.304221ms)
+✔ autoplay readiness resumes only owned speech; stopping or replacing it cannot complete a stale reply (0.34283ms)
+✔ a ready reaction rechecks every current priority before permission or global voice resume (2.806364ms)
+✔ a higher-priority window pauses an owned reaction without replaying or releasing the game (0.352785ms)
+✔ actual audio controller defers decoded local and output audio when a later priority blocks playback (17.699263ms)
+✔ actual paired output bridges recheck a later priority at ready ACK and direct resume before source.start (5.527066ms)
+✔ output windows cannot send hints, and Vlampie remains within his own production (0.300366ms)
+✔ actual engine snapshot is private and a failed approved response cannot replay on resume or a host switch (21.887931ms)
+✔ default live transport preserves definitive rejection flags from the server (15.434801ms)
+✔ ordinary director cancellation preserves private proposals and waiting replies but stops owned playback (12.572353ms)
 ℹ tests 22
 ℹ suites 0
 ℹ pass 22
@@ -27,4 +27,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 115.578694
+ℹ duration_ms 134.044583

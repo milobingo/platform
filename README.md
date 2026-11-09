@@ -4,6 +4,8 @@ Lokale Next.js 16-app op basis van de goedgekeurde overdracht van 4 november 202
 
 De zes wijzigingen uit overdracht `2026-11-06-v6` (bron `2a32f65f464e78f22a256ba74af3ea85765c2482`) zijn geïntegreerd: bingoprioriteit/troostprijzen, Milo’s rig en studiorondje, twaalf goocheltrucs, bestellen/goedkeuren, compacte werkruimte en privéfluisteren. Zie [integratie, gegevensbehoud en acceptatie](docs/WIJZIGINGEN-1-6-INTEGRATIE.md).
 
+De overdracht van **Sites v70** (`f81d0c1c60cbe1422d43ce46d896af6cd4d2939c`) is selectief overgenomen: vaste claimcontext en uitslagen, gepubliceerde regels, compacte gezinsfeed, veilig audioherstel, gecontroleerde orders en de mailstudio. Het [integratie- en vrijgaverapport](docs/V70-INTEGRATIE-EN-VRIJGAVE.md) onderscheidt lokaal bewijs, staging en de nog open praktijkpoorten. De [additieve database-upgrade](docs/V70-DATABASE-UPGRADE.md) bewaart bestaande spelgegevens. Echte verzending, campagnes en betaalde/open deelname blijven uit.
+
 Broncode: [milobingo/platform](https://github.com/milobingo/platform), integratiebranch `main`. De lokale checkout gebruikt deze repository als remote `origin`.
 
 ## Lokaal starten

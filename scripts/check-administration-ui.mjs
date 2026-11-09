@@ -62,7 +62,7 @@ function harness(fetcher=async()=>Response.json({}),pathname='/'){
 
 const {defaultPresentation,normalizePresentation}=await import('../server/presentation-model.js');
 const {productionSettings}=await import('../server/production-model.js');
-const g=makeGame({brandId:'milo',title:'Administratie QA',date:'2026-11-01T14:00'},'qa-owner','https://bingo.example');generateBooks(g,2,'admin-qa');
+const g=makeGame({brandId:'milo',title:'Administratie QA',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00'},'qa-owner','https://bingo.example');generateBooks(g,2,'admin-qa');
 Object.assign(g.books[0],{accountId:'family-a',profileId:'person-a',name:'Noor',admitted:true});
 const family={accountId:'family-a',ownerName:'Ouder',email:'ouder@example.test',profiles:[{id:'person-a',name:'Noor',age:8},{id:'person-b',name:'Sam',age:9}],falseCounts:{[g.id]:2},cooldowns:{},blockedGames:{}};
 let savedPresentation=defaultPresentation(),presentationRevision=0,rejectPresentationOnce=true,posts=[],notices=[];

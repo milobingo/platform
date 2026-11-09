@@ -5,24 +5,25 @@ import {defaultPresentation} from '../../server/presentation-model.js';
 
 // Browser-only transport fixtures: actual Next/React/CSS/Canvas and local assets,
 // with no server auth bypass, provider request or persisted backend mutation.
-const output='verification/handoff-v6';
-const routes=['overview','shows','script','live','audience','studio','characters','library','books','orders','people','settings'];
+const output='verification/v70/handoff-v6';
+const routes=['overview','shows','script','live','audience','studio','characters','library','books','orders','mail','people','settings'];
 const characterIds=Object.keys(CHARACTERS).filter(id=>id!=='vlampie');
 const tabs={
  script:['Draaiboek','Cast & stemmen','Rondes & patronen','Prijzen','Startcheck'],
  audience:['Live chat','Kijkersvragen','Belregie'],
  library:['Beweging & magie','Scènes & momenten','Beslisspellen','Voorprogramma','Verhaallijnen','Geluid & stemmen','Prijzen & afsluiting'],
  people:['Boekjes & uitgifte','Gezinnen','Prijzen & verslag','Herstel'],
+ mail:['Mailtemplates','Acties & triggers','Nieuwsbrieven','Verzendlog','Instellingen'],
  settings:['AI & stemmen','Deze show','E-mail & bellen','Profielen & spelregels','Herstel & controle'],
 };
 const characterTabs=['Stem & uitspraak','Karakter & wereld','Trucjes & show','Gesprek met kinderen','Kennis & geheugen','Beweging'];
 
 async function simulatedTransport(page,testInfo){
  page.setDefaultTimeout(10000);
- const errors=[],external=[],writes=[],unexpected=[];
+ const errors=[],external=[],writes=[],unexpected=[],sandboxBlockedScripts=[];
  const origin=new URL(testInfo.project.use.baseURL).origin;
  page.on('pageerror',error=>errors.push(error.message));
- page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
+ page.on('console',message=>{if(message.type()!=='error')return;const text=message.text();if(message.location().url==='about:srcdoc'&&text==="Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.")sandboxBlockedScripts.push(text);else errors.push(text);});
  await page.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());
   if(url.origin!==origin){external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
@@ -45,7 +46,7 @@ async function simulatedTransport(page,testInfo){
   else {unexpected.push(url.pathname+url.search);return route.fulfill({status:404,json:{error:{message:'Unexpected simulated QA endpoint.'}}});}
   return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
  });
- return {errors,external,writes,unexpected};
+ return {errors,external,writes,unexpected,sandboxBlockedScripts};
 }
 
 const noOverflow=page=>expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth),{timeout:3000}).toBeLessThanOrEqual(1);
@@ -85,7 +86,7 @@ for(const width of [390,1366]){
   const proof=await simulatedTransport(page,testInfo),visited=[],nested=[],modules=[];
   await page.goto('/#/overview');
   const main=page.locator('main#mf-main');await expect(main).toBeVisible();
-  await expect(page.locator('nav[aria-label="Hoofdnavigatie"]>a')).toHaveCount(12);
+  await expect(page.locator('nav[aria-label="Hoofdnavigatie"]>a')).toHaveCount(13);
   for(const id of routes){
    await openRoute(page,id);visited.push(id);
    if(id==='live'){
@@ -102,8 +103,12 @@ for(const width of [390,1366]){
     await screenshot(page,`regie-${width}`);
    }
    if(id==='characters')await expect(main.locator('a[href^="#/characters/"]')).toHaveCount(12);
+   if(id==='mail'){
+    const templates=main.locator('.cm-template-list>button');await expect(templates).toHaveCount(17);
+    for(let index=0;index<17;index++){const name=await templates.nth(index).locator('strong').innerText();await templates.nth(index).click();await expect(main.locator('.cm-editor>header h2')).toHaveText(name);await expect(main.locator('.cm-preview-error')).toHaveCount(0);const preview=main.locator('iframe[title="Voorbeeld van de mail met fictieve gegevens"]');await expect(preview).toHaveAttribute('sandbox','');await expect(preview).not.toHaveAttribute('srcdoc',/<script\b/i);}
+   }
    if(tabs[id])for(const label of tabs[id]){
-    const scope=id==='script'?main.locator('.mf-tabs[role="tablist"]').first():id==='audience'?main.locator('nav[aria-label="Publiekswerkplek"]'):id==='library'?main.locator('nav[aria-label="Showbibliotheek"]'):id==='people'?main.locator('[role="tablist"][aria-label="Deelnemersadministratie"]'):main;
+    const scope=id==='script'?main.locator('.mf-tabs[role="tablist"]').first():id==='audience'?main.locator('nav[aria-label="Publiekswerkplek"]'):id==='library'?main.locator('nav[aria-label="Showbibliotheek"]'):id==='people'?main.locator('[role="tablist"][aria-label="Deelnemersadministratie"]'):id==='mail'?main.getByRole('navigation',{name:'Communicatieonderdelen'}):main;
     if(width===390&&id==='library')await main.getByRole('combobox',{name:'Onderdeel van de showbibliotheek'}).selectOption({label});else await chooseTab(scope,label);nested.push(id+':'+label);await noOverflow(page);
     if(id==='settings'&&label==='AI & stemmen')await expect(main.locator('input[type="password"]')).toHaveCount(0);
     if(id==='settings'&&label==='E-mail & bellen'){
@@ -115,13 +120,13 @@ for(const width of [390,1366]){
      for(const name of ['Presentatieprofielen','Spelregels','Deze show']){await chooseTab(presentation,name);nested.push('presentation:'+name);await noOverflow(page);}
     }
    }
-   if(['library','orders'].includes(id))await screenshot(page,`${id}-${width}`);
+   if(['library','orders','mail'].includes(id))await screenshot(page,`${id}-${width}`);
   }
   for(const id of characterIds){await openRoute(page,'characters/'+id);visited.push('characters/'+id);}
   await openRoute(page,'characters/milo');
   const cast=main.locator('nav[aria-label="Personage-instellingen"],.cp-nav').first();
   for(const label of characterTabs){await chooseTab(cast,label);nested.push('character:'+label);await noOverflow(page);}
-  expect(nested).toHaveLength(33);expect(visited).toHaveLength(24);
+  expect(nested).toHaveLength(38);expect(visited).toHaveLength(25);
   if(width===390){
    const trigger=page.getByRole('button',{name:'Menu openen',exact:true});
    await trigger.click();await expect(page.locator('aside').getByRole('link',{name:'Overzicht',exact:true})).toBeVisible();
@@ -131,7 +136,7 @@ for(const width of [390,1366]){
   expect(page.url()).toBe(before);await expect(main).toBeFocused();
   expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
   await mkdir(output,{recursive:true});
-  await writeFile(`${output}/browser-workspace-${width}.json`,JSON.stringify({simulatedBrowserTransport:true,realAuthOrProvidersVerified:false,viewport:page.viewportSize(),routes:visited,nestedTabs:nested,modules,errors:proof.errors,externalRequests:proof.external,backendWrites:proof.writes},null,2)+'\n');
+  await writeFile(`${output}/browser-workspace-${width}.json`,JSON.stringify({simulatedBrowserTransport:true,realAuthOrProvidersVerified:false,viewport:page.viewportSize(),routes:visited,nestedTabs:nested,modules,errors:proof.errors,expectedSandboxScriptBlocks:proof.sandboxBlockedScripts.length,externalRequests:proof.external,backendWrites:proof.writes},null,2)+'\n');
  });
 }
 

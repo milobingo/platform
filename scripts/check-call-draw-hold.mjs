@@ -10,7 +10,7 @@ globalThis.crypto??=webcrypto;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const defer=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return {promise,resolve,reject};};
 function gameFixture(){
- const game=makeGame({brandId:'milo',title:'Belmoment zonder gemiste nummers',date:'2026-11-01T14:00',roundCount:2},'owner','https://show.example');
+ const game=makeGame({brandId:'milo',title:'Belmoment zonder gemiste nummers',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:2},'owner','https://show.example');
  generateBooks(game,1,'test-books');const book=game.books[0];Object.assign(book,{accountId:'family',profileId:'child-one',name:'Sophie'});
  const family=familyDefault();family.profiles=[{id:'child-one',name:'Sophie'}];game.status='running';const round=game.plan.blocks.findIndex(b=>b.type==='round');activateBlock(game,round);
  return {game,book,family,round,hold(){const checkpoint={id:'checkpoint-one',epoch:game.state.epoch,roundIndex:game.state.roundIndex,drawnCount:game.state.drawn.length,lastNumber:game.state.drawn.at(-1)??null};game.state.drawHold={id:'call-one',checkpoint,accountId:'private-parent-id',profileId:'private-child-id',note:'Private regienotitie'};return checkpoint;}};

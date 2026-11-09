@@ -12,9 +12,15 @@ import {handlePresentation} from './presentation.js';
 import miloPage from './milo-page.js';
 import {isStudioEntry,isFamilyEntry,normalizedEntry} from './site-entry.js';
 import {handleCharacterSettings} from './character-settings.js';
+import {handleMail} from './mail-api.js';
+import {handlePublicRules} from './game-rules-api.js';
+import {handleLiveFeed} from './live-feed.js';
 export default {
   async fetch(request,env){
-    const url=new URL(request.url);if(isStudioEntry(url.pathname)&&!platformIdentity(request,env).admin)return Response.redirect(url.origin+'/spelen',302);
+    const url=new URL(request.url);
+    if(url.pathname==='/spelregels'||url.pathname==='/api/bingo/rules')return handlePublicRules(request,env);
+    if(url.pathname==='/mail/afmelden'||url.pathname.startsWith('/api/mail/'))return handleMail(request,env);
+    if(isStudioEntry(url.pathname)&&!platformIdentity(request,env).admin)return Response.redirect(url.origin+'/spelen',302);
     if(/^\/api\/characters(?:\/|$)/.test(url.pathname))return handleCharacterSettings(request,env);
     if(url.pathname.startsWith('/api/player/'))return handlePlayerAuth(request,env);
     if(url.pathname==='/api/output')return handleOutput(request,env);
@@ -25,6 +31,7 @@ export default {
     if(url.pathname.startsWith('/api/presentation/'))return handlePresentation(request,env);
     if(url.pathname.startsWith('/api/planner/'))return handlePlanner(request,env);
     if(/^\/api\/bingo\/games\/[^/]+\/chat(?:\/|$)/.test(url.pathname))return handleChat(request,env);
+    if(/^\/api\/bingo\/games\/[^/]+\/live$/.test(url.pathname))return handleLiveFeed(request,env);
     if(url.pathname.startsWith('/api/bingo/'))return handleBingo(request,env);
     if((isStudioEntry(url.pathname)||isFamilyEntry(url.pathname))&&['GET','HEAD'].includes(request.method)){
       const canonical=normalizedEntry(url);

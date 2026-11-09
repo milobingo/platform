@@ -1,0 +1,16 @@
+{
+  "successfulOperations": 500,
+  "apiAttempts": 644,
+  "apiConflicts": 144,
+  "storageConflicts": 2228,
+  "peakDocumentBytes": 1161546,
+  "elapsedMs": 60819,
+  "latencyMs": {
+    "p50": 508,
+    "p95": 4155,
+    "max": 8746
+  },
+  "fixtureSchemaRemoved": true,
+  "publicTablesUnchanged": true,
+  "hostedTlsVerified": false
+}

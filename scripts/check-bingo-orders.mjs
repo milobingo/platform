@@ -8,6 +8,7 @@ import {BingoStore} from '../server/bingo-store.js';
 import {dispatchOrderMail} from '../server/bingo-order-mail.js';
 import {dispatchNodeRequest} from '../server/node-runtime.js';
 import {setPaymentLink} from '../server/bingo-order-model.js';
+import {publishGameRules,assertRulesCurrent} from '../server/game-rules.js';
 
 function setup(){
  const db=createSqliteDatabase(':memory:'),files=new Map(),mail=[];
@@ -15,19 +16,87 @@ function setup(){
  const env={VLAMPIE_ADMIN_EMAIL:'host@example.test',DB:db,ORDER_MAIL_DELIVERY:{id:'test-dg-mail',idempotencyWindowMs:86400000,send:fetcher},SETTINGS:{get:async key=>files.has(key)?{body:files.get(key)}:null,put:async(key,value)=>files.set(key,value)}};
  const req=(route,{method='GET',body,user='host',email=user==='host'?'host@example.test':user+'@example.test',headers={}}={})=>new Request('https://studio.example/api/bingo'+route,{method,headers:{Origin:'https://studio.example','x-vlampie-bingo':'1','Content-Type':'application/json','oai-authenticated-user-id':user,'oai-authenticated-user-email':email,...headers},...(body===undefined?{}:{body:JSON.stringify({regieId:'regie-main',requestId:crypto.randomUUID(),...body})})});
  const raw=(route,options={},provider=fetcher)=>{const request=req(route,options);return handleBingo(request,verifiedTestEnvironment(request,{...env,ORDER_MAIL_DELIVERY:env.ORDER_MAIL_DELIVERY?{...env.ORDER_MAIL_DELIVERY,send:provider}:undefined}));};
- const call=async(route,options={},status=200,provider=fetcher)=>{const response=await raw(route,options,provider),data=await response.json();assert.equal(response.status,status,JSON.stringify(data));return data;};
+ const call=async(route,options={},status=200,provider=fetcher)=>{
+  // Explicit fictitious bank evidence for existing approval scenarios. Tests
+  // for missing/mismatched evidence pass paymentEvidence:null deliberately.
+  if(route.endsWith('/approve')&&options.body?.paymentVerified&&!Object.hasOwn(options.body,'paymentEvidence')){const id=route.split('/')[2],orderId=route.split('/')[4],order=(await new BingoStore(db).game(id)).data.orders.find(o=>o.id===orderId);options={...options,body:{...options.body,paymentEvidence:{reference:'bank-fixture-'+order.id,amountCents:order.amountCents,currency:'EUR',orderNumber:order.number}}};}
+  const response=await raw(route,options,provider),data=await response.json();assert.equal(response.status,status,data.error?.message||'Unexpected HTTP status');return data;
+ };
  return {db,env,files,mail,fetcher,store:new BingoStore(db),req,raw,call};
 }
 const post=(body,user='host',headers={})=>({method:'POST',body,user,headers});
 async function fixture(h,quantity=2){
- const date=new Date(Date.now()+7*86400000).toISOString().slice(0,16),{game}=await h.call('/games',post({title:'Milo’s testpremière',brandId:'milo',date,roundCount:4}),201),route='/games/'+game.id;
+ const date=new Date(Date.now()+7*86400000).toISOString().slice(0,16),{game}=await h.call('/games',post({title:'Milo’s testpremière',brandId:'milo',date,timeZone:'Europe/Amsterdam',roundCount:4}),201),route='/games/'+game.id;
  await h.call(route+'/orders/config',post({enabled:true,unitPriceCents:250,maxQuantity:30,description:'Een magische middag.'}));
+ await h.store.mutate(game.id,{},g=>publishGameRules(g));
  const profile=(await h.call('/profiles',post({name:'Sophie',age:7},'family'),201)).result;
  const second=(await h.call('/profiles',post({name:'Timo',age:9},'family'),201)).result;
  const {order}=await h.call(route+'/orders',post({quantity,profileIds:Array.from({length:quantity},(_,i)=>i===0?profile.id:null)},'family'),201);
  return {game,route,order,profile,second};
 }
 const link=(h,f,extra={})=>h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/milo?order=123&token=secret',amountCents:500,note:'Dank je <gezin>!',...extra}));
+
+test('ORD-01 published participation rules lock order quantity while sales settings remain editable',async()=>{
+ const h=setup();try{
+  const {game}=await h.call('/games',post({title:'Gepubliceerde bestellimiet',brandId:'milo',date:'2026-12-18T13:30',timeZone:'Europe/Amsterdam',roundCount:1}),201),route='/games/'+game.id;
+  await h.call(route+'/orders/config',post({enabled:true,maxQuantity:5,unitPriceCents:250}));await h.store.mutate(game.id,{},g=>publishGameRules(g));
+  const before=(await h.store.game(game.id)).data,denied=await h.raw(route+'/orders/config',post({enabled:false,maxQuantity:6,unitPriceCents:300}));
+  assert.equal(denied.status,409,'the published maximum cannot silently invalidate participation rules');assert.equal((await denied.json()).error.code,'rules_locked');assert.deepEqual((await h.store.game(game.id)).data,before,'rejected changes leave both ordering and publication unchanged');
+  const deadline='2026-12-17T13:30:00Z',updated=await h.call(route+'/orders/config',post({enabled:false,maxQuantity:5,unitPriceCents:300,description:'Aangepaste besteltekst',deadline}));
+  assert.equal(updated.config.enabled,false);assert.equal(updated.config.unitPriceCents,300);assert.equal(updated.config.description,'Aangepaste besteltekst');assert.equal(updated.config.deadline,'2026-12-17T13:30:00.000Z');
+  const after=(await h.store.game(game.id)).data;assertRulesCurrent(after);assert.deepEqual(after.rulesPublication,before.rulesPublication);
+  await h.call(route+'/orders/config',post({...updated.config,enabled:true}));assertRulesCurrent((await h.store.game(game.id)).data);
+ }finally{h.db.close();}
+});
+
+test('ORD-02 issued order books cannot be transferred by generic book administration or downloaded after revocation',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  await link(h,f);const approved=await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true}));
+  const book=approved.order.books[0],other=(await h.call('/profiles',post({name:'Ander gezin',age:10},'stranger'),201)).result;
+  await h.call(f.route+'/book-state',post({operation:'issue',bookId:book.id,issueStatus:'generated'}),409);
+  await h.call(f.route+'/book-state',post({operation:'assign',bookId:book.id,accountId:'stranger',profileId:other.id}),409);
+  await h.call(`${f.route}/books/${book.id}/pdf`,{user:'stranger'},403);
+  await h.call(f.route+'/book-state',post({operation:'revoke',bookId:book.id,reason:'Gecontroleerde intrekking'}));
+  await h.call(`${f.route}/books/${book.id}/pdf`,{user:'family'},409);
+  await h.call(`${f.route}/orders/${f.order.id}/pdf`,{user:'family'},409);
+ }finally{h.db.close();}
+});
+
+test('ORD-03 cancelling a reported payment preserves a visible unresolved reconciliation instead of forgetting the report',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  await link(h,f);await h.call(`${f.route}/orders/${f.order.id}/paid`,post({},'family'));
+  const closed=await h.call(`${f.route}/orders/${f.order.id}/cancel`,post({},'family'));
+  assert.equal(closed.order.status,'cancelled');assert.equal(closed.order.reconciliation?.state,'required');
+  assert.equal((await h.store.game(f.game.id)).data.books.length,0);
+ }finally{h.db.close();}
+});
+
+test('ORD-03 payment evidence is exact, globally unique across shows and a late closed payment creates a refund case without books',async()=>{
+ const h=setup(),a=await fixture(h,1),b=await fixture(h,1);try{
+  await link(h,a,{amountCents:250});await link(h,b,{amountCents:250});
+  await h.call(`${a.route}/orders/${a.order.id}/approve`,post({paymentVerified:true,paymentEvidence:null}),409);
+  const evidence=order=>({reference:'one-real-bank-transaction',amountCents:250,currency:'EUR',orderNumber:order.number});
+  const results=await Promise.all([h.raw(`${a.route}/orders/${a.order.id}/approve`,post({paymentVerified:true,paymentEvidence:evidence(a.order)})),h.raw(`${b.route}/orders/${b.order.id}/approve`,post({paymentVerified:true,paymentEvidence:evidence(b.order)}))]);
+  assert.deepEqual(results.map(r=>r.status).sort(),[200,409]);assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_payment_receipts').first()).n,1);
+  const games=await h.store.games();assert.equal(games.reduce((sum,r)=>sum+r.data.books.length,0),1,'the losing cross-show attempt rolls back its generated books and codes');
+  const loser=results[0].status===409?a:b;await h.call(`${loser.route}/orders/${loser.order.id}/cancel`,post({},'family'));
+  await h.call(`${loser.route}/orders/${loser.order.id}/paid`,post({},'family'));
+  const verified=await h.call(`${loser.route}/orders/${loser.order.id}/reconcile`,post({operation:'confirm-payment',evidence:{...evidence(loser.order),reference:'late-distinct-bank-transaction'}}));
+  assert.equal(verified.order.status,'cancelled');assert.equal(verified.order.refund.state,'required');assert.equal(verified.order.books.length,0);
+  await h.call(`${loser.route}/orders/${loser.order.id}/reconcile`,post({operation:'refund-confirm',evidence:{...evidence(loser.order),reference:'refund-tx',amountCents:1}}),409);
+  const refunded=await h.call(`${loser.route}/orders/${loser.order.id}/reconcile`,post({operation:'refund-confirm',evidence:{...evidence(loser.order),reference:'refund-tx'}}));assert.equal(refunded.order.refund.state,'verified');assert.equal(refunded.order.reconciliation.state,'resolved');assert.equal(refunded.order.books.length,0);
+ }finally{h.db.close();}
+});
+
+test('ORD-01 deadline equality closes ordering and controlled rescheduling preserves issued numbers while refreshing PDF identity',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  await link(h,f,{amountCents:250});const approved=await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true})),before=(await h.store.game(f.game.id)).data,identities=structuredClone(before.books);
+  const body={operation:'reschedule',date:'2026-11-25T13:30',timeZone:'Europe/Amsterdam',revision:before.revision,reason:'Gecontroleerde verplaatsing van de testshow',confirm:true};
+  await h.call(f.route+'/orders/show-change',post({...body,preview:true}));assert.deepEqual((await h.store.game(f.game.id)).data,before,'preview is read-only');
+  const moved=await h.call(f.route+'/orders/show-change',post(body));assert.equal(moved.game.date,'2026-11-25T12:30:00.000Z');assert.deepEqual(moved.game.books,identities);assert.deepEqual(moved.orders[0].bookIds,approved.order.bookIds);assert.equal(moved.orders[0].show.date,moved.game.date);
+  await h.call(f.route+'/orders/show-change',post({...body,date:'2026-12-01T13:30'}),409);
+ }finally{h.db.close();}
+});
 
 test('orders are future-show specific, owner scoped, server priced and permanently idempotent',async()=>{
  const h=setup(),f=await fixture(h);try{
@@ -106,7 +175,7 @@ test('paid sheets can only be assigned to their owner’s children, including vi
   await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[1],profileId:other.id},'family'),403);
   await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[1],profileId:other.id},'stranger'),403);
   const assigned=await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[1],profileId:f.second.id},'family'));assert(assigned.order.books.find(b=>b.id===ids[1]).admitted);
-  await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[1],profileId:f.profile.id},'family'),409);
+  await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[1],profileId:f.profile.id},'family'));
   const stored=(await h.store.game(f.game.id)).data,free=stored.books.find(b=>b.id===ids[2]);
   await h.call(f.route+'/register',post({profileId:other.id,code:free.code},'stranger'),409);
   const registered=await h.call(f.route+'/register',post({profileId:f.second.id,code:free.code},'family'));assert(registered.game.books.find(b=>b.id===free.id).admitted);
@@ -121,7 +190,7 @@ test('paid sheets can only be assigned to their owner’s children, including vi
 
 test('active order snapshots lock title, date, rounds and brand; cancellation preserves history',async()=>{
  const h=setup(),f=await fixture(h);try{
-  for(const change of [{title:'Andere show'},{date:new Date(Date.now()+9*86400000).toISOString().slice(0,16)},{plan:{...f.game.plan,blocks:f.game.plan.blocks.filter((b,i)=>i!==f.game.plan.blocks.findIndex(b=>b.type==='round'))}}])await h.call(f.route,{method:'PUT',body:change},400);
+  for(const change of [{title:'Andere show'},{timeZone:'Europe/Amsterdam',date:new Date(Date.now()+9*86400000).toISOString().slice(0,16)},{plan:{...f.game.plan,blocks:f.game.plan.blocks.filter((b,i)=>i!==f.game.plan.blocks.findIndex(b=>b.type==='round'))}}])await h.call(f.route,{method:'PUT',body:change},400);
   await h.call(f.route+'/brand',post({brandId:'vlampie'}),409);
   await h.call(`${f.route}/orders/${f.order.id}/cancel`,post({},'family'));assert.equal((await h.call('/orders',{user:'family'})).orders[0].status,'cancelled');
   await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true}),409);
@@ -134,7 +203,7 @@ test('failed mail retries freeze body and key, and require a gateway acceptance 
   const failed=[];const provider=async payload=>{failed.push(payload);return {accepted:true};};
   const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/retry',amountCents:500}),200,provider);assert.equal(first.order.paymentMail.status,'failed');assert.equal(first.order.status,'payment_pending');
   h.env.IGNORED_BROWSER_MAIL_FROM='changed@example.test';
-  await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,provider);assert.equal(failed.length,2);assert.deepEqual(failed[0].message,failed[1].message);assert.equal(failed[0].idempotencyKey,failed[1].idempotencyKey);assert(!('from'in failed[1].message));assert.deepEqual(failed[1].context,{brandId:'milo',gameId:f.game.id,orderId:f.order.id,kind:'payment'});
+  await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,provider);assert.equal(failed.length,2);assert.deepEqual(failed[0].message,failed[1].message);assert.equal(failed[0].idempotencyKey,failed[1].idempotencyKey);assert(failed[1].message.from.endsWith('<host@example.test>'));assert.deepEqual(failed[1].context,{brandId:'milo',gameId:f.game.id,orderId:f.order.id,kind:'payment'});
   const stored=(await h.store.game(f.game.id)).data.orders[0];assert(stored.paymentMail.uncertain);const old=stored.paymentMail.firstAttemptAt;
   await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'payment',env:{...h.env,ORDER_MAIL_DELIVERY:{...h.env.ORDER_MAIL_DELIVERY,send:provider}},origin:'https://studio.example',now:old+86400001});assert.equal(failed.length,2);assert.match((await h.store.game(f.game.id)).data.orders[0].paymentMail.error,/Veilig automatisch/);
  }finally{h.db.close();}
@@ -212,17 +281,17 @@ test('an explicit gateway rejection can retry without claiming any guaranteed id
 });
 
 
-test('reading and updating legacy settings preserves stored cards, orders and custom prizes',async()=>{
+test('reading legacy settings preserves stored data and invalidated published rules refuse a silent rewrite',async()=>{
  const h=setup(),f=await fixture(h);try{
   await link(h,f);await h.call(f.route+'/generate',post({count:1}),201);
   await h.store.mutate(f.game.id,{},g=>{delete g.settings.consolationEnabled;delete g.settings.consolationPrizeTitle;g.plan.prizes[0].title='Eigen prijs voor dit gezin';});
   const before=(await h.store.game(f.game.id)).data,rawBefore=(await h.db.prepare('SELECT document FROM bingo_games WHERE id=?').bind(f.game.id).first()).document;
   await h.call(f.route);await h.call('/orders',{user:'family'});await h.call(f.route+'/orders',{user:'family'});
   assert.equal((await h.db.prepare('SELECT document FROM bingo_games WHERE id=?').bind(f.game.id).first()).document,rawBefore,'reads do not rewrite legacy snapshots');
-  await h.call(f.route,{method:'PUT',body:{settings:{...before.settings,claimSeconds:45}}});
+  await h.call(f.route,{method:'PUT',body:{settings:{...before.settings,youtubeId:'abcdefghijk'}}},409);
   const after=(await h.store.game(f.game.id)).data;
   assert.deepEqual(after.books,before.books);assert.deepEqual(after.batches,before.batches);assert.deepEqual(after.orders,before.orders);assert.deepEqual(after.plan.prizes,before.plan.prizes);assert.deepEqual(after.results,before.results);
-  assert.equal(after.settings.claimSeconds,45);assert.equal(after.settings.consolationEnabled,false);
+  assert.deepEqual(after.settings,before.settings);
  }finally{h.db.close();}
 });
 
@@ -230,6 +299,7 @@ test('native session dispatch injects delivery and protects the complete order a
  const h=setup();h.env.NODE_ENV='development';h.env.MILO_LOCAL_AUTH='true';let cookies={};
  const nativeRequest=(path,body,extra={})=>new Request('http://localhost:4173'+path,{method:body===undefined?'GET':'POST',headers:{Origin:'http://localhost:4173','Content-Type':'application/json','X-Vlampie-Bingo':'1',Cookie:Object.entries(cookies).map(([key,value])=>key+'='+value).join('; '),...extra},...(body===undefined?{}:{body:JSON.stringify(body)})});
  const call=async(path,body,status=200,extra={})=>{
+  if(path.endsWith('/approve')&&body?.paymentVerified){const parts=path.split('/'),order=(await h.store.game(parts[4])).data.orders.find(o=>o.id===parts[6]);body={...body,paymentEvidence:{reference:'native-bank-'+order.id,amountCents:order.amountCents,currency:'EUR',orderNumber:order.number}};}
   const response=await dispatchNodeRequest(nativeRequest(path,body,extra),{env:h.env}),data=await response.json();assert.equal(response.status,status,JSON.stringify(data));
   for(const cookie of response.headers.getSetCookie()){const [key,value]=cookie.split(';')[0].split('=');cookies[key]=value;}
   return data;
@@ -237,8 +307,8 @@ test('native session dispatch injects delivery and protects the complete order a
  try{
   await call('/api/bingo/orders',undefined,401,{'oai-authenticated-user-id':'host','oai-authenticated-user-email':'host@example.test'});
   await call('/auth/local',{role:'regie'});const regie={...cookies};
-  const {game}=await call('/api/bingo/games',{title:'Native order rehearsal',date:new Date(Date.now()+7*86400000).toISOString().slice(0,16),brandId:'milo',roundCount:1},201),route='/api/bingo/games/'+game.id;
-  await call(route+'/orders/config',{enabled:true,unitPriceCents:250});
+  const {game}=await call('/api/bingo/games',{title:'Native order rehearsal',timeZone:'Europe/Amsterdam',date:new Date(Date.now()+7*86400000).toISOString(),brandId:'milo',roundCount:1},201),route='/api/bingo/games/'+game.id;
+  await call(route+'/orders/config',{enabled:true,unitPriceCents:250});await h.store.mutate(game.id,{},g=>publishGameRules(g));
   await call('/auth/local',{role:'player'});const family={...cookies};
   const {result:profile}=await call('/api/bingo/profiles',{name:'Noor',age:8},201);
   const {order}=await call(route+'/orders',{quantity:1,profileIds:[profile.id],email:'attacker@example.test'},201);

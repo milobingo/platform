@@ -1,0 +1,35 @@
+✔ JWTs are signed with project secret and room deletion uses the real roomCreate grant (26.360492ms)
+✔ LiveKit settings stay encrypted, blank secrets preserve credentials, tests contact real API and stale saves fail (24.046504ms)
+✔ only an opted-in family profile can run a short media-free preflight; ordinary viewers never join a call (14.024495ms)
+✔ concurrent prepare requests select exactly one child and one durable hold (8.666755ms)
+✖ a post-hold checkpoint-store failure retains a recoverable held call (9.277762ms)
+✔ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (25.118859ms)
+✔ environment-managed LiveKit tests persist their revision without storing or exposing server credentials (13.270701ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.245196
+
+✖ failing tests:
+
+test at scripts/check-livekit.mjs:36:1
+✖ a post-hold checkpoint-store failure retains a recoverable held call (9.277762ms)
+  AssertionError [ERR_ASSERTION]: {"call":{"id":"0c3baade-f399-4b4e-b8ce-d0f300dd9ff7","version":1,"transport":"livekit","gameId":"6f18c2f4-6250-40b3-b07b-6f486b41007d","brandId":"milo","entryId":"fb75dac9-5cb0-4000-866f-0f991d5316cd","profileId":"sophie","name":"Sophie","characterId":"milo","characterName":"Milo Magico","realtimeVoice":"verse","speechEngine":"gpt-live","phase":"preparing","outcome":null,"reason":"","createdAt":1794228057367,"updatedAt":1794228057367,"maxSeconds":90,"muted":false,"drawHeld":true,"checkpoint":{"id":"e9616e4f-f150-4398-bb6f-6be03ba50873","epoch":"","drawnCount":3,"lastNumber":27,"drawn":[7,13,27]},"checks":{"hostConnected":false,"playerConnected":false,"outputConnected":false,"soundChecked":false,"explanationGiven":false},"returnState":{"playerConfirmedAt":null,"hostConfirmedAt":null,"method":null,"note":""},"media":{"host":{"connected":false,"micReady":false},"player":{"connected":false,"micReady":false},"output":{"connected":false,"audioReady":false}},"context":{"callName":"Sophie","pronunciation":"","reason":"Even gezellig kennismaken","note":"","confirmedFacts":[]},"participantIdentity":"guest-0c3baade-f399-4b4e-b8ce-d0f300dd9ff7","guestIdentity":"guest-0c3baade-f399-4b4e-b8ce-d0f300dd9ff7","outputIdentity":"output-0c3baade-f399-4b4e-b8ce-d0f300dd9ff7","hostIdentity":"host-0c3baade-f399-4b4e-b8ce-d0f300dd9ff7","switchingLive":false,"holdConfirmed":true,"canControl":true,"resourcesClosed":false,"cleanupError":"","recoverySessionKnown":false,"recoveryStatus":"unclosed","simulated":false},"serverTime":1794228057369}
+  
+  200 !== 503
+  
+      at Object.invoke (file:///home/codex/repos/milobingo/scripts/live-calls-fixture.mjs:23:230)
+      at async TestContext.<anonymous> (file:///home/codex/repos/milobingo/scripts/check-livekit.mjs:39:2)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

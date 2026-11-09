@@ -1,7 +1,7 @@
 import {makeGame,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook,settleWindow,familyDefault,activeGoal} from './bingo-model.js';
 export const DEMO_KEY='vlampie-studio-rehearsal-v40';
 export function createRehearsal(){
- const game=makeGame({brandId:'rocco',title:'Rocco’s grote kinderbingo',date:'2026-11-01T14:00',roundCount:4},'rehearsal','https://example.invalid');
+ const game=makeGame({timeZone:'Europe/Amsterdam',brandId:'rocco',title:'Rocco’s grote kinderbingo',date:'2026-11-01T14:00',roundCount:4},'rehearsal','https://example.invalid');
  game.plan.prizes[0].title='Het verrassingspakket';game.plan.prizes[0].description='Een feestelijk pakket vol leuke verrassingen.';
  game.plan.prizes[1].title='De gouden hoofdprijs';game.plan.prizes[1].description='De grote verrassing van de finaleronde.';
  generateBooks(game,24,'rehearsal-batch');

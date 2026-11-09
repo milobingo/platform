@@ -15,7 +15,7 @@ class Connection{
  leave(){}dispose(){}
 }
 function fixture(){
- const game=makeGame({brandId:'milo',title:'Showmomenten',date:'2026-11-01T14:00',roundCount:1},'owner','https://bingo.example');
+ const game=makeGame({brandId:'milo',title:'Showmomenten',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:1},'owner','https://bingo.example');
  game.status='running';game.state.epoch='test-epoch';game.state.drawn=[7,19,42];
  const events=[],e={game,production:'milo',demo:false,isOutput:false,clientId:'host',hostId:'milo',speakerId:'milo',camera:'wide',motion:'idle',voicePhase:'idle',magic:null,
   showCues:{active:null,holding:false},runner:{active:false,autoDraw:false,age:0},

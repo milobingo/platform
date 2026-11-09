@@ -37,7 +37,7 @@ const root=createRoot(document.getElementById('root'));
 let engine;
 function render(){const s={production:engine.production,game:engine.game,demo:false,dirty:engine.dirty,working:false,voicePhase:'idle',runner:{active:false,phase:'idle'},stage:{production:engine.production,hostId:engine.production,paused:true,speaking:false,motion:'idle'},characters:Object.values(CHARACTERS)};root.render(<ShowElements key={engine.game.id} s={s} engine={engine} run={fn=>Promise.resolve().then(fn).catch(e=>window.qaErrors.push(e.message))}/>);}
 window.qaErrors=[];window.qaSelect=(production='milo',running=false)=>{
- const game=makeGame({brandId:production,title:'Catalogustest',date:'2026-11-11T13:30',roundCount:1,settings:{minigames:['wheel','gifts']}},'owner','https://bingo.example');game.status=running?'running':'draft';
+ const game=makeGame({timeZone:'Europe/Amsterdam',brandId:production,title:'Catalogustest',date:'2026-11-11T13:30',roundCount:1,settings:{minigames:['wheel','gifts']}},'owner','https://bingo.example');game.status=running?'running':'draft';
  engine={game,production,demo:false,dirty:false,hostId:production,voicePhase:'idle',camera:'host',motion:'idle',runner:{active:false},director:{paused:true,pending:null,visual:()=>({scene:'host',age:0,paused:true})},audio:{unlock:async()=>true},bridge:{sendLocal(){}},characters:Object.values(CHARACTERS),emit:render,savePlan:async()=>{engine.saved=[...engine.game.settings.minigames];engine.dirty=false;render();}};
  window.qaEngine=engine;render();
 };window.qaUnmount=()=>root.unmount();window.qaSelect();`;

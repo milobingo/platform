@@ -51,8 +51,8 @@ function harness(fetcher=async()=>Response.json({}),pathname='/'){
 
 async function checkFamilyCompletion(){
  const {generateBooks,playerGame}=await import('../server/bingo-model.js');
- const full=makeGame({brandId:'milo',title:'Family UI regressie',date:'2026-11-01T14:00',roundCount:4},'qa-owner','https://bingo.example');generateBooks(full,2,'family-completion');full.production=(await import('../server/production-model.js')).productionSettings();full.production.calls.enabled=true;
- const separateVlampie=makeGame({brandId:'vlampie',title:'Vlampie blijft apart',date:'2026-12-05T19:00'},'qa-owner','https://bingo.example');separateVlampie.status='running';
+ const full=makeGame({brandId:'milo',title:'Family UI regressie',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4},'qa-owner','https://bingo.example');generateBooks(full,2,'family-completion');full.production=(await import('../server/production-model.js')).productionSettings();full.production.calls.enabled=true;
+ const separateVlampie=makeGame({brandId:'vlampie',title:'Vlampie blijft apart',timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00'},'qa-owner','https://bingo.example');separateVlampie.status='running';
  full.status='running';Object.assign(full.state,{phase:'running',roundIndex:0,blockIndex:full.plan.blocks.findIndex(b=>b.type==='round'),epoch:'qa-family-epoch',drawn:[7,24,62]});full.settings.youtubeId='abcdefghijk';
  const family={accountProfileId:'parent',ownerName:'Ouder',email:'parent@example.test',profiles:[{id:'noor',name:'Noor',age:8,dateOfBirth:'2018-01-02'}],cooldowns:{},blockedGames:{}};
  for(const b of full.books)Object.assign(b,{accountId:'qa-family',profileId:'noor',name:'Noor',age:8,admitted:true});
@@ -61,9 +61,9 @@ async function checkFamilyCompletion(){
   if(url.startsWith('/api/player/brand'))return Response.json({brandId:'milo'});
   if(url==='/api/bingo/me')return Response.json({accountId:'qa-family',family});
   if(url==='/api/bingo/games')return Response.json({games:[separateVlampie,full]});
-  if(url==='/api/bingo/games/'+full.id+'?player=1')return Response.json({game:playerGame(full,'qa-family'),serverTime:Date.now()});
+  if(url==='/api/bingo/games/'+full.id+'?player=1'||url.startsWith('/api/bingo/games/'+full.id+'/live?'))return Response.json({game:playerGame(full,'qa-family'),complete:true,familyRevision:1,booksVersion:'fixture',scope:'qa-family',serverTime:Date.now()});
   if(url==='/api/bingo/games/'+full.id+'/participation'&&method==='POST')return Response.json({game:playerGame(full,'qa-family')});
-  if(url==='/api/bingo/games/'+full.id+'/begin'&&method==='POST'){full.state.window={id:'qa-window',status:'open',startedAt:Date.now(),endsAt:Date.now()+30000,announcements:[{accountId:'qa-family',status:'accepted'}],claims:[]};return Response.json({game:playerGame(full,'qa-family'),serverTime:Date.now()});}
+  if(url==='/api/bingo/games/'+full.id+'/begin'&&method==='POST'){full.state.windowSequence=(full.state.windowSequence||0)+1;full.state.window={id:'qa-window',status:'open',startedAt:Date.now(),endsAt:Date.now()+30000,announcements:[{accountId:'qa-family',status:'accepted'}],claims:[]};return Response.json({game:playerGame(full,'qa-family'),serverTime:Date.now()});}
   if(url==='/api/bingo/games/'+full.id+'/claim'&&method==='POST'){const claim={id:'qa-claim',accountId:'qa-family',bookId:body.bookId,status:'received'};full.state.window.claims.push(claim);return Response.json({game:playerGame(full,'qa-family'),claim,serverTime:Date.now()});}
   return Response.json({error:{message:'Unmocked family route '+url}},{status:404});
  },'/spelen');
@@ -96,20 +96,20 @@ async function checkFamilyCompletion(){
   assert.equal(greeting.disabled,false,'Greeting should enable after consent');h.click('Meld begroeting aan');await wait(40);
   const request=h.requests.find(r=>r.url.endsWith('/participation'));assert.equal(request.body.kind,'greeting');assert.equal(request.body.profileId,'noor');assert.equal(request.body.consent,true);assert.equal(request.headers['X-Vlampie-Player'],'1');
   h.click('Boekjes');await wait(420);const number=[...h.document.querySelectorAll('.fam-card-numbers button')].find(b=>!b.classList.contains('free'));const label=number.getAttribute('aria-label');h.event(number,'click');await wait(30);assert.equal(number.getAttribute('aria-pressed'),'true');h.click('Gezin');await wait(420);h.click('Boekjes');await wait(420);assert([...h.document.querySelectorAll('.fam-card-numbers button')].some(b=>b.getAttribute('aria-label')===label+', afgestreept'&&b.getAttribute('aria-pressed')==='true'),'Marks must survive tab navigation');
-  h.click('Kijken');await wait(420);assert.equal(h.document.querySelector('.fam-youtube-frame iframe'),iframe,'YouTube iframe must not reload on tab changes');const beforeClaim=h.requests.filter(r=>/\/(begin|claim)$/.test(r.url)).length;h.click('BINGO!');await wait(50);assert(h.body().includes('Heb je écht BINGO?'));assert.equal(h.requests.filter(r=>/\/(begin|claim)$/.test(r.url)).length,beforeClaim,'Opening a BINGO confirmation must not announce bingo');h.click('Ja, meld deze BINGO!');await wait(90);const begin=h.requests.find(r=>r.url.endsWith('/begin')),claim=h.requests.find(r=>r.url.endsWith('/claim'));assert.equal(begin.body.epoch,'qa-family-epoch');assert.equal(claim.body.bookId,full.books[0].id);assert.equal(claim.body.windowId,'qa-window');h.click('Terug naar de show');await wait(220);
+  h.click('Kijken');await wait(420);assert.equal(h.document.querySelector('.fam-youtube-frame iframe'),iframe,'YouTube iframe must not reload on tab changes');const beforeClaim=h.requests.filter(r=>/\/(begin|claim)$/.test(r.url)).length;h.click('BINGO!');await wait(50);assert(h.body().includes('Heb je écht BINGO?'));assert.equal(h.requests.filter(r=>/\/(begin|claim)$/.test(r.url)).length,beforeClaim,'Opening a BINGO confirmation must not announce bingo');h.click('Ja, meld deze BINGO!');await wait(90);const begin=h.requests.find(r=>r.url.endsWith('/begin')),claim=h.requests.find(r=>r.url.endsWith('/claim'));assert.equal(begin.body.claimContext.epoch,'qa-family-epoch');assert.equal(claim.body.bookId,full.books[0].id);assert.equal(claim.body.windowId,'qa-window');h.click('Terug naar de show');await wait(220);
   h.click('Boekjes');await wait(420);h.click('Open QR-scanner');await wait(80);assert(h.body().includes('Scan jullie bingoboekje.'));assert(h.body().includes('Camera openen'));h.click('Ik vul de acht tekens zelf in');await wait(80);assert(h.body().includes('Een eigen boekje voor iedere speler.'));
   assert.equal([...h.document.querySelectorAll('a')].some(a=>a.getAttribute('href')?.includes('/klassiek')),false);
   assert.deepEqual(h.errors,[]);console.log('✓ Family: broadcast → read-only 5×15 number board with live refresh → chat, spherical confirmed BINGO, Milo logo, persistent YouTube, saved marks, consent and QR/manual workflow');
  }finally{h.close();}
 }
 async function checkExplicitVlampieEntrance(){
- const {playerGame}=await import('../server/bingo-model.js'),full=makeGame({brandId:'vlampie',title:'Vlampie blijft apart',date:'2026-12-05T19:00'},'qa-owner','https://bingo.example');
+ const {playerGame}=await import('../server/bingo-model.js'),full=makeGame({brandId:'vlampie',title:'Vlampie blijft apart',timeZone:'Europe/Amsterdam',date:'2026-12-05T19:00'},'qa-owner','https://bingo.example');
  const family={ownerName:'Ouder',email:'parent@example.test',profiles:[],blockedGames:{},cooldowns:{}};
  const h=harness(({url})=>{
   if(url==='/api/player/session')return Response.json({authenticated:true,accountId:'qa-vlampie',method:'email',family});
   if(url.startsWith('/api/player/brand'))return Response.json({brandId:'vlampie'});
   if(url==='/api/bingo/games')return Response.json({games:[full]});
-  if(url==='/api/bingo/games/'+full.id+'?player=1')return Response.json({game:playerGame(full,'qa-vlampie'),serverTime:Date.now()});
+  if(url==='/api/bingo/games/'+full.id+'?player=1'||url.startsWith('/api/bingo/games/'+full.id+'/live?'))return Response.json({game:playerGame(full,'qa-vlampie'),complete:true,familyRevision:1,booksVersion:'fixture',scope:'qa-vlampie',serverTime:Date.now()});
   return Response.json({error:{message:'Unmocked Vlampie fixture route '+url}},{status:404});
  },'/spelen?spel='+full.id);
  try{

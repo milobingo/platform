@@ -5,8 +5,9 @@ import qrcode from 'qrcode-generator';
 import {PRINT_TEMPLATES} from './bingo-pdf-assets.js';
 import {A5,MM,PRINT_LAYOUT,printTools,printPalette,drawRoundTitles} from './bingo-print-layout.js';
 import {MILO_PRINT_VERSION,miloPrintBackground,miloPrintPalette} from './milo-print-layout.js';
+import {showTimeParts} from './show-time.js';
 export {PRINT_VERSION} from './bingo-print-layout.js';
-export function printVersion(game){return brandId(game)==='milo'?MILO_PRINT_VERSION:'a5-grand-show-v2';}
+export function printVersion(game){const base=brandId(game)==='milo'?MILO_PRINT_VERSION:'a5-grand-show-v2';return game.scheduleRevision?base+'-schedule-'+game.scheduleRevision:base;}
 export async function bookPdf(game,bookIds,{mode='color',demo=false,format='a5'}={}){
  if(!['color','mono'].includes(mode))throw new Error('Onbekende printuitvoering');
  if(!['a5','a4'].includes(String(format).toLowerCase()))throw new Error('Kies A5 of A4 voor de printuitvoering');
@@ -32,8 +33,7 @@ export async function bookPdf(game,bookIds,{mode='color',demo=false,format='a5'}
     for(let i=0;i<25;i++){const free=card[i]===0;const label=free?'VRIJ':String(card[i]);text(label,gx+(i%5+.5)*10,gy+(Math.floor(i/5)+.5)*10+(free?.9:2),free?7.5:16,true,p.ink,{align:'center'});}
    }
    text(game.title,61,183.2,8,true,milo?p.footerTitle:mode==='mono'?'161616':'132641',{maxWidth:53,minSize:6.8});
-   const dateParts=String(game.date).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/),months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
-   const date=dateParts?`${Number(dateParts[3])} ${months[Number(dateParts[2])-1]} ${dateParts[1]} / ${dateParts[4]}`:String(game.date).replace('T',' ');text(date,61,187,6.7,false,milo?p.footerMuted:mode==='mono'?'444444':'4C586A',{maxWidth:53});
+   const when=showTimeParts(game.date),date=when.date+' / '+when.time;text(date,61,187,6.7,false,milo?p.footerMuted:mode==='mono'?'444444':'4C586A',{maxWidth:53});
    text('BOEKJECODE',61,191.2,5.8,true,milo?p.footerLabel:mode==='mono'?'555555':'566176');
    text(`${book.code.slice(0,4)}-${book.ticket}`,61,196.1,12.7,true,milo?p.footerCode:mode==='mono'?'101010':'102448');
    text(`Lot ${book.ticket}  /  Scan om te koppelen`,61,200.3,6.5,false,milo?p.footerMuted:mode==='mono'?'444444':'3B4B61',{maxWidth:53});

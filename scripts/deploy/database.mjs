@@ -53,6 +53,15 @@ export async function loadManifest(directory = join(root, 'supabase/migrations')
     const sql = await readFile(join(directory, filename), 'utf8');
     return { filename, checksum: hash(sql), sql };
   }));
+  return migrationContract(migrations,23);
+}
+
+export function manifestThrough(manifest,filename){
+ const index=manifest.migrations.findIndex(m=>m.filename===filename);
+ if(index<0)fail('migration_prefix','De beoordeelde migratieprefix ontbreekt.');
+ return migrationContract(manifest.migrations.slice(0,index+1),index===0?18:23);
+}
+function migrationContract(migrations,expectedCount){
   const tables = new Map(), indexes = [];
   for (const migration of migrations) {
     for (const match of migration.sql.matchAll(/CREATE TABLE\s+(?:public\.)?"?([a-z_]+)"?\s*\(([\s\S]*?)\n\);/g)) {
@@ -71,7 +80,7 @@ export async function loadManifest(directory = join(root, 'supabase/migrations')
       indexes.push({ name: match[2], table: match[3], unique: Boolean(match[1]), columns: match[4].split(',').map(column => column.trim().replaceAll('"', '').replace(/\s+DESC$/i, '')) });
     }
   }
-  if (tables.size !== 18) fail('migration_contract_changed', 'De migratie moet expliciet tegen het contract van 18 applicatietabellen worden beoordeeld.');
+  if (tables.size !== expectedCount) fail('migration_contract_changed', `De migratie moet expliciet tegen het contract van ${expectedCount} applicatietabellen worden beoordeeld.`);
   return { migrations, tables, indexes, digest: hash(stable(migrations.map(({ filename, checksum }) => ({ filename, checksum })))) };
 }
 
@@ -546,8 +555,8 @@ export async function applyDatabase({ env = process.env, expectedProjectRef, rev
       for (const migration of manifest.migrations.filter(row => fresh.pending.includes(row.filename))) {
         await client.query('SET LOCAL search_path TO public');
         await client.query(migration.sql);
-        const state = await inventory(client, manifest);
-        if (contractProblems(state, manifest).length) fail('migration_postcondition', 'De migratie levert niet het beoordeelde schema-/rechtencontract op. Transactie teruggedraaid.');
+        const prefix = manifestThrough(manifest,migration.filename), state = await inventory(client, prefix);
+        if (contractProblems(state, prefix).length) fail('migration_postcondition', 'De migratie levert niet het beoordeelde schema-/rechtencontract op. Transactie teruggedraaid.');
         await client.query(`INSERT INTO ${historyTable} (filename,checksum,schema_digest,project_ref,release_sha,backup_id) VALUES ($1,$2,$3,$4,$5,$6)`, [migration.filename, migration.checksum, hash(stable(state)), target.projectRef, env.RELEASE_SHA, backup.backupId]);
       }
         await client.query('COMMIT'); committed = true;
@@ -564,6 +573,53 @@ export async function applyDatabase({ env = process.env, expectedProjectRef, rev
   } finally {
     try { await client.query("SELECT pg_advisory_unlock(hashtextextended('milo-controlled-schema-bootstrap',0))"); } finally { client.release(); await pool.end(); }
   }
+}
+
+export const V70_BASELINE_FILENAME='20261104115830_milo_friends_server_schema.sql';
+export const V70_BASELINE_CHECKSUM='8451a8aaf928dd7d58114d71741d4a76acb917c26c9d5e205d0436d5e306cc16';
+export const V70_UPGRADE_FILENAME='20261109122605_studio_mail_v70.sql';
+export function validateV70UpgradeManifest(manifest,reviewedBaselineManifestSha256,reviewedManifestSha256){
+ if(manifest.migrations.length!==2||manifest.migrations[0].filename!==V70_BASELINE_FILENAME||manifest.migrations[0].checksum!==V70_BASELINE_CHECKSUM||manifest.migrations[1].filename!==V70_UPGRADE_FILENAME||manifest.tables.size!==23)fail('v70_manifest_contract','De v70-upgrade vereist exact de ongewijzigde 18-tabellenbasis plus de afzonderlijke vijf-tabellenmigratie.');
+ for(const migration of manifest.migrations)if(hash(migration.sql)!==migration.checksum)fail('v70_manifest_contract','De migratie-inhoud wijkt af van de beoordeelde checksums.');
+ const baseline=manifestThrough(manifest,V70_BASELINE_FILENAME);
+ if(!/^[a-f0-9]{64}$/.test(reviewedBaselineManifestSha256||'')||reviewedBaselineManifestSha256!==baseline.digest||!/^[a-f0-9]{64}$/.test(reviewedManifestSha256||'')||reviewedManifestSha256!==manifest.digest)fail('v70_manifest_review_required','Beide vooraf beoordeelde manifestdigests, voor de basis en de volledige v70-versie, zijn verplicht.');
+ return baseline;
+}
+export async function upgradeV70Database({env=process.env,expectedProjectRef,reviewedBaselineManifestSha256,reviewedManifestSha256,manifest,poolFactory=defaultPoolFactory,fetcher=fetch,backupProvider=backupAndRestore}={}){
+ const target=validateTarget(env,expectedProjectRef),prerequisites=validateApplyPrerequisites(env);manifest??=await loadManifest();
+ const baseline=validateV70UpgradeManifest(manifest,reviewedBaselineManifestSha256,reviewedManifestSha256);
+ const full=await auditDatabase({env,expectedProjectRef,manifest,poolFactory,fetcher});
+ if(full.ok)return {...full,mode:'upgrade-v70',changed:false};
+ const pool=poolFactory(env.DATABASE_URL,{verifiedTls:true,caBase64:env.SUPABASE_DB_CA_BASE64}),client=await pool.connect();let locked=false,committed=false,backup;
+ try{
+  verifyDatabaseClientTls(client,target.database.hostname);
+  await client.query("SELECT pg_advisory_lock(hashtextextended('milo-controlled-schema-bootstrap',0))");locked=true;
+  const currentFull=await auditDatabase({env,expectedProjectRef,manifest,poolFactory,fetcher});
+  if(currentFull.ok)return {...currentFull,mode:'upgrade-v70',changed:false};
+  const current=await auditDatabase({env,expectedProjectRef,manifest:baseline,poolFactory,fetcher});
+  if(!current.ok||current.applicationTables.length!==18||current.appliedMigrations.length!==1||current.appliedMigrations[0].filename!==V70_BASELINE_FILENAME||current.appliedMigrations[0].checksum!==V70_BASELINE_CHECKSUM)fail('v70_baseline_unverified','De bestaande 18-tabellenbasis, historie, rechten, TLS of Storage wijkt af. Geen v70-upgrade uitgevoerd.');
+  if((!current.connection.superuser&&!current.connection.createrole)||!current.connection.schema_create||!current.connection.bypassrls&&!current.connection.superuser)fail('migration_privileges','De upgrade vereist de afzonderlijke geautoriseerde migratieverbinding.');
+  const additions=[...manifest.tables.keys()].filter(name=>!baseline.tables.has(name));
+  const newRelations=[...additions,...manifest.indexes.filter(index=>!baseline.indexes.some(old=>old.name===index.name)).map(index=>index.name)];
+  const refuseExisting=async()=>{const rows=(await client.query('SELECT name FROM unnest($1::text[]) AS name WHERE to_regclass($2||name) IS NOT NULL',[newRelations,'public.'])).rows;if(rows.length)fail('v70_existing_new_objects','Een nieuwe v70-tabel of index bestaat al. Ook lege tabellen worden niet overgenomen.');};
+  await refuseExisting();
+  backup=await backupProvider({env,target,sourceClient:client,sourceVersion:current.connection.version,prerequisites,poolFactory});
+  if(!backup?.restoreVerified||backup.projectRef!==target.projectRef||backup.releaseSha!==env.RELEASE_SHA||!backup.backupId||!/^[a-f0-9]{64}$/.test(backup.encryptedSha256||''))fail('backup_proof_invalid','De volledige versleutelde backup en passende werkelijke herstelproef zijn niet bevestigd.');
+  // Recheck after the potentially long restore proof, still under the same
+  // deploy lock. No source DDL has occurred before this point.
+  const afterBackup=await auditDatabase({env,expectedProjectRef,manifest:baseline,poolFactory,fetcher});
+  if(!afterBackup.ok||afterBackup.schemaDigest!==current.schemaDigest)fail('v70_baseline_changed','De basis is tijdens de herstelcontrole gewijzigd. Geen upgrade uitgevoerd.');
+  await refuseExisting();await client.query('BEGIN');
+  try{
+   await client.query('SET LOCAL search_path TO public');await client.query(manifest.migrations[1].sql);
+   const state=await inventory(client,manifest);if(contractProblems(state,manifest).length)fail('v70_postcondition','De nieuwe tabellen of rechten voldoen niet. De volledige upgrade wordt teruggedraaid.');
+   await client.query(`INSERT INTO ${historyTable} (filename,checksum,schema_digest,project_ref,release_sha,backup_id) VALUES ($1,$2,$3,$4,$5,$6)`,[V70_UPGRADE_FILENAME,manifest.migrations[1].checksum,hash(stable(state)),target.projectRef,env.RELEASE_SHA,backup.backupId]);
+   await client.query('COMMIT');committed=true;
+  }catch(error){await client.query('ROLLBACK');throw error;}
+  const after=await auditDatabase({env,expectedProjectRef,manifest,poolFactory,fetcher});if(!after.ok)fail('v70_committed_audit_failed','De upgrade is gecommit maar de nacontrole faalt. Stop appactivatie en behoud bewijs en backup.');
+  return {...after,mode:'upgrade-v70',changed:true,committed,baselineManifestDigest:baseline.digest,backup:{backupId:backup.backupId,encryptedSha256:backup.encryptedSha256,restoreVerified:true}};
+ }catch(error){if(committed)fail('partial_database_upgrade','De v70-upgrade is gecommit; een latere nacontrole faalde. Stop activatie en controleer de bestaande release.');throw error;}
+ finally{try{if(locked)await client.query("SELECT pg_advisory_unlock(hashtextextended('milo-controlled-schema-bootstrap',0))");}finally{client.release();await pool.end();}}
 }
 
 export async function main(argv = process.argv.slice(2), env = process.env) {

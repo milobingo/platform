@@ -66,6 +66,8 @@ Kopieer `.env.example` naar `.env.local` voor lokaal gebruik. Vul nooit echte se
 | `MAIL_MODE` | Servervariabele, runtime | Standaard `disabled`; staging alleen `allowlist`, productie eventueel `live`. |
 | `MAIL_ALLOWED_RECIPIENTS` | Servervariabele, runtime | Expliciete kommagescheiden lijst voor bestelmail in allowlistmodus. |
 | `SEND_EMAIL_HOOK_SECRET` | Serversecret, runtime | Afzonderlijke signing secret voor de vaste DG Supabase-mailgateway. Niet een Resend-API-key. |
+| `MAIL_ORGANIZATION_EMAIL` | Servervariabele, runtime | Geldig organisatieadres voor v70-servicemails en organisatiemeldingen. Geen `.invalid`-voorbeeldadres voor verzending. Vereist eerst beoordeelde wrapperuitbreiding. |
+| `MAIL_FROM` | Optionele servervariabele, runtime | Contact-/voorbeeldafzender voor de studio; de vaste gateway beheert de werkelijke afzender. Activeert op zichzelf geen verzending. Vereist eerst beoordeelde wrapperuitbreiding. |
 | `RELEASE_SHA` | Publieke release-identiteit, runtime | Volledige 40-teken broncommit; verplicht ingevuld en gecontroleerd door het stagingreleasepad, optioneel bij lokale demo. |
 | `RELEASE_ID` | Publieke release-identiteit, runtime | Staging: GitHub run-ID en pogingnummer; optioneel lokaal. |
 | `CONFIG_VERSION` | Publieke release-identiteit, runtime | Staging: gemapt vanuit `DG_CONFIG_VERSION`; gecontroleerd in health en bevat geen secretwaarden. |

@@ -33,10 +33,27 @@ test('concurrent prepare requests select exactly one child and one durable hold'
  const results=await Promise.all(requests.map(request=>handleLiveCalls(request,h.env,async()=>Response.json({}))));assert.deepEqual(results.map(x=>x.status).sort(),[200,409]);assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold.callId,(await h.current()).id);
 });
 
-test('a post-hold checkpoint-store failure retains a recoverable held call',async t=>{
- const h=await fixture(t),original=h.env.DB.prepare;let injected=false;
- h.env.DB.prepare=sql=>{const statement=original(sql);if(!sql.startsWith('UPDATE studio_calls'))return statement;const bind=statement.bind;statement.bind=(...args)=>{const bound=bind(...args),first=bound.first;bound.first=async()=>{if(!injected&&(await h.bingo.game(h.game.id)).data.state.drawHold){injected=true;throw Error('injected once');}return first();};return bound;};return statement;};
- await h.invoke('host',{action:'prepare',entryId:h.entryId},503);assert(injected);assert((await h.bingo.game(h.game.id)).data.state.drawHold);assert.equal((await h.current()).phase,'returning');assert.equal((await h.current()).drawHeld,true);
+for(const failAfter of [1,2])test(`atomic preparation rolls back call and hold after statement ${failAfter} fails before commit`,async t=>{
+ const h=await fixture(t),original=h.env.DB.batch,before=JSON.stringify((await h.bingo.game(h.game.id)).data);let injected=false,executed=0,stagedGame,stagedCall;const rowCounts=[];
+ // Execute the actual prepared SQL in a real SQLite transaction. A failure
+ // after either successful UPDATE must roll both writes back, rather than
+ // simulating a rejected request before the transaction has done any work.
+ h.env.DB.batch=async statements=>{
+  if(injected||!statements.some(statement=>statement.sql.startsWith('UPDATE studio_calls')))return original(statements);
+  injected=true;assert.equal(statements.length,2);h.db.exec('BEGIN');
+  try{
+   for(const statement of statements.slice(0,failAfter)){const rows=h.db.prepare(statement.sql).all(...statement.args);rowCounts.push(rows.length);executed++;}
+   stagedGame=JSON.parse(h.db.prepare('SELECT document FROM bingo_games WHERE id = ?').get(h.game.id).document);
+   stagedCall=JSON.parse(h.db.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').get('host').document);
+   throw Error('injected batch failure before commit');
+  }finally{h.db.exec('ROLLBACK');}
+ };
+ await h.invoke('host',{action:'prepare',entryId:h.entryId},503);assert(injected);assert.equal(executed,failAfter);assert.deepEqual(rowCounts,Array(failAfter).fill(1),'the failure follows successful CAS writes');
+ assert(stagedGame?.state.drawHold,'the first uncommitted write really staged a hold');if(failAfter===2)assert.equal(stagedCall?.id,stagedGame.state.drawHold.callId,'the second uncommitted write really staged the matching call');else assert.equal(stagedCall,null);
+ assert.equal(JSON.stringify((await h.bingo.game(h.game.id)).data),before,'rollback preserves the complete official game and checkpoint');
+ assert.equal(await h.current(),null,'an uncommitted call is never published');assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold,undefined);assert.equal((await h.invoke('player')).call,null);assert.equal(h.upstream.length,0,'a failed preparation opens no provider media');
+ const row=h.db.prepare('SELECT revision,document FROM studio_calls WHERE owner_id = ?').get('host');assert.equal(row.revision,0);assert.equal(row.document,'null');
+ h.env.DB.batch=original;const prepared=await h.prepare();assert.equal(prepared.call.phase,'preparing');assert.equal(prepared.call.holdConfirmed,true);assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold.callId,(await h.current()).id,'a deliberate retry commits exactly one matching call and hold');
 });
 
 test('cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold',async t=>{

@@ -1,0 +1,2 @@
+$ node scripts/check-config.mjs --phase=build
+Configuratienamen en formaten akkoord (build, local). Waarden zijn niet getoond; verbindingen zijn niet getest.

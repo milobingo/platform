@@ -4,132 +4,132 @@
     {
       "name": "check-family-demo",
       "exitCode": 0,
-      "ms": 4265
+      "ms": 4439
     },
     {
       "name": "check-family-extras",
       "exitCode": 0,
-      "ms": 11197
+      "ms": 12469
     },
     {
       "name": "check-family-brand",
       "exitCode": 0,
-      "ms": 49
+      "ms": 61
     },
     {
       "name": "check-player-auth",
       "exitCode": 0,
-      "ms": 1558
+      "ms": 2172
     },
     {
       "name": "check-bingo",
       "exitCode": 0,
-      "ms": 9716
+      "ms": 14545
     },
     {
       "name": "check-live-chat",
       "exitCode": 0,
-      "ms": 725
+      "ms": 684
     },
     {
       "name": "check-chat-client",
       "exitCode": 0,
-      "ms": 2633
+      "ms": 2622
     },
     {
       "name": "check-milo-print",
       "exitCode": 0,
-      "ms": 2061
+      "ms": 2278
     },
     {
       "name": "check-characters",
       "exitCode": 0,
-      "ms": 133
+      "ms": 151
     },
     {
       "name": "check-cast-runner",
       "exitCode": 0,
-      "ms": 61
+      "ms": 64
     },
     {
       "name": "check-milo-motion",
       "exitCode": 0,
-      "ms": 606
+      "ms": 594
     },
     {
       "name": "check-milo-life",
       "exitCode": 0,
-      "ms": 64
+      "ms": 62
     },
     {
       "name": "check-milo-minigame-catalog",
       "exitCode": 0,
-      "ms": 1026
+      "ms": 960
     },
     {
       "name": "check-milo-minigame-server",
       "exitCode": 0,
-      "ms": 292
+      "ms": 306
     },
     {
       "name": "check-milo-game-clock",
       "exitCode": 0,
-      "ms": 199
+      "ms": 209
     },
     {
       "name": "check-call-draw-hold",
       "exitCode": 0,
-      "ms": 84
+      "ms": 97
     },
     {
       "name": "check-live-call-audio",
       "exitCode": 0,
-      "ms": 51
+      "ms": 60
     },
     {
       "name": "check-live-calls",
       "exitCode": 0,
-      "ms": 392
+      "ms": 401
     },
     {
       "name": "check-player-live-call",
       "exitCode": 0,
-      "ms": 62
+      "ms": 60
     },
     {
       "name": "check-regie-workspace",
       "exitCode": 0,
-      "ms": 3104
+      "ms": 2998
     },
     {
       "name": "check-regie-panels",
       "exitCode": 0,
-      "ms": 720
+      "ms": 692
     },
     {
       "name": "check-brand-contract",
       "exitCode": 0,
-      "ms": 1926
+      "ms": 1994
     },
     {
       "name": "check-secrets",
       "exitCode": 0,
-      "ms": 103
+      "ms": 117
     },
     {
       "name": "check-youtube-player",
       "exitCode": 0,
-      "ms": 167
+      "ms": 254
     },
     {
       "name": "check-startup-recovery",
       "exitCode": 0,
-      "ms": 57
+      "ms": 50
     },
     {
       "name": "check-gpt-live",
       "exitCode": 0,
-      "ms": 231
+      "ms": 216
     },
     {
       "name": "check-calls",
@@ -139,122 +139,167 @@
     {
       "name": "check-planner-api",
       "exitCode": 0,
-      "ms": 97
+      "ms": 105
     },
     {
       "name": "check-planner-ui",
       "exitCode": 0,
-      "ms": 420
+      "ms": 402
     },
     {
       "name": "check-openai",
       "exitCode": 0,
-      "ms": 106
+      "ms": 121
     },
     {
       "name": "check-production",
       "exitCode": 0,
-      "ms": 596
+      "ms": 628
     },
     {
       "name": "check-milo-brand-isolation",
       "exitCode": 0,
-      "ms": 243
+      "ms": 241
     },
     {
       "name": "check-presentation",
       "exitCode": 0,
-      "ms": 318
+      "ms": 309
     },
     {
       "name": "check-claim-priority",
       "exitCode": 0,
-      "ms": 338
+      "ms": 305
     },
     {
       "name": "check-family-consolation",
       "exitCode": 0,
-      "ms": 53
+      "ms": 65
     },
     {
       "name": "check-bingo-orders",
       "exitCode": 0,
-      "ms": 2530
+      "ms": 2794
     },
     {
       "name": "check-order-demo",
       "exitCode": 0,
-      "ms": 74
+      "ms": 95
     },
     {
       "name": "check-workspace-navigation",
       "exitCode": 0,
-      "ms": 15632
+      "ms": 16028
     },
     {
       "name": "check-character-navigation",
       "exitCode": 0,
-      "ms": 2333
+      "ms": 2243
     },
     {
       "name": "check-administration-ui",
       "exitCode": 0,
-      "ms": 1596
+      "ms": 1532
     },
     {
       "name": "check-broadcast-shell",
       "exitCode": 0,
-      "ms": 1954
+      "ms": 1919
     },
     {
       "name": "check-show-cue-ui",
       "exitCode": 0,
-      "ms": 2151
+      "ms": 2190
     },
     {
       "name": "check-magic-catalog",
       "exitCode": 0,
-      "ms": 77
+      "ms": 85
     },
     {
       "name": "check-milo-studio-tour",
       "exitCode": 0,
-      "ms": 80
+      "ms": 85
     },
     {
       "name": "check-milo-leg-render",
       "exitCode": 0,
-      "ms": 397
+      "ms": 317
     },
     {
       "name": "check-milo-magic-render",
       "exitCode": 0,
-      "ms": 2486
+      "ms": 1575
     },
     {
       "name": "check-milo-puppet-render",
       "exitCode": 0,
-      "ms": 1376
+      "ms": 1341
     },
     {
       "name": "check-milo-effect-continuity",
       "exitCode": 0,
-      "ms": 3166
+      "ms": 2515
     },
     {
       "name": "check-livekit",
       "exitCode": 0,
-      "ms": 197
+      "ms": 210
+    },
+    {
+      "name": "check-live-call-output",
+      "exitCode": 0,
+      "ms": 62
+    },
+    {
+      "name": "check-live-call-runtime",
+      "exitCode": 0,
+      "ms": 96
+    },
+    {
+      "name": "check-live-call-recovery",
+      "exitCode": 0,
+      "ms": 346
+    },
+    {
+      "name": "check-mail-templates",
+      "exitCode": 0,
+      "ms": 64
+    },
+    {
+      "name": "check-mail-service",
+      "exitCode": 0,
+      "ms": 247
+    },
+    {
+      "name": "check-mail-ui",
+      "exitCode": 0,
+      "ms": 2956
+    },
+    {
+      "name": "check-milo-ui",
+      "exitCode": 0,
+      "ms": 4506
+    },
+    {
+      "name": "check-showtime",
+      "exitCode": 0,
+      "ms": 4761
+    },
+    {
+      "name": "check-start-readiness",
+      "exitCode": 0,
+      "ms": 949
     },
     {
       "name": "check-director-whisper-runtime",
       "exitCode": 0,
-      "ms": 164
+      "ms": 184
     },
     {
       "name": "check-director-whisper-ui",
       "exitCode": 0,
-      "ms": 1250
+      "ms": 1252
     },
     {
       "name": "check-director-whisper-server",
@@ -264,52 +309,122 @@
     {
       "name": "check-live-director-whisper",
       "exitCode": 0,
-      "ms": 259
+      "ms": 285
     },
     {
       "name": "check-node-storage",
       "exitCode": 0,
-      "ms": 434
+      "ms": 1115
     },
     {
       "name": "check-node-runtime",
       "exitCode": 0,
-      "ms": 1560
+      "ms": 1594
     },
     {
       "name": "check-node-provider-fetch",
       "exitCode": 0,
-      "ms": 294
+      "ms": 309
     },
     {
       "name": "check-node-mail-gateway",
       "exitCode": 0,
-      "ms": 69
+      "ms": 73
     },
     {
       "name": "check-node-postgres-tls",
       "exitCode": 0,
-      "ms": 91
+      "ms": 78
     },
     {
       "name": "check-deploy-contract",
       "exitCode": 0,
-      "ms": 71
+      "ms": 69
     },
     {
       "name": "check-production-deploy",
       "exitCode": 0,
-      "ms": 1373
+      "ms": 1407
     },
     {
       "name": "check-deploy-database",
       "exitCode": 0,
-      "ms": 441
+      "ms": 9311
     },
     {
       "name": "check-provision-runtime",
       "exitCode": 0,
-      "ms": 114
+      "ms": 1657
+    },
+    {
+      "name": "check-show-time",
+      "exitCode": 0,
+      "ms": 70
+    },
+    {
+      "name": "check-game-invariants",
+      "exitCode": 0,
+      "ms": 717
+    },
+    {
+      "name": "check-game-capacity",
+      "exitCode": 0,
+      "ms": 11645
+    },
+    {
+      "name": "check-family-claim-context",
+      "exitCode": 0,
+      "ms": 520
+    },
+    {
+      "name": "check-live-feed",
+      "exitCode": 0,
+      "ms": 167
+    },
+    {
+      "name": "check-live-feed-isolation",
+      "exitCode": 0,
+      "ms": 120
+    },
+    {
+      "name": "check-v70-schema-upgrade",
+      "exitCode": 0,
+      "ms": 69
+    },
+    {
+      "name": "check-show-time-audit",
+      "exitCode": 0,
+      "ms": 133
+    },
+    {
+      "name": "check-account-mail",
+      "exitCode": 0,
+      "ms": 486
+    },
+    {
+      "name": "check-staging-restore-relay",
+      "exitCode": 0,
+      "ms": 177
+    },
+    {
+      "name": "check-staging-restore-target",
+      "exitCode": 0,
+      "ms": 45
+    },
+    {
+      "name": "check-family-accessibility",
+      "exitCode": 0,
+      "ms": 587
+    },
+    {
+      "name": "check-v70-restart-safety",
+      "exitCode": 0,
+      "ms": 434
+    },
+    {
+      "name": "check-staging-capacity-v70",
+      "exitCode": 0,
+      "ms": 62806
     }
   ]
 }

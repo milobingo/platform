@@ -13,6 +13,9 @@ import {handlePresentation} from './presentation.js';
 import {handleCharacterSettings} from './character-settings.js';
 import {nodeProviderFetch} from './node-provider-fetch.js';
 import {createOrderMailDelivery} from './node-mail-gateway.js';
+import {handleMail} from './mail-api.js';
+import {handlePublicRules} from './game-rules-api.js';
+import {handleLiveFeed} from './live-feed.js';
 
 const json=(message,status=503,code='unavailable')=>Response.json({error:{code,message}},{status});
 const authPaths=new Set(['/api/auth/session','/api/player/request-code','/api/player/verify-code','/api/player/logout']);
@@ -48,8 +51,10 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   let cleanRequest=new Request(request,{headers:cleanHeaders});
   const publicUrl=publicRequestUrl(cleanRequest,env);
   if(publicUrl!==cleanRequest.url)cleanRequest=new Request(publicUrl,cleanRequest);
-  context=await createAuthContext(cleanRequest,env,{clientFactory:authClientFactory});
   const url=new URL(cleanRequest.url),path=url.pathname;
+  if(path==='/spelregels'||path==='/api/bingo/rules')return handlePublicRules(cleanRequest,env);
+  if(path==='/mail/afmelden')return handleMail(cleanRequest,env);
+  context=await createAuthContext(cleanRequest,env,{clientFactory:authClientFactory});
   const finish=response=>applyAuthCookies(response,context);
   if(path.startsWith('/auth/')||authPaths.has(path))return finish(await handleNodeAuth(cleanRequest,env,context));
   if(context.error)return finish(json(context.error.message,context.error.status,context.error.code));
@@ -60,6 +65,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   const verifiedEnv={...env,AUTH_IDENTITY:context.identity,OPENAI_ENV_ONLY:true,ORDER_MAIL_DELIVERY:env.ORDER_MAIL_DELIVERY||createOrderMailDelivery(env)};
   let response;
   if(/^\/api\/characters(?:\/|$)/.test(path))response=await handleCharacterSettings(cleanRequest,verifiedEnv);
+  else if(path.startsWith('/api/mail/'))response=await handleMail(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/player/'))response=await handlePlayerAuth(cleanRequest,verifiedEnv);
   else if(path==='/api/output')response=await handleOutput(cleanRequest,verifiedEnv);
   else if(path.startsWith('/api/live-calls'))response=await handleLiveCalls(cleanRequest,verifiedEnv,providerFetch);
@@ -77,6 +83,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   else if(path.startsWith('/api/presentation/'))response=await handlePresentation(cleanRequest,verifiedEnv);
   else if(path.startsWith('/api/planner/'))response=await handlePlanner(cleanRequest,verifiedEnv);
   else if(/^\/api\/bingo\/games\/[^/]+\/chat(?:\/|$)/.test(path))response=await handleChat(cleanRequest,verifiedEnv);
+  else if(/^\/api\/bingo\/games\/[^/]+\/live$/.test(path))response=await handleLiveFeed(cleanRequest,verifiedEnv);
   else if(path.startsWith('/api/bingo/'))response=await handleBingo(cleanRequest,verifiedEnv);
   else response=json('Deze functie bestaat niet.',404,'not_found');
   return finish(response);

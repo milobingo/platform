@@ -1,6 +1,6 @@
 {
   "project": "Milo & Friends BingoShow",
-  "updated_at": "2026-11-06",
+  "updated_at": "2026-11-09",
   "authorized_scope": "local_build_repository_sync_staging_and_production_deployment",
   "source": {
     "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
@@ -11,11 +11,21 @@
     "runtime_data_export_included": false,
     "secrets_included": false,
     "latest_handoff": {
-      "commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
-      "version": "2026-11-06-v6",
-      "directory": "docs/overdracht-wijzigingen-1-6",
-      "verified_manifest_entries": 583
-    }
+      "commit": "f81d0c1c60cbe1422d43ce46d896af6cd4d2939c",
+      "sites_version": 70,
+      "version": "2026-11-09-v70",
+      "directory": "docs/overdracht-v70",
+      "verified_manifest_entries": 568,
+      "inventory": "verification/v70/source-inventory.json"
+    },
+    "previous_handoffs": [
+      {
+        "commit": "2a32f65f464e78f22a256ba74af3ea85765c2482",
+        "version": "2026-11-06-v6",
+        "directory": "docs/overdracht-wijzigingen-1-6",
+        "verified_manifest_entries": 583
+      }
+    ]
   },
   "local": {
     "checkout": "/home/codex/repos/milobingo",
@@ -26,7 +36,7 @@
     "private_objects": "local filesystem or explicitly configured private Supabase Storage",
     "identity": "explicit loopback development login, or server-verified Supabase Auth",
     "demonstration": "/spelen?demo=1",
-    "verification_report": "docs/LOKALE-VERIFICATIE.md"
+    "verification_report": "docs/V70-INTEGRATIE-EN-VRIJGAVE.md"
   },
   "target": {
     "workflow": "DG native releases via dg-site-deploy, selfhosted GitHub runners and Caddy",
@@ -202,6 +212,7 @@
     "At the initial host preflight the deployment host was incomplete and no app or migration was activated; the final completed deployment is recorded in target.staging_status.",
     "A local build and offline tests do not prove connected Supabase Auth, provider access or live broadcast audio.",
     "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed.",
-    "The user explicitly authorized production deployment on 2026-11-06. Production target fields remain unresolved until the real host, URL and isolated backend are supplied."
+    "The user explicitly authorized production deployment on 2026-11-06. Production target fields remain unresolved until the real host, URL and isolated backend are supplied.",
+    "v70 audit changes use the existing native architecture on feat/v70-audit-20261109. No real email, payment, public admission or provider configuration is authorized by this handoff; staging release and remaining practical gates are reported separately."
   ]
 }

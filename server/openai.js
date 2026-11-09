@@ -185,6 +185,7 @@ async function handleSettings(request,env,fetcher,user,url){
   if(!settingsReady(env))return fail(503,'settings_unavailable','De beveiligde sleutelopslag is nog niet beschikbaar.');
   const release=throttle(user);if(!release)return fail(429,'busy','Even wachten: probeer de sleutel straks opnieuw op te slaan.');
   try{
+    if(env.DB){const row=await env.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(user).first();const call=row&&JSON.parse(row.document);if(call?.transport==='livekit'&&(call.phase!=='completed'||call.resourcesClosed===false))return fail(409,'call_cleanup_required','Rond eerst het belmoment en de audio-opruiming af voordat je de centrale sleutel wijzigt.');}
     let body;try{body=await readBody(request);}catch{return fail(400,'invalid_body','De instellingen konden niet worden gelezen.');}
     if(!['save','remove'].includes(body.action)||!(body.revision===null||typeof body.revision==='string'&&body.revision.length>0&&body.revision.length<=128))return fail(400,'invalid_settings','Ververs de instellingen en probeer opnieuw.');
     let key='';

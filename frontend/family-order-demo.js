@@ -19,7 +19,7 @@ export function syncFamilyOrderDemo(context={},state=readOrderDemo()){
  if(!context.games?.set)return state;
  for(const show of state.shows){
   let game=context.games.get(show.id);
-  if(!game){game=makeGame({brandId:show.brandId||'milo',title:show.title,date:show.date,roundCount:show.roundCount||4},'family-demo-studio','https://family-demo.invalid',Date.now());game.id=show.id;game.revision=1;game.simulated=true;game.production=productionSettings({calls:{enabled:false}},game);game.presentationSnapshot={rules:[{id:'order-demo',title:'Fictieve bestelshow',text:'Bestellingen, e-mails, betalingen en bladen zijn voorbeelden. De kaarten zijn ongeldig voor echte shows.'}]};context.games.set(show.id,game);context.messages?.set?.(show.id,[]);}
+  if(!game){game=makeGame({timeZone:'Europe/Amsterdam',brandId:show.brandId||'milo',title:show.title,date:show.date,roundCount:show.roundCount||4},'family-demo-studio','https://family-demo.invalid',Date.now());game.id=show.id;game.revision=1;game.simulated=true;game.production=productionSettings({calls:{enabled:false}},game);game.presentationSnapshot={rules:[{id:'order-demo',title:'Fictieve bestelshow',text:'Bestellingen, e-mails, betalingen en bladen zijn voorbeelden. De kaarten zijn ongeldig voor echte shows.'}]};context.games.set(show.id,game);context.messages?.set?.(show.id,[]);}
   const books=state.orders.filter(o=>o.show.id===show.id&&o.status==='fulfilled').flatMap(o=>state.booksByOrder[o.id]||[]);
   if(JSON.stringify(game.books)!==JSON.stringify(books)){game.books=copy(books);game.revision=(game.revision||0)+1;}
   game.ordering=copy(configOf(show));game.available=open(show);game.status=show.status;game.title=show.title;game.date=show.date;

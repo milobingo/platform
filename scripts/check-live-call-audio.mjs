@@ -34,6 +34,12 @@ test('canvas programme stream contains explicit mix and isolated video; unsuppor
  await audio.dispose();assert.equal(audio.programAudioStream.getAudioTracks()[0].readyState,'ended');
 });
 
+test('AI mute cuts presenter programme/guest return and AI input while preserving the live guest programme track',async()=>{
+ const audio=new LiveCallAudio({context:new Context(),Stream});await audio.unlock();const c=call();audio.setSession(c);audio.setListening(true);audio.attachGuest(new Track('guest'),{identity:c.guestIdentity});audio.attachPresenter(new Track('presenter'));
+ audio.setSession({...c,aiMuted:true});assert(reaches(audio.guestSource,audio.programDestination));assert(!reaches(audio.guestSource,audio.aiInputDestination));assert(!reaches(audio.presenterSource,audio.programDestination));assert(!reaches(audio.presenterSource,audio.presenterDestination));
+ audio.setSession({...c,aiMuted:false});assert(reaches(audio.presenterSource,audio.programDestination));assert(reaches(audio.presenterSource,audio.presenterDestination));await audio.dispose();
+});
+
 test('existing show sound exposes its actual effects/music export and disposes its tracks',async()=>{
  const show=createShowAudio({Context});assert.equal(show.programStream,null);assert.equal(await show.unlock(),true);const stream=show.programStream;assert(stream.getAudioTracks().length);show.dispose();assert.equal(stream.getAudioTracks()[0].readyState,'ended');
 });

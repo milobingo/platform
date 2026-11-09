@@ -2,7 +2,7 @@ import {livekitError,callIdentities} from './livekit.js';
 export const LIVE_CALL_PHASES=Object.freeze(['preparing','ringing','backstage','staged','live','returning','returned','completed']);
 export const liveCallActive=c=>!!c&&c.transport==='livekit'&&c.phase!=='completed';
 const clean=(value,max,label,{empty=true}={})=>{if(typeof value!=='string'||value.length>max||!empty&&!value.trim())throw livekitError('Controleer '+label+'.',400);return value.trim();};
-export function confirmedCallFacts(game,entry){return (game.results||[]).filter(r=>r.winner?.accountId===entry.accountId&&(r.winner.profileId===entry.profileId||game.books.some(b=>b.id===r.winner.bookId&&b.profileId===entry.profileId&&b.accountId===entry.accountId))).slice(-5).map(r=>({confirmed:true,resultId:r.id,type:r.type==='lottery'?'lottery':'bingo',prize:r.prize?.title||'',round:game.plan.blocks.filter(b=>b.type==='round')[r.roundIndex]?.title||'',at:r.createdAt}));}
+export function confirmedCallFacts(game,entry){return (game.results||[]).filter(r=>r.acknowledged===true&&r.winner?.accountId===entry.accountId&&(r.winner.profileId===entry.profileId||game.books.some(b=>b.id===r.winner.bookId&&b.profileId===entry.profileId&&b.accountId===entry.accountId))).slice(-5).map(r=>({confirmed:true,resultId:r.id,type:r.type==='lottery'?'lottery':'bingo',prize:r.prize?.title||'',round:game.plan.blocks.filter(b=>b.type==='round')[r.roundIndex]?.title||'',at:r.createdAt}));}
 export function callContext(input={},entry,game){return {callName:clean(input.callName??entry.name,60,'de roepnaam',{empty:false}),pronunciation:clean(input.pronunciation??'',120,'de uitspraakhulp'),reason:clean(input.reason??'Even gezellig kennismaken',180,'de reden van het gesprek',{empty:false}),note:clean(input.note??'',400,'de regienotitie'),confirmedFacts:confirmedCallFacts(game,entry)};}
 export function makeLiveCall(game,entry,{clientId,outputId,character,presenter,context,maxSeconds=90},now=Date.now()){
  if(!Number.isInteger(maxSeconds)||maxSeconds<30||maxSeconds>180)throw livekitError('Kies een gespreksduur van 30 tot 180 seconden.',400);
@@ -10,7 +10,8 @@ export function makeLiveCall(game,entry,{clientId,outputId,character,presenter,c
 }
 export function returnLiveCall(c,outcome='ended',reason='',now=Date.now()){
  if(c.phase==='completed')return c;
- c.phase='returning';c.voiceLevel=0;c.outcome=outcome;c.reason=reason;c.endedAt=now;c.updatedAt=now;c.drawHeld=true;c.returnState={playerConfirmedAt:null,hostConfirmedAt:null,method:null,note:''};return c;
+ const cueId=crypto.randomUUID(),cueCode=cueId.slice(0,4).toUpperCase();
+ c.phase='returning';c.voiceLevel=0;c.outcome=outcome;c.reason=reason;c.endedAt=now;c.updatedAt=now;c.drawHeld=true;c.returnState={playerConfirmedAt:null,hostConfirmedAt:null,method:null,note:'',cue:{id:cueId,lastNumber:c.checkpoint.lastNumber,text:`Terug bij de show, controlewoord ${cueCode}. Het laatste officiële nummer is ${c.checkpoint.lastNumber??'nog niet getrokken'}.`}};return c;
 }
 export function transitionLiveCall(c,action,role,body={},now=Date.now()){
  const need=(roles,phases)=>{if(!roles.includes(role)||!phases.includes(c.phase))throw livekitError('Deze belstap kan nu niet.');};
@@ -31,6 +32,7 @@ export function transitionLiveCall(c,action,role,body={},now=Date.now()){
   c.phase='live';c.voiceLevel=0;c.liveAt=now;c.liveUntil=now+c.maxSeconds*1000;c.activeContext=structuredClone(c.context);c.media.host={connected:false,micReady:false};c.media.player={connected:false,micReady:false};c.media.output={connected:false,audioReady:false};
  }
  else if(action==='mute'){need(['host'],['live']);c.muted=body.muted===true;}
+ else if(action==='ai-mute'){need(['host'],['live']);c.aiMuted=body.muted===true;}
  else if(action==='finish'){need(['host','player'],['backstage','staged','live']);returnLiveCall(c,'ended','Het gesprek is afgerond. Controleer nu de terugkeer naar YouTube.',now);}
  else if(action==='decline'){need(['player'],['preparing','ringing']);returnLiveCall(c,'declined','De deelnemer heeft de oproep geweigerd.',now);}
  else if(action==='cancel'){need(['host','player'],['preparing','ringing','backstage','staged','live']);returnLiveCall(c,'cancelled','Het belmoment is geannuleerd. De trekking blijft geblokkeerd.',now);}
@@ -38,7 +40,12 @@ export function transitionLiveCall(c,action,role,body={},now=Date.now()){
  else if(action==='player-returned'){
   need(['player'],['returning']);const info=body.playbackInfo||{},ready=body.youtubeReady===true||info.ready===true,audible=body.youtubeAudible===true||info.audible===true;
   if(body.checkpointId!==c.checkpoint.id||body.confirmed!==true||!ready||!audible)throw livekitError('Controleer dat de YouTube-uitzending weer zichtbaar en hoorbaar is.');
-  c.returnState.playerConfirmedAt=now;c.returnState.method='player';
+  const measured=Number.isFinite(info.currentTime)&&Number.isFinite(info.duration)&&info.duration>0;
+  if(measured&&info.duration-info.currentTime>5)throw livekitError('Je kijkt nog achter het livepunt. Spring eerst naar live en controleer de actuele terugkeercue.');
+  const seek=info.liveSeek,livePoint=info.source==='youtube-live-seek-and-parent-confirmation'&&measured&&seek&&Number.isFinite(seek.target)&&Math.abs(info.duration-seek.target)<=5&&Math.abs(info.currentTime-seek.target)<=5&&seek.requestedAt>=c.endedAt&&info.observedAt>=seek.requestedAt&&info.observedAt<=now+5000&&now-info.observedAt<=15000;
+  const cue=c.returnState.cue,confirmedCue=info.source==='current-cue-and-parent-confirmation'&&info.normalShowConfirmed===true&&info.heardCurrentCue===true&&cue?.publishedAt>=c.endedAt&&cue?.id===info.cueId&&cue.lastNumber===info.cueLastNumber;
+  if(!livePoint&&!confirmedCue)throw livekitError('Afspelen en geluid bewijzen het livepunt niet. Controleer de actuele terugkeercue of laat de regie gericht controleren.');
+  c.returnState.playerConfirmedAt=now;c.returnState.method=livePoint?'player-live-seek':'player-current-cue';
  }
  else if(action==='confirm-return'){
   need(['host'],['returning']);if(body.confirmed!==true)throw livekitError('Bevestig de terugkeer naar de uitzending.');
@@ -66,6 +73,6 @@ export function expireLiveCall(c,now=Date.now()){
 }
 export function publicLiveCall(c,role){
  if(!c||c.transport!=='livekit')return null;
- const fields=['id','version','transport','gameId','brandId','entryId','profileId','name','characterId','characterName','realtimeVoice','speechEngine','phase','outcome','reason','createdAt','updatedAt','maxSeconds','ringUntil','liveUntil','muted','drawHeld','checkpoint','checks','returnState','media','completedAt','liveAt','endedAt','realtimeStatus','realtimeStopped','voiceLevel'];
+ const fields=['id','version','transport','gameId','brandId','entryId','profileId','name','characterId','characterName','realtimeVoice','speechEngine','phase','outcome','reason','createdAt','updatedAt','maxSeconds','ringUntil','liveUntil','muted','aiMuted','drawHeld','checkpoint','checks','returnState','media','completedAt','liveAt','endedAt','realtimeStatus','realtimeStopped','voiceLevel'];
  const out=Object.fromEntries(fields.filter(k=>c[k]!==undefined).map(k=>[k,structuredClone(c[k])])),context=structuredClone(c.activeContext||c.context);if(role!=='host'){delete context.note;if(out.returnState)delete out.returnState.note;}out.context=context;return {...out,...callIdentities(c)};
 }

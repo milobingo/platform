@@ -1,3 +1,4 @@
+import {gameRequestFixture} from './game-request-fixture.mjs';
 import {verifiedTestEnvironment} from './verified-test-identity.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -39,7 +40,7 @@ test('one AI session starts only live; role snapshots hide secrets and old call 
  const before=await h.invoke('player');assert(!JSON.stringify(before).includes('Is verlegen'));assert(!JSON.stringify(before).includes('TEST_SECRET'));assert(!JSON.stringify(before).includes('test-key'));
  const realtime=await h.step('output',undefined,{sdp:'v=0\r\n'},200,{path:'/api/live-calls/realtime'});assert(realtime.sdp);const sent=h.upstream.find(x=>x.url==='https://api.openai.com/v1/live/sessions'),payload=JSON.parse(sent.options.body),session=payload.session;assert.equal(session.model,'gpt-live-1');assert.equal(session.store,false);assert.equal(session.output_modalities,undefined);assert.equal(payload.transport.type,'webrtc');assert(session.instructions.includes('Sofietje'));assert(session.instructions.includes('Is verlegen'));assert.equal(session.audio.output.voice,'verse');
  await h.step('output',undefined,{sdp:'v=0\r\n'},409,{path:'/api/live-calls/realtime'});const legacy=await handleCalls(h.req('host',undefined,{path:'/api/calls'}),h.env,()=>{throw Error('No upstream');});assert.equal(legacy.status,409);assert.equal((await h.current()).phase,'live');
- await h.step('host','finish');assert.equal((await h.current()).phase,'returning');assert(h.upstream.some(x=>x.url.endsWith('/hangup')));await h.step('player','player-returned',{checkpointId:c.checkpoint.id,confirmed:true,playbackInfo:{ready:true,audible:true,source:'parent-manual-confirmation'}});await h.step('host','confirm-return',{confirmed:true});await h.step('host','resume-draw');assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold,null);
+ await h.step('host','finish');assert.equal((await h.current()).phase,'returning');assert(h.upstream.some(x=>x.url.endsWith('/hangup')));await h.publishReturnCue();const cue=(await h.current()).returnState.cue;await h.step('player','player-returned',{checkpointId:c.checkpoint.id,confirmed:true,playbackInfo:{ready:true,audible:true,source:'current-cue-and-parent-confirmation',normalShowConfirmed:true,heardCurrentCue:true,cueId:cue.id,cueLastNumber:cue.lastNumber}});await h.step('host','confirm-return',{confirmed:true});await h.step('host','resume-draw');assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold,null);
 });
 
 test('a stale host can recover explicitly from a new regie client without releasing the hold early',async t=>{
@@ -61,4 +62,4 @@ test('output meter is bounded and a lost output lease still permits its bound AI
 });
 
 function handleCalls(request,env,...args){return verifiedhandleCalls(request,verifiedTestEnvironment(request,env),...args);}
-function handleBingo(request,env,...args){return verifiedhandleBingo(request,verifiedTestEnvironment(request,env),...args);}
+function handleBingo(request,env,...args){return gameRequestFixture(verifiedhandleBingo,request,verifiedTestEnvironment(request,env),...args);}

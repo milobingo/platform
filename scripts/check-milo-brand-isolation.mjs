@@ -1,3 +1,4 @@
+import {gameRequestFixture} from './game-request-fixture.mjs';
 import {verifiedTestEnvironment} from './verified-test-identity.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -12,7 +13,7 @@ import {activateBlock} from '../server/bingo-model.js';
 
 const oldPlan=()=>defaultGamePlan(4);
 test('legacy Milo stock cues migrate without changing cue IDs/order, rounds, books or custom Vlampie appearances',async()=>{
- const g=makeGame({brandId:'milo',date:'2026-11-01T14:00',roundCount:4},'host','https://studio.example');
+ const g=makeGame({brandId:'milo',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4},'host','https://studio.example');
  g.plan=oldPlan();g.production={revision:2,memory:{enabled:true,message:'Wat fijn dat jij erbij was. Tot de volgende Vlampie’s Bingo!'}};generateBooks(g,2,'original-books');
  g.plan.blocks.push({id:'my-custom-story',type:'story',title:'Vlampie is vandaag te gast',text:'Milo heeft Vlampie uitgenodigd om bij ons te komen kijken.',speakerId:'milo',hold:2});
  g.plan.blocks.push({id:'guest-says-hello',type:'welcome',title:'Welkom bij Vlampie',text:'Hallo allemaal! Welkom bij Vlampie’s Bingo. Pak je kaart erbij, we maken er een gezellige show van!',speakerId:'vlampie',hold:2});
@@ -36,7 +37,7 @@ test('legacy Milo stock cues migrate without changing cue IDs/order, rounds, boo
 
 test('new/reloaded Milo cues use active production and selected character; Vlampie stays original',()=>{
  const original=oldPlan(),repaired=repairLegacyPlanBrand(original,'milo');
- const g=makeGame({brandId:'milo',date:'2026-11-01T14:00',roundCount:4,plan:original},'host','https://studio.example');
+ const g=makeGame({brandId:'milo',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4,plan:original},'host','https://studio.example');
  assert.equal(g.plan.leadId,'milo');assert(!g.plan.blocks.some(b=>b.title==='Welkom bij Vlampie'||b.title==='Pakjespauze'));
  assert(createBlock('welcome',repaired).text.includes('Milo & Friends BingoShow'));
  assert.equal(createBlock('call',{...repaired,leadId:'stella'},'milo').text,'Tijd voor een gezellig moment met Stella!');
@@ -52,7 +53,7 @@ test('Milo production templates are separate while custom memory and profile tex
  const legacy='Wat fijn dat jij erbij was. Tot de volgende Vlampie’s Bingo!',custom='Bedankt Vlampie voor je gastbezoek!';
  assert.equal(productionSettings(undefined,'vlampie').memory.message,legacy);
  assert.equal(productionSettings({memory:{message:custom}},'milo').memory.message,custom);
- const g={brandId:'milo',date:'2026-11-01T14:00',status:'draft',participation:[],production:{memory:{message:legacy}}};
+ const g={brandId:'milo',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',status:'draft',participation:[],production:{memory:{message:legacy}}};
  assert(playerProduction(g,'family').memory.message.includes('Milo & Friends'));
  assert.equal(brandProfile({brandId:'milo',name:'Vlampie Grand Show'},'milo').name,'Milo & Friends · Sterrenplein');
  assert.equal(brandProfile({brandId:'milo',name:'Vlampie komt op bezoek',prompt:'Een speciaal verhaal over Vlampie'},'milo').name,'Vlampie komt op bezoek');
@@ -63,14 +64,14 @@ test('shared store interprets Milo defaults without GET writes; a real mutation 
  const db=new DatabaseSync(':memory:');db.exec('CREATE TABLE bingo_games (id TEXT PRIMARY KEY, owner_id TEXT, revision INTEGER, document TEXT, updated_at INTEGER)');
  const stmt=(sql,args=[])=>({bind:(...args)=>stmt(sql,args),first:async()=>db.prepare(sql).get(...args)||null,all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({meta:db.prepare(sql).run(...args)})}),store=new BingoStore({prepare:sql=>stmt(sql)});
  try{
-  const game=makeGame({brandId:'milo',date:'2026-11-01T14:00',roundCount:4},'host','https://studio.example');game.plan=oldPlan();generateBooks(game,2,'canonical-preserve');await store.create(game);
+  const game=makeGame({brandId:'milo',timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00',roundCount:4},'host','https://studio.example');game.plan=oldPlan();generateBooks(game,2,'canonical-preserve');await store.create(game);
   const rawBefore=db.prepare('SELECT document FROM bingo_games WHERE id=?').get(game.id).document,bookBefore=structuredClone(game.books),roundsBefore=structuredClone(game.plan.blocks.filter(b=>b.type==='round')),idsBefore=game.plan.blocks.map(b=>b.id);
   const read=(await store.game(game.id)).data;assert.equal(read.plan.blocks[1].title,'Welkom bij Milo & Friends');assert.equal(db.prepare('SELECT document FROM bingo_games WHERE id=?').get(game.id).document,rawBefore,'GET must not silently update persistent state');
   const updated=(await store.mutate(game.id,{},g=>activateBlock(g,1))).game;
   assert.equal(updated.events.at(-1).title,'Welkom bij Milo & Friends');assert.deepEqual(updated.plan.blocks.map(b=>b.id),idsBefore);assert.deepEqual(updated.books,bookBefore);assert.deepEqual(updated.plan.blocks.filter(b=>b.type==='round'),roundsBefore);
   const stored=JSON.parse(db.prepare('SELECT document FROM bingo_games WHERE id=?').get(game.id).document);assert.equal(stored.plan.blocks[1].title,'Welkom bij Milo & Friends');assert.equal(stored.revision,2);
-  const vlampie=makeGame({date:'2026-11-01T14:00'},'host','https://studio.example');await store.create(vlampie);assert.deepEqual((await store.game(vlampie.id)).data,vlampie);
+  const vlampie=makeGame({timeZone:'Europe/Amsterdam',date:'2026-11-01T14:00'},'host','https://studio.example');await store.create(vlampie);assert.deepEqual((await store.game(vlampie.id)).data,vlampie);
  }finally{db.close();}
 });
 
-function handleBingo(request,env,...args){return verifiedhandleBingo(request,verifiedTestEnvironment(request,env),...args);}
+function handleBingo(request,env,...args){return gameRequestFixture(verifiedhandleBingo,request,verifiedTestEnvironment(request,env),...args);}

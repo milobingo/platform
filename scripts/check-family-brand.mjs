@@ -4,17 +4,17 @@ import {familyBrandId,familyBrandAssets,selectFamilyGameId} from '../frontend/fa
 
 const now=Date.parse('2026-11-04T09:00Z');
 const games=[
- {id:'vlampie-old',brandId:'vlampie',status:'draft',date:'2026-10-07'},
- {id:'milo-late',brandId:'milo',status:'draft',date:'2026-12-01'},
- {id:'milo-next',brandId:'milo',status:'draft',date:'2026-11-11'},
- {id:'milo-old',brandId:'milo',status:'draft',date:'2026-09-11'},
+ {id:'vlampie-old',brandId:'vlampie',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-10-07'},
+ {id:'milo-late',brandId:'milo',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-12-01'},
+ {id:'milo-next',brandId:'milo',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-11-11'},
+ {id:'milo-old',brandId:'milo',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-09-11'},
 ];
 
 test('generic family entrance prefers the requested world and its nearest upcoming show without mutating the picker list',()=>{
  const source=structuredClone(games);
  assert.equal(selectFamilyGameId(games,{now}),'milo-next');
  assert.equal(selectFamilyGameId(games,{brandHint:'vlampie',now}),'vlampie-old');
- assert.equal(selectFamilyGameId([...games,{id:'milo-live',brandId:'milo',status:'running',date:'2026-11-04'}],{now}),'milo-live');
+ assert.equal(selectFamilyGameId([...games,{id:'milo-live',brandId:'milo',status:'running',timeZone:'Europe/Amsterdam',date:'2026-11-04'}],{now}),'milo-live');
  assert.deepEqual(games,source);
 });
 
@@ -29,7 +29,7 @@ test('no Milo show means a Milo welcome screen, while archived shows stay availa
  assert.equal(selectFamilyGameId([],{now}),'');
  const past=games.filter(g=>g.brandId==='milo').map(g=>({...g,status:'finished'}));
  assert.equal(selectFamilyGameId(past,{now}),'milo-late');
- const drafts=[{id:'older',brandId:'milo',status:'draft',date:'2026-09-01'},{id:'recent',brandId:'milo',status:'draft',date:'2026-10-01'}];
+ const drafts=[{id:'older',brandId:'milo',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-09-01'},{id:'recent',brandId:'milo',status:'draft',timeZone:'Europe/Amsterdam',date:'2026-10-01'}];
  assert.equal(selectFamilyGameId(drafts,{now}),'recent');
 });
 
