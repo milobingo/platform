@@ -169,3 +169,5 @@
 .mf-broadcast-shell .mf-prize-row h3{font-size:16px;margin:6px 0 4px}.mf-broadcast-shell .mf-prize-row p{font-size:13px;line-height:1.6;color:var(--mf-sub);min-height:0;margin:0}
 .mf-broadcast-shell .mf-prize-row>.mf-btn{margin:0}
 @media(max-width:480px){.mf-broadcast-shell .mf-prize-row{padding:15px 17px;grid-template-columns:44px minmax(0,1fr);gap:12px}.mf-broadcast-shell .mf-prize-row .mf-prize-art{width:44px;height:50px}.mf-broadcast-shell .mf-prize-row>.mf-btn{grid-column:2;justify-self:start}.mf-broadcast-shell .mf-prize-row p{font-size:12px}}
+
+.mf-check-list>[data-check="rules"]>div{min-width:0}.mf-start-rules{margin-top:12px;color:var(--mf-text,#382447)}.mf-start-rules details{margin-bottom:12px}.mf-start-rules summary{cursor:pointer;font-weight:600;color:var(--mf-purple,#8050a4)}.mf-start-rules details article{margin:12px 0;padding-top:10px;border-top:1px solid var(--mf-border,#e8dcef)}.mf-start-rules h4{font-size:12px;margin:0}.mf-start-rules .mf-btn{margin-top:8px}.mf-start-rules>a{font-size:12px}

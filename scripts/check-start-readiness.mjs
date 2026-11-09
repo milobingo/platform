@@ -6,7 +6,7 @@ import {build} from 'esbuild';
 import {parseHTML} from 'linkedom';
 import {startReadiness} from '../frontend/start-readiness.js';
 import {makeGame,generateBooks} from '../server/bingo-model.js';
-import {publishGameRules} from '../server/game-rules.js';
+import {publishGameRules,bindingRules,rulesContract} from '../server/game-rules.js';
 import {gameCapacity} from '../server/game-capacity.js';
 import {BingoStore} from '../server/bingo-store.js';
 import {createSqliteDatabase} from '../server/node-storage.js';
@@ -84,13 +84,81 @@ async function ui(){
  const {window}=parseHTML('<!doctype html><html><body><div id="root"></div></body></html>');
  const errors=[],context={window,document:window.document,navigator:{userAgent:'startcheck-qa'},location:{hash:''},console,setTimeout,clearTimeout,setInterval,clearInterval,performance,queueMicrotask,TextEncoder,TextDecoder,URL,URLSearchParams,crypto,structuredClone};
  context.self=context;context.globalThis=context;
- const js=(await build({stdin:{contents:`import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';import {StartCheck} from './frontend/App.jsx';import RegieWorkspace from './frontend/RegieWorkspace.jsx';const root=createRoot(document.getElementById('root'));window.renderTest=(kind,s,operator)=>flushSync(()=>root.render(kind==='start'?<StartCheck s={s} operator={operator} run={fn=>Promise.resolve(fn()).catch(window.testError)}/>:<RegieWorkspace s={s} engine={operator} run={fn=>Promise.resolve(fn()).catch(window.testError)}/>));window.closeTest=()=>flushSync(()=>root.unmount());`,resolveDir:process.cwd(),loader:'jsx'},bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',loader:{'.css':'empty'},logLevel:'warning',plugins:[{name:'renderer-boundary',setup(b){
+ const js=(await build({stdin:{contents:`import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';import {StartCheck} from './frontend/App.jsx';import RegieWorkspace from './frontend/RegieWorkspace.jsx';const root=createRoot(document.getElementById('root'));window.renderTest=(kind,s,operator,onSave)=>flushSync(()=>root.render(kind==='start'?<StartCheck s={s} operator={operator} onSave={onSave} run={fn=>Promise.resolve(fn()).catch(window.testError)}/>:<RegieWorkspace s={s} engine={operator} run={fn=>Promise.resolve(fn()).catch(window.testError)}/>));window.closeTest=()=>flushSync(()=>root.unmount());`,resolveDir:process.cwd(),loader:'jsx'},bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',loader:{'.css':'empty'},logLevel:'warning',plugins:[{name:'renderer-boundary',setup(b){
   b.onLoad({filter:/frontend\/App\.jsx$/},({path})=>({loader:'jsx',contents:readFileSync(path,'utf8').replace('const engine=new StudioEngine();','const engine={};')}));
   b.onLoad({filter:/frontend\/components\.jsx$/},({path})=>{let source=readFileSync(path,'utf8'),a=source.indexOf('export function Stage('),z=source.indexOf('export function Pattern(',a);return {loader:'jsx',contents:source.slice(0,a)+`export function Stage(){return <div className="mf-stage-frame"/>;}\n`+source.slice(z)};});
   b.onResolve({filter:/RegiePanels\.jsx$/},()=>({path:'panels',namespace:'qa'}));b.onLoad({filter:/.*/,namespace:'qa'},()=>({contents:'export default function Panels(){return null;}'}));
  }}]})).outputFiles[0].text;
  window.testError=error=>errors.push(error);vm.runInNewContext(js,context);return {window,document:window.document,errors,close:()=>window.closeTest(),click(node){assert(node);node.dispatchEvent(new window.Event('click',{bubbles:true,cancelable:true}));}};
 }
+
+
+const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
+const rulesNode=h=>h.document.querySelector('[data-check="rules"]');
+const buttonNamed=(node,label)=>[...node.querySelectorAll('button')].find(button=>button.textContent===label);
+function rulesSnapshot({published=false,stale=false,dirty=false}={}){
+ const s=snapshot();s.game.books=[];s.game.batches=[];
+ if(!published)delete s.game.rulesPublication;
+ if(stale)s.game.settings.claimSeconds+=30;
+ s.dirty=dirty;return s;
+}
+async function rulesUi(t,s,{failPublish=false,onSave}={}){
+ const h=await ui(),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),posts=[],notices=[];
+ t.after(()=>{h.close();return db.close();});await store.create(structuredClone(s.game));
+ const render=()=>h.window.renderTest('start',s,operator,onSave);
+ const operator={game:s.game,async task(operation,notice){try{const result=await operation();if(notice)notices.push(notice);return result;}finally{render();}},async post(action){
+  posts.push(action);if(failPublish)throw new Error('Publiceren is tijdelijk niet beschikbaar.');
+  const response=await handleBingo(new Request(`https://studio.example/api/bingo/games/${s.game.id}/${action}`,{method:'POST',headers:{Origin:'https://studio.example','X-Vlampie-Bingo':'1','Content-Type':'application/json'},body:JSON.stringify({requestId:crypto.randomUUID(),regieId:'rules-ui-fixture'})}),{DB:db,AUTH_IDENTITY:{user:'host',email:'host@example.test',admin:true}});
+  const data=await response.json();if(!response.ok)throw Object.assign(new Error(data.error.message),{code:data.error.code});operator.game=s.game=data.game;return data;
+ }};
+ render();return {...h,s,operator,store,posts,notices,render,async settle(){for(let attempt=0;attempt<20;attempt++){await tick();if(!h.document.querySelector('[aria-busy="true"]')){await tick();return;}}}};
+}
+
+test('U03: rules readiness distinguishes missing publication, changed preparation and the current published version',()=>{
+ const missing=rulesSnapshot(),stale=rulesSnapshot({published:true,stale:true}),current=rulesSnapshot({published:true});
+ assert.equal(row(missing,'rules').status,'blocked');assert.match(row(missing,'rules').detail,/nog niet gepubliceerd/i);
+ assert.equal(row(stale,'rules').status,'blocked');assert.match(row(stale,'rules').detail,/gewijzigd|verouderd|niet meer.*actueel/i);
+ assert.notEqual(row(missing,'rules').detail,row(stale,'rules').detail);
+ assert.equal(row(current,'rules').status,'ready');assert.match(row(current,'rules').detail,/versie\s*1/i);
+});
+
+test('U03: the inline rules preview publishes only after an explicit click and stays ready after stored reload',async t=>{
+ const h=await rulesUi(t,rulesSnapshot()),inline=rulesNode(h);assert(inline);
+ assert.equal(inline.getAttribute('data-status'),'blocked');assert.equal(inline.querySelector('summary')?.textContent,'Spelregels bekijken');
+ for(const rule of bindingRules(rulesContract(h.s.game))){assert(inline.textContent.includes(rule.title));assert(inline.textContent.includes(rule.text));}
+ assert.equal(h.posts.length,0,'Rendering the review must not publish rules');h.render();await h.settle();assert.equal(h.posts.length,0,'Re-rendering the review must not publish rules');
+ const publish=buttonNamed(rulesNode(h),'Publiceer spelregels');assert(publish);assert.equal(publish.disabled,false);h.click(publish);await h.settle();
+ assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.notices.length,1);assert.equal(rulesNode(h).getAttribute('data-status'),'ready');assert.equal(h.s.game.rulesPublication.version,1);
+ h.operator.game=h.s.game=(await h.store.game(h.s.game.id)).data;h.render();await h.settle();assert.equal(rulesNode(h).getAttribute('data-status'),'ready');assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.errors.length,0);
+});
+
+test('U03: a failed rules publication stays blocked and does not announce successful publication',async t=>{
+ const h=await rulesUi(t,rulesSnapshot(),{failPublish:true});h.click(buttonNamed(rulesNode(h),'Publiceer spelregels'));await h.settle();
+ assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.notices.length,0);assert.equal(rulesNode(h).getAttribute('data-status'),'blocked');assert.equal(h.s.game.rulesPublication,undefined);assert.equal((await h.store.game(h.s.game.id)).data.rulesPublication,undefined);
+ assert.equal(h.errors.length,1);assert.match(h.errors[0].message,/tijdelijk niet beschikbaar/);
+});
+
+test('U03: changed saved rules without participants offer an explicit current-version publication beside the blocker',async t=>{
+ const h=await rulesUi(t,rulesSnapshot({published:true,stale:true})),before=structuredClone(h.s.game.rulesPublication),inline=rulesNode(h);
+ assert.equal(inline.getAttribute('data-status'),'blocked');const publish=buttonNamed(inline,'Publiceer actuele spelregels');assert(publish);assert.equal(publish.disabled,false);assert.equal(h.posts.length,0);
+ assert(inline.textContent.includes(bindingRules(rulesContract(h.s.game)).find(rule=>rule.id==='core-window').text),'The review must contain the current rules being published');
+ h.click(publish);await h.settle();assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.s.game.rulesPublication.version,2);assert.deepEqual(structuredClone(h.s.game.rulesHistory),[before]);assert.equal(rulesNode(h).getAttribute('data-status'),'ready');assert.equal(h.errors.length,0);
+});
+
+test('U03: unsaved preparation explains the prerequisite and saves without automatically publishing',async t=>{
+ const s=rulesSnapshot({dirty:true});let saves=0,h;
+ h=await rulesUi(t,s,{onSave:async()=>{saves++;s.dirty=false;h.render();}});const inline=rulesNode(h);assert.match(inline.textContent,/sla.*eerst.*op|eerst.*opslaan/i);
+ assert.equal(!!buttonNamed(inline,'Publiceer spelregels'),false);const save=buttonNamed(inline,'Draaiboek opslaan');assert(save);h.click(save);await h.settle();
+ assert.equal(saves,1);assert.deepEqual(h.posts,[]);assert.equal(rulesNode(h).getAttribute('data-status'),'blocked');assert.equal(!!buttonNamed(rulesNode(h),'Publiceer spelregels'),true);assert.equal(h.errors.length,0);
+});
+
+test('U03: existing participation locks changed rules while current rules expose only their published version',async t=>{
+ for(const participation of ['book','order']){
+  const s=rulesSnapshot({published:true,stale:true});if(participation==='book')s.game.books=[{id:'locked-book',accountId:'family',admitted:true}];else s.game.orders=[{id:'locked-order',status:'requested'}];
+  const h=await rulesUi(t,s),inline=rulesNode(h);assert.equal(inline.getAttribute('data-status'),'blocked');assert.match(inline.textContent,/deelnemers|bestellingen/i);assert.equal([...inline.querySelectorAll('button')].some(button=>/Publiceer/.test(button.textContent)),false);assert.equal(h.posts.length,0);assert.equal(h.errors.length,0);
+ }
+ const h=await rulesUi(t,rulesSnapshot({published:true})),inline=rulesNode(h);assert.equal(inline.getAttribute('data-status'),'ready');assert.match(inline.textContent,/versie\s*1/i);const link=inline.querySelector('a[href*="/spelregels?spel="]');assert(link);assert(link.getAttribute('href').includes(encodeURIComponent(h.s.game.id)));assert.equal([...h.document.querySelectorAll('button')].some(button=>/Publiceer.*(?:regels|spelregels)/i.test(button.textContent)),false);assert.equal(h.posts.length,0);
+});
 
 test('U03: actual StartCheck disables blocked native starts, exposes reasons and permits an explicit healthy start',async()=>{
  const h=await ui();try{

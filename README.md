@@ -56,6 +56,8 @@ Staging draait op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebserv
 
 OpenAI en LiveKit zijn vanuit de regie te beheren via **Instellingen → AI & stemmen** en **Instellingen → E-mail & bellen**. Sleutels worden versleuteld opgeslagen en niet teruggestuurd. [Bediening en verbindingstests](docs/REGIE-SLEUTELS.md).
 
+De regels voor een opgeslagen show publiceer je onder **Draaiboek → Startcheck**, direct bij **Bindende spelregels**. Daar kun je de uit de show samengestelde regels bekijken en expliciet publiceren. De rij toont daarna de actuele versie; bij gewijzigde regels of bestaande deelname geeft de startcheck de passende vervolgstap.
+
 Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De gesigneerde DG-bestelmailadapter is gebouwd; de eigen Milo-gateway/worker, afzender, signing secret en het reconciliatiecontract moeten nog worden ingericht. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md). Productie is geautoriseerd; de echte bestemming wordt gevalideerd via [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
 
 De oorspronkelijke overdrachtsdocumenten staan onder `docs/overdracht/`, de oorspronkelijke README onder `docs/overdracht/README-bron.md`. Het Cloudflare-buildpad is historische bron; de standaardbuild is nu Next.js. `.openai/hosting.json` hoort bij de oude Site en wordt niet gebruikt voor DG-releases.
