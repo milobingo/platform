@@ -1,0 +1,1 @@
+$ eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/package-standalone.mjs scripts/start-standalone-test.mjs scripts/deploy scripts/run-checks.mjs playwright.config.mjs

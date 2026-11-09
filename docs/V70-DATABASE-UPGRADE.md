@@ -1,6 +1,6 @@
 # v70 · Beoordeelde upgrade van 18 naar 23 tabellen
 
-De upgradecode is lokaal beproefd op een geïsoleerde PostgreSQL17-fixture en SQLite. Er is hiermee geen staging- of productieschema gewijzigd. De workflow in `infra/staging/staging-database-upgrade-v70.yml.template` is een inactief sjabloon; die wordt niet automatisch uitgevoerd.
+De upgradecode is lokaal beproefd op een geïsoleerde PostgreSQL17-fixture en SQLite. Er is hiermee geen staging- of productieschema gewijzigd. De handmatige workflow `.github/workflows/staging-v70-upgrade.yml` is voorbereid met `inventory_only:true` als veilige standaard. Eerst controleert zij bronmetadata en een afzonderlijke lege herstelserver; toepassen vraagt de exacte release en beide beoordeelde manifestdigests. Het oorspronkelijke sjabloon onder `infra/staging/` blijft als referentie bewaard. Er is bij deze voorbereiding nog geen remote upgrade uitgevoerd.
 
 De oorspronkelijke SQL blijft bytegelijk. De nieuwe migratie voegt uitsluitend `studio_mail_records`, `studio_mail_subscriptions`, `studio_mail_suppressions`, `studio_mail_unsubscribe` en `bingo_payment_receipts` toe. Alle vijf hebben RLS en uitsluitend het beoordeelde backendprivilegecontract. Gebruikersaanvragen voeren geen DDL uit; een ontbrekende mailmigratie geeft een beheerste 503.
 

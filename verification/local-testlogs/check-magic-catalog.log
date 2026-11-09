@@ -1,9 +1,9 @@
-✔ twelve different authored tricks have complete, immutable performance metadata (2.298003ms)
-✔ all twelve can be planned with their own default duration; explicit saved timings remain compatible (1.876395ms)
-✔ adding any trick to the rundown uses its exact duration and never changes game state (0.69354ms)
-✔ every manual trick has one audio cue, freezes, resumes, settles and preserves official game data (1.597501ms)
-✔ a call/draw hold survives magic, on-air speech freezes it, and invalid or late requests cannot start (0.614261ms)
-✔ all twelve execute in a timed rundown with cast context, pause and cleanup, without any drawn ball (3.90691ms)
+✔ twelve different authored tricks have complete, immutable performance metadata (1.940791ms)
+✔ all twelve can be planned with their own default duration; explicit saved timings remain compatible (1.848832ms)
+✔ adding any trick to the rundown uses its exact duration and never changes game state (0.67331ms)
+✔ every manual trick has one audio cue, freezes, resumes, settles and preserves official game data (1.599024ms)
+✔ a call/draw hold survives magic, on-air speech freezes it, and invalid or late requests cannot start (0.581041ms)
+✔ all twelve execute in a timed rundown with cast context, pause and cleanup, without any drawn ball (4.14443ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 6
@@ -11,4 +11,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 16.784035
+ℹ duration_ms 15.898104

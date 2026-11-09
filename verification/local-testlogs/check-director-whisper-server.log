@@ -1,13 +1,13 @@
-✔ director hints require owner, exact origin, regie header, own show and permitted character before spending credit (29.263737ms)
-✔ a natural reaction uses saved cast identity and only server facts; hint and game state stay private (11.337302ms)
-✔ all twelve Milo presenters and Vlampie use their own permitted cast without requiring the stored lead (32.684441ms)
-✔ same id is a durable encrypted reply and a changed hint never reuses it (5.693729ms)
-✔ parallel preparation shares one CAS claim and an uncertain attempt is not silently regenerated (6.03739ms)
-✔ moderation, private echoes, invented numbers, results and incomplete provider output cannot become a prepared reply (36.093799ms)
-✔ normal hints remain possible during private backstage without guest data, but never bypass LiveKit drawHold or switching (6.28875ms)
-✔ a show epoch change or backstage-to-live transition during generation discards the reaction and preserves the hold (5.474926ms)
-✔ real handler ignores forged identity headers and environment mode cannot save or substitute provider keys (3.316436ms)
-✔ a short raw whisper echo remains private when the provider changes punctuation, case or accents (10.112746ms)
+✔ director hints require owner, exact origin, regie header, own show and permitted character before spending credit (33.092862ms)
+✔ a natural reaction uses saved cast identity and only server facts; hint and game state stay private (12.492992ms)
+✔ all twelve Milo presenters and Vlampie use their own permitted cast without requiring the stored lead (38.961106ms)
+✔ same id is a durable encrypted reply and a changed hint never reuses it (6.166854ms)
+✔ parallel preparation shares one CAS claim and an uncertain attempt is not silently regenerated (8.025422ms)
+✔ moderation, private echoes, invented numbers, results and incomplete provider output cannot become a prepared reply (40.102827ms)
+✔ normal hints remain possible during private backstage without guest data, but never bypass LiveKit drawHold or switching (5.859771ms)
+✔ a show epoch change or backstage-to-live transition during generation discards the reaction and preserves the hold (4.515643ms)
+✔ real handler ignores forged identity headers and environment mode cannot save or substitute provider keys (4.617328ms)
+✔ a short raw whisper echo remains private when the provider changes punctuation, case or accents (9.222606ms)
 ℹ tests 10
 ℹ suites 0
 ℹ pass 10
@@ -15,4 +15,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 151.383388
+ℹ duration_ms 169.223927

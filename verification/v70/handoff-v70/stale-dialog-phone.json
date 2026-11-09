@@ -10,15 +10,18 @@
     "/api/player/session",
     "/api/player/brand",
     "/api/bingo/games",
-    "/api/bingo/games/fdef28bd-5de2-4a4a-a5c9-6db2c2f5c8f5/live",
-    "/api/bingo/games/fdef28bd-5de2-4a4a-a5c9-6db2c2f5c8f5/chat",
+    "/api/bingo/games/c110eeb5-60e2-4ed4-9c90-6406ecb341bf/live",
+    "/api/bingo/games/c110eeb5-60e2-4ed4-9c90-6406ecb341bf/chat",
     "/api/live-calls",
-    "/api/bingo/games/fdef28bd-5de2-4a4a-a5c9-6db2c2f5c8f5/chat/stream",
-    "/api/bingo/games/fdef28bd-5de2-4a4a-a5c9-6db2c2f5c8f5/chat",
+    "/api/bingo/games/c110eeb5-60e2-4ed4-9c90-6406ecb341bf/chat/stream",
+    "/api/bingo/games/c110eeb5-60e2-4ed4-9c90-6406ecb341bf/chat",
     "/api/bingo/me",
     "/api/bingo/games",
-    "/api/bingo/games/fdef28bd-5de2-4a4a-a5c9-6db2c2f5c8f5/live"
+    "/api/bingo/games/c110eeb5-60e2-4ed4-9c90-6406ecb341bf/live"
   ],
   "writes": [],
-  "unexpected": []
+  "unexpected": [],
+  "blockedSimulatedMedia": [
+    "https://www.youtube-nocookie.com/embed/abcdefghijk"
+  ]
 }

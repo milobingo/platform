@@ -1,14 +1,14 @@
-✔ local role choice operates durable real bingo APIs with separate family ownership (1159.259476ms)
-✔ forged Sites headers and legacy sessions never grant an identity (15.473099ms)
-✔ local mode fails closed outside explicit loopback development and rejects tampered cookies (23.095229ms)
-✔ mutation CSRF and return paths are checked before state changes (20.228756ms)
-✔ Supabase verifies identity and private SQL roles override all email and metadata claims (15.998777ms)
-✔ standalone proxy origin requires the fixed listener and exact public host and protocol (19.85453ms)
-✔ OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects (18.047781ms)
-✔ unconfigured remote auth gives a configuration error and websocket upgrades are explicit (30.496586ms)
-✔ configured provider handlers use the Node fetch adapter while live verification stays explicit (31.174053ms)
-✔ birth dates reject impossible and future values and use the Amsterdam calendar (0.913332ms)
-✔ verified Supabase onboarding cannot change a foreign profile and can select an own profile at the limit (4.590348ms)
+✔ local role choice operates durable real bingo APIs with separate family ownership (1458.48553ms)
+✔ forged Sites headers and legacy sessions never grant an identity (28.895792ms)
+✔ local mode fails closed outside explicit loopback development and rejects tampered cookies (31.212522ms)
+✔ mutation CSRF and return paths are checked before state changes (23.305519ms)
+✔ Supabase verifies identity and private SQL roles override all email and metadata claims (46.481072ms)
+✔ standalone proxy origin requires the fixed listener and exact public host and protocol (78.88551ms)
+✔ OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects (29.736566ms)
+✔ unconfigured remote auth gives a configuration error and websocket upgrades are explicit (60.457223ms)
+✔ configured provider handlers use the Node fetch adapter while live verification stays explicit (64.337693ms)
+✔ birth dates reject impossible and future values and use the Amsterdam calendar (2.313377ms)
+✔ verified Supabase onboarding cannot change a foreign profile and can select an own profile at the limit (7.566517ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -16,4 +16,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1345.288236
+ℹ duration_ms 1839.296957

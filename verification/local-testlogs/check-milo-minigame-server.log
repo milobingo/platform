@@ -1,13 +1,13 @@
-✔ new Milo games are available only to Milo while legacy selections remain intact (2.237872ms)
-✔ new shows use their brand defaults without expanding an explicitly saved game pool (4.960889ms)
+✔ new Milo games are available only to Milo while legacy selections remain intact (2.090228ms)
+✔ new shows use their brand defaults without expanding an explicitly saved game pool (4.969872ms)
 ▶ every chosen Milo game persists one authoritative tied-bingo result and never changes cards or drawn balls
-  ✔ plingo (49.516469ms)
-  ✔ ribbons (13.043778ms)
-  ✔ mirrors (9.654992ms)
-  ✔ potion (8.611461ms)
-  ✔ butterfly (11.034151ms)
-✔ every chosen Milo game persists one authoritative tied-bingo result and never changes cards or drawn balls (93.715212ms)
-✔ raffle retry keeps its winner and an active show cannot change brand (17.81636ms)
+  ✔ plingo (35.491857ms)
+  ✔ ribbons (10.336745ms)
+  ✔ mirrors (7.788211ms)
+  ✔ potion (8.546552ms)
+  ✔ butterfly (8.502526ms)
+✔ every chosen Milo game persists one authoritative tied-bingo result and never changes cards or drawn balls (72.336896ms)
+✔ raffle retry keeps its winner and an active show cannot change brand (13.17792ms)
 ℹ tests 9
 ℹ suites 0
 ℹ pass 9
@@ -15,4 +15,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 122.577282
+ℹ duration_ms 96.015139

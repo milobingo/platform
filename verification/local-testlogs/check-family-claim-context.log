@@ -1,12 +1,12 @@
-✔ the parent sees a frozen goal while later polls cannot retarget the dialog (7.550012ms)
-✔ two initial dialogs can join one shared window and a closed historic claim is not current (2.009025ms)
-✔ milo: binding rules cannot be hidden by presentation edits or changed after participation (2.342281ms)
-✔ vlampie: binding rules cannot be hidden by presentation edits or changed after participation (1.383437ms)
-✔ rules are available before login and expose no family, book or private settings data (24.224ms)
-✔ native game PUT explicitly republishes version 2 before participation and preserves version 1 plus a reasoned audit (27.323018ms)
-✔ native game PUT requires explicit publication and a meaningful reason; rejected edits leave the complete stored game unchanged (12.852637ms)
-✔ native game PUT atomically refuses republishing after linked-book without changing plan, rules or revision (19.189571ms)
-✔ native game PUT atomically refuses republishing after active-order without changing plan, rules or revision (22.584487ms)
+✔ the parent sees a frozen goal while later polls cannot retarget the dialog (7.772299ms)
+✔ two initial dialogs can join one shared window and a closed historic claim is not current (3.388335ms)
+✔ milo: binding rules cannot be hidden by presentation edits or changed after participation (4.621895ms)
+✔ vlampie: binding rules cannot be hidden by presentation edits or changed after participation (1.487224ms)
+✔ rules are available before login and expose no family, book or private settings data (28.495826ms)
+✔ native game PUT explicitly republishes version 2 before participation and preserves version 1 plus a reasoned audit (34.486474ms)
+✔ native game PUT requires explicit publication and a meaningful reason; rejected edits leave the complete stored game unchanged (20.312084ms)
+✔ native game PUT atomically refuses republishing after linked-book without changing plan, rules or revision (21.353831ms)
+✔ native game PUT atomically refuses republishing after active-order without changing plan, rules or revision (26.785824ms)
 ℹ tests 9
 ℹ suites 0
 ℹ pass 9
@@ -14,4 +14,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 130.212403
+ℹ duration_ms 156.432541

@@ -84,11 +84,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/deploy/staging-restore-relay.mjs runner > "$RUNNER_TEMP/milo-v70-restore-relay.log" 2>&1 &
+          node_path=$(command -v node)
+          env -i PATH=/usr/bin:/bin "$node_path" scripts/deploy/staging-restore-relay.mjs runner > "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log" 2>&1 &
           relay_pid=$!
-          printf '%s' "$relay_pid" > "$RUNNER_TEMP/milo-v70-restore-relay.pid"
+          printf '%s' "$relay_pid" > "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.pid"
           for ((attempt=0;attempt<30;attempt++)); do
-            if test -f "$RUNNER_TEMP/milo-v70-restore-relay.log" && grep -q '"event":"ready"' "$RUNNER_TEMP/milo-v70-restore-relay.log"; then exit 0; fi
+            if test -f "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log" && grep -q '"event":"ready"' "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log"; then exit 0; fi
             if ! kill -0 "$relay_pid" 2>/dev/null; then exit 1; fi
             sleep 1
           done
@@ -111,7 +112,7 @@ jobs:
       - name: Mark this run's new backup files without copying earlier backups
         if: ${{ !inputs.inventory_only }}
         shell: bash
-        run: touch "$RUNNER_TEMP/milo-v70-backup-start"
+        run: touch "$RUNNER_TEMP/milo-v70-backup-start-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
       - name: Apply v70 upgrade only after exact baseline audit, encrypted backup and actual restore proof
         if: ${{ !inputs.inventory_only }}
         env:
@@ -142,15 +143,15 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -m 700 -p staging-v70-database-evidence
-          if test -f "$RUNNER_TEMP/milo-v70-backup-start"; then
-            find /var/backups/milobingo-staging -maxdepth 1 -type f -newer "$RUNNER_TEMP/milo-v70-backup-start" \( -name '*.dump.aesgcm' -o -name '*.extensions.json.aesgcm' -o -name '*.proof.json' \) -exec cp -- '{}' staging-v70-database-evidence/ \;
-            rm "$RUNNER_TEMP/milo-v70-backup-start"
+          if test -f "$RUNNER_TEMP/milo-v70-backup-start-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"; then
+            find /var/backups/milobingo-staging -maxdepth 1 -type f -newer "$RUNNER_TEMP/milo-v70-backup-start-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \( -name '*.dump.aesgcm' -o -name '*.extensions.json.aesgcm' -o -name '*.proof.json' \) -exec cp -- '{}' staging-v70-database-evidence/ \;
+            rm "$RUNNER_TEMP/milo-v70-backup-start-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           fi
       - name: Preserve encrypted backups and sanitized restore evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: milobingo-v70-database-${{ github.run_id }}
+          name: milobingo-v70-database-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 14
           if-no-files-found: warn
           path: |
@@ -161,10 +162,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          if test -f "$RUNNER_TEMP/milo-v70-restore-relay.pid"; then
-            relay_pid=$(cat "$RUNNER_TEMP/milo-v70-restore-relay.pid")
-            if [[ "$relay_pid" =~ ^[0-9]+$ ]] && test -r "/proc/$relay_pid/cmdline" && tr '\0' ' ' < "/proc/$relay_pid/cmdline" | grep -q 'node scripts/deploy/staging-restore-relay.mjs runner'; then
+          if test -f "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.pid"; then
+            relay_pid=$(cat "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.pid")
+            if [[ "$relay_pid" =~ ^[0-9]+$ ]] && test -r "/proc/$relay_pid/cmdline" && tr '\0' ' ' < "/proc/$relay_pid/cmdline" | grep -q 'scripts/deploy/staging-restore-relay.mjs runner'; then
               kill "$relay_pid"
             fi
-            rm "$RUNNER_TEMP/milo-v70-restore-relay.pid"
+            rm "$RUNNER_TEMP/milo-v70-restore-relay-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.pid"
           fi

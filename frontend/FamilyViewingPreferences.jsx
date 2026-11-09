@@ -7,6 +7,6 @@ export default function FamilyViewingPreferences({preferences,onChange,controlle
   <p role="status">{demo?'De demo heeft geen gesproken uitzending of ondertiteltrack. Je voorkeur wordt wel op dit apparaat bewaard.':pending?'Je voorkeur is bewaard. Gebruik de CC-knop in de video of pas je voorkeur hieronder bewust toe.':player.framePresent?(player.captionsApplied?'Ondertiteling is bij YouTube aangevraagd. Controleer de CC-knop in de video; beschikbare talen en tracks worden door YouTube bepaald.':'YouTube bepaalt de huidige ondertiteling. Met de CC-knop in de video kun je een beschikbare track aan- of uitzetten.'):'Je voorkeur geldt zodra een YouTube-uitzending opent.'}</p>
   {!demo&&pending&&<button type="button" className="fam-button secondary" disabled={callActive||player.suspended} onClick={()=>controller.applyCaptionPreference()}>CC-voorkeur op video toepassen</button>}
   {!demo&&pending&&<small>Dit opent de video opnieuw. Tijdens een belmoment is dit geblokkeerd. Uitvinken herstelt de eigen YouTube-voorkeur; de CC-knop schakelt ondertiteling werkelijk uit.</small>}
-  <p className="fam-view-device">Alleen op dit apparaat, apart voor iedere showwereld. Het officiële ballenbord is geen spraakondertitel.</p>
+  <p className="fam-view-device">Alleen op dit apparaat, apart voor iedere showwereld. Ook je apparaatinstelling voor minder beweging blijft gelden. Het officiële ballenbord is geen spraakondertitel.</p>
  </section>;
 }

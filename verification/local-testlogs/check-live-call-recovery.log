@@ -1,15 +1,15 @@
-✔ atomic hold/call batch stays invisible before commit; an earlier ball wins CAS and joins checkpoint (46.975599ms)
-✔ failure between the two writes rolls back both hold and call and never opens media (6.627704ms)
-✔ atomic call preparation preserves the shared game history capacity reserve (49.224858ms)
-✔ late provider creation after cancellation is hung up and never returns SDP or resumes drawing (28.440329ms)
-✔ expired unknown orphan stays explicitly uncertain; closing an unrelated session cannot release the hold (17.588154ms)
-✔ provider timeout remains uncertain and rotated credentials cannot falsely close the orphan (17.027894ms)
-✔ known provider hangup failure remains held and a later verified cleanup can finish it (17.738061ms)
-✔ LiveKit deployment credential rotation cannot issue new tokens or falsely close the original rooms (15.817992ms)
-✔ second tab stays passive and cannot cancel, but parent consent withdrawal always closes media and keeps hold (14.679676ms)
-✔ unpublished results never enter live context and active-call key replacement performs no provider probe (14.141641ms)
-✔ 120s playback at a 240s live edge and plain audible playback cannot prove return; a current cue can (14.436728ms)
-✔ fresh output generation restarts sequence safely and rejects delayed old producer; output acknowledges actual rendered generation (8.08989ms)
+✔ atomic hold/call batch stays invisible before commit; an earlier ball wins CAS and joins checkpoint (44.807957ms)
+✔ failure between the two writes rolls back both hold and call and never opens media (6.999358ms)
+✔ atomic call preparation preserves the shared game history capacity reserve (50.672103ms)
+✔ late provider creation after cancellation is hung up and never returns SDP or resumes drawing (30.53786ms)
+✔ expired unknown orphan stays explicitly uncertain; closing an unrelated session cannot release the hold (18.254053ms)
+✔ provider timeout remains uncertain and rotated credentials cannot falsely close the orphan (20.557454ms)
+✔ known provider hangup failure remains held and a later verified cleanup can finish it (19.929904ms)
+✔ LiveKit deployment credential rotation cannot issue new tokens or falsely close the original rooms (18.399395ms)
+✔ second tab stays passive and cannot cancel, but parent consent withdrawal always closes media and keeps hold (14.667468ms)
+✔ unpublished results never enter live context and active-call key replacement performs no provider probe (14.469058ms)
+✔ 120s playback at a 240s live edge and plain audible playback cannot prove return; a current cue can (14.118617ms)
+✔ fresh output generation restarts sequence safely and rejects delayed old producer; output acknowledges actual rendered generation (9.408568ms)
 ℹ tests 12
 ℹ suites 0
 ℹ pass 12
@@ -17,7 +17,7 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 257.07632
+ℹ duration_ms 268.974378
 gpt_live_close_unconfirmed {
   restStatus: 502,
   attachStatus: 502,

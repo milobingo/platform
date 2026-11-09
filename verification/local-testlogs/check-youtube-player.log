@@ -1,13 +1,15 @@
-✔ YouTube uses enablejsapi+origin and mute proof without inferring stream catchup from video clocks (3.086557ms)
-✔ an unavailable/blocked API physically removes the iframe before a direct call can begin (0.410362ms)
-✔ autoplay failure after restoration stays unconfirmed instead of reporting successful playback (100.94614ms)
-✔ remount during an accepted call keeps the new iframe suspended until explicit restoration (0.676696ms)
-✔ DVR restoration requests the measurable live edge but does not invent an acknowledged seek (101.89574ms)
-ℹ tests 5
+✔ YouTube uses enablejsapi+origin and mute proof without inferring stream catchup from video clocks (3.218086ms)
+✔ an unavailable/blocked API physically removes the iframe before a direct call can begin (0.401039ms)
+✔ autoplay failure after restoration stays unconfirmed instead of reporting successful playback (100.891119ms)
+✔ remount during an accepted call keeps the new iframe suspended until explicit restoration (0.624537ms)
+✔ DVR restoration requests the measurable live edge but does not invent an acknowledged seek (101.638524ms)
+✔ caption preference does not interrupt playback; explicit application requests documented Dutch CC parameters without claiming track availability (0.680751ms)
+✔ applying caption preference during direct call suspension cannot recreate the video or defeat the audio gate (0.282478ms)
+ℹ tests 7
 ℹ suites 0
-ℹ pass 5
+ℹ pass 7
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 211.625691
+ℹ duration_ms 213.505777

@@ -1,11 +1,11 @@
-✔ public CA configuration decodes a currently valid certificate without a network request (2.283372ms)
-✔ malformed or non-certificate CA values fail without disclosing their input (0.717989ms)
-✔ remote connections always verify TLS, including when the loopback exception is enabled (1.075039ms)
-✔ unencrypted loopback connections require the explicit local exception and no CA (2.193955ms)
-✔ URL TLS overrides cannot replace explicit certificate verification or read certificate paths (2.734344ms)
-✔ pg environment TLS settings cannot weaken the explicit connection configuration (1.045474ms)
-✔ query parameters cannot redirect validated database hosts or credentials (3.737734ms)
-✔ invalid database URLs fail with a sanitized error (0.310701ms)
+✔ public CA configuration decodes a currently valid certificate without a network request (2.44193ms)
+✔ malformed or non-certificate CA values fail without disclosing their input (0.767734ms)
+✔ remote connections always verify TLS, including when the loopback exception is enabled (1.069009ms)
+✔ unencrypted loopback connections require the explicit local exception and no CA (2.419507ms)
+✔ URL TLS overrides cannot replace explicit certificate verification or read certificate paths (3.070192ms)
+✔ pg environment TLS settings cannot weaken the explicit connection configuration (1.110794ms)
+✔ query parameters cannot redirect validated database hosts or credentials (0.571385ms)
+✔ invalid database URLs fail with a sanitized error (0.242288ms)
 ℹ tests 8
 ℹ suites 0
 ℹ pass 8
@@ -13,4 +13,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 19.220858
+ℹ duration_ms 17.144752

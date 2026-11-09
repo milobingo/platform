@@ -6,15 +6,16 @@ const output='verification/v70/handoff-v70';
 const noOverflow=page=>expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 async function evidence(page,name,body){
  await mkdir(output+'/screenshots',{recursive:true});
+ if(await page.getByRole('dialog').count())await expect(page.getByRole('dialog')).toHaveCSS('opacity','1');
  await page.screenshot({path:`${output}/screenshots/${name}.png`,fullPage:false});
  await writeFile(`${output}/${name}.json`,JSON.stringify({realReactAndBrowser:true,realAccountOrProviderAcceptance:false,...body},null,2)+'\n');
 }
-async function protectNetwork(page,testInfo,{dispatch}={}){
+async function protectNetwork(page,testInfo,{dispatch,expectedExternal=[]}={}){
  const origin=new URL(testInfo.project.use.baseURL).origin,proof={errors:[],external:[],api:[],writes:[],unexpected:[]};
  page.on('pageerror',error=>proof.errors.push(error.message));
  await page.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());
-  if(url.origin!==origin){proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
+  if(url.origin!==origin){if(expectedExternal.includes(url.origin)){proof.blockedSimulatedMedia??=[];proof.blockedSimulatedMedia.push(url.origin+url.pathname);}else proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
   proof.api.push(url.pathname);if(request.method()!=='GET')proof.writes.push(url.pathname);
@@ -55,13 +56,15 @@ test('v70 family dialog stays bound to the shown goal after a real browser poll 
  const account='qa-family-only',family={ownerName:'QA Ouder',email:'qa@example.invalid',profiles:[{id:'qa-child',name:'QA Kind',age:9}],blocked:false,blockedGames:{},cooldowns:{}};
  const game=makeGame({brandId:'milo',title:'Gesimuleerde pollcontrole',date:'2026-11-11T13:30',timeZone:'Europe/Amsterdam'},'qa-regie','https://example.invalid');
  generateBooks(game,1,'browser-v70-fixture');Object.assign(game.books[0],{accountId:account,profileId:'qa-child',name:'QA Kind'});
+ game.settings.youtubeId='abcdefghijk';await page.addInitScript(()=>{window.YT={Player:class{constructor(frame,{events}){this.frame=frame;queueMicrotask(()=>events.onReady());}getPlayerState(){return 2;}isMuted(){return true;}getVolume(){return 100;}getCurrentTime(){return 0;}getDuration(){return 0;}destroy(){this.frame.remove();}}};});
  game.status='running';game.revision=1;Object.assign(game.state,{phase:'window',roundIndex:0,blockIndex:game.plan.blocks.findIndex(b=>b.type==='round'),goalIndex:0,epoch:'qa-old-context',drawn:[7,13,27],windowSequence:1,window:{id:'qa-window',status:'open',startedAt:Date.now(),endsAt:Date.now()+60000,frozenAt:3,announcements:[{accountId:account,status:'accepted'}],claims:[]}});
  let polls=0;const identity=()=>({accountId:account,family,host:false,serverTime:Date.now()}),snapshot=()=>({...identity(),game:playerGame(game,account),complete:true,scope:'qa-only-account-scope',familyRevision:1,booksVersion:'qa-books-1',configVersion:'qa-config-1'});
- const proof=await protectNetwork(page,testInfo,{dispatch:(url,request)=>{
+ const proof=await protectNetwork(page,testInfo,{expectedExternal:['https://www.youtube-nocookie.com'],dispatch:(url,request)=>{
   if(request.method()!=='GET')return undefined;
   if(url.pathname==='/api/player/session')return {authenticated:true,method:'supabase',needsOnboarding:false,...identity()};
   if(url.pathname==='/api/player/brand')return {brandId:'milo'};
   if(url.pathname==='/api/bingo/me')return identity();
+  if(url.pathname==='/api/mail/preferences')return {brandId:'milo',subscribed:false,newsletterEnabled:true};
   if(url.pathname==='/api/bingo/games')return {games:[{id:game.id,brandId:'milo',title:game.title,date:game.date,status:game.status}]};
   if(url.pathname===`/api/bingo/games/${game.id}/live`){polls++;return snapshot();}
   if(url.pathname==='/api/live-calls')return {call:null,serverTime:Date.now()};
@@ -79,6 +82,10 @@ test('v70 family dialog stays bound to the shown goal after a real browser poll 
  await expect(dialog.getByRole('button',{name:'Ja, meld deze BINGO!',exact:true})).toBeDisabled();expect(proof.writes).toEqual([]);
  await noOverflow(page);await evidence(page,'stale-dialog-phone',{transport:'browser-route-simulator-no-server-auth-bypass',oldPattern,staleClaimDisabled:true,...proof});
  await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();await bingo(page).click();await expect(dialog.getByRole('alert')).toHaveCount(0);await expect(dialog.locator('.fam-modal-pattern strong')).not.toHaveText(oldPattern);
+ await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();const frame=page.locator('.fam-youtube-frame iframe');await expect(frame).toHaveAttribute('src',/cc_lang_pref=nl/);await frame.evaluate(node=>node.dataset.captionMount='original');await page.getByRole('button',{name:'Account en instellingen'}).click();
+ await dialog.getByRole('checkbox',{name:'YouTube-ondertiteling bij openen aanvragen',exact:false}).check();await expect(frame).toHaveAttribute('data-caption-mount','original');expect(new URL(await frame.getAttribute('src')).searchParams.get('cc_load_policy')).toBeNull();
+ await dialog.getByRole('button',{name:'CC-voorkeur op video toepassen',exact:true}).click();await expect(frame).toHaveAttribute('src',/cc_load_policy=1/);await expect(frame).not.toHaveAttribute('data-caption-mount','original');await expect(dialog.locator('.fam-view-preferences')).toContainText('Ondertiteling is bij YouTube aangevraagd.');
+ await evidence(page,'youtube-caption-request-phone',{transport:'browser-route-simulator-with-local-YouTube-API-stub',realYouTubeTrackVerified:false,captionRequestParametersVerified:true,noAutomaticVideoRemount:true,...proof});
  expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.unexpected).toEqual([]);expect(proof.writes).toEqual([]);
 });
 
@@ -92,6 +99,20 @@ test('v70 mobile family newsletter preferences default to opt-out and stay separ
  await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();await page.getByRole('combobox',{name:'Kies een show',exact:true}).selectOption('milo-family-demo');await expect(page.locator('.family-app')).toHaveAttribute('data-brand','milo');await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(choice).toBeChecked();
  await choice.uncheck();await dialog.getByRole('button',{name:'Mijn keuze opslaan',exact:true}).click();await expect(dialog.locator('.fam-mail-saved')).toContainText('afgemeld');
  await evidence(page,'brand-mail-opt-in-phone',{transport:'explicit-browser-local-demo',defaultOptOut:true,brandIsolation:true,...proof});
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual([]);expect(proof.writes).toEqual([]);
+});
+
+test('v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions',async({page},testInfo)=>{
+ await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'no-preference'});const proof=await protectNetwork(page,testInfo);await page.goto('/spelen?demo=1');
+ const reactions=page.getByRole('group',{name:'Korte publieksreactie'});await expect(reactions.getByRole('button')).toHaveCount(4);const applause=reactions.getByRole('button',{name:'Reageer met Applaus',exact:true});await expect(applause).toBeEnabled();
+ const draft=page.getByRole('textbox',{name:'Je chatbericht',exact:true});await draft.fill('Mijn eigen vraag verstuur ik later.');await page.getByRole('combobox',{name:'Kies wie reageert',exact:true}).selectOption('sem-demo');await applause.click();
+ const message=page.locator('.lc-message').filter({hasText:'👏 Applaus!'});await expect(message).toHaveCount(1);await expect(message.locator('.lc-message-name')).toHaveText('Sem');await expect(draft).toHaveValue('Mijn eigen vraag verstuur ik later.');await expect(page.locator('.lc-notice')).toContainText('Reactie bevestigd in de showchat.');
+ await page.getByRole('button',{name:'Account en instellingen'}).click();const dialog=page.getByRole('dialog'),captions=dialog.getByRole('checkbox',{name:'YouTube-ondertiteling bij openen aanvragen',exact:false}),motion=dialog.getByRole('checkbox',{name:'Rustige animaties',exact:false});await expect(captions).not.toBeChecked();await captions.check();await motion.check();
+ await expect(dialog.locator('.fam-view-preferences')).toContainText('De demo heeft geen gesproken uitzending of ondertiteltrack.');await expect(page.locator('.family-app')).toHaveAttribute('data-reduced-motion','true');await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();
+ await expect.poll(()=>page.locator('.fam-demo-host').evaluate(node=>getComputedStyle(node).animationName)).toBe('none');await noOverflow(page);
+ await page.reload();await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).toBeChecked();await expect(motion).toBeChecked();await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();
+ await page.getByRole('combobox',{name:'Kies een show',exact:true}).selectOption('vlampie-family-demo');await expect(page.locator('.family-app')).toHaveAttribute('data-brand','vlampie');await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).not.toBeChecked();await expect(motion).not.toBeChecked();
+ await evidence(page,'family-viewing-and-reactions-phone',{transport:'explicit-browser-local-demo',reactionProfile:'Sem',typedDraftRetained:true,viewingPreferencesPersist:true,brandIsolation:true,actualCaptionTrackVerified:false,...proof});
  expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual([]);expect(proof.writes).toEqual([]);
 });
 

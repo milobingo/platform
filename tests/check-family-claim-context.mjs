@@ -42,7 +42,7 @@ for(const brand of ['milo','vlampie'])test(`${brand}: binding rules cannot be hi
 test('rules are available before login and expose no family, book or private settings data',async()=>{
  const DB=createSqliteDatabase(':memory:'),game=fixture();game.status='draft';await new BingoStore(DB).create(game);
  const response=await handlePublicRules(new Request('https://studio.example/spelregels?spel='+game.id),{DB});
- assert.equal(response.status,200);const html=await response.text();assert.match(html,/Bindende spelregels/);assert(!html.includes(game.books[0].id));assert(!html.includes('accountId'));
+ assert.equal(response.status,200);const html=await response.text();assert.match(html,/Bindende spelregels/);assert.match(html,/Jullie patronen en prijzen/);assert.match(html,/Vrij middenvak/);assert.match(html,/Rij 1, kolom 1/);assert(!html.includes(game.books[0].id));assert(!html.includes('accountId'));
  const post=await handlePublicRules(new Request('https://studio.example/spelregels?spel='+game.id,{method:'POST'}),{DB});assert.equal(post.status,405);
  await DB.close();
 });

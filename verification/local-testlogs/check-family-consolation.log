@@ -1,6 +1,6 @@
-✔ a consolation is a separate personal award and never makes another family’s main prize mine (0.982339ms)
-✔ unannounced results expose no prize cards or consolation cards (0.760693ms)
-✔ delivery targets the selected award and keeps the main prize and other children independent (1.001768ms)
+✔ a consolation is a separate personal award and never makes another family’s main prize mine (0.711008ms)
+✔ unannounced results expose no prize cards or consolation cards (0.518045ms)
+✔ delivery targets the selected award and keeps the main prize and other children independent (0.684378ms)
 ℹ tests 3
 ℹ suites 0
 ℹ pass 3
@@ -8,4 +8,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 8.860999
+ℹ duration_ms 6.208489
