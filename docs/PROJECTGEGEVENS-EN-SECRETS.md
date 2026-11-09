@@ -29,8 +29,8 @@ Werk de bevestigde gegevens bij in het actuele `PROJECTPROFIEL.json` in de proje
 | Supabase | Bestaand stagingproject gebruiken. Database/restore en private Storageacceptatie zijn geslaagd; Auth-/accountacceptatie afronden. Productie later als afzonderlijk project bepalen. | Runtimewaarden per omgeving; migratie-/backup-/herstelcredentials uitsluitend in de eigen beheerstappen. |
 | Google Cloud | Bestaande OAuth-webclient en consentconfiguratie bevestigen als Google-login wordt gebruikt. Alleen een client aanmaken wanneer geen geschikte bestaande client beschikbaar is. | Client-ID en client-secret in de Google-provider van het bestaande Supabase-project. Geen app-runtimevariabelen hiervoor. |
 | Resend / SMTP | Bestaand mailaccount, afzenderdomein/DNS en verzendbevoegdheden volgens het nog aan te leveren DG-mailcontract bevestigen. De geplaatste appkeys configureren deze mailroute niet. | Auth-mailinstellingen en de DG-mailgateway; applicatiemail via een duurzame outbox. Contract nog aanleveren en aansluiten. |
-| OpenAI | Stagingkey en modelnamen zijn geplaatst. Geen nieuw stagingaccount nodig; echte project-/modeltoegang en stemgebruik zijn nog niet geaccepteerd. | Eén centrale serversleutel via `OPENAI_API_KEY`. Geen sleutel per personage. |
-| LiveKit Cloud | Staging-URL, API key en API secret zijn geplaatst. Geen nieuw stagingproject nodig; echte belverbinding en audio nog testen. | `LIVEKIT_URL`, `LIVEKIT_API_KEY` en `LIVEKIT_API_SECRET` op de server, of de aparte beveiligde regie-instellingen. |
+| OpenAI | Stagingkey en modelnamen zijn geplaatst. Geen nieuw stagingaccount nodig; echte project-/modeltoegang en stemgebruik zijn nog niet geaccepteerd. | Eén centrale sleutel via `OPENAI_API_KEY` of de versleutelde regie-instelling bij Instellingen → AI & stemmen. Geen sleutel per personage. |
+| LiveKit Cloud | Staging-URL, API key en API secret zijn geplaatst. Geen nieuw stagingproject nodig; echte belverbinding en audio nog testen. | `LIVEKIT_URL`, `LIVEKIT_API_KEY` en `LIVEKIT_API_SECRET` op de server, of de beveiligde regie-instelling bij Instellingen → E-mail & bellen. |
 | YouTube / OBS | Kanaal met bruikbare insluitbare uitzending; OBS op het uitzendapparaat. | Show-/streaminstellingen. OBS is lokale uitzendsoftware, geen benodigde app-secret. |
 | DNS / VPS | Staging-DNS, native toolchains, poort `4173` en Caddy/TLS zijn ingericht. Productiedomein/hosting nog afzonderlijk bepalen. | Beheeromgeving, buiten de applicatie-runtime. |
 
@@ -83,9 +83,9 @@ De nog niet geïnstalleerde productiescaffold heeft 25 velden: dezelfde 21 plus 
 
 `VLAMPIE_ADMIN_EMAIL` is een historische interne compatibiliteitsnaam. De nieuwe identiteit komt uit een servergeverifieerde sessie en `app_user_roles`; een browserheader, e-mailadres of `user_metadata` verleent nooit een rol.
 
-De nieuwe OpenAI-adapter gebruikt uitsluitend de centrale serversleutel uit de omgeving. Opslaan van een OpenAI-key via het historische instellingenendpoint wordt expliciet geweigerd met `server_secret_required`; de oorspronkelijke versleutelhelper blijft alleen voor broncompatibiliteit en regressies aanwezig.
+De native adapter ondersteunt centrale versleutelde OpenAI- en LiveKit-instellingen vanuit de regie, ook wanneer de bestaande serveromgeving al credentials bevat. Alleen de geverifieerde regierol mag de afzonderlijke native instellingen opslaan. Opgeslagen sleutelwaarden worden niet teruggestuurd; opslaan en een werkelijke providertest zijn aparte acties. [Bediening, revisiecontrole, uitschakelen en terugkeer naar serverwaarden](REGIE-SLEUTELS.md).
 
-Zodra één `LIVEKIT_*`-waarde is ingevuld, hebben de omgevingswaarden voorrang op de versleuteld opgeslagen LiveKitkoppeling. Een onvolledige set geeft geen geconfigureerde verbinding en leent niet stilzwijgend een eerder opgeslagen secret. Zonder omgevingswaarden blijft de aparte beveiligde regie-instelling bruikbaar.
+Zonder bewuste native regie-instelling blijven de omgevingswaarden de bron. Een bewust opgeslagen native instelling heeft voorrang; een expliciete uitschakeling blijft uit totdat de regie een andere keuze bevestigt. Een onvolledige LiveKit-set of onleesbare versleutelde instelling wordt geweigerd en leent geen oude credentials. Een project- of keywijziging vereist het bijbehorende secret. De eigen masterkey en private opslag blijven noodzakelijk; tijdens actieve of onzeker opgeruimde providerresources is rotatie geblokkeerd.
 
 ## GitHub environments en secrets buiten de app
 

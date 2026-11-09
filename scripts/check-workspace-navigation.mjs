@@ -129,7 +129,7 @@ try{
   }
   if(id==='settings'){
    for(const label of ['AI & stemmen','Deze show','E-mail & bellen','Profielen & spelregels','Herstel & controle']){await clickExact(label);nested++;assert(main().textContent.length>120);
-    if(label==='AI & stemmen'){assert.equal(main().querySelectorAll('input[type=password]').length,0);assert(buttons().some(b=>b.textContent==='Test verbinding'));assert.equal(buttons('.mf-settings-cast>button').length,12);}
+    if(label==='AI & stemmen'){assert.equal(main().querySelectorAll('input[type=password]').length,1);assert.equal(main().querySelector('input[type=password]').value,'');assert(buttons().some(b=>b.textContent==='Test verbinding'));assert.equal(buttons('.mf-settings-cast>button').length,12);}
     if(label==='Deze show')expect('input[name=claim]');
     if(label==='E-mail & bellen'){expect('input[type=email]');assert.equal(main().querySelectorAll('input[type=password]').length,0);assert(main().textContent.includes('Aanmelden voor gezinnen'));}
     if(label==='Profielen & spelregels'){

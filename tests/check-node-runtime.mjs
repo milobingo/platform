@@ -66,7 +66,7 @@ test('local role choice operates durable real bingo APIs with separate family ow
  h.cookies=regieCookies;
  const games=(await h.call('/api/bingo/games')).data.games;assert.equal(games[0].linked,1);
  await h.call(`/api/bingo/games/${game.id}/start`,{regieId:'runtime-regie'});
- await h.call('/api/openai/status',undefined,503);
+ const providerStatus=(await h.call('/api/openai/status')).data;assert.equal(providerStatus.configured,false);assert.equal(providerStatus.canManage,false);
  await h.call('/auth/logout',{});
  assert.equal((await h.call('/api/auth/session')).data.authenticated,false);
 });

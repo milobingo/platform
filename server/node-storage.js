@@ -216,16 +216,22 @@ export async function createPostgresDatabase(connectionString, { caBase64, allow
         throw error;
       } finally { client.release(); }
     },
-    async withObjectLock(key, operation) {
+    async withObjectLock(key, operation, { idleTimeoutMs = 45_000 } = {}) {
+      if (!Number.isInteger(idleTimeoutMs) || idleTimeoutMs < 45_000 || idleTimeoutMs > 180_000) throw new RangeError('Ongeldige objectlocktermijn.');
       const client = await pool.connect();
+      const lease = new AbortController();
+      const disconnected = () => lease.abort(new Error('De objectlockverbinding is verbroken.'));
+      client.on('error', disconnected);
       try {
         await client.query('BEGIN');
+        if (idleTimeoutMs !== 45_000) await client.query("SELECT set_config('idle_in_transaction_session_timeout',$1,true)", [String(idleTimeoutMs)]);
         await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))', [`milo-object:${key}`]);
-        const result = await operation();
+        const result = await operation({signal:lease.signal,deadline:Date.now()+idleTimeoutMs-5000});
+        lease.signal.throwIfAborted();
         await client.query('COMMIT');
         return result;
-      } catch (error) { await client.query('ROLLBACK'); throw error; }
-      finally { client.release(); }
+      } catch (error) { try { await client.query('ROLLBACK'); } catch { /* Preserve the original, possibly disconnected lock failure. */ } throw error; }
+      finally { client.removeListener('error', disconnected); client.release(); }
     },
     async close() { await gameQueue.close(); await pool.end(); },
   };
@@ -324,6 +330,13 @@ export function createSupabaseObjectStore({ url, secretKey, bucket, database, fe
   async function read(key) {
     const response = await fetcher(path(key), { headers, signal: AbortSignal.timeout(15_000) });
     if (response.status === 404) return null;
+    // Storage's REST compatibility layer also reports a missing object as HTTP
+    // 400. Only its structured NoSuchKey/404 response means absence; a missing
+    // bucket, denied credentials or an outage must never become empty settings.
+    if (response.status === 400) {
+      const error = await response.json().catch(() => null);
+      if (error?.code === 'NoSuchKey' && String(error.statusCode) === '404') return null;
+    }
     if (!response.ok) throw new Error(`Supabase Storage lezen mislukt (${response.status}).`);
     const value = await response.json();
     if (value.version !== 1 || value.key !== key) throw new Error('Ongeldig object in Supabase Storage.');
