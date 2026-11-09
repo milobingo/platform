@@ -1,0 +1,190 @@
+{
+  "ok": false,
+  "runId": "42634675173",
+  "releaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "concurrency": 100,
+  "nativePoolMax": 10,
+  "leaseSeconds": 30,
+  "elapsedMs": 43514,
+  "fixtureSchema": "milo_v70_fixture_42634675173",
+  "fixtureCreated": true,
+  "fixtureSchemaRemoved": true,
+  "publicTablesUnchanged": true,
+  "publicTables": [
+    {
+      "table": "show_workspaces",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_families",
+      "rows": "1",
+      "digest": "c51d81b1c15fde0a03ec7738f41ef42225e1c5ceaf2349a86e45f7a56bd69078"
+    },
+    {
+      "table": "bingo_games",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_codes",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_chat_events",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_chat_members",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_chat_messages",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_chat_operations",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "bingo_chat_rooms",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "presentation_workspaces",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_outputs",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_calls",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "player_accounts",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "player_auth_limits",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "player_challenges",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "player_sessions",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "show_character_settings",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "app_user_roles",
+      "rows": "1",
+      "digest": "4687e4592c47c3a60acc823f16f167e580c16dd6ff1b21a0836c9e6670ac340e"
+    },
+    {
+      "table": "bingo_payment_receipts",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_mail_records",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_mail_subscriptions",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_mail_suppressions",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "studio_mail_unsubscribe",
+      "rows": "0",
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "refusedResponse": {
+    "httpStatus": 409,
+    "serverErrorCode": "closed"
+  },
+  "progress": {
+    "phase": "claim",
+    "elapsedMs": 40671,
+    "beginSuccesses": 100,
+    "claimSuccesses": 21,
+    "successfulOperations": 121,
+    "apiAttempts": 221,
+    "apiResponses": 221,
+    "apiConflicts": 0,
+    "retries": 0,
+    "storageConflicts": 0,
+    "peakDocumentBytes": 441693,
+    "claimProcessingElapsedMs": 14643,
+    "remainingWindowMs": -8973,
+    "claimsFinishedBeforeDeadline": null,
+    "latencyMs": {
+      "count": 121,
+      "p50": 10949,
+      "p95": 23468,
+      "max": 24913
+    },
+    "beginLatencyMs": {
+      "count": 100,
+      "p50": 13306,
+      "p95": 23701,
+      "max": 24913
+    },
+    "claimLatencyMs": {
+      "count": 21,
+      "p50": 3339,
+      "p95": 5477,
+      "max": 5711
+    },
+    "apiLatencyMs": {
+      "count": 221,
+      "p50": 9972,
+      "p95": 22299,
+      "max": 24913
+    },
+    "nativeQueue": {
+      "enabled": true,
+      "pending": 0,
+      "active": 0,
+      "keys": 0,
+      "enqueued": 221,
+      "started": 221,
+      "completed": 121,
+      "failed": 100,
+      "rejected": 0,
+      "expired": 0,
+      "maxDepth": 100,
+      "totalWaitMs": 2246651,
+      "maxWaitMs": 24123
+    }
+  },
+  "code": "capacity_api_refused"
+}

@@ -8,5 +8,13 @@
   "configuredProductionUrl": null,
   "configuredSiteId": null,
   "configuredSupabaseRef": null,
-  "reason": "Production destination/configuration and separate practical acceptance not supplied; v70 handoff also does not admit new public participants."
+  "reason": "Production destination/configuration and separate practical acceptance not supplied; v70 handoff also does not admit new public participants.",
+  "finalRecheck": {
+    "observedAt": "2026-11-09T14:33:28.360956+00:00",
+    "variableCount": 0,
+    "secretCount": 0,
+    "valuesRead": false,
+    "configurationChanged": false,
+    "deployed": false
+  }
 }

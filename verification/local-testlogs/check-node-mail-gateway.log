@@ -1,7 +1,7 @@
-✔ unconfigured/disabled, incomplete and staging-live mail never creates a delivery adapter (1.108089ms)
-✔ signed DG envelope preserves stable correlation, constrains recipient and disables redirects (17.37367ms)
-✔ sandbox validation, malformed success and lost/rejected outcomes remain truthful (1.746738ms)
-✔ gateway or signing key rotation changes the frozen adapter identity (0.227744ms)
+✔ unconfigured/disabled, incomplete and staging-live mail never creates a delivery adapter (10.244652ms)
+✔ signed DG envelope preserves stable correlation, constrains recipient and disables redirects (36.004668ms)
+✔ sandbox validation, malformed success and lost/rejected outcomes remain truthful (3.40346ms)
+✔ gateway or signing key rotation changes the frozen adapter identity (0.457774ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 26.053835
+ℹ duration_ms 67.819614

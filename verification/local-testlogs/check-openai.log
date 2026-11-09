@@ -1,17 +1,17 @@
-✔ missing identity, cross-origin and malformed requests cannot spend API credit (27.429389ms)
-✔ configuration status never returns the key and missing key is explicit (4.895268ms)
-✔ speech uses server-selected Ballad, Dutch instructions, bounded speed and audio response (3.193349ms)
-✔ regie reply uses Responses, keeps untrusted messages separate and does not retain responses (1.182633ms)
-✔ upstream failures are sanitized and connection test does not generate speech (1.374073ms)
-✔ visual speech starts after decode with true duration and stops with the audio (0.821897ms)
-✔ stop during fetch prevents a late response from playing (0.316329ms)
-✔ newer utterance wins when network responses arrive out of order (0.40948ms)
-✔ autoplay restriction keeps decoded audio ready and retry makes no API call (0.503592ms)
-✔ API failure stays a failure and does not start an alternate voice (0.417102ms)
-✔ an interrupted audio context resumes the existing source at the same position (0.427939ms)
-✔ all new controls exist, and the client has no key or direct provider endpoint (2.493789ms)
-✔ regie pause holds the existing source and resume makes no new API request (0.410852ms)
-✔ pause while the voice loads prevents a late response from starting audio (0.289009ms)
+✔ missing identity, cross-origin and malformed requests cannot spend API credit (26.316882ms)
+✔ configuration status never returns the key and missing key is explicit (5.016525ms)
+✔ speech uses server-selected Ballad, Dutch instructions, bounded speed and audio response (4.489718ms)
+✔ regie reply uses Responses, keeps untrusted messages separate and does not retain responses (1.514716ms)
+✔ upstream failures are sanitized and connection test does not generate speech (1.904076ms)
+✔ visual speech starts after decode with true duration and stops with the audio (1.097313ms)
+✔ stop during fetch prevents a late response from playing (0.400367ms)
+✔ newer utterance wins when network responses arrive out of order (0.54086ms)
+✔ autoplay restriction keeps decoded audio ready and retry makes no API call (0.56081ms)
+✔ API failure stays a failure and does not start an alternate voice (0.572708ms)
+✔ an interrupted audio context resumes the existing source at the same position (0.563405ms)
+✔ all new controls exist, and the client has no key or direct provider endpoint (2.774446ms)
+✔ regie pause holds the existing source and resume makes no new API request (0.584787ms)
+✔ pause while the voice loads prevents a late response from starting audio (0.417604ms)
 ℹ tests 14
 ℹ suites 0
 ℹ pass 14
@@ -19,4 +19,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 49.472915
+ℹ duration_ms 52.293158

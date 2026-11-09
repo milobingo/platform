@@ -1,11 +1,11 @@
-✔ JWTs are signed with project secret and room deletion uses the real roomCreate grant (25.240391ms)
-✔ LiveKit settings stay encrypted, blank secrets preserve credentials, tests contact real API and stale saves fail (26.245965ms)
-✔ only an opted-in family profile can run a short media-free preflight; ordinary viewers never join a call (15.702497ms)
-✔ concurrent prepare requests select exactly one child and one durable hold (9.089255ms)
-✔ atomic preparation rolls back call and hold after statement 1 fails before commit (10.460985ms)
-✔ atomic preparation rolls back call and hold after statement 2 fails before commit (10.188289ms)
-✔ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (22.826493ms)
-✔ environment-managed LiveKit tests persist their revision without storing or exposing server credentials (12.737223ms)
+✔ JWTs are signed with project secret and room deletion uses the real roomCreate grant (24.313193ms)
+✔ LiveKit settings stay encrypted, blank secrets preserve credentials, tests contact real API and stale saves fail (21.558476ms)
+✔ only an opted-in family profile can run a short media-free preflight; ordinary viewers never join a call (13.92998ms)
+✔ concurrent prepare requests select exactly one child and one durable hold (8.168425ms)
+✔ atomic preparation rolls back call and hold after statement 1 fails before commit (9.936256ms)
+✔ atomic preparation rolls back call and hold after statement 2 fails before commit (8.850279ms)
+✔ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (22.874912ms)
+✔ environment-managed LiveKit tests persist their revision without storing or exposing server credentials (11.398432ms)
 ℹ tests 8
 ℹ suites 0
 ℹ pass 8
@@ -13,4 +13,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 138.046658
+ℹ duration_ms 126.209215

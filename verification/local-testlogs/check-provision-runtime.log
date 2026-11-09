@@ -1,9 +1,9 @@
-✔ runtime proof binds the newest exact migration while preserving known earlier backup/release identities (7.097917ms)
-✔ derived runtime credentials preserve target, remove TLS overrides and use an ASCII SCRAM verifier (4.042237ms)
-✔ runtime provisioning rejects stale, mismatched, modified and unsafe backup proof before opening a database (34.763153ms)
+✔ runtime proof binds the newest exact migration while preserving known earlier backup/release identities (11.266992ms)
+✔ derived runtime credentials preserve target, remove TLS overrides and use an ASCII SCRAM verifier (3.758509ms)
+✔ runtime provisioning rejects stale, mismatched, modified and unsafe backup proof before opening a database (42.731737ms)
 {"gate":"runtime-database-role","status":"passed","verifiedTls":true,"readableTables":23,"credentialsPrinted":false}
-✔ real PostgreSQL accepts the generated SCRAM login, enforces backend-only rights and refuses account reuse (1520.232979ms)
-✔ database-only workflows stay manual, use exact CI and keep source admin credentials out of app activation (1.197755ms)
+✔ real PostgreSQL accepts the generated SCRAM login, enforces backend-only rights and refuses account reuse (2623.432212ms)
+✔ database-only workflows stay manual, use exact CI and keep source admin credentials out of app activation (7.82246ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -11,4 +11,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1576.01071
+ℹ duration_ms 2696.164153

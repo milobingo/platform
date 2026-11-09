@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-11-09T14:32:31.343929Z",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42635245053",
+  "releaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "releaseId": "42635245053-1",
+  "configVersion": "staging-2026-11-05-v1",
+  "scope": "Public verification bracketed by exact pre/post health identity",
+  "requests": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "observedAt": "2026-11-09T14:32:23.295637Z",
+      "body": {
+        "status": "ok",
+        "revision": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+        "releaseId": "42635245053-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "checks": [
+          "http"
+        ]
+      }
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 200,
+      "body": {
+        "authenticated": false,
+        "user": null,
+        "email": "",
+        "role": null,
+        "local": false,
+        "configured": true,
+        "localAvailable": false
+      }
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "observedAt": "2026-11-09T14:32:31.343906Z",
+      "body": {
+        "status": "ok",
+        "revision": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+        "releaseId": "42635245053-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "checks": [
+          "http"
+        ]
+      }
+    }
+  ],
+  "databaseWrites": false,
+  "providerOrMailRequests": false
+}

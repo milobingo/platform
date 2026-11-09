@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-11-09T14:16:13.321682+00:00",
+  "nativeSourceSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "workingTreeCodeDigest": "439cca34bcb5f578b9e3d34bae5f0cedf4a91daff022031db9f7882e719bb67e",
+  "programsVerifiedLocally": 87,
+  "method": "initial full suite plus targeted reruns after two test-fixture corrections",
+  "initialFullRun": "first-full-tests.json",
+  "rechecks": [
+    {
+      "name": "check-bingo-orders",
+      "passedTests": 29,
+      "ms": 3308,
+      "evidence": "orders-corrected.log",
+      "sourceSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83"
+    },
+    {
+      "name": "check-staging-capacity-v70",
+      "passedTests": 11,
+      "ms": 212018,
+      "evidence": "capacity-corrected.log",
+      "sourceSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83"
+    }
+  ],
+  "nativeDeployerTests": 23,
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "config": "passed",
+  "workflows": "passed",
+  "applicationSourceUnchanged": true,
+  "localBrowserRerun": false,
+  "browserScope": "UI source unchanged; exact final CI browser acceptance and new deployed staging run remain separate",
+  "realMailSent": false,
+  "realPaymentPerformed": false,
+  "realProviderRehearsal": false,
+  "exactMainCi": "https://github.com/milobingo/platform/actions/runs/42632514858",
+  "exactMainCiResult": "success; single full 87-program run and19browser on final code",
+  "logFormatting": "build.log: terminal line endings normalized and trailing horizontal whitespace removed; output content and command result unchanged."
+}

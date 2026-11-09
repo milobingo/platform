@@ -1,12 +1,12 @@
-✔ local role choice operates durable real bingo APIs with separate family ownership (1147.629963ms)
-✔ forged Sites headers and legacy sessions never grant an identity (17.269291ms)
-✔ local mode fails closed outside explicit loopback development and rejects tampered cookies (16.995877ms)
-✔ mutation CSRF and return paths are checked before state changes (16.435538ms)
-✔ Supabase verifies identity and private SQL roles override all email and metadata claims (16.922005ms)
-✔ standalone proxy origin requires the fixed listener and exact public host and protocol (21.661227ms)
-✔ OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects (17.813085ms)
-✔ unconfigured remote auth gives a configuration error and websocket upgrades are explicit (32.213159ms)
-✔ configured provider handlers use the Node fetch adapter while live verification stays explicit (43.41797ms)
+✔ local role choice operates durable real bingo APIs with separate family ownership (1835.239527ms)
+✔ forged Sites headers and legacy sessions never grant an identity (45.45044ms)
+✔ local mode fails closed outside explicit loopback development and rejects tampered cookies (49.564687ms)
+✔ mutation CSRF and return paths are checked before state changes (42.332873ms)
+✔ Supabase verifies identity and private SQL roles override all email and metadata claims (36.120334ms)
+✔ standalone proxy origin requires the fixed listener and exact public host and protocol (54.298916ms)
+✔ OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects (32.680199ms)
+✔ unconfigured remote auth gives a configuration error and websocket upgrades are explicit (69.123882ms)
+✔ configured provider handlers use the Node fetch adapter while live verification stays explicit (110.959752ms)
 ℹ tests 9
 ℹ suites 0
 ℹ pass 9
@@ -14,4 +14,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1336.076882
+ℹ duration_ms 2288.062493

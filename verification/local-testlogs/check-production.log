@@ -1,16 +1,16 @@
-✔ an empty JA closes at deadline once, stays separate from false penalties, and a claimed multi-book announcement is complete (11.318333ms)
-✔ book lifecycle preserves numbers/codes, rejects revoked registration/readmission, and verifies assignment profile ownership (52.885958ms)
-✔ participation needs consent, child permission and invitation; withdrawals are durable and identical requests do not grow audit events (36.93868ms)
-✔ recovery holds the exact reserved ball, committed draw and closed window; another active controller cannot take over (27.508529ms)
-✔ reports and memory data never expose deck, QR token, prompt or another account’s personal memory (9.415488ms)
-✔ voice cache survives removed key, checks identity, and invalidates by text and speed (11.943709ms)
-✔ authenticated output relay requires producer generation and rejects stale publication without a false ACK (4.410684ms)
-✔ a fresh clip resumes an output audio context that was previously paused (0.556403ms)
-✔ expired output heartbeat immediately mutes the orphaned output (0.552738ms)
-✔ remote pause cancels wall-clock timeout and changing audio routing mid-speech is refused (21.269253ms)
-✔ remote voice defers a clip paused while loading and waits for actual output completion after explicit resume (1.534576ms)
-✔ recovery review reconstructs a missed commit, invalidates old runner work and preserves the committed draw (94.256154ms)
-✔ story templates remain valid timeline blocks and render all production tabs without losing game inputs (46.395192ms)
+✔ an empty JA closes at deadline once, stays separate from false penalties, and a claimed multi-book announcement is complete (13.059191ms)
+✔ book lifecycle preserves numbers/codes, rejects revoked registration/readmission, and verifies assignment profile ownership (47.446899ms)
+✔ participation needs consent, child permission and invitation; withdrawals are durable and identical requests do not grow audit events (32.729315ms)
+✔ recovery holds the exact reserved ball, committed draw and closed window; another active controller cannot take over (24.217879ms)
+✔ reports and memory data never expose deck, QR token, prompt or another account’s personal memory (8.493568ms)
+✔ voice cache survives removed key, checks identity, and invalidates by text and speed (9.999942ms)
+✔ authenticated output relay requires producer generation and rejects stale publication without a false ACK (3.191047ms)
+✔ a fresh clip resumes an output audio context that was previously paused (0.484034ms)
+✔ expired output heartbeat immediately mutes the orphaned output (0.375038ms)
+✔ remote pause cancels wall-clock timeout and changing audio routing mid-speech is refused (20.846247ms)
+✔ remote voice defers a clip paused while loading and waits for actual output completion after explicit resume (0.927507ms)
+✔ recovery review reconstructs a missed commit, invalidates old runner work and preserves the committed draw (83.312429ms)
+✔ story templates remain valid timeline blocks and render all production tabs without losing game inputs (44.51902ms)
 ℹ tests 13
 ℹ suites 0
 ℹ pass 13
@@ -18,4 +18,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 329.744043
+ℹ duration_ms 299.734469

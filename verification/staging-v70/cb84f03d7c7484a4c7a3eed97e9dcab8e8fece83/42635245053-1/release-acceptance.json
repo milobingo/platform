@@ -1,0 +1,155 @@
+{
+  "format": 1,
+  "kind": "actual-staging-browser-acceptance",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "releaseId": "42635245053-1",
+  "deployWorkflowRun": 42635245053,
+  "deployWorkflow": {
+    "url": "https://github.com/milobingo/platform/actions/runs/42635245053",
+    "headSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "release-gate",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "verify-public",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "startedAt": "2026-11-09T14:32:34.131Z",
+  "preHealth": {
+    "observedAt": "2026-11-09T14:32:34.130Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+    "releaseId": "42635245053-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "testSourceSha256": {
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0",
+    "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
+    "tests/browser/handoff-v6.spec.mjs": "790c58ecd2564eecba206628a46ab4cd74cf965dbbf70e03048a2ec20a26c01b",
+    "tests/browser/handoff-v70.spec.mjs": "16030585adb4639e2697dfe62a5cf47afdf06fe5f3f779c4df329376e6829c07"
+  },
+  "localEvidenceSha256Before": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/v70/browser-tests.log": "ff3f544b7e59e9ea6f27ef66e4008b44e3191c37895d312d7c041dc9b2d3982f"
+  },
+  "scope": {
+    "actualStagingHtmlCssCanvasAndAssets": true,
+    "actualUnauthenticatedAuthChecks": true,
+    "regieAndFamilyApiTransportSimulated": true,
+    "providersSimulatedOrBlocked": true,
+    "realAccountAcceptance": false,
+    "realCaptionTrackVerified": false,
+    "realDbOrProviderOrMailWrites": false,
+    "realGameConcurrencyCapacityVerified": false
+  },
+  "finishedAt": "2026-11-09T14:33:26.058Z",
+  "postHealth": {
+    "observedAt": "2026-11-09T14:33:26.056Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+    "releaseId": "42635245053-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "healthFailure": null,
+  "exitCode": 0,
+  "stats": {
+    "startTime": "2026-11-09T14:32:34.571Z",
+    "duration": 51338.219,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "localEvidenceSha256After": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/v70/browser-tests.log": "ff3f544b7e59e9ea6f27ef66e4008b44e3191c37895d312d7c041dc9b2d3982f"
+  },
+  "localEvidencePreserved": true,
+  "testSourcesUnchanged": true,
+  "status": "passed",
+  "visualReview": {
+    "reviewedAt": "2026-11-09T14:34:07.413Z",
+    "method": "manual inspection of five actual staging browser screenshots",
+    "passed": true,
+    "observations": [
+      "mobile family demo displays official balls, BINGO and fixed reactions without horizontal overflow",
+      "desktop simulated regie displays programme, preview and audio controls",
+      "stale claim remains disabled and bound to its original pattern",
+      "caption preference clearly requests available YouTube tracks and does not promise speech transcripts",
+      "Vlampie device preferences remain separate from Milo and demo captions are described as unavailable"
+    ],
+    "screenshots": [
+      {
+        "file": "verification/screenshots/family-390.png",
+        "sha256": "e9507fe0bf7dd37d647dcf33e2e24a6dccce4ef9efb8ade8486f4928df1e527c"
+      },
+      {
+        "file": "verification/v70/handoff-v6/screenshots/qa-simulated-regie-1366.png",
+        "sha256": "9bc819e0a4005584f88781553fe313be0b0d20626042032a11469cc2b21f77ff"
+      },
+      {
+        "file": "verification/v70/handoff-v70/screenshots/stale-dialog-phone.png",
+        "sha256": "664febc90ec618152d9661fb1d899884f4a7be51626b655efbc1a4a8d4260cf4"
+      },
+      {
+        "file": "verification/v70/handoff-v70/screenshots/youtube-caption-request-phone.png",
+        "sha256": "a82d02267a6c954a12ef6b7ebecbc2ef3b2220075bb1e766ceb0522652bbf65a"
+      },
+      {
+        "file": "verification/v70/handoff-v70/screenshots/family-viewing-and-reactions-phone.png",
+        "sha256": "57785096bd83d63988cb5691747babcd307ec9fe25608c126ecef8330e3d307e"
+      }
+    ]
+  },
+  "errorReview": {
+    "pageErrorsInRecordedFixtures": [],
+    "unexpectedConsoleErrorsInWorkspaceScans": [],
+    "expectedSandboxScriptBlocks": 38,
+    "expectedSandboxScope": "19 exact about:srcdoc sandbox messages per workspace viewport; sandbox is empty and the source document contains no script element",
+    "unexpectedExternalRequestsInRecordedFixtures": [],
+    "backendWritesInRecordedFixtures": [],
+    "authNegativeStatuses": {
+      "mailPreferences": 401,
+      "privateLiveCalls": 401,
+      "forgedGameList": 401,
+      "localRegieCreation": 403
+    },
+    "limitations": [
+      "Console interception is explicit in full workspace scans; family fixtures collect page errors.",
+      "Regie and authenticated family transports are simulated; actual endpoints are used for anonymous authorization checks.",
+      "Real OTP/OAuth accounts, provider audio/calls/mail, visible caption tracks and real game-concurrency capacity are outside this UI acceptance."
+    ]
+  },
+  "testSourceSha256After": {
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0",
+    "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
+    "tests/browser/handoff-v6.spec.mjs": "790c58ecd2564eecba206628a46ab4cd74cf965dbbf70e03048a2ec20a26c01b",
+    "tests/browser/handoff-v70.spec.mjs": "16030585adb4639e2697dfe62a5cf47afdf06fe5f3f779c4df329376e6829c07"
+  },
+  "artifactSha256": {
+    "browser-tests.json": "edcb315c65f8bcdaf2e17b1fb051fab4eb41261c15fd5c04ccffee5d6c02659b",
+    "browser.log": "33fa42e1aa02586e56ffea48cd14f3e148ac80c66fd5ee32d50ae5528ba85430"
+  }
+}

@@ -1,32 +1,38 @@
-✔ ORD-01 published participation rules lock order quantity while sales settings remain editable (34.645574ms)
-✔ ORD-02 issued order books cannot be transferred by generic book administration or downloaded after revocation (56.809825ms)
-✔ ORD-03 cancelling a reported payment preserves a visible unresolved reconciliation instead of forgetting the report (24.444686ms)
-✔ ORD-03 payment evidence is exact, globally unique across shows and a late closed payment creates a refund case without books (53.572279ms)
-✔ ORD-01 deadline equality closes ordering and controlled rescheduling preserves issued numbers while refreshing PDF identity (28.476415ms)
-✔ orders are future-show specific, owner scoped, server priced and permanently idempotent (38.472515ms)
-✔ family mode on a platform organizer shows only own orders and never host-only details (27.404751ms)
-✔ payment mail has a trusted recipient, escaped content and real provider acceptance semantics (19.230334ms)
-✔ approval is explicit, atomic and permanently one-time; stored sheets render in both colors (1720.051492ms)
-✔ paid sheets can only be assigned to their owner’s children, including via existing QR registration (44.532779ms)
-✔ active order snapshots lock title, date, rounds and brand; cancellation preserves history (19.330615ms)
-✔ failed mail retries freeze body and key, and require a gateway acceptance receipt (18.987135ms)
-✔ expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee (11.64666ms)
-✔ outbox lease prevents parallel sends and payment-link replacement while sending (13.623066ms)
-✔ a manually generated batch cannot capture fulfillment or replace existing ownership (21.66958ms)
-✔ missing delivery configuration preserves the requested order and ready sheets with failed mail states (93.240836ms)
-✔ uncertain mail cannot cross delivery identities or invent an idempotency guarantee (25.147111ms)
-✔ an explicit gateway rejection can retry without claiming any guaranteed idempotency window (17.861959ms)
-✔ reading legacy settings preserves stored data and invalidated published rules refuse a silent rewrite (30.160057ms)
-✔ native session dispatch injects delivery and protects the complete order and cached PDF flow (91.554841ms)
-✔ an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections (33.7387ms)
-✔ replacing an uncertain payment mail preserves its frozen attempt and alerts only the owning admin (20.912933ms)
-✔ an expired sending lease is archived as uncertain while retaining its original receipt metadata (17.489705ms)
-✔ the payment version limit rejects before any mutation and still permits an unchanged final-version retry (74.904176ms)
-ℹ tests 24
+✔ optional queue-injected order unit checks the real execution clock after the deadline and leaves the game unchanged (312.359454ms)
+✔ optional queue-injected production unit uses the execution clock after a real cooldown and records that fresh time (298.649708ms)
+▶ order mail rejects lease or uncertain-guarantee expiry between claim and offering before any adapter contact
+  ✔ lease (16.704285ms)
+  ✔ guarantee (12.465809ms)
+✔ order mail rejects lease or uncertain-guarantee expiry between claim and offering before any adapter contact (30.251473ms)
+✔ ORD-01 published participation rules lock order quantity while sales settings remain editable (7.325186ms)
+✔ ORD-02 issued order books cannot be transferred by generic book administration or downloaded after revocation (28.3313ms)
+✔ ORD-03 cancelling a reported payment preserves a visible unresolved reconciliation instead of forgetting the report (23.98922ms)
+✔ ORD-03 payment evidence is exact, globally unique across shows and a late closed payment creates a refund case without books (52.341652ms)
+✔ ORD-01 deadline equality closes ordering and controlled rescheduling preserves issued numbers while refreshing PDF identity (28.077247ms)
+✔ orders are future-show specific, owner scoped, server priced and permanently idempotent (36.55552ms)
+✔ family mode on a platform organizer shows only own orders and never host-only details (28.397952ms)
+✔ payment mail has a trusted recipient, escaped content and real provider acceptance semantics (22.161418ms)
+✔ approval is explicit, atomic and permanently one-time; stored sheets render in both colors (1883.055873ms)
+✔ paid sheets can only be assigned to their owner’s children, including via existing QR registration (64.624185ms)
+✔ active order snapshots lock title, date, rounds and brand; cancellation preserves history (23.402771ms)
+✔ failed mail retries freeze body and key, and require a gateway acceptance receipt (23.338222ms)
+✔ expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee (13.777808ms)
+✔ outbox lease prevents parallel sends and payment-link replacement while sending (17.988241ms)
+✔ a manually generated batch cannot capture fulfillment or replace existing ownership (23.458854ms)
+✔ missing delivery configuration preserves the requested order and ready sheets with failed mail states (96.340227ms)
+✔ uncertain mail cannot cross delivery identities or invent an idempotency guarantee (39.545013ms)
+✔ an explicit gateway rejection can retry without claiming any guaranteed idempotency window (21.972451ms)
+✔ reading legacy settings preserves stored data and invalidated published rules refuse a silent rewrite (26.235995ms)
+✔ native session dispatch injects delivery and protects the complete order and cached PDF flow (78.523434ms)
+✔ an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections (28.566018ms)
+✔ replacing an uncertain payment mail preserves its frozen attempt and alerts only the owning admin (18.393305ms)
+✔ an expired sending lease is archived as uncertain while retaining its original receipt metadata (13.358703ms)
+✔ the payment version limit rejects before any mutation and still permits an unchanged final-version retry (56.987505ms)
+ℹ tests 29
 ℹ suites 0
-ℹ pass 24
+ℹ pass 29
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 2547.27492
+ℹ duration_ms 3308.270174

@@ -1,0 +1,14 @@
+{
+  "checkPrograms": 87,
+  "passedInitially": 85,
+  "firstFailedPrograms": [
+    "check-bingo-orders",
+    "check-staging-capacity-v70"
+  ],
+  "fixtureIssues": {
+    "check-bingo-orders": "Two new fixtures assumed all actions queued. Explicit optional test injection now matches narrowed begin/claim policy; targeted29 passes. No application change.",
+    "check-staging-capacity-v70": "All500operations and schema/public cleanup assertions passed. Test-only forced database drop raced with socket close; replaced by bounded close and DROP without FORCE. Targeted cleanup passed; full180 rerun required."
+  },
+  "applicationSourceChangedDuringCorrections": false,
+  "rawFirstRunLogs": "Private raw test-only PostgreSQL Client dumps deleted together with the destroyed fixture; sanitized statuses/reasons and aggregate proof are preserved."
+}

@@ -1,0 +1,20 @@
+✔ capacity target pins numeric run identity, project and schema-only options before connecting (1.792697ms)
+✔ capacity SQL lexer fixes every relation while preserving string literals and refusing public/unknown relations or extra statements (0.777569ms)
+✔ capacity CLI binds its release and checkout before opening any database or exposing credentials (452.250399ms)
+✔ delayed deadline refusals are never CAS retries or successes, and diagnostics exclude response bodies and unrecognized codes (31.913827ms)
+✔ capacity refuses concurrency outside1..100 before any native connection or fixture operation (1.310838ms)
+✔ capacity lease input accepts only explicit30/180 or the180 default before any database access (0.239294ms)
+✔ claim proof uses actual completion before the saved deadline, excluding exact-boundary and late commits or unfinished requests (0.229779ms)
+✔ capacity failure progress keeps only aggregate counts, timings, known phases and numeric queue statistics (0.471265ms)
+✔ actual scenario attaches partial begin progress and latency after an asynchronous native storage refusal without copying the error (454.160492ms)
+LOCAL_POSTGRES_CAPACITY {"successfulOperations":500,"apiAttempts":500,"apiConflicts":0,"storageConflicts":1,"peakDocumentBytes":1161574,"elapsedMs":207468,"latencyMs":{"count":500,"p50":560,"p95":728,"max":880},"fixtureSchemaRemoved":true,"publicTablesUnchanged":true,"hostedTlsVerified":false}
+✔ C01 actual local PostgreSQL serves500 successful API operations for100households/400books, observes a real180s deadline, saves one draw and preserves public data (208374.604328ms)
+✔ isolated PostgreSQL capacity refuses existing-schema takeover and cleans its exact new schema after failure (2694.502245ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 212017.905138

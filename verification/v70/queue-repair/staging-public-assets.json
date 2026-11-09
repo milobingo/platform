@@ -1,0 +1,662 @@
+{
+  "observedAt": "2026-11-09T14:32:30.523498Z",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "releaseId": "42635245053-1",
+  "configVersion": "staging-2026-11-05-v1",
+  "scope": "25 prior public asset paths union every top-level public/*.js; actual HTTPS bytes compared to frozen local source",
+  "assetsVerified": 93,
+  "assets": [
+    {
+      "path": "/app.js",
+      "status": 200,
+      "bytes": 86476,
+      "sha256": "9c2edd3168383ebd7abffbd6271c006d4eed26d1513fafeb7390504325449bec",
+      "localSha256": "9c2edd3168383ebd7abffbd6271c006d4eed26d1513fafeb7390504325449bec"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/banana-surprise.webp",
+      "status": 200,
+      "bytes": 87766,
+      "sha256": "d90fb59d9f2e6ad4bd57c064d61ff074d17d75f2484362aa9e76e57d225b5e81",
+      "localSha256": "d90fb59d9f2e6ad4bd57c064d61ff074d17d75f2484362aa9e76e57d225b5e81"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/bubble-world.webp",
+      "status": 200,
+      "bytes": 88534,
+      "sha256": "628756120cef9649da65414e603b5fa638ca16739068a5c11feead6fbfa85b18",
+      "localSha256": "628756120cef9649da65414e603b5fa638ca16739068a5c11feead6fbfa85b18"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/cookie-mystery.webp",
+      "status": 200,
+      "bytes": 87904,
+      "sha256": "0dd0dbcfffc3af4020594ee5b66b54d69b9f4bb0e3021000daaa4123d053e1f6",
+      "localSha256": "0dd0dbcfffc3af4020594ee5b66b54d69b9f4bb0e3021000daaa4123d053e1f6"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/floating-table.webp",
+      "status": 200,
+      "bytes": 86848,
+      "sha256": "afbf53b1bf6ef3c82885e696bf776f51bea829a1a6c0874cc40e4cef38da0b05",
+      "localSha256": "afbf53b1bf6ef3c82885e696bf776f51bea829a1a6c0874cc40e4cef38da0b05"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/flower-hat.webp",
+      "status": 200,
+      "bytes": 89572,
+      "sha256": "ea9870922cdd06bc55d81b756a5238ebba4c54d4aca72dde37ee3e8de7fb9810",
+      "localSha256": "ea9870922cdd06bc55d81b756a5238ebba4c54d4aca72dde37ee3e8de7fb9810"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/linking-rings.webp",
+      "status": 200,
+      "bytes": 88838,
+      "sha256": "7729f675dfd62e0ed821d9499c5346ec0b6eb79dfb4c95ecd6ae535616377b41",
+      "localSha256": "7729f675dfd62e0ed821d9499c5346ec0b6eb79dfb4c95ecd6ae535616377b41"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/rainbow-cube.webp",
+      "status": 200,
+      "bytes": 87530,
+      "sha256": "d5a7cd78a849e851288aad9da05f5904a2ab1a9b888c1400cd7c3c3e11e150a8",
+      "localSha256": "d5a7cd78a849e851288aad9da05f5904a2ab1a9b888c1400cd7c3c3e11e150a8"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/reverse-hourglass.webp",
+      "status": 200,
+      "bytes": 88578,
+      "sha256": "6e82433e89416c96f22c32dd34771120732d1373930156059ec7d703b00861ab",
+      "localSha256": "6e82433e89416c96f22c32dd34771120732d1373930156059ec7d703b00861ab"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/silk-stars.webp",
+      "status": 200,
+      "bytes": 92322,
+      "sha256": "0a1aa780065507a7fae94056dd2037eab39f75abbac078b386cfab70bdfac99a",
+      "localSha256": "0a1aa780065507a7fae94056dd2037eab39f75abbac078b386cfab70bdfac99a"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/star-hat.webp",
+      "status": 200,
+      "bytes": 90644,
+      "sha256": "ae28969d22e0d75e17ec44e1bf16152c60e9ed9efbfc53cd48a81d3a7e8b484d",
+      "localSha256": "ae28969d22e0d75e17ec44e1bf16152c60e9ed9efbfc53cd48a81d3a7e8b484d"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/star-rabbit.webp",
+      "status": 200,
+      "bytes": 87972,
+      "sha256": "bcbd0dbcfb4a0762e23c8ccd7cd02aae3bf92e83e8d8ba99a37424379ce42d9f",
+      "localSha256": "bcbd0dbcfb4a0762e23c8ccd7cd02aae3bf92e83e8d8ba99a37424379ce42d9f"
+    },
+    {
+      "path": "/assets/milo-friends/studio/show-cues/wand-multiplication.webp",
+      "status": 200,
+      "bytes": 88490,
+      "sha256": "b9252f19419ca1703965f0c67c2412d5192f9c754f6129822db35c6d191bce75",
+      "localSha256": "b9252f19419ca1703965f0c67c2412d5192f9c754f6129822db35c6d191bce75"
+    },
+    {
+      "path": "/bingo-api.js",
+      "status": 200,
+      "bytes": 1599,
+      "sha256": "53d741c674597f72802cd901718b1b5bd4233899f61eefce246bfce63bed6ad5",
+      "localSha256": "53d741c674597f72802cd901718b1b5bd4233899f61eefce246bfce63bed6ad5"
+    },
+    {
+      "path": "/bingo-board.js",
+      "status": 200,
+      "bytes": 2847,
+      "sha256": "c2b862de565666f55e46db92078d54d16d9e24caa620bd57df51793905551e4c",
+      "localSha256": "c2b862de565666f55e46db92078d54d16d9e24caa620bd57df51793905551e4c"
+    },
+    {
+      "path": "/bingo-choreography.js",
+      "status": 200,
+      "bytes": 11756,
+      "sha256": "467ad6d8ffc60126e4d28da0c2a4e38803fbd094f66a8da08aeafc521b94f6ef",
+      "localSha256": "467ad6d8ffc60126e4d28da0c2a4e38803fbd094f66a8da08aeafc521b94f6ef"
+    },
+    {
+      "path": "/bingo-host.js",
+      "status": 200,
+      "bytes": 54719,
+      "sha256": "a3e22aac57ce097dc3e849e49daa602c5fc439e1b8d0c1e0af15413db6d445ff",
+      "localSha256": "a3e22aac57ce097dc3e849e49daa602c5fc439e1b8d0c1e0af15413db6d445ff"
+    },
+    {
+      "path": "/bingo-model.js",
+      "status": 200,
+      "bytes": 28116,
+      "sha256": "fdbf2d679b978e213a5d75bcbae9872a27b21bcbf43a6236e7b144830e9666e4",
+      "localSha256": "fdbf2d679b978e213a5d75bcbae9872a27b21bcbf43a6236e7b144830e9666e4"
+    },
+    {
+      "path": "/bingo-motion.js",
+      "status": 200,
+      "bytes": 3482,
+      "sha256": "8504a570253c80d478c3ca85c1dbde892222431c7da46fd922e585d66f647305",
+      "localSha256": "8504a570253c80d478c3ca85c1dbde892222431c7da46fd922e585d66f647305"
+    },
+    {
+      "path": "/bingo-player.js",
+      "status": 200,
+      "bytes": 31340,
+      "sha256": "e22fdd43c312e3d092206b910ac11374aa3aff0f3060cf17cd75f6c8f4c0e244",
+      "localSha256": "e22fdd43c312e3d092206b910ac11374aa3aff0f3060cf17cd75f6c8f4c0e244"
+    },
+    {
+      "path": "/bingo-scenes.js",
+      "status": 200,
+      "bytes": 10366,
+      "sha256": "e92e7d2b42a7784c05b5932f28f581f0b037cf07fdbdf98e3dbf5d15bad7e948",
+      "localSha256": "e92e7d2b42a7784c05b5932f28f581f0b037cf07fdbdf98e3dbf5d15bad7e948"
+    },
+    {
+      "path": "/bingo-stage-games.js",
+      "status": 200,
+      "bytes": 14331,
+      "sha256": "a454e9ab99ed5862f9e923aba188ddd4ab6c05e6c517733abf7562bf86289c3c",
+      "localSha256": "a454e9ab99ed5862f9e923aba188ddd4ab6c05e6c517733abf7562bf86289c3c"
+    },
+    {
+      "path": "/blink-texture.js",
+      "status": 200,
+      "bytes": 1468,
+      "sha256": "6c69275de6da5bf79f789a086ddcbb21b3145017fe883875072da0bff789fc94",
+      "localSha256": "6c69275de6da5bf79f789a086ddcbb21b3145017fe883875072da0bff789fc94"
+    },
+    {
+      "path": "/brand-canvas.js",
+      "status": 200,
+      "bytes": 1217,
+      "sha256": "f9db365c9cb053e2730376bb65838d201daa9ce804d36493ccdbd8c8348062e0",
+      "localSha256": "f9db365c9cb053e2730376bb65838d201daa9ce804d36493ccdbd8c8348062e0"
+    },
+    {
+      "path": "/brand-presenter.js",
+      "status": 200,
+      "bytes": 4936,
+      "sha256": "73753a974473e88ffbba85f94dc275cb524dad33887f0fc6eff9b57d41cc97d3",
+      "localSha256": "73753a974473e88ffbba85f94dc275cb524dad33887f0fc6eff9b57d41cc97d3"
+    },
+    {
+      "path": "/brand-reserve.js",
+      "status": 200,
+      "bytes": 1031,
+      "sha256": "2f12a6a50e933faa3508873011867e03e58946ebf6e32d89eaa7e1b691d7a5d6",
+      "localSha256": "2f12a6a50e933faa3508873011867e03e58946ebf6e32d89eaa7e1b691d7a5d6"
+    },
+    {
+      "path": "/brand-ui.js",
+      "status": 200,
+      "bytes": 7605,
+      "sha256": "63afcf190ea887b5258da29f242f96fb04580ba1814051b2b072f298ca2717ee",
+      "localSha256": "63afcf190ea887b5258da29f242f96fb04580ba1814051b2b072f298ca2717ee"
+    },
+    {
+      "path": "/call-common.js",
+      "status": 200,
+      "bytes": 4798,
+      "sha256": "c543ef919e597d46957c85d67d591e1e4292f0c32214b002cd1263296f3df69f",
+      "localSha256": "c543ef919e597d46957c85d67d591e1e4292f0c32214b002cd1263296f3df69f"
+    },
+    {
+      "path": "/call-host.js",
+      "status": 200,
+      "bytes": 9548,
+      "sha256": "e1cc5f010e7165be6a734dc208079db5c3ae9119c41121ec40337a2076ccb444",
+      "localSha256": "e1cc5f010e7165be6a734dc208079db5c3ae9119c41121ec40337a2076ccb444"
+    },
+    {
+      "path": "/call-output.js",
+      "status": 200,
+      "bytes": 12343,
+      "sha256": "6d28d4f29317c596eba5c33d519c9f45cd5b2ba4466fda81d3d76c03f62ab130",
+      "localSha256": "6d28d4f29317c596eba5c33d519c9f45cd5b2ba4466fda81d3d76c03f62ab130"
+    },
+    {
+      "path": "/call-player.js",
+      "status": 200,
+      "bytes": 9432,
+      "sha256": "3186f8cc0b320ea0a7b855a45503e2d8b8d75c217030641f1c7044417bf9e0a2",
+      "localSha256": "3186f8cc0b320ea0a7b855a45503e2d8b8d75c217030641f1c7044417bf9e0a2"
+    },
+    {
+      "path": "/canvas-presenter.js",
+      "status": 200,
+      "bytes": 12605,
+      "sha256": "9d626d34c8687e72cae38806c72ba5e7503e71635e3db878205e03bc0284716e",
+      "localSha256": "9d626d34c8687e72cae38806c72ba5e7503e71635e3db878205e03bc0284716e"
+    },
+    {
+      "path": "/character-3d.js",
+      "status": 200,
+      "bytes": 8385,
+      "sha256": "3747e0c96320b24efe1d3c18876eac8181489d6109a25fd9d9f8e776ce3a6064",
+      "localSha256": "3747e0c96320b24efe1d3c18876eac8181489d6109a25fd9d9f8e776ce3a6064"
+    },
+    {
+      "path": "/characters.js",
+      "status": 200,
+      "bytes": 25225,
+      "sha256": "6719ff817aaf2b249cc4f2154df93d22892e8d9dcaa8aaa3ec4de713785a2d5c",
+      "localSha256": "6719ff817aaf2b249cc4f2154df93d22892e8d9dcaa8aaa3ec4de713785a2d5c"
+    },
+    {
+      "path": "/dashboard.js",
+      "status": 200,
+      "bytes": 9288,
+      "sha256": "83775b59e53404a66de282ba3dff3dd39717ef4314cfeccbbcd3025689f817be",
+      "localSha256": "83775b59e53404a66de282ba3dff3dd39717ef4314cfeccbbcd3025689f817be"
+    },
+    {
+      "path": "/family-reactions.js",
+      "status": 200,
+      "bytes": 472,
+      "sha256": "4667bae727ff8497d9a48a15ed9d7e7bef80d6e537b5e43ee1a14b5869772841",
+      "localSha256": "4667bae727ff8497d9a48a15ed9d7e7bef80d6e537b5e43ee1a14b5869772841"
+    },
+    {
+      "path": "/game-capacity.js",
+      "status": 200,
+      "bytes": 4142,
+      "sha256": "a9d115980ac7158072171ae62a4370ddb0627cc755ba93b0025c81b94456cc07",
+      "localSha256": "a9d115980ac7158072171ae62a4370ddb0627cc755ba93b0025c81b94456cc07"
+    },
+    {
+      "path": "/game-rules.js",
+      "status": 200,
+      "bytes": 6339,
+      "sha256": "e111571ff57ebe56e422c39171629461a57b949758dcfeb15e6f3602a0d670ca",
+      "localSha256": "e111571ff57ebe56e422c39171629461a57b949758dcfeb15e6f3602a0d670ca"
+    },
+    {
+      "path": "/illustrated-presenter.js",
+      "status": 200,
+      "bytes": 16004,
+      "sha256": "106f2d3aafc58b3d0bc2a0941d8ada266a5980c6c12fb3264bccffe49a5c1412",
+      "localSha256": "106f2d3aafc58b3d0bc2a0941d8ada266a5980c6c12fb3264bccffe49a5c1412"
+    },
+    {
+      "path": "/live-chat.js",
+      "status": 200,
+      "bytes": 35989,
+      "sha256": "3a67cff88b8b0069951824fffcbe6b6d51dacc3c55a14b710e376a89a72124e9",
+      "localSha256": "3a67cff88b8b0069951824fffcbe6b6d51dacc3c55a14b710e376a89a72124e9"
+    },
+    {
+      "path": "/magic-cues.js",
+      "status": 200,
+      "bytes": 4057,
+      "sha256": "da4c41b08adfc36fccbbb18862eb4d9d8a16194d4e786d4462c081526ed171d7",
+      "localSha256": "da4c41b08adfc36fccbbb18862eb4d9d8a16194d4e786d4462c081526ed171d7"
+    },
+    {
+      "path": "/mf-broadcast-set.js",
+      "status": 200,
+      "bytes": 6186,
+      "sha256": "ed03f5d51ba3291e2a27e2efddbf2abc24d4d40d70b4185ed5a78ee83c98b989",
+      "localSha256": "ed03f5d51ba3291e2a27e2efddbf2abc24d4d40d70b4185ed5a78ee83c98b989"
+    },
+    {
+      "path": "/mf-camera.js",
+      "status": 200,
+      "bytes": 7250,
+      "sha256": "282948ac58116635041ecd8d7a64c3983f792f5e59aa216501c02ffe5b1fc9e9",
+      "localSha256": "282948ac58116635041ecd8d7a64c3983f792f5e59aa216501c02ffe5b1fc9e9"
+    },
+    {
+      "path": "/mf-desk-board.js",
+      "status": 200,
+      "bytes": 2595,
+      "sha256": "f97f5b0893b7c344b3b5e7067b327a2abd791aa97eb31ff3bf32d8be402b1a9a",
+      "localSha256": "f97f5b0893b7c344b3b5e7067b327a2abd791aa97eb31ff3bf32d8be402b1a9a"
+    },
+    {
+      "path": "/mf-rig.js",
+      "status": 200,
+      "bytes": 12802,
+      "sha256": "3e9ff3e2268be052f31cd312d74c46cf8fb842ab4b8709c876d21a1f4fbb5b9e",
+      "localSha256": "3e9ff3e2268be052f31cd312d74c46cf8fb842ab4b8709c876d21a1f4fbb5b9e"
+    },
+    {
+      "path": "/mf-show-effects.js",
+      "status": 200,
+      "bytes": 11669,
+      "sha256": "760606548a3764d4548323ab834019b00b297c327c9851cfc63c0946074f0fbc",
+      "localSha256": "760606548a3764d4548323ab834019b00b297c327c9851cfc63c0946074f0fbc"
+    },
+    {
+      "path": "/mf-studio.js",
+      "status": 200,
+      "bytes": 36335,
+      "sha256": "1177898de968fc74fa72ae09ee14c694f8d4db9595e73a04ec914e3bb3635664",
+      "localSha256": "1177898de968fc74fa72ae09ee14c694f8d4db9595e73a04ec914e3bb3635664"
+    },
+    {
+      "path": "/milo-life.js",
+      "status": 200,
+      "bytes": 1528,
+      "sha256": "c093f0503588858582361dc3171422baad9e9e60583b3d61f05cb0b912b654e0",
+      "localSha256": "c093f0503588858582361dc3171422baad9e9e60583b3d61f05cb0b912b654e0"
+    },
+    {
+      "path": "/milo-magic-effects.js",
+      "status": 200,
+      "bytes": 17167,
+      "sha256": "c673074bfa907b31d1786467119e5ef9f930adf844517b605fd4f8166052ae02",
+      "localSha256": "c673074bfa907b31d1786467119e5ef9f930adf844517b605fd4f8166052ae02"
+    },
+    {
+      "path": "/milo-magic-games.js",
+      "status": 200,
+      "bytes": 12203,
+      "sha256": "d084e9957eb258177f35d533bdd9d8533142810ceb569967020164579f590b9d",
+      "localSha256": "d084e9957eb258177f35d533bdd9d8533142810ceb569967020164579f590b9d"
+    },
+    {
+      "path": "/milo-minigame-art.js",
+      "status": 200,
+      "bytes": 4466,
+      "sha256": "e151a5b2aec8dfe6b0914f349dd263fde7dfecbaa612184cb1d431eb28e8d8e2",
+      "localSha256": "e151a5b2aec8dfe6b0914f349dd263fde7dfecbaa612184cb1d431eb28e8d8e2"
+    },
+    {
+      "path": "/milo-minigame-plan.js",
+      "status": 200,
+      "bytes": 992,
+      "sha256": "97b7b5f7ae0f181cddc33627502c3ff79df4580c1bd2f38b5de7f399e8465cc3",
+      "localSha256": "97b7b5f7ae0f181cddc33627502c3ff79df4580c1bd2f38b5de7f399e8465cc3"
+    },
+    {
+      "path": "/milo-motion.js",
+      "status": 200,
+      "bytes": 21939,
+      "sha256": "f707ce5146c5657aaac865397d3ecc3e2b12b60cf512821e62b5077283c4dc6c",
+      "localSha256": "f707ce5146c5657aaac865397d3ecc3e2b12b60cf512821e62b5077283c4dc6c"
+    },
+    {
+      "path": "/milo-puppet.js",
+      "status": 200,
+      "bytes": 16402,
+      "sha256": "528290c27dd98c762603714da0b78a9128eaada8ad8ff7bc606c0c80155cc973",
+      "localSha256": "528290c27dd98c762603714da0b78a9128eaada8ad8ff7bc606c0c80155cc973"
+    },
+    {
+      "path": "/milo-ribbon-game.js",
+      "status": 200,
+      "bytes": 5606,
+      "sha256": "a1bc16bf22241f1b902702fd83e129f2649e9880f38abd1155f28d14b086d0aa",
+      "localSha256": "a1bc16bf22241f1b902702fd83e129f2649e9880f38abd1155f28d14b086d0aa"
+    },
+    {
+      "path": "/milo-studio-tour.js",
+      "status": 200,
+      "bytes": 3391,
+      "sha256": "7c29dcc651a62fe38f7e55c9dc15eccc49c26f82661dbb23fd319e630e9008ae",
+      "localSha256": "7c29dcc651a62fe38f7e55c9dc15eccc49c26f82661dbb23fd319e630e9008ae"
+    },
+    {
+      "path": "/mouth-texture.js",
+      "status": 200,
+      "bytes": 2752,
+      "sha256": "e6dac53293f3fd28c98688c3189a0c7f69305837d5d18c26413274094ad87347",
+      "localSha256": "e6dac53293f3fd28c98688c3189a0c7f69305837d5d18c26413274094ad87347"
+    },
+    {
+      "path": "/number-grid.js",
+      "status": 200,
+      "bytes": 1052,
+      "sha256": "fcb85f0ad1c4aa3f8d875ba0e1b93148a6b7d231357b403d5ad9e68c017a4bd8",
+      "localSha256": "fcb85f0ad1c4aa3f8d875ba0e1b93148a6b7d231357b403d5ad9e68c017a4bd8"
+    },
+    {
+      "path": "/openai-voice.js",
+      "status": 200,
+      "bytes": 6116,
+      "sha256": "0ca3139bc802cbfb95ba7ae3a0aba9dc1446629f62103ea8aa18d43aef6320d7",
+      "localSha256": "0ca3139bc802cbfb95ba7ae3a0aba9dc1446629f62103ea8aa18d43aef6320d7"
+    },
+    {
+      "path": "/output-bridge.js",
+      "status": 200,
+      "bytes": 16235,
+      "sha256": "a9610a682970e6da00a379acfd248bc10886dc0f8371611b3f3235813664ed9f",
+      "localSha256": "a9610a682970e6da00a379acfd248bc10886dc0f8371611b3f3235813664ed9f"
+    },
+    {
+      "path": "/plan-model.js",
+      "status": 200,
+      "bytes": 14070,
+      "sha256": "7c6a9c3bf4ae18853515f198e631ce216bc359628ae87f9bcc0c040d4bef8423",
+      "localSha256": "7c6a9c3bf4ae18853515f198e631ce216bc359628ae87f9bcc0c040d4bef8423"
+    },
+    {
+      "path": "/player-mail-settings.js",
+      "status": 200,
+      "bytes": 1450,
+      "sha256": "707848191ffbc95483926edc98db4cd5df72bcdefea7fb476f7c3e934105e31e",
+      "localSha256": "707848191ffbc95483926edc98db4cd5df72bcdefea7fb476f7c3e934105e31e"
+    },
+    {
+      "path": "/player-microphone.js",
+      "status": 200,
+      "bytes": 1601,
+      "sha256": "91fc549059189975074c8c51d04fab67ef85ef86de9371507cc7c6715cac9f5b",
+      "localSha256": "91fc549059189975074c8c51d04fab67ef85ef86de9371507cc7c6715cac9f5b"
+    },
+    {
+      "path": "/player-shell.js",
+      "status": 200,
+      "bytes": 19848,
+      "sha256": "916fefd5ea1dc6710a617138528ed8ebca18683ab56eb7cb2e92021d48bf4a63",
+      "localSha256": "916fefd5ea1dc6710a617138528ed8ebca18683ab56eb7cb2e92021d48bf4a63"
+    },
+    {
+      "path": "/plingo-game.js",
+      "status": 200,
+      "bytes": 10826,
+      "sha256": "6dc1ba74b13fb2f15eb5d6226382d8a342ff8b8d295d1e944aa0ac17c5d399ea",
+      "localSha256": "6dc1ba74b13fb2f15eb5d6226382d8a342ff8b8d295d1e944aa0ac17c5d399ea"
+    },
+    {
+      "path": "/presentation-graphics.js",
+      "status": 200,
+      "bytes": 4783,
+      "sha256": "fd33544857267ad52fdb96486975dcfde78d47b9dd97f8445870724795a1a8bd",
+      "localSha256": "fd33544857267ad52fdb96486975dcfde78d47b9dd97f8445870724795a1a8bd"
+    },
+    {
+      "path": "/presentation-model.js",
+      "status": 200,
+      "bytes": 9232,
+      "sha256": "3760dee3ac30e6d324f9e7b077b86bfeaf58eab63d3418f793b6c8673204d23b",
+      "localSha256": "3760dee3ac30e6d324f9e7b077b86bfeaf58eab63d3418f793b6c8673204d23b"
+    },
+    {
+      "path": "/presentation-queue.js",
+      "status": 200,
+      "bytes": 15979,
+      "sha256": "f3bde8768841c71278a3bcd3b2cac309eb83694f36b676f79d65d4e4c7395b0d",
+      "localSha256": "f3bde8768841c71278a3bcd3b2cac309eb83694f36b676f79d65d4e4c7395b0d"
+    },
+    {
+      "path": "/presentation-studio.js",
+      "status": 200,
+      "bytes": 18398,
+      "sha256": "d1e2da6a827cf1b02d1907808813e7eea36c17ce68c90ea89d0864c9f474e213",
+      "localSha256": "d1e2da6a827cf1b02d1907808813e7eea36c17ce68c90ea89d0864c9f474e213"
+    },
+    {
+      "path": "/production-graphics.js",
+      "status": 200,
+      "bytes": 3788,
+      "sha256": "97da2dd0340f2cd3e25b577c729badf00d00b487c19e620731b1fc019809e35c",
+      "localSha256": "97da2dd0340f2cd3e25b577c729badf00d00b487c19e620731b1fc019809e35c"
+    },
+    {
+      "path": "/production-host.js",
+      "status": 200,
+      "bytes": 32559,
+      "sha256": "d0b30259057e82c6bf94e0c8e22c33cb9ffd54a69de1905eb386673d4fcd51a0",
+      "localSha256": "d0b30259057e82c6bf94e0c8e22c33cb9ffd54a69de1905eb386673d4fcd51a0"
+    },
+    {
+      "path": "/production-model.js",
+      "status": 200,
+      "bytes": 8159,
+      "sha256": "90983bb309fd4a93fb095070d3ffbda4f898fac795ea10f4ecb425632c081791",
+      "localSha256": "90983bb309fd4a93fb095070d3ffbda4f898fac795ea10f4ecb425632c081791"
+    },
+    {
+      "path": "/production-player.js",
+      "status": 200,
+      "bytes": 10003,
+      "sha256": "87bbcafba64ac8e6c0a2f44106720391f11652010bc0cf6691adbfeec4186263",
+      "localSha256": "87bbcafba64ac8e6c0a2f44106720391f11652010bc0cf6691adbfeec4186263"
+    },
+    {
+      "path": "/rig.js",
+      "status": 200,
+      "bytes": 5023,
+      "sha256": "e95818f9222e5589a03ea873f761794573107bbe862f21368a819dcbb48537c0",
+      "localSha256": "e95818f9222e5589a03ea873f761794573107bbe862f21368a819dcbb48537c0"
+    },
+    {
+      "path": "/show-audio.js",
+      "status": 200,
+      "bytes": 7128,
+      "sha256": "3899778822af768a526a121dc72debf07f89c8c558522fae53422dc476fee0b2",
+      "localSha256": "3899778822af768a526a121dc72debf07f89c8c558522fae53422dc476fee0b2"
+    },
+    {
+      "path": "/show-brands.js",
+      "status": 200,
+      "bytes": 10433,
+      "sha256": "78544507d29617acb486f47dc97328997381e3f9ce4c4b40fd8624494f25a2d4",
+      "localSha256": "78544507d29617acb486f47dc97328997381e3f9ce4c4b40fd8624494f25a2d4"
+    },
+    {
+      "path": "/show-cues.js",
+      "status": 200,
+      "bytes": 3306,
+      "sha256": "9c2451e68cb4ce31ee278b65438eef08ec731a72b62c05704d4a8e82125c12c4",
+      "localSha256": "9c2451e68cb4ce31ee278b65438eef08ec731a72b62c05704d4a8e82125c12c4"
+    },
+    {
+      "path": "/show-director.js",
+      "status": 200,
+      "bytes": 16167,
+      "sha256": "435ab2e1f44b74e541b7f21a262e121d77c5baa4f02351ebf49f32e8adb71164",
+      "localSha256": "435ab2e1f44b74e541b7f21a262e121d77c5baa4f02351ebf49f32e8adb71164"
+    },
+    {
+      "path": "/show-graphics.js",
+      "status": 200,
+      "bytes": 8211,
+      "sha256": "551220fa7d564a6efe7a3b835d72f6b35a10bc0df8f3f61d6395065168e64163",
+      "localSha256": "551220fa7d564a6efe7a3b835d72f6b35a10bc0df8f3f61d6395065168e64163"
+    },
+    {
+      "path": "/show-planner.js",
+      "status": 200,
+      "bytes": 31467,
+      "sha256": "692a6c0237719556b8bf024e5a12b4f482bee7673f3f52f09fd2f4393508aae9",
+      "localSha256": "692a6c0237719556b8bf024e5a12b4f482bee7673f3f52f09fd2f4393508aae9"
+    },
+    {
+      "path": "/show-runner.js",
+      "status": 200,
+      "bytes": 9993,
+      "sha256": "6b7f418e52f2639b950f3244bd4f5669fcd06b22a424b5ec26feed7d9ccb1875",
+      "localSha256": "6b7f418e52f2639b950f3244bd4f5669fcd06b22a424b5ec26feed7d9ccb1875"
+    },
+    {
+      "path": "/show-time.js",
+      "status": 200,
+      "bytes": 2881,
+      "sha256": "8c83c8b000d53142b4850b11b44ec53d92a9ab930e62d87e24cfcff128ef3763",
+      "localSha256": "8c83c8b000d53142b4850b11b44ec53d92a9ab930e62d87e24cfcff128ef3763"
+    },
+    {
+      "path": "/showtime-stage.js",
+      "status": 200,
+      "bytes": 9595,
+      "sha256": "5600e9552da49e2a0083c8c310ed4eda90bcf8d0becceecbbc38ea6fdf4093f3",
+      "localSha256": "5600e9552da49e2a0083c8c310ed4eda90bcf8d0becceecbbc38ea6fdf4093f3"
+    },
+    {
+      "path": "/speech-captions.js",
+      "status": 200,
+      "bytes": 892,
+      "sha256": "b7bf767cd2c848b2f24922145d99e040ceb5bbf9d7825fb49609fcd261a50aec",
+      "localSha256": "b7bf767cd2c848b2f24922145d99e040ceb5bbf9d7825fb49609fcd261a50aec"
+    },
+    {
+      "path": "/speech-mouth.js",
+      "status": 200,
+      "bytes": 5868,
+      "sha256": "81cee9055f085aafa4dfdd9c48b516533d14b1fb23f8a5e74ea1b726c313e180",
+      "localSha256": "81cee9055f085aafa4dfdd9c48b516533d14b1fb23f8a5e74ea1b726c313e180"
+    },
+    {
+      "path": "/studio-25d.js",
+      "status": 200,
+      "bytes": 22538,
+      "sha256": "62f6ff2d85f35d7d743e76814598b110bfd0dfa4c19ce629ba44a7bfa89a5dbd",
+      "localSha256": "62f6ff2d85f35d7d743e76814598b110bfd0dfa4c19ce629ba44a7bfa89a5dbd"
+    },
+    {
+      "path": "/studio-3d.js",
+      "status": 200,
+      "bytes": 14548,
+      "sha256": "baaaf285db01c4456e9e4f149608f6effa622a7eb21a9f3be038fe853bd9fc18",
+      "localSha256": "baaaf285db01c4456e9e4f149608f6effa622a7eb21a9f3be038fe853bd9fc18"
+    },
+    {
+      "path": "/studio-backdrop.js",
+      "status": 200,
+      "bytes": 1260,
+      "sha256": "8f0933427b9182e957d6f29b439badc1b95c4432b732667a511bfa8def553134",
+      "localSha256": "8f0933427b9182e957d6f29b439badc1b95c4432b732667a511bfa8def553134"
+    },
+    {
+      "path": "/studio-features.js",
+      "status": 200,
+      "bytes": 4184,
+      "sha256": "a9e5a75a7ff376e9e098746a3d3faef11a6493e9144527d721a23ceecce9e84d",
+      "localSha256": "a9e5a75a7ff376e9e098746a3d3faef11a6493e9144527d721a23ceecce9e84d"
+    },
+    {
+      "path": "/studio-hub-model.js",
+      "status": 200,
+      "bytes": 3109,
+      "sha256": "8fb0149738a8e05a5f4bb41a8c02eb14a7089a5d6e5b7bb54db9c5be77b8069b",
+      "localSha256": "8fb0149738a8e05a5f4bb41a8c02eb14a7089a5d6e5b7bb54db9c5be77b8069b"
+    },
+    {
+      "path": "/studio-hub.js",
+      "status": 200,
+      "bytes": 59344,
+      "sha256": "3d3afd1bbcded200f7bf3f0272a312db24cb026b1e5fdb21b14cc4679f60d806",
+      "localSha256": "3d3afd1bbcded200f7bf3f0272a312db24cb026b1e5fdb21b14cc4679f60d806"
+    },
+    {
+      "path": "/studio-lighting.js",
+      "status": 200,
+      "bytes": 2231,
+      "sha256": "18ebcafe4d046bff0d382fa10b35324674296d345ed2501ddff344986eeb1828",
+      "localSha256": "18ebcafe4d046bff0d382fa10b35324674296d345ed2501ddff344986eeb1828"
+    },
+    {
+      "path": "/studio-workspace-source.js",
+      "status": 200,
+      "bytes": 11992,
+      "sha256": "e275abcc8e753499fe56fd879e134a178f31b9b75d91c7fd32b1400e7baae2bf",
+      "localSha256": "e275abcc8e753499fe56fd879e134a178f31b9b75d91c7fd32b1400e7baae2bf"
+    }
+  ]
+}

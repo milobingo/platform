@@ -1,8 +1,8 @@
-✔ the studio lap leaves and returns to the actual host mark with a continuous distance clock (19.330945ms)
-✔ preview seeks are deterministic and reduced motion stays at the desk (1.035059ms)
-✔ an early return changes floor position only while invisible and fades back at the desk (0.223879ms)
-✔ the real cue runtime freezes on pause and holds game data through a controlled stop (3.195082ms)
-✔ Milo owns this walk in manual control, planner and inherited-host cues (1.311778ms)
+✔ the studio lap leaves and returns to the actual host mark with a continuous distance clock (17.242693ms)
+✔ preview seeks are deterministic and reduced motion stays at the desk (1.113677ms)
+✔ an early return changes floor position only while invisible and fades back at the desk (0.261577ms)
+✔ the real cue runtime freezes on pause and holds game data through a controlled stop (3.121262ms)
+✔ Milo owns this walk in manual control, planner and inherited-host cues (1.252539ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -10,4 +10,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 29.979734
+ℹ duration_ms 28.02542

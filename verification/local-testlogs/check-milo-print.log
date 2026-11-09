@@ -1,5 +1,5 @@
-✔ Milo PDFs preserve all generated book/card identities and use a separate template revision (1864.4463ms)
-✔ A4 imposes identical A5 booklets without regenerating cards; invalid choices fail (160.890598ms)
+✔ Milo PDFs preserve all generated book/card identities and use a separate template revision (1719.831296ms)
+✔ A4 imposes identical A5 booklets without regenerating cards; invalid choices fail (120.207201ms)
 ℹ tests 2
 ℹ suites 0
 ℹ pass 2
@@ -7,4 +7,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 2031.901758
+ℹ duration_ms 1852.567725

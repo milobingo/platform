@@ -1,12 +1,12 @@
-✔ the14 source messages plus3 operational messages have a complete email frame, plain alternative and the correct production identity (9.338052ms)
-✔ template-specific shortcodes reject typos, malformed syntax and cross-template access (3.77389ms)
-✔ copy edits never turn parent names, notes or campaign text into HTML or executable attributes (0.373498ms)
-✔ header injection is rejected both before and after shortcode expansion (0.377843ms)
-✔ transaction buttons cannot be replaced or removed and unsafe resolved links cannot be sent (0.669054ms)
-✔ OTP remains enabled and preserves its code, expiry and safety guidance after all copy is changed (0.263279ms)
-✔ unsubscribe cannot be removed from a newsletter or from a show campaign (0.391364ms)
-✔ prize copy needs authoritative confirmation and template changes cannot remove the official facts (0.324111ms)
-✔ a trusted public asset base keeps the correct brand path without changing account or payment URLs (0.387517ms)
+✔ the14 source messages plus3 operational messages have a complete email frame, plain alternative and the correct production identity (8.753501ms)
+✔ template-specific shortcodes reject typos, malformed syntax and cross-template access (0.56707ms)
+✔ copy edits never turn parent names, notes or campaign text into HTML or executable attributes (0.405746ms)
+✔ header injection is rejected both before and after shortcode expansion (0.363742ms)
+✔ transaction buttons cannot be replaced or removed and unsafe resolved links cannot be sent (0.697778ms)
+✔ OTP remains enabled and preserves its code, expiry and safety guidance after all copy is changed (0.28422ms)
+✔ unsubscribe cannot be removed from a newsletter or from a show campaign (0.448038ms)
+✔ prize copy needs authoritative confirmation and template changes cannot remove the official facts (0.318063ms)
+✔ a trusted public asset base keeps the correct brand path without changing account or payment URLs (0.418915ms)
 ℹ tests 9
 ℹ suites 0
 ℹ pass 9
@@ -14,4 +14,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 21.668328
+ℹ duration_ms 17.936985

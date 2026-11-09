@@ -1,6 +1,6 @@
-✔ a magic cue exposes timing and cast events without selecting or confirming a bingo number (5.316627ms)
-✔ guest dialogue speaks in order, retains a committed ball, and stop clears the guest (1.330326ms)
-✔ each friend can present inherited premiere cues while Milo retains the magic cues (2.116517ms)
+✔ a magic cue exposes timing and cast events without selecting or confirming a bingo number (7.494333ms)
+✔ guest dialogue speaks in order, retains a committed ball, and stop clears the guest (2.104271ms)
+✔ each friend can present inherited premiere cues while Milo retains the magic cues (2.576227ms)
 ℹ tests 3
 ℹ suites 0
 ℹ pass 3
@@ -8,4 +8,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 13.524597
+ℹ duration_ms 19.747922

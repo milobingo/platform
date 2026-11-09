@@ -87,6 +87,91 @@
     ],
     "staging_release": {
       "version": 1,
+      "sha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+      "id": "42635245053-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "port": 4173,
+      "artifactSha256": null,
+      "artifactHashNote": "Native wrapper/helper pins and CI source are verified; 93 public modules/assets exactly match this release. No new privileged host inventory claimed.",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "toolchain": {
+        "node": "24.18.0",
+        "pnpm": "11.25.0"
+      },
+      "path": "/srv/sites/milobingo-staging/releases/cb84f03d7c74-42635245053-1",
+      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42635245053"
+    },
+    "production_release": null,
+    "github_repository_url": "https://github.com/milobingo/platform",
+    "git_remote": "origin",
+    "git_remote_url": "https://github.com/milobingo/platform.git",
+    "staging_status": {
+      "deployed": true,
+      "observed_at": "2026-11-09T14:33:26.056Z",
+      "source_sha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42632514858",
+      "ci_result": "success",
+      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42635245053",
+      "deploy_result": "success",
+      "database_mutated": false,
+      "database_upgrade": "https://github.com/milobingo/platform/actions/runs/42627576733",
+      "database_readonly_audit": "passed; additive 18-to-23 upgrade; 23 RLS tables, verified limited TLS runtime and private bucket",
+      "acceptance": {
+        "public_release_assets_and_access_boundaries": "passed; 93 public modules/assets exact; new public rules/unsubscribe refusal boundaries passed",
+        "browser_tests": {
+          "passed": 19,
+          "failed": 0,
+          "skipped": 0,
+          "flaky": 0,
+          "regie_backend": "simulated browser transport only; real unauthenticated host access boundaries",
+          "duration_seconds": 51.3,
+          "source_sha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+          "release_id": "42635245053-1",
+          "manual_screenshots_passed": 5,
+          "expected_sandbox_console_blocks": 38
+        },
+        "capacity_100_households": "Passed only for the explicit native PostgreSQL storage profile: 100 concurrent fixture API tasks, pool 10, 400 books and 500 successful operations with a real 180-second lease on cb84f03. Response p95: 27,105 ms; claims finished about 127.9 seconds after opening. Public HTTP/OAuth/feed/stream load is not qualified.",
+        "default_30_second_peak_window": "NO-GO: the separate 100-concurrent, pool-10, 30-second proof returned 409 closed. 100 begins and 21 claims succeeded, out of 500 intended primary operations. The fixture was removed and all 23 public tables were unchanged. The application default remains 30 seconds.",
+        "real_family_google_otp_and_regie_accounts": "pending actual account rehearsal",
+        "mail_gateway_worker_and_delivery": "pending; mail disabled; staging wrapper fields and real gateway contract required",
+        "paid_provider_and_live_audio": "pending",
+        "production_promotion": "blocked by missing real target/config and full real integration acceptance"
+      },
+      "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
+      "evidence": {
+        "ci": "verification/v70/queue-repair/main-ci.json",
+        "ci_summary": "verification/v70/queue-repair/main-ci-summary.json",
+        "deploy": "verification/v70/queue-repair/staging-deploy.json",
+        "inventory": "verification/v70/staging-inventory.json",
+        "upgrade": "verification/v70/staging-upgrade.json",
+        "restore": "verification/v70/staging-restore.json",
+        "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
+        "public": "verification/v70/queue-repair/staging-public.json",
+        "public_assets": "verification/v70/queue-repair/staging-public-assets.json",
+        "public_routes": "verification/v70/queue-repair/staging-route-smoke.json",
+        "runtime_role": "verification/v70/staging-runtime-role.json",
+        "browser": "verification/staging-v70/cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83/42635245053-1/release-acceptance.json",
+        "capacity_first": "verification/v70/staging-capacity-first.json",
+        "capacity_180": "verification/v70/queue-repair/staging-capacity-180.json",
+        "runtime_role_current_release": "verification/v70/queue-repair/staging-runtime-role.json",
+        "capacity_30": "verification/v70/queue-repair/staging-capacity-30.json",
+        "local_release": "verification/v70/queue-repair/local-release.json",
+        "first_v70_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-EERSTE-V70.md"
+      },
+      "result_document": "docs/STAGING-RESULTAAT.md",
+      "database_schema_tables": 23,
+      "database_upgrade_applied_separately": true,
+      "local_postgres_fixture_cleanup": "verification/v70/queue-repair/local-fixture-cleanup.json"
+    },
+    "production_status": {
+      "authorized": true,
+      "configured": false,
+      "deployed": false,
+      "reason": "Real production URL/site/runner and separate Supabase project not supplied; production environment has zero variables and secrets at read-only audit on 2026-11-09. Practical feature acceptance remains separate.",
+      "evidence": "verification/v70/production-readiness.json"
+    },
+    "previous_staging_release": {
+      "version": 1,
       "sha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
       "id": "42627937885-1",
       "configVersion": "staging-2026-11-05-v1",
@@ -101,78 +186,40 @@
       "path": "/srv/sites/milobingo-staging/releases/f32a854b408e-42627937885-1",
       "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42627937885"
     },
-    "production_release": null,
-    "github_repository_url": "https://github.com/milobingo/platform",
-    "git_remote": "origin",
-    "git_remote_url": "https://github.com/milobingo/platform.git",
-    "staging_status": {
-      "deployed": true,
-      "observed_at": "2026-11-09T13:48:03.331054+00:00",
-      "source_sha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42625788676",
-      "ci_result": "success",
-      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42627937885",
-      "deploy_result": "success",
-      "database_mutated": true,
-      "database_upgrade": "https://github.com/milobingo/platform/actions/runs/42627576733",
-      "database_readonly_audit": "passed; additive 18-to-23 upgrade; 23 RLS tables, verified limited TLS runtime and private bucket",
-      "acceptance": {
-        "public_release_assets_and_access_boundaries": "passed; 93 public modules/assets exact; new public rules/unsubscribe refusal boundaries passed",
-        "browser_tests": {
-          "passed": 19,
-          "failed": 0,
-          "skipped": 0,
-          "flaky": 0,
-          "regie_backend": "simulated browser transport only; real unauthenticated host access boundaries"
+    "staging_release_history": [
+      {
+        "version": 1,
+        "sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
+        "id": "42154203480-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": null,
+        "artifactHashNote": "New host artifact digest not read via SSH; exact public source/assets and the existing hash-pinned native deployment are verified.",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0"
         },
-        "capacity_100_households": "failed on f32: 409 closed under concurrency100/pool10/real180s; fixture removed and all23 public table hashes unchanged; optimization under local review",
-        "default_30_second_peak_window": "not proven; fixture uses explicit 180s lease",
-        "real_family_google_otp_and_regie_accounts": "pending actual account rehearsal",
-        "mail_gateway_worker_and_delivery": "pending; mail disabled; staging wrapper fields and real gateway contract required",
-        "paid_provider_and_live_audio": "pending",
-        "production_promotion": "blocked by missing real target/config and full real integration acceptance"
+        "path": "/srv/sites/milobingo-staging/releases/16305c0d70ff-42154203480-1",
+        "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42154203480"
       },
-      "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
-      "evidence": {
-        "ci": "verification/v70/main-ci.json",
-        "ci_summary": "verification/v70/main-ci-summary.json",
-        "deploy": "verification/v70/staging-deploy.json",
-        "inventory": "verification/v70/staging-inventory.json",
-        "upgrade": "verification/v70/staging-upgrade.json",
-        "restore": "verification/v70/staging-restore.json",
-        "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
-        "public": "verification/v70/staging-public.json",
-        "public_assets": "verification/v70/staging-public-assets.json",
-        "public_routes": "verification/v70/staging-route-smoke.json",
-        "runtime_role": "verification/v70/staging-runtime-role.json",
-        "browser": "verification/staging-v70/f32a854b408ed750001f2f768fc0f454f102c4f9/42627937885-1/release-acceptance.json",
-        "capacity_first": "verification/v70/staging-capacity-first.json"
-      },
-      "result_document": "docs/STAGING-RESULTAAT.md"
-    },
-    "production_status": {
-      "authorized": true,
-      "configured": false,
-      "deployed": false,
-      "reason": "Real production URL/site/runner and separate Supabase project not supplied; production environment has zero variables and secrets at read-only audit on 2026-11-09. Practical feature acceptance remains separate.",
-      "evidence": "verification/v70/production-readiness.json"
-    },
-    "previous_staging_release": {
-      "version": 1,
-      "sha": "16305c0d70fff1a5a80fccabf3703175e03df1d3",
-      "id": "42154203480-1",
-      "configVersion": "staging-2026-11-05-v1",
-      "port": 4173,
-      "artifactSha256": null,
-      "artifactHashNote": "New host artifact digest not read via SSH; exact public source/assets and the existing hash-pinned native deployment are verified.",
-      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
-      "toolchain": {
-        "node": "24.18.0",
-        "pnpm": "11.25.0"
-      },
-      "path": "/srv/sites/milobingo-staging/releases/16305c0d70ff-42154203480-1",
-      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42154203480"
-    }
+      {
+        "version": 1,
+        "sha": "f32a854b408ed750001f2f768fc0f454f102c4f9",
+        "id": "42627937885-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": null,
+        "artifactHashNote": "Native wrapper/helper pins and CI source are verified; 93 public modules/assets exactly match this release. No new privileged host inventory claimed.",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0"
+        },
+        "path": "/srv/sites/milobingo-staging/releases/f32a854b408e-42627937885-1",
+        "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42627937885"
+      }
+    ]
   },
   "configuration": {
     "inventory": "docs/PROJECTGEGEVENS-EN-SECRETS.md",
@@ -233,7 +280,13 @@
       "default_mode": "disabled",
       "status": "adapter implemented; actual Milo gateway/worker and signing contract not provisioned",
       "uncertain_retry_guarantee_ms": 0,
-      "staging_wrapper_upgrade_required_to_enable": true
+      "staging_wrapper_upgrade_required_to_enable": true,
+      "prepared_metadata_variables": [
+        "MAIL_FROM",
+        "MAIL_ORGANIZATION_EMAIL",
+        "MAIL_ASSET_BASE_URL"
+      ],
+      "current_staging_all_mail_fields_blocked": true
     }
   },
   "notes": [

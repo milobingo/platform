@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-11-09T14:32:31.217231Z",
+  "releaseSha": "cb84f03d7c7484a4c7a3eed97e9dcab8e8fece83",
+  "releaseId": "42635245053-1",
+  "configVersion": "staging-2026-11-05-v1",
+  "scope": "Unauthenticated public route refusal/method boundaries; only GET and explicitly refused PUT requests",
+  "checks": [
+    {
+      "path": "/spelregels",
+      "method": "GET",
+      "status": 400,
+      "contentType": "text/html; charset=utf-8",
+      "bodyBytes": 881,
+      "noStore": true
+    },
+    {
+      "path": "/api/bingo/rules?game=00000000-0000-0000-0000-000000000001",
+      "method": "GET",
+      "status": 404,
+      "contentType": "application/json",
+      "bodyBytes": 109,
+      "noStore": true
+    },
+    {
+      "path": "/api/bingo/rules",
+      "method": "PUT",
+      "status": 405,
+      "contentType": "application/json",
+      "bodyBytes": 67,
+      "noStore": true
+    },
+    {
+      "path": "/mail/afmelden?token=invalid",
+      "method": "GET",
+      "status": 400,
+      "contentType": "text/html; charset=utf-8",
+      "bodyBytes": 1161,
+      "noStore": true,
+      "tokenReflected": false
+    },
+    {
+      "path": "/mail/afmelden",
+      "method": "PUT",
+      "status": 405,
+      "contentType": null,
+      "bodyBytes": 0,
+      "noStore": false
+    }
+  ],
+  "databaseWrites": false,
+  "providerOrMailRequests": false
+}

@@ -1,6 +1,6 @@
-✔ ORD-01 Amsterdam wall time is canonical UTC in winter and summer, independent of the process zone (5.149584ms)
-✔ ORD-01 missing zone, DST gap/fold and invalid calendars are rejected; explicit fold offsets stay distinguishable (0.704858ms)
-✔ ORD-01 explicit ordering cutoff closes exactly on the server boundary and never silently interprets old zone-free shows (0.601191ms)
+✔ ORD-01 Amsterdam wall time is canonical UTC in winter and summer, independent of the process zone (8.064817ms)
+✔ ORD-01 missing zone, DST gap/fold and invalid calendars are rejected; explicit fold offsets stay distinguishable (0.910651ms)
+✔ ORD-01 explicit ordering cutoff closes exactly on the server boundary and never silently interprets old zone-free shows (0.670906ms)
 ℹ tests 3
 ℹ suites 0
 ℹ pass 3
@@ -8,4 +8,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 12.034638
+ℹ duration_ms 23.121576

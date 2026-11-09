@@ -1,8 +1,8 @@
-✔ private/unknown sources cannot reach programme or AI; live graph is strictly mix-minus (1.605003ms)
-✔ mute, failed phase and changing guest close audio synchronously without mutating game state (0.350941ms)
-✔ canvas programme stream contains explicit mix and isolated video; unsupported capture stays unavailable (0.316018ms)
-✔ AI mute cuts presenter programme/guest return and AI input while preserving the live guest programme track (0.280345ms)
-✔ existing show sound exposes its actual effects/music export and disposes its tracks (0.40192ms)
+✔ private/unknown sources cannot reach programme or AI; live graph is strictly mix-minus (1.465492ms)
+✔ mute, failed phase and changing guest close audio synchronously without mutating game state (0.2972ms)
+✔ canvas programme stream contains explicit mix and isolated video; unsupported capture stays unavailable (0.350822ms)
+✔ AI mute cuts presenter programme/guest return and AI input while preserving the live guest programme track (0.252974ms)
+✔ existing show sound exposes its actual effects/music export and disposes its tracks (0.390052ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -10,4 +10,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 12.666767
+ℹ duration_ms 9.773799
