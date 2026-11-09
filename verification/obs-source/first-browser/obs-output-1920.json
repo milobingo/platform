@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-11-09T22:21:41.544Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "qa-obs-output-show",
+  "sessionRequests": 1,
+  "outputGets": 0,
+  "heartbeats": [
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "seq": 0
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "seq": 0
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "generation": 1,
+      "seq": 1
+    }
+  ],
+  "callGets": 1,
+  "denied": 2,
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedDeniedConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "audioActivation": "real Chromium autoplay permitted"
+}

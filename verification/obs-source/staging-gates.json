@@ -1,0 +1,149 @@
+{
+  "observedAt": "2026-11-09T22:40:45.943951+00:00",
+  "releaseSha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42713543591",
+  "databaseMigrationRequested": false,
+  "gates": {
+    "ci": {
+      "gate": "ci",
+      "status": "passed",
+      "release_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "workflow_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "ci_run_id": "42711956992",
+      "ci_run_attempt": "1",
+      "ci_run_url": "https://github.com/milobingo/platform/actions/runs/42711956992"
+    },
+    "host": {
+      "gate": "host",
+      "status": "passed",
+      "releaseSha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "wrapperSha256": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "port": 4173,
+      "buildKeys": [],
+      "runtimeKeys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ]
+    },
+    "runtime": {
+      "gate": "runtime",
+      "status": "passed",
+      "keys": [
+        "NODE_ENV",
+        "HOSTNAME",
+        "APP_URL",
+        "MILO_LOCAL_AUTH",
+        "PORT",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_STORAGE_BUCKET",
+        "SUPABASE_DB_CA_BASE64",
+        "DATABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "VLAMPIE_SETTINGS_KEY",
+        "OPENAI_TEXT_MODEL",
+        "OPENAI_SPEECH_MODEL",
+        "OPENAI_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "RELEASE_SHA",
+        "RELEASE_ID",
+        "CONFIG_VERSION"
+      ],
+      "valuesPrinted": false
+    },
+    "staging-workspace": {
+      "gate": "staging-workspace",
+      "status": "passed",
+      "templates": [
+        {
+          "brand": "milo",
+          "templateCount": 17,
+          "authTemplateReadOnly": true
+        },
+        {
+          "brand": "vlampie",
+          "templateCount": 17,
+          "authTemplateReadOnly": true
+        }
+      ],
+      "providerSettingsReadable": true,
+      "providerSettingsEditable": true,
+      "storedCredentialsReturned": false,
+      "databaseWrites": 0,
+      "objectWrites": 0,
+      "providerRequests": 0,
+      "realAccountLoginVerified": false,
+      "storageReads": [
+        {
+          "httpStatus": 400,
+          "storageStatus": "404",
+          "code": "NoSuchKey"
+        },
+        {
+          "httpStatus": 400,
+          "storageStatus": "404",
+          "code": "NoSuchKey"
+        },
+        {
+          "httpStatus": 400,
+          "storageStatus": "404",
+          "code": "NoSuchKey"
+        },
+        {
+          "httpStatus": 200
+        }
+      ],
+      "releaseSha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "releaseId": "42713543591-1",
+      "observedAt": "2026-11-09T22:38:17.464Z"
+    },
+    "runtime-database-role": {
+      "gate": "runtime-database-role",
+      "status": "passed",
+      "verifiedTls": true,
+      "readableTables": 23,
+      "credentialsPrinted": false
+    },
+    "public": {
+      "gate": "public",
+      "status": "passed",
+      "releaseSha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "releaseId": "42713543591-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "checks": [
+        "exact-health-identity",
+        "demo-assets",
+        "unauthenticated-access",
+        "local-login-disabled"
+      ],
+      "notTested": [
+        "real-otp-email",
+        "google-oauth-account",
+        "paid-provider-access",
+        "live-broadcast-audio"
+      ]
+    }
+  }
+}

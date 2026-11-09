@@ -1,0 +1,48 @@
+{
+  "reviewedAt": "2026-11-09T22:42:30.848957+00:00",
+  "status": "passed",
+  "releaseSha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+  "releaseId": "42713543591-1",
+  "scope": "Manual visual inspection of actual staging HTML/CSS/canvas/assets with explicit synthetic account, OBS capability and API fixtures; no real account/provider/OBS hardware acceptance.",
+  "observations": [
+    "OBS management and copy field fit390/1366px; explicit producer start and revocation actions remain visible.",
+    "1920x1080 output contains the show without regie navigation or login; denied access covers the old frame with the activation/help overlay.",
+    "Invalid/expired link shows a retry screen and directs the operator to create a new OBS link in regie.",
+    "Rules publication action is visible beside the blocking row on390px; the published desktop row shows version1/Gereed and no repeat publish action."
+  ],
+  "blockingVisualIssues": [],
+  "actualOBSInstallation": false,
+  "actualAccountAcceptance": false,
+  "actualProviderAcceptance": false,
+  "actualUserRulesPublication": false,
+  "screenshots": [
+    {
+      "path": "obs-source/screenshots/obs-manage-390-created.png",
+      "sha256": "34420d1005715e9b46f9310892c20f564516f504244842eb547e365bd9f33894"
+    },
+    {
+      "path": "obs-source/screenshots/obs-manage-1366-created.png",
+      "sha256": "26992e8a4e8ad1b290c58c8f7d6eb06506ef3d8f5ab3bc2d01e40a49baaf49a9"
+    },
+    {
+      "path": "obs-source/screenshots/obs-output-1920-active.png",
+      "sha256": "fae3d6c3e047ddfde38d7f2a682bba70700c27283a7e51723ed382bdf11cc4a1"
+    },
+    {
+      "path": "obs-source/screenshots/obs-output-1920-revoked.png",
+      "sha256": "7acfcc72679d66dfb47bdd0dfd604cb60a83003d188361519048f70d6704f409"
+    },
+    {
+      "path": "obs-source/screenshots/obs-output-invalid-retry.png",
+      "sha256": "e2ac69e20053214876ca127fc33a6a7a4eefd71d3c545a2bc7cb427efc8f7630"
+    },
+    {
+      "path": "start-rules/screenshots/start-rules-390-unpublished-action.png",
+      "sha256": "8f252821806ad8d4cb52c0e3f3a9074129b560d83c4d6e2a9293eb56f7bef8df"
+    },
+    {
+      "path": "start-rules/screenshots/start-rules-1366-published-ready.png",
+      "sha256": "15791d5f495815679ec4144d05d292355e8271d6e9625bb7aa6bfbd38f767700"
+    }
+  ]
+}

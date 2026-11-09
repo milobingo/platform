@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-09T22:03:13.487647+00:00",
+  "sourceSha256": {
+    "frontend/App.jsx": "4cd02f8eb1cfc2ddf67447ac62e84f966987bc751f1bea4549eff5236f4101b8",
+    "frontend/start-readiness.js": "8b0c6ad998b666a51f6eb070b43fd4c5185a5cce83f4cb3f55c7be69d70b8bdc",
+    "frontend/workspace-system.css": "2d5ea8ff96c4e0574ba6e4aa427fc01b3a8d9b8a0dd9b3ee6bea1cc6ac80acba",
+    "scripts/check-start-readiness.mjs": "1f4d43a91411b2098aac9617ebc0403d6e8e46348ae10ce847b9d5158dcd2365",
+    "frontend/StartRulesAction.jsx": "95b3d177221727a1641e6cddb03730068e17e9e11371fa48a8e84606f55d0ee3",
+    "tests/browser/start-rules.spec.mjs": "724f6ab6fbc9ba462823a21759978d4c3e96155adc59ebcd7a159265fd30f7a0"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "startedAt": "2026-11-09T22:19:52.866006+00:00",
+  "finishedAt": "2026-11-09T22:25:16.872239+00:00",
+  "exitCode": 0,
+  "actualPostgres": true,
+  "providerCalls": "fixtures only"
+}

@@ -1,0 +1,1 @@
+{"backend":"@napi-rs/canvas — actual production puppet","samples":24,"waveChangedPixels":48608,"handLiftPixels":{"left":115.83349646562203,"right":4.749678900885101},"clapGapPixels":{"contact":19.33464703601323,"open":58.06215803529069},"paused":"identical pixels","output":"/tmp/milo-puppet-qa"}

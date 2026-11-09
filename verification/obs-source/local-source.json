@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-11-09T22:20:08.321390+00:00",
+  "baseCommit": "8b8c59f11c6d4cb7eb0674ca4fb149a700383b89",
+  "files": {
+    "README.md": "a9a95165ef10a265eb0dc75dc75615efb01d92b775f30c3fe1c4faea1d6f56e9",
+    "components/StudioGate.tsx": "c492b03f33ab531922e8582218cd3cd5051cedf60a23c4e4f6c64cb8f127a5a6",
+    "docs/OBS-UITZENDING.md": "751f33f8aef9201430bd1a6330c44310bb745264d1349b7e19f237cb1314cef3",
+    "frontend/Administration.jsx": "f7eff05e1001be0825ba0fb20de713cb02f1d3a6086715fc06315b929a268c62",
+    "frontend/App.jsx": "3b5b77b15a7d7c479a548ce664e81f01e4f534dcebb72110c062b435a48225e0",
+    "frontend/ObsSourceSettings.jsx": "cedb96f7c6fc396f8a52aa97a4bef616e92f5af63a58d74c2823fe44ba0ffc88",
+    "frontend/live-call-api.js": "727dc015afcf9334ab4227a49ed3a70571722ce89f364657f1f2425b250fef67",
+    "frontend/workspace-system.css": "ee02dd2dde47ed8f141f36546e60e3e53a8315ab708b48a3134c7c2efeb6979f",
+    "public/obs-access.js": "423806cda7a1bf5420dd755686016669918d3f0ae215a2e0c62c96d6b7642dae",
+    "public/output-bridge.js": "67b4614626cf821f692e87b49de2dabbfeb870a8ecb535411525a46a6249a2b5",
+    "scripts/check-obs-source-ui.mjs": "2b8c8b4a796f76337fa410d00c964d8c79d6dd1e3eb882d5baeff457715b0e4d",
+    "scripts/run-checks.mjs": "bf9556c60c4bf4542557eed91d53d3ab4413fd20811c0625638d8f89f6358f5f",
+    "server/live-calls.js": "77345c03444844a2a5003808731c897682cd064cae3c54d775f50a2d3b536245",
+    "server/node-obs-access.js": "de20654eb20456410d9565be7880afec349258da8fae0ec19940c11729ae1b75",
+    "server/node-runtime.js": "0515c0043b4ec96da3df19a61536e0d7e1a30cebd00f2fd79b7bdbaa02f1f2e5",
+    "server/output.js": "a03426a662af8e3fc30cedd651fc63196a05f9ed9aa421dd38b2c00ac2f4131a",
+    "tests/browser/obs-source.spec.mjs": "a31a6de18f451fc222b7174f9cb7b0048680b439403e8deb180436bede7ea0c8",
+    "tests/check-obs-access.mjs": "50e68d79e5195531eb1a67483f224b5187c763aecaf3997836eec42f6ac81cf7"
+  },
+  "postBuildTestOnlyCorrection": {
+    "path": "tests/browser/obs-source.spec.mjs",
+    "reason": "Scope error assertions to the application alert rather than the Next route announcer; fully reload after changing a fragment-only URL. App source unchanged.",
+    "beforeSha256": "1f8431e3e95a8225003dd4647f27f2181d3ed068ab36d179d77c73c2f4cb9dea",
+    "afterSha256": "a31a6de18f451fc222b7174f9cb7b0048680b439403e8deb180436bede7ea0c8"
+  }
+}

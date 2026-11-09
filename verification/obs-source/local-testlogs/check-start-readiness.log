@@ -1,0 +1,22 @@
+✔ U03: unpaid requests stay playable; each unresolved financial state agrees with the atomic API guard (88.636367ms)
+✔ U03: fulfilled orders require the same complete, owned, nonrevoked issuance as the server (15.705824ms)
+✔ U03: rules, effective patterns, schedule and admission remain current server-derived checks (13.18036ms)
+✔ U03: start reserve displays measured bytes and every reported shortage blocks the start (1.722329ms)
+✔ U03/L01: an active call, incomplete cleanup and a persisted hold cannot start a show (7.636149ms)
+✔ U03: key/configuration/output never claim audible success; disabled optional calls do not block offline rehearsal (2.03964ms)
+✔ U03: rules readiness distinguishes missing publication, changed preparation and the current published version (4.451015ms)
+✔ U03: the inline rules preview publishes only after an explicit click and stays ready after stored reload (407.026929ms)
+✔ U03: a failed rules publication stays blocked and does not announce successful publication (280.635993ms)
+✔ U03: changed saved rules without participants offer an explicit current-version publication beside the blocker (257.66444ms)
+✔ U03: unsaved preparation explains the prerequisite and saves without automatically publishing (216.532844ms)
+✔ U03: existing participation locks changed rules while current rules expose only their published version (654.377383ms)
+✔ U03: actual StartCheck disables blocked native starts, exposes reasons and permits an explicit healthy start (196.892248ms)
+✔ U03: fixed Program/Preview transport keeps pause and explicit voice/guest mute available independently of modules (225.683829ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2396.959721

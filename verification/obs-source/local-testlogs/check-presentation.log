@@ -1,0 +1,21 @@
+✔ profiles and rules use owner-only CAS; stale writes preserve document (24.43501ms)
+✔ game snapshot fixes profile/rules and player response cannot leak prompt (3.148561ms)
+✔ four corners, top/bottom and full card share numbers, then round ends (4.920335ms)
+✔ question intro ends before banner and question reading; answer restores owned scene (5.109012ms)
+✔ bingo preempts optional speech; late completion cannot overwrite checking (0.89073ms)
+✔ static scene survives a host utterance until explicit return (0.799632ms)
+✔ priority speech holds a countdown without losing elapsed time and resumes it (0.691558ms)
+✔ stopping preparation invalidates its late result and test context uses requested profile (1.05582ms)
+✔ moderation surrounds structured answer and malformed output never airs (6.973215ms)
+✔ round editor reorders/adds/removes goals without losing other form edits (65.909154ms)
+✔ speech splitting preserves Unicode and all original words within API bound (0.551414ms)
+✔ real chat source is canonical, owner checked, revalidated after generation, and hidden result excluded (5.190733ms)
+✔ profile studio mounts tabs and both save controls recover after successful save (25.290645ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.863351

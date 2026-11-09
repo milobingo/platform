@@ -1,0 +1,19 @@
+✔ local role choice operates durable real bingo APIs with separate family ownership (1103.720293ms)
+✔ forged Sites headers and legacy sessions never grant an identity (20.766922ms)
+✔ local mode fails closed outside explicit loopback development and rejects tampered cookies (17.839647ms)
+✔ mutation CSRF and return paths are checked before state changes (16.618297ms)
+✔ Supabase verifies identity and private SQL roles override all email and metadata claims (15.377837ms)
+✔ standalone proxy origin requires the fixed listener and exact public host and protocol (25.476678ms)
+✔ OTP is issued and verified by Supabase and OAuth callbacks keep cookies and safe redirects (19.692985ms)
+✔ unconfigured remote auth gives a configuration error and websocket upgrades are explicit (27.857815ms)
+✔ configured provider handlers use the Node fetch adapter while live verification stays explicit (41.618692ms)
+✔ birth dates reject impossible and future values and use the Amsterdam calendar (1.034768ms)
+✔ verified Supabase onboarding cannot change a foreign profile and can select an own profile at the limit (5.192147ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1301.349425

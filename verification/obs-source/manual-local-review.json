@@ -1,0 +1,35 @@
+{
+  "reviewedAt": "2026-11-09T22:25:39.059901+00:00",
+  "scope": "Local Chromium visual checks; synthetic auth and API transport; no actual OBS/provider/account acceptance.",
+  "observations": [
+    "OBS management controls and copyable readonly link fit390px and1366px.",
+    "1920x1080 output renders with no regie navigation or login; revoked fixture shows the activation/help overlay.",
+    "Rules row at390px has its explicit preview/publication action; published desktop row shows version1 andGereed."
+  ],
+  "screenshots": [
+    {
+      "path": "first-browser/screenshots/obs-manage-390-created.png",
+      "sha256": "5b82524ea79f7a60af9196083ff5a92beb447d98a719901e1e7f6d4614eb8635"
+    },
+    {
+      "path": "first-browser/screenshots/obs-manage-1366-created.png",
+      "sha256": "32d4d7c62b3f2c61f27be71d8f768529412802dd69d6d06f20b2ef2e13949458"
+    },
+    {
+      "path": "first-browser/screenshots/obs-output-1920-active.png",
+      "sha256": "04949e3b92d42d7ab27ec21e5717a08fce3b02145e370eca7c47014babe19715"
+    },
+    {
+      "path": "first-browser/screenshots/obs-output-1920-revoked.png",
+      "sha256": "7acfcc72679d66dfb47bdd0dfd604cb60a83003d188361519048f70d6704f409"
+    },
+    {
+      "path": "start-rules/screenshots/start-rules-390-unpublished-action.png",
+      "sha256": "8f252821806ad8d4cb52c0e3f3a9074129b560d83c4d6e2a9293eb56f7bef8df"
+    },
+    {
+      "path": "start-rules/screenshots/start-rules-1366-published-ready.png",
+      "sha256": "15791d5f495815679ec4144d05d292355e8271d6e9625bb7aa6bfbd38f767700"
+    }
+  ]
+}

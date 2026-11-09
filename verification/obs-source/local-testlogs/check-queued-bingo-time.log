@@ -1,0 +1,16 @@
+✔ queued claim is rejected at the exact server deadline without a sanction, deadline or control-lease write (40.207365ms)
+✔ queued begin is rejected at the exact server deadline without a sanction, deadline or control-lease write (7.041128ms)
+✔ optional store mode: queued extend is rejected at the exact server deadline without a sanction, deadline or control-lease write (5.869563ms)
+✔ a queued first announcement opens its full configured window from execution time (9.801689ms)
+✔ optional store mode: a queued control heartbeat checks the current lease and grants fifteen seconds from execution (6.195136ms)
+✔ the actual control heartbeat route uses normal CAS without entering the native family FIFO (5.304677ms)
+✔ an accepted durable claim replay after settlement returns its original receipt without another sanction or mutation (8.729726ms)
+✔ a lost database CAS refreshes the execution clock before retrying a claim at the deadline (44.747204ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.351907

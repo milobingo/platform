@@ -1,0 +1,5 @@
+✓ Family: broadcast → read-only 5×15 number board with live refresh → chat, spherical confirmed BINGO, Milo logo, persistent YouTube, saved marks, consent and QR/manual workflow
+✓ Brand separation: generic entrance prefers Milo; explicit Vlampie keeps its logo, studio and selected game
+✓ Availability: explicit child, no automatic preflight, consent/headphone/test gate and checked availability payload (fixture media only)
+✓ QR parser: manual code, valid book URL and invalid/non-book URLs
+✓ Player call: selected child, checkpoint-gated ring dialog, no room/AI before answer, teardown failure and stopped polling

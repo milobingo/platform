@@ -1,0 +1,14 @@
+✔ a fresh studio URL preserves the route and query, including the Vlampie profile (1.324316ms)
+✔ browser module-load failures trigger one automatic fresh load of the same page (0.664998ms)
+✔ a repeated module-load failure within sixty seconds cannot cause a refresh loop (0.236519ms)
+✔ ordinary render and network errors do not reload the studio (0.251221ms)
+✔ unavailable or throwing session storage prevents automatic reloads (0.580249ms)
+✔ successful startup clears the refresh guard so a later deployment may recover (0.379546ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.90157

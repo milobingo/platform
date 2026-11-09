@@ -1,0 +1,183 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-11-09T22:03:43Z",
+  "event": "push",
+  "headBranch": "main",
+  "headSha": "8b8c59f11c6d4cb7eb0674ca4fb149a700383b89",
+  "jobs": [
+    {
+      "completedAt": "2026-11-09T22:12:50Z",
+      "conclusion": "success",
+      "databaseId": 129470939403,
+      "name": "verify",
+      "startedAt": "2026-11-09T22:03:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-09T22:03:47Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-09T22:03:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:02Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-11-09T22:03:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:10Z",
+          "conclusion": "success",
+          "name": "Checkout exact event commit",
+          "number": 3,
+          "startedAt": "2026-11-09T22:04:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:11Z",
+          "conclusion": "success",
+          "name": "Install pnpm",
+          "number": 4,
+          "startedAt": "2026-11-09T22:04:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:23Z",
+          "conclusion": "success",
+          "name": "Install Node",
+          "number": 5,
+          "startedAt": "2026-11-09T22:04:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:28Z",
+          "conclusion": "success",
+          "name": "Install locked dependencies",
+          "number": 6,
+          "startedAt": "2026-11-09T22:04:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:28Z",
+          "conclusion": "success",
+          "name": "Validate build configuration",
+          "number": 7,
+          "startedAt": "2026-11-09T22:04:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:30Z",
+          "conclusion": "success",
+          "name": "Lint",
+          "number": 8,
+          "startedAt": "2026-11-09T22:04:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:04:30Z",
+          "conclusion": "success",
+          "name": "Prepare digest-capable sudoers parser",
+          "number": 9,
+          "startedAt": "2026-11-09T22:04:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:09:59Z",
+          "conclusion": "success",
+          "name": "Offline contract tests",
+          "number": 10,
+          "startedAt": "2026-11-09T22:04:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:10:00Z",
+          "conclusion": "success",
+          "name": "Native deployment boundary and rollback checks",
+          "number": 11,
+          "startedAt": "2026-11-09T22:09:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:10:44Z",
+          "conclusion": "success",
+          "name": "Build Next.js",
+          "number": 12,
+          "startedAt": "2026-11-09T22:10:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:10:48Z",
+          "conclusion": "success",
+          "name": "Typecheck",
+          "number": 13,
+          "startedAt": "2026-11-09T22:10:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:11:10Z",
+          "conclusion": "success",
+          "name": "Install browser",
+          "number": 14,
+          "startedAt": "2026-11-09T22:10:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:46Z",
+          "conclusion": "success",
+          "name": "Browser acceptance",
+          "number": 15,
+          "startedAt": "2026-11-09T22:11:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:46Z",
+          "conclusion": "success",
+          "name": "Post Install Node",
+          "number": 27,
+          "startedAt": "2026-11-09T22:12:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:46Z",
+          "conclusion": "success",
+          "name": "Post Install pnpm",
+          "number": 28,
+          "startedAt": "2026-11-09T22:12:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:46Z",
+          "conclusion": "success",
+          "name": "Post Checkout exact event commit",
+          "number": 29,
+          "startedAt": "2026-11-09T22:12:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:47Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 30,
+          "startedAt": "2026-11-09T22:12:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-09T22:12:47Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 31,
+          "startedAt": "2026-11-09T22:12:47Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/milobingo/platform/actions/runs/42708328520/job/129470939403"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-09T22:12:51Z",
+  "url": "https://github.com/milobingo/platform/actions/runs/42708328520"
+}

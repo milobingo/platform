@@ -1,0 +1,77 @@
+$ playwright test
+
+Running 27 tests using 2 workers
+
+(node:322257) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:322275) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓   2 tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓   4 tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓   3 tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   6 tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (138ms)
+  ✓   7 tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (22ms)
+  ✓   8 tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (572ms)
+  ✓   5 tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (3.5s)
+  ✓   9 tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport (27.5s)
+  ✓  11 tests/browser/handoff-v6.spec.mjs:143:1 › handoff v6 short-screen workspace and family modals; simulated transport (2.3s)
+  ✓  10 tests/browser/handoff-v6.spec.mjs:82:2 › handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport (28.4s)
+  ✓  12 tests/browser/handoff-v6.spec.mjs:164:1 › handoff v6 family orders, retained broadcast and whisper dialog; simulated transport (2.2s)
+  ✓  14 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 320px: real BINGO from Books, retained show and one shared countdown (3.4s)
+  ✓  13 tests/browser/handoff-v6.spec.mjs:188:1 › handoff v6 actual tour transport, new magic reveal and order detail; simulated transport (5.9s)
+  ✓  15 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown (2.7s)
+  ✓  16 tests/browser/handoff-v70.spec.mjs:54:1 › v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot (2.5s)
+  ✓  17 tests/browser/handoff-v70.spec.mjs:92:1 › v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie (2.0s)
+  ✓  19 tests/browser/handoff-v70.spec.mjs:119:1 › v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences (44ms)
+  ✓  20 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 390px; simulated API (1.3s)
+  ✓  18 tests/browser/handoff-v70.spec.mjs:105:1 › v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions (2.8s)
+  ✓  21 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 1366px; simulated API (2.1s)
+  ✘  23 tests/browser/obs-source.spec.mjs:103:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API (188ms)
+(node:338810) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 tests/browser/obs-source.spec.mjs:74:1 › OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API (3.4s)
+  ✓  24 tests/browser/regie-settings.spec.mjs:93:2 › saved-show mail recovery and editable redacted provider settings 390px; simulated API (4.2s)
+  ✓  25 tests/browser/regie-settings.spec.mjs:93:2 › saved-show mail recovery and editable redacted provider settings 1366px; simulated API (4.3s)
+  ✓  26 tests/browser/start-rules.spec.mjs:76:2 › saved-show startcheck publishes and retains explicit show rules 390px; simulated API (1.7s)
+  ✓  27 tests/browser/start-rules.spec.mjs:76:2 › saved-show startcheck publishes and retains explicit show rules 1366px; simulated API (1.8s)
+
+
+  1) tests/browser/obs-source.spec.mjs:103:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "De OBS-link is ongeldig of onvolledig."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert">…</div> aka getByRole('alert').filter({ hasText: 'De OBS-link is ongeldig of' })
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      105 |  await page.route('**/*',async route=>{const url=new URL(route.request().url());if(url.origin!==origin){proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}if(url.pathname==='/api/obs/session'){proof.sessionRequests++;return route.fulfill({status:401,json:{error:{message:'De OBS-link is verlopen.'}}});}if(url.pathname.startsWith('/api/')||url.pathname.startsWith('/auth/')){proof.otherApi.push(url.pathname);return route.fulfill({status:403,json:{error:{message:'No regie session allowed in OBS QA.'}}});}return route.continue();});
+      106 |  try{
+    > 107 |   await page.goto('/uitzending#obs=invalid-fixture');await expect(page.getByRole('alert')).toContainText('De OBS-link is ongeldig of onvolledig.');expect(proof.sessionRequests).toBe(0);await expect(page.getByRole('button',{name:'Opnieuw controleren',exact:true})).toBeVisible();
+          |                                                                                            ^
+      108 |   await page.goto('/uitzending#obs='+TOKEN);await expect(page.getByRole('alert')).toContainText('De OBS-link kon niet worden gecontroleerd.');expect(proof.sessionRequests).toBe(1);await page.getByRole('button',{name:'Opnieuw controleren',exact:true}).click();await expect.poll(()=>proof.sessionRequests).toBe(2);
+      109 |   await expect(page.locator('#stage')).toHaveCount(0);expect(proof.otherApi).toEqual([]);expect(proof.external).toEqual([]);await noPersistedCapability(page);await expect(page.getByRole('alert')).not.toContainText(TOKEN);await screenshot(page,'obs-output-invalid-retry');
+      110 |  }finally{await saveProof('obs-output-invalid',proof);}
+        at /home/codex/repos/milobingo/tests/browser/obs-source.spec.mjs:107:92
+
+    Error Context: test-results/obs-source-invalid-OBS-sou-9b79c-ion-authority-simulated-API/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/obs-source-invalid-OBS-sou-9b79c-ion-authority-simulated-API/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/obs-source-invalid-OBS-sou-9b79c-ion-authority-simulated-API/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/browser/obs-source.spec.mjs:103:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API
+  26 passed (1.0m)
+[ELIFECYCLE] Command failed with exit code 1.

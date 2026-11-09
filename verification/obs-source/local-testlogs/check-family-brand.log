@@ -1,0 +1,12 @@
+✔ generic family entrance prefers the requested world and its nearest upcoming show without mutating the picker list (1.559853ms)
+✔ exact show and book links never switch to another game, even before the referenced show is loaded (0.170709ms)
+✔ no Milo show means a Milo welcome screen, while archived shows stay available in their own world (0.183919ms)
+✔ trusted show identity determines logo and studio while old unbranded games keep the canonical Vlampie fallback (0.159972ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8.209607

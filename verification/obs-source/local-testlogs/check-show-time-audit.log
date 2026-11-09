@@ -1,0 +1,11 @@
+✔ ORD-01 inventory preserves literal source and proposes no timezone interpretation until explicit bound intent is supplied (3.759145ms)
+✔ ORD-01 even explicit Amsterdam intent leaves nonexistent, ambiguous and invalid legacy dates blocked (0.886634ms)
+✔ ORD-01 restricted inventory rejects personal-data fields, duplicate/rebound shows and malformed input without echoing source values (52.776567ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61.426653

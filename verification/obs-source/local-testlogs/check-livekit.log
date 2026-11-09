@@ -1,0 +1,16 @@
+✔ JWTs are signed with project secret and room deletion uses the real roomCreate grant (22.548632ms)
+✔ LiveKit settings stay encrypted, blank secrets preserve credentials, tests contact real API and stale saves fail (22.276418ms)
+✔ only an opted-in family profile can run a short media-free preflight; ordinary viewers never join a call (13.473753ms)
+✔ concurrent prepare requests select exactly one child and one durable hold (8.001142ms)
+✔ atomic preparation rolls back call and hold after statement 1 fails before commit (9.692325ms)
+✔ atomic preparation rolls back call and hold after statement 2 fails before commit (8.558575ms)
+✔ cancel during an in-flight AI creation retries a failed late hangup and never frees the draw hold (22.175547ms)
+✔ environment-managed LiveKit tests persist their revision without storing or exposing server credentials (11.737632ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.53566

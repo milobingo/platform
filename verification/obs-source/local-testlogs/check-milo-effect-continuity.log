@@ -1,0 +1,12 @@
+{"effects":[{"id":"ribbons","sequentialFrames":91,"maxMeanLuminanceStep":0.007555204861148468,"final":"identical pixels"},{"id":"mirrors","sequentialFrames":91,"maxMeanLuminanceStep":0.02004559982591303,"final":"identical pixels"},{"id":"potion","sequentialFrames":91,"maxMeanLuminanceStep":0.015224105902593266,"final":"identical pixels"},{"id":"butterfly","sequentialFrames":91,"maxMeanLuminanceStep":0.052478262151595345,"final":"identical pixels"}]}
+✔ wrapped decorative particles disappear before relocating and never strobe (36.170219ms)
+✔ secondary movement eases into a held result independently of future transport time (0.444924ms)
+✔ actual decorative renderers have stable consecutive-frame light and a quiet final tableau (2283.873275ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2333.635327

@@ -1,0 +1,10 @@
+✔ scratch validation constructs only explicit fixed pg fields, without reparsing URL options (1.435265ms)
+✔ scratch validation rejects every query, authority/TLS override, wrong destination and missing credential before pg sees it (0.714873ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.614707

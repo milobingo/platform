@@ -1,0 +1,24 @@
+✔ native status works without environment keys and ignores imported prototype credentials (81.584003ms)
+✔ native save is encrypted, redacted and independent of provider tests; explicit overrides and fallback are reversible (70.087735ms)
+✔ provider rejection or connection failure invalidates a receipt without replacing credentials (47.909565ms)
+✔ verified organizer, same origin, custom header, CAS and fresh role after admission protect every native save (29.983225ms)
+✔ both provider rotations reject another organizer active call, failed cleanup and orphan draw hold without mutation (29.130605ms)
+✔ corrupt or unreadable native overrides fail closed and never expose or silently restore environment credentials (125.700921ms)
+✔ durable preview ledger survives role deletion and missing latest pointer (25.529318ms)
+✔ failed latest write plus rejected hangup stays registered and blocks both credential rotations (57.420565ms)
+✔ native start lock never delays parental withdrawal and late provider resources are closed with their original key (26.287908ms)
+✔ native legacy hangup failure preserves hold and blocks rotation until confirmed retry (26.383712ms)
+✔ late native cleanup cannot mutate a replacement call or clear its new show hold (23.635058ms)
+✔ microphone stop during a blocked native preview start returns promptly and closes the late session (28.423823ms)
+✔ native legacy and LiveKit prepare cannot replace an unconfirmed terminal session; confirmed cleanup allows replacement (9.729752ms)
+✔ a slow or aborted provider body holds no credential lock and oversized input cannot mutate credentials (19.638893ms)
+✔ a lost native PostgreSQL lock lease prevents credential persistence (17.130823ms)
+✔ PostgreSQL lock serializes adapters while the local FIFO consumes only one lock admission (132.549558ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 762.184325

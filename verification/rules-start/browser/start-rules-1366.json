@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-11-09T22:23:21.698Z",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedAuthAndApiTransport": true,
+  "actualUserRulesPublication": false,
+  "actualBackendWrites": false,
+  "actualProviderAcceptance": false,
+  "savedShowBranch": true,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "9c791a2f-e31b-4fef-a5da-8cebabfc8a7b",
+  "publishPath": "/api/bingo/games/9c791a2f-e31b-4fef-a5da-8cebabfc8a7b/publish-rules",
+  "requestedSavedGame": 2,
+  "gets": {
+    "/api/auth/session": 2,
+    "/api/bingo/games": 2,
+    "/api/characters": 2,
+    "/api/openai/status": 2,
+    "/api/bingo/games/9c791a2f-e31b-4fef-a5da-8cebabfc8a7b": 2
+  },
+  "fixturePublications": [
+    {
+      "path": "/api/bingo/games/9c791a2f-e31b-4fef-a5da-8cebabfc8a7b/publish-rules",
+      "method": "POST",
+      "regieHeader": true,
+      "requestIdPresent": true,
+      "regieIdPresent": true
+    }
+  ],
+  "blockedWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": []
+}

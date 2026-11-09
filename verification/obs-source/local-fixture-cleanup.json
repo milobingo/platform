@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-09T22:26:33.244088+00:00",
+  "status": "passed",
+  "container": "milobingo-obs-pg-20261109",
+  "stopped": true,
+  "containerRemoved": true,
+  "port": 54392,
+  "portClosed": true,
+  "privateFilesRemoved": true,
+  "scope": "Only this task's own PostgreSQL17 fixture and private temporary connection files; no other container, network, volume or backup touched."
+}

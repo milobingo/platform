@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-11-09T22:26:21.179883+00:00",
+  "testedSourceCommit": "d4b770f918de4eeac8af6c4f547b376965d812bc",
+  "frozenSourceHashesUnchanged": true,
+  "cleanEnvironmentStandaloneBuild": "passed",
+  "lint": "passed",
+  "configuration": "passed",
+  "typecheck": "passed",
+  "programs": {
+    "passed": 92,
+    "failed": 0,
+    "allInSingleFinalRun": true,
+    "actualOwnPostgres17": true
+  },
+  "obsBackendTests": 14,
+  "obsClientTests": 11,
+  "nativeDeploymentChecks": 23,
+  "browser": {
+    "startTime": "2026-11-09T22:22:21.571Z",
+    "duration": 60376.133,
+    "expected": 27,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "realAccountAcceptance": false,
+  "actualOBSInstallation": false,
+  "providerRequests": 0,
+  "actualUserRulesPublication": false,
+  "firstBrowserRun": "26pass/1ambiguous testselector; initialreport retained, targeted correction passed and final27allgreen",
+  "independentSecurityReview": "No concrete blocker in frozen source; queue/provider/CAS revocation, projected metadata and local audio stop reviewed.",
+  "mainMergeCommit": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+  "sourceTreesEqual": true,
+  "textLogNormalization": "Trailing whitespace removed from archived textual logs; messages, outcomes and numbers preserved."
+}

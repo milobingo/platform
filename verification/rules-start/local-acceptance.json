@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-11-09T22:04:34.679295+00:00",
+  "testedSourceCommit": "c20e05193728c1c4d7d71082f23bbf7308ca0bde",
+  "mainMergeCommit": "8b8c59f11c6d4cb7eb0674ca4fb149a700383b89",
+  "sourceTreesEqual": true,
+  "cleanEnvironmentStandaloneBuild": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "focusedChecks": {
+    "startReadiness": 14,
+    "rulesApiAndParticipation": 9,
+    "workspaceNavigation": "passed"
+  },
+  "browser": {
+    "startTime": "2026-11-09T22:02:07.030Z",
+    "duration": 58090.973,
+    "expected": 23,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "actualUserRulesPublication": false,
+  "actualProviderRequests": 0,
+  "databaseMigrations": 0,
+  "fullProgramSuite": "Required exact-main CI42708328520; separate from local focused checks",
+  "renderedArtifactRefresh": "Later combined OBS+rules browser runs regenerated the default screenshots/proof files. Original23-case JSON and log remain unchanged; initial visual hashes are historical in browser/manual-local-review-initial-record.json. Current screenshots and review belong to the final27-case combined app run in ../obs-source."
+}

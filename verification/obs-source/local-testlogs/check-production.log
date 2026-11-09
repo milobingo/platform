@@ -1,0 +1,21 @@
+✔ an empty JA closes at deadline once, stays separate from false penalties, and a claimed multi-book announcement is complete (10.843759ms)
+✔ book lifecycle preserves numbers/codes, rejects revoked registration/readmission, and verifies assignment profile ownership (47.537241ms)
+✔ participation needs consent, child permission and invitation; withdrawals are durable and identical requests do not grow audit events (31.876094ms)
+✔ recovery holds the exact reserved ball, committed draw and closed window; another active controller cannot take over (25.614857ms)
+✔ reports and memory data never expose deck, QR token, prompt or another account’s personal memory (8.135967ms)
+✔ voice cache survives removed key, checks identity, and invalidates by text and speed (9.633385ms)
+✔ authenticated output relay requires producer generation and rejects stale publication without a false ACK (4.096948ms)
+✔ a fresh clip resumes an output audio context that was previously paused (0.50835ms)
+✔ expired output heartbeat immediately mutes the orphaned output (0.437112ms)
+✔ remote pause cancels wall-clock timeout and changing audio routing mid-speech is refused (21.243044ms)
+✔ remote voice defers a clip paused while loading and waits for actual output completion after explicit resume (1.243835ms)
+✔ recovery review reconstructs a missed commit, invalidates old runner work and preserves the committed draw (95.513526ms)
+✔ story templates remain valid timeline blocks and render all production tabs without losing game inputs (41.389356ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 307.804833

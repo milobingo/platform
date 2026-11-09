@@ -1,0 +1,40 @@
+{
+  "reviewedAt": "2026-11-09T22:04:49.574234+00:00",
+  "scope": "Manual visual inspection of four local Chromium screenshots from saved-show API transport fixtures.",
+  "viewports": [
+    390,
+    1366
+  ],
+  "observations": [
+    "At both widths the unpublished rules row has a visible Spelregels bekijken control and Publiceer spelregels button beside the blocking status.",
+    "After the fixture publication the same row shows Gereed, version 1 and the published-rules link; the publish button is absent.",
+    "No horizontal clipping or overlapping controls were visible in the reviewed rules rows."
+  ],
+  "boundaries": {
+    "actualBrowserRendering": true,
+    "simulatedAuthentication": true,
+    "simulatedApiTransport": true,
+    "actualUserRulesPublication": false,
+    "actualBackendWrites": false,
+    "actualProviderAcceptance": false,
+    "productionVerified": false
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/start-rules-390-unpublished-action.png",
+      "sha256": "8f252821806ad8d4cb52c0e3f3a9074129b560d83c4d6e2a9293eb56f7bef8df"
+    },
+    {
+      "path": "screenshots/start-rules-390-published-ready.png",
+      "sha256": "8e6e93db8690bb6e85f72b731c7e9d98c51dc01220ceb9b16874be0d4728e009"
+    },
+    {
+      "path": "screenshots/start-rules-1366-unpublished-action.png",
+      "sha256": "5bce8e9b6465dfb08ac491f94e0712bcf66ee0ef000db3070466145e0bbec407"
+    },
+    {
+      "path": "screenshots/start-rules-1366-published-ready.png",
+      "sha256": "15791d5f495815679ec4144d05d292355e8271d6e9625bb7aa6bfbd38f767700"
+    }
+  ]
+}

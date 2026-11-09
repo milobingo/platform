@@ -1,0 +1,18 @@
+✔ database preflight binds API and TLS database to the explicitly confirmed project (2.258903ms)
+✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (139.000079ms)
+✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (2.583674ms)
+✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (27.871426ms)
+✔ CLI failures do not echo malformed secret values (58.002806ms)
+✔ backup capacity uses measured available filesystem bytes and database size (0.352154ms)
+✔ v70 upgrade pins both reviewed manifests and keeps the historical source migration byte-identical (1.647116ms)
+✔ v70 isolated PostgreSQL upgrade proves actual encrypted restore before DDL, rejects unmanaged additions, preserves data and is idempotent (2502.777421ms)
+✔ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (1446.341666ms)
+✔ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (4270.296132ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8456.15685
