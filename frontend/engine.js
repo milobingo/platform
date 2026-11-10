@@ -106,11 +106,11 @@ export class StudioEngine{
  async flushPreparation(){
   this.trackPreparationChange();if(this.dirty&&!this.preparationAutosave.state.dirty){this._preparationFingerprint=preparationFingerprint(this.game);this.preparationAutosave.mark({schedule:false});}
   try{await this.preparationAutosave.flush();}catch(error){
-   const conflict=error.code==='preparation_conflict';throw Object.assign(new Error(conflict?'Niet opgeslagen: een ander regievenster heeft dit draaiboek gewijzigd. Je invoer blijft hier staan. Vergelijk de opgeslagen versie voordat je verdergaat.':'Niet opgeslagen — je invoer blijft bewaard. Controleer de verbinding en kies Opnieuw proberen.'),{code:error.code,cause:error});
+   const conflict=error.code==='preparation_conflict',locked=error.code==='preparation_locked';throw Object.assign(new Error(locked?'Niet opgeslagen: de show is gestart. Je invoer blijft hier staan. Bekijk de opgeslagen versie en hervat daarna de regie.':conflict?'Niet opgeslagen: een ander regievenster heeft dit draaiboek gewijzigd. Je invoer blijft hier staan. Vergelijk de opgeslagen versie voordat je verdergaat.':'Niet opgeslagen — je invoer blijft bewaard. Controleer de verbinding en kies Opnieuw proberen.'),{code:error.code,cause:error});
   }
  }
  retryPreparation(){return this.task(()=>this.flushPreparation());}
- async loadSavedPreparation(){const id=this.game.id,r=await bingoApi('/games/'+id);if(id!==this.game.id)return;this.clearPreparationBackup();this.dirty=false;this.acceptGame(r.game,true);this.syncGame();this.emit();}
+ async loadSavedPreparation(){return this.task(async()=>{const id=this.game.id,r=await bingoApi('/games/'+id);if(id!==this.game.id)return;this.clearPreparationBackup();this.dirty=false;this.acceptGame(r.game,true);this.syncGame();this.emit();});}
  async loadStandardRules(){
   if(this.game.status!=='draft'||this.production!=='milo')throw Error('De standaardregels zijn alleen beschikbaar voor een Milo-conceptshow.');
   await this.flushPreparation();if(this.demo){this.game={...this.game,plan:loadStandardMiloPlan(this.game.plan),settings:{...this.game.settings,rulesProfile:STANDARD_MILO_PROFILE,mode:'auto'}};this.dirty=true;this._preparationFingerprint='';this.trackPreparationChange();await this.flushPreparation();}

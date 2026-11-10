@@ -24,7 +24,7 @@ export class PreparationAutosave{
     this.apply(result,{current:this.sequence===sequence,value,revision:this.revision});
     this.status=this.sequence===this.saved?'saved':'saving';this.error=null;this.conflict=false;
    }catch(error){
-    if(this.epoch===epoch){this.status='error';this.error=error;this.conflict=error?.code==='preparation_conflict';}
+    if(this.epoch===epoch){this.status='error';this.error=error;this.conflict=['preparation_conflict','preparation_locked'].includes(error?.code);}
     throw error;
    }finally{if(this.epoch===epoch){this.inflight=null;this.onChange();}}
   })();

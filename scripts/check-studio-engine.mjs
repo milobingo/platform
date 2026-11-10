@@ -1,7 +1,7 @@
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {webcrypto} from 'node:crypto';
-import {makeGame,activateBlock,reserveBall,commitBall} from '../server/bingo-model.js';
+import {makeGame,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook} from '../server/bingo-model.js';
 import {handleBingo} from '../server/bingo.js';
 import {BingoStore} from '../server/bingo-store.js';
 import {createSqliteDatabase} from '../server/node-storage.js';
@@ -79,6 +79,29 @@ test('an explicit successful retry clears the failed-start error while preservin
   failStorage=false;await e.retryPreparation();
   assert.equal(e.error,'');assert.equal(e.preparationAutosave.state.status,'saved');assert.equal(e.dirty,false);assert.equal(e.working,false);assert.deepEqual(e.game.plan,input);assert.deepEqual((await store.game(game.id)).data.plan,input);assert.equal((await store.game(game.id)).data.status,'draft');assert.equal(requests.some(request=>request.path.endsWith('/start')),false);
  }finally{e.dispose();await db.close();}
+});
+test('a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly',async t=>{
+ for(const held of ['bingo-window','call-hold'])await t.test(held,async()=>{
+  const {e}=await rig({live:true}),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),requests=[];
+  try{
+   const game=makeGame({brandId:'milo',title:'Twee regievensters',date:'2027-01-01T18:00:00Z'},'two-tab-host',location.origin);generateBooks(game,1,'second-tab-book');game.books[0].accountId='family';game.books[0].name='Noor';await store.create(game);e.acceptGame(hostCopy(game),true);
+   const request=async(path,options={})=>handleBingo(new Request(location.origin+path,{...options,headers:{...options.headers,Origin:location.origin}}),{DB:db,AUTH_IDENTITY:{user:'two-tab-host',email:'host@example.test',admin:true}});
+   const post=async(action,body={})=>{const response=await request('/api/bingo/games/'+game.id+'/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-Vlampie-Bingo':'1'},body:JSON.stringify({...body,regieId:'other-tab',requestId:crypto.randomUUID()})});assert.equal(response.status,200);};
+   await post('start');await post('activate',{blockIndex:game.plan.blocks.findIndex(block=>block.type==='round'),goalIndex:0});
+   await store.mutate(game.id,held==='bingo-window'?{accountId:'family'}:{},(current,family,now)=>{
+    current.state.drawn=current.state.deck.slice(0,3);current.state.lastCommit={number:current.state.drawn.at(-1),index:3,at:now-15000};
+    if(held==='bingo-window'){beginBingo(current,family,'family','existing-announcement',now);claimBook(current,family,'family',current.books[0].id,now);}
+    else current.state.drawHold={id:'existing-call-hold',reason:'Wacht op bevestigde terugkeer',checkpoint:{roundIndex:0,goalIndex:0}};
+   });
+   const liveBefore=structuredClone((await store.game(game.id)).data);router=async(url,options)=>{requests.push({path:url,method:options.method});return request(url,options);};
+   e.editPlan(plan=>{plan.blocks.find(block=>block.type==='welcome').text='Mijn invoer uit het tweede venster blijft bewaard.';});const input=structuredClone(e.game.plan);
+   try{await e.start();assert.fail('The stale draft must not start a running show');}catch(error){assert.equal(error.code,'preparation_locked');e.fail(error.message);}
+   assert.deepEqual(e.game.plan,input);assert.equal(e.game.status,'draft');assert.equal(e.dirty,true);assert.equal(e.preparationAutosave.state.conflict,true);assert.match(e.error,/show is gestart/i);assert.match(e.error,/invoer blijft/i);assert.match(e.error,/hervat.*regie/i);assert.equal(requests.length,1);assert.equal(requests[0].method,'PUT');assert.deepEqual((await store.game(game.id)).data,liveBefore);
+   await e.loadSavedPreparation();
+   assert.equal(e.error,'');assert.equal(e.dirty,false);assert.equal(e.preparationAutosave.state.status,'saved');assert.equal(e.game.status,'running');assert.deepEqual(e.game.plan,liveBefore.plan);assert.deepEqual(e.game.state.drawn,liveBefore.state.drawn);assert.deepEqual(e.game.state.window,liveBefore.state.window);assert.deepEqual(e.game.state.drawHold,liveBefore.state.drawHold);assert.deepEqual((await store.game(game.id)).data,liveBefore);assert.equal(e.runner.active,false);
+   assert.deepEqual(requests.map(item=>item.method),['PUT','GET']);assert.equal(requests.some(item=>/\/(?:start|activate|pause)$/.test(item.path)),false);
+  }finally{e.dispose();await db.close();}
+ });
 });
 test('live recovery restores the current goal and keeps the server and local director paused until explicit resume',async()=>{
  const {e,server,calls,round}=await rig({live:true,goal:1});try{
