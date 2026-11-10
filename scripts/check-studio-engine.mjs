@@ -68,6 +68,18 @@ test('starting a real draft requires configured AI and never silently falls back
  e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
  }finally{e.dispose();}
 });
+test('an explicit successful retry clears the failed-start error while preserving input and never starts the show',async()=>{
+ const {e}=await rig({live:true}),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),requests=[];
+ try{
+  const game=makeGame({brandId:'milo',title:'Opslag opnieuw proberen',date:'2027-01-01T18:00:00Z'},'retry-host',location.origin);await store.create(game);e.acceptGame(hostCopy(game),true);let failStorage=true;
+  router=async(url,options)=>{requests.push({path:url,method:options.method});if(options.method==='PUT'&&failStorage)return Response.json({error:{code:'storage_failure',message:'De opslag is tijdelijk niet bereikbaar.'}},{status:500});return handleBingo(new Request(location.origin+url,{...options,headers:{...options.headers,Origin:location.origin}}),{DB:db,AUTH_IDENTITY:{user:'retry-host',email:'host@example.test',admin:true}});};
+  e.editPlan(plan=>{plan.blocks.find(block=>block.type==='welcome').text='Deze eigen welkomsttekst moet behouden blijven.';});const input=structuredClone(e.game.plan);
+  try{await e.start();assert.fail('The failed storage must reject the start');}catch(error){assert.match(error.message,/Niet opgeslagen/);e.fail(error.message);}
+  assert.match(e.error,/Niet opgeslagen/);assert.equal(e.preparationAutosave.state.status,'error');assert.equal(e.dirty,true);assert.deepEqual(e.game.plan,input);assert.equal(e.working,false);
+  failStorage=false;await e.retryPreparation();
+  assert.equal(e.error,'');assert.equal(e.preparationAutosave.state.status,'saved');assert.equal(e.dirty,false);assert.equal(e.working,false);assert.deepEqual(e.game.plan,input);assert.deepEqual((await store.game(game.id)).data.plan,input);assert.equal((await store.game(game.id)).data.status,'draft');assert.equal(requests.some(request=>request.path.endsWith('/start')),false);
+ }finally{e.dispose();await db.close();}
+});
 test('live recovery restores the current goal and keeps the server and local director paused until explicit resume',async()=>{
  const {e,server,calls,round}=await rig({live:true,goal:1});try{
  server.state.paused=true;e.game=hostCopy(server);e.hostId=e.speakerId='bruno';const epoch=server.state.epoch;

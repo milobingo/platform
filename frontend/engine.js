@@ -109,7 +109,7 @@ export class StudioEngine{
    const conflict=error.code==='preparation_conflict';throw Object.assign(new Error(conflict?'Niet opgeslagen: een ander regievenster heeft dit draaiboek gewijzigd. Je invoer blijft hier staan. Vergelijk de opgeslagen versie voordat je verdergaat.':'Niet opgeslagen — je invoer blijft bewaard. Controleer de verbinding en kies Opnieuw proberen.'),{code:error.code,cause:error});
   }
  }
- retryPreparation(){return this.flushPreparation();}
+ retryPreparation(){return this.task(()=>this.flushPreparation());}
  async loadSavedPreparation(){const id=this.game.id,r=await bingoApi('/games/'+id);if(id!==this.game.id)return;this.clearPreparationBackup();this.dirty=false;this.acceptGame(r.game,true);this.syncGame();this.emit();}
  async loadStandardRules(){
   if(this.game.status!=='draft'||this.production!=='milo')throw Error('De standaardregels zijn alleen beschikbaar voor een Milo-conceptshow.');
