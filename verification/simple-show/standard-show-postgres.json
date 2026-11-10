@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-11-10T10:22:20.723275+00:00",
+  "command": "node tests/check-standard-show.mjs",
+  "evidenceSource": "Captured stdout from successful local tool call 763d24; credentials redacted before output",
+  "fixtureContainer": "milobingo-simple-pg-20261110",
+  "loopbackPort": 54393,
+  "database": "milo_simple_test",
+  "actualPostgresAdapter": true,
+  "tests": 14,
+  "passed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "sourceSha256": "07d20640fa2596595efd1686ac8e0357292695626cbfb11dbe1d50d05136ae27",
+  "credentialValuesRecorded": false
+}

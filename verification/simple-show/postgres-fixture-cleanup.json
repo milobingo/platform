@@ -1,0 +1,7 @@
+{
+  "recordedAt": "2026-11-10T10:24:21.260796+00:00",
+  "fixture": "milobingo-simple-pg-20261110",
+  "containerRemoved": true,
+  "privateFixtureConfigRemoved": true,
+  "scope": "Only this task fixture; no unrelated containers, volumes, images or dependencies removed"
+}

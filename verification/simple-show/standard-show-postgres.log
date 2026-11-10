@@ -1,0 +1,22 @@
+✔ new Milo defaults contain exactly ten authoritative goals; both outer rows are required and the centre stays free (8.308984ms)
+✔ each new round selects its own card and resets the board; price steps retain official numbers and the prior round remains reviewable (3.921974ms)
+✔ the server rejects a single row at the second price step through the real claim path (2.310251ms)
+✔ 15-second official cadence survives reload and retries, blocks every hold and never catches up overdue balls (3.121742ms)
+✔ an empty bingo window restarts a fresh 15 seconds while preserving official balls and claims (2.26984ms)
+✔ rules are visible before participation; automatic draft edits do not exhaust publication history and bound rules stay locked (31.007507ms)
+✔ creating a new show automatically publishes the actual stable-ID rules, without touching the separate Vlampie show (10.175323ms)
+✔ the atomic start saves one final rules contract and rejects a second regie tab without a second show-start (44.125753ms)
+✔ a stale draft tab cannot start an already running show after the control lease expires; an exact start retry remains safe (16.17009ms)
+✔ preparation CAS rejects stale tabs; a failed write cannot change stored preparation, rules or the running status (7.280455ms)
+✔ a historical manually published Milo draft converts once on autosave; its history is preserved and participation locks future core edits (44.939616ms)
+✔ pause, resume and regie reload preserve the exact show and claims while resetting only the draw timer (20.424688ms)
+✔ standard rules load only after an explicit authorized draft action and retain custom cues and prizes (6.198995ms)
+✔ PostgreSQL preparation CAS and atomic start use the actual production adapter (244.337646ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 453.93721

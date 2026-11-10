@@ -10,6 +10,7 @@ import {livekitSettings,livekitCredentialFingerprint,livekitConfigured,livekitEr
 import {makeLiveCall,liveCallActive,transitionLiveCall,expireLiveCall,publicLiveCall,callContext,returnLiveCall} from './live-call-model.js';
 import {liveDirectorWhisper} from './live-director-whisper.js';
 import {assertGameMutationCapacity} from './game-capacity.js';
+import {resetDrawClock} from './standard-show.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
 const uuid=v=>typeof v==='string'&&/^[a-f0-9-]{36}$/.test(v);
 const START_RESERVATION_MS=30000;
@@ -186,7 +187,7 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
    catch(error){await change(current=>{if(current.phase==='live')returnLiveCall(current,'failed','Het geluid kon niet veilig worden gedempt. Het gesprek is gestopt.');});await cleanup(env,store,owner,c,fetcher,{force:true});throw error;}
   }else if(action==='resume-draw'){
    if(role!=='host'||c.phase!=='returned'||!c.returnState.hostConfirmedAt||!c.resourcesClosed)throw livekitError('Bevestig eerst de terugkeer en sluit alle gespreksverbindingen af.');
-   await bingo.mutate(c.gameId,{},game=>{if(game.state.drawHold?!matchingHold(game,c):game.state.lastCallRelease?.callId!==c.id)throw livekitError('De trekkingblokkade hoort bij een ander belmoment.');if(game.state.pending||game.state.window?.status==='open'||game.state.phase==='result'||game.state.resultId)throw livekitError('Rond eerst de bingocontrole af.');if(!game.state.drawHold)return;game.state.drawHold=null;game.state.lastCallRelease={callId:c.id,at:Date.now()};const entry=game.participation?.find(e=>e.id===c.entryId);if(entry&&entry.callStatus!=='withdrawn')entry.callStatus='done';game.events.push({type:'call-draw-resumed',name:c.context.callName,at:Date.now()});});
+   await bingo.mutate(c.gameId,{},game=>{if(game.state.drawHold?!matchingHold(game,c):game.state.lastCallRelease?.callId!==c.id)throw livekitError('De trekkingblokkade hoort bij een ander belmoment.');if(game.state.pending||game.state.window?.status==='open'||game.state.phase==='result'||game.state.resultId)throw livekitError('Rond eerst de bingocontrole af.');if(!game.state.drawHold)return;game.state.drawHold=null;resetDrawClock(game,Date.now());game.state.lastCallRelease={callId:c.id,at:Date.now()};const entry=game.participation?.find(e=>e.id===c.entryId);if(entry&&entry.callStatus!=='withdrawn')entry.callStatus='done';game.events.push({type:'call-draw-resumed',name:c.context.callName,at:Date.now()});});
    await change(current=>transitionLiveCall(current,action,role,body));
   }else{
    if(body.requestId&&c.ops?.includes(body.requestId))return json({call:safe(c,role,clientId),serverTime:Date.now()});

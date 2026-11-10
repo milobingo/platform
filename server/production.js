@@ -1,5 +1,6 @@
 import {brandId,showBrand} from './show-brands.js';
-import {assertRulesCurrent} from './game-rules.js';
+import {assertRulesCurrent,prepareAutomaticRules} from './game-rules.js';
+import {automaticRules} from './standard-show.js';
 import {assertOrderBookAssignment} from './bingo-order-model.js';
 import {birthAge} from './player-identity.js';
 import {BingoError,cleanText,checkAccount,assertBookAccountLimit} from './bingo-model.js';
@@ -24,7 +25,7 @@ export async function productionAction({action,request,body,url,row,store,id,use
  }
  requireHost();
  if(action==='production'){
-  const saved=await store.mutate(id,options,(g,_family,now=Date.now())=>{const current=productionSettings(g.production);if(body.revision!==current.revision)throw new BingoError('De productie-instellingen zijn intussen gewijzigd. Herlaad het spel en probeer opnieuw.',409,'conflict');const p=normalizeProduction(body.production);if(g.status!=='draft'&&(p.emptyLimit!==current.emptyLimit||p.emptyCooldownSeconds!==current.emptyCooldownSeconds))throw new BingoError('De meldingsregels staan vast tijdens de show.');p.revision=current.revision+1;p.updatedAt=now;g.production=p;if(g.rulesPublication)assertRulesCurrent(g);productionEvent(g,'production-saved',{revision:p.revision},now);});return json({game:hostGame(saved.game)});
+  const saved=await store.mutate(id,options,(g,_family,now=Date.now())=>{const current=productionSettings(g.production);if(body.revision!==current.revision)throw new BingoError('De productie-instellingen zijn intussen gewijzigd. Herlaad het spel en probeer opnieuw.',409,'conflict');const p=normalizeProduction(body.production);if(g.status!=='draft'&&(p.emptyLimit!==current.emptyLimit||p.emptyCooldownSeconds!==current.emptyCooldownSeconds))throw new BingoError('De meldingsregels staan vast tijdens de show.');p.revision=current.revision+1;p.updatedAt=now;g.production=p;if(g.status==='draft'&&automaticRules(g))prepareAutomaticRules(g,now);else if(g.rulesPublication)assertRulesCurrent(g);productionEvent(g,'production-saved',{revision:p.revision},now);});return json({game:hostGame(saved.game)});
  }
  if(action==='call-status'){
   const saved=await store.mutate(id,options,(g,_family,now=Date.now())=>{const p=productionSettings(g.production),entry=(g.participation||[]).find(x=>x.id===body.entryId);if(!entry)throw new BingoError('Aanmelding niet gevonden.');if(body.status==='greeting-approved'){if(!entry.greeting)throw new BingoError('Deze begroeting is ingetrokken.');entry.greetingApproved=body.approved===true;}
@@ -35,7 +36,7 @@ export async function productionAction({action,request,body,url,row,store,id,use
   const accountId=body.operation==='assign'?cleanText(body.accountId,150,'account'):null;
   const saved=await store.mutate(id,{...options,...(accountId?{accountId}:{})},(g,f,now=Date.now())=>{const b=g.books.find(b=>b.id===body.bookId);if(!b)throw new BingoError('Boekje niet gevonden.');if(body.operation==='issue'){if(b.orderId)throw new BingoError('De uitgiftestatus van een bestelblad wordt uitsluitend via de bestelling beheerd.',409,'order_issue_managed');if(!['generated','issued','sold'].includes(body.issueStatus))throw new BingoError('Kies een uitgiftestatus.');b.issueStatus=body.issueStatus;b.issueUpdatedAt=now;}
    else if(body.operation==='revoke'){if(g.status!=='draft')throw new BingoError('Trek verloren boekjes vóór de show in.');b.revokedAt=now;b.revokedReason=cleanText(body.reason,180,'reden');b.admitted=false;}
-   else if(body.operation==='assign'){assertOrderBookAssignment(g,b,accountId);if(g.status!=='draft'||b.revokedAt)throw new BingoError('Je kunt alleen geldige boekjes vóór de show opnieuw koppelen.');const p=f.profiles.find(p=>p.id===body.profileId);if(!p)throw new BingoError('Deze persoon hoort niet bij het gekozen account.');assertBookAccountLimit(g,accountId,b.id);Object.assign(b,{accountId,profileId:p.id,name:p.name,age:p.age});}
+   else if(body.operation==='assign'){if(automaticRules(g))prepareAutomaticRules(g,now);assertOrderBookAssignment(g,b,accountId);if(g.status!=='draft'||b.revokedAt)throw new BingoError('Je kunt alleen geldige boekjes vóór de show opnieuw koppelen.');const p=f.profiles.find(p=>p.id===body.profileId);if(!p)throw new BingoError('Deze persoon hoort niet bij het gekozen account.');assertBookAccountLimit(g,accountId,b.id);Object.assign(b,{accountId,profileId:p.id,name:p.name,age:p.age});}
    else throw new BingoError('Onbekende boekjesactie.');productionEvent(g,'book-updated',{code:b.code,name:b.name,operation:body.operation,issueStatus:b.issueStatus,reason:b.revokedReason||''},now);});return json({game:hostGame(saved.game)});
  }
  if(action==='recovery'){if(row.data.state.drawHold)throw new BingoError('Rond eerst het belmoment en de terugkeer naar de uitzending af.',409,'draw_hold');

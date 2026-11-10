@@ -4,6 +4,7 @@ import {defaultPlan,normalizePlan,planIssues,newId} from './plan-model.js';
 import {assertWindowCapacity} from './game-capacity.js';
 import {normalizeShowTime} from './show-time.js';
 import {projectedGameRules} from './game-rules.js';
+import {STANDARD_MILO_PROFILE,STANDARD_DRAW_RESERVATION_MS,standardMiloPlan,isStandardMiloGame,resetDrawClock,drawDueAt} from './standard-show.js';
 
 export const MINIGAMES=Object.freeze([
  {id:'wheel',name:'Vlampie’s Vuurrad',kind:'wheel',description:'Het rad versnelt, de lampen jagen rond en de laatste tik beslist.'},
@@ -50,7 +51,7 @@ export function gameSettings(input={},identity='vlampie'){
  const allowed=minigamesForBrand(identity).map(m=>m.id);
  if(input.minigames!==undefined&&!Array.isArray(input.minigames))throw new BingoError('Kies beslisspellen uit de lijst.');
  const enabled=[...new Set(input.minigames??allowed)];if(!enabled.length||enabled.some(id=>!allowed.includes(id)))throw new BingoError('Activeer minstens één beslisspel uit de lijst van deze productie.');
- return {claimSeconds:integer(input.claimSeconds??30,30,600,'Meldvenster'),retroBalls:integer(input.retroBalls??3,0,75,'Terugkijkmarge'),cooldownSeconds:integer(input.cooldownSeconds??60,0,86400,'Afkoelperiode'),falseLimit:integer(input.falseLimit??3,1,100,'Blokkeren na valse bingo’s'),confirmFinale:input.confirmFinale!==false,consolationEnabled:input.consolationEnabled===true,consolationPrizeTitle:cleanText(input.consolationPrizeTitle??'Een kleine verrassing',90,'naam van de troostprijs'),youtubeId:input.youtubeId?cleanText(input.youtubeId,11,'YouTube-video-ID'):'',mode:['manual','guided','auto'].includes(input.mode)?input.mode:'guided',minigames:enabled};
+ return {claimSeconds:integer(input.claimSeconds??30,30,600,'Meldvenster'),retroBalls:integer(input.retroBalls??3,0,75,'Terugkijkmarge'),cooldownSeconds:integer(input.cooldownSeconds??60,0,86400,'Afkoelperiode'),falseLimit:integer(input.falseLimit??3,1,100,'Blokkeren na valse bingo’s'),confirmFinale:input.confirmFinale!==false,consolationEnabled:input.consolationEnabled===true,consolationPrizeTitle:cleanText(input.consolationPrizeTitle??'Een kleine verrassing',90,'naam van de troostprijs'),youtubeId:input.youtubeId?cleanText(input.youtubeId,11,'YouTube-video-ID'):'',mode:['manual','guided','auto'].includes(input.mode)?input.mode:'guided',minigames:enabled,...(brandId(identity)==='milo'&&input.rulesProfile===STANDARD_MILO_PROFILE?{rulesProfile:STANDARD_MILO_PROFILE}:{})};
 }
 // Printed cards always have a free centre. Validate that effective rule before
 // accepting a draft, printing books, publishing rules or starting an old show.
@@ -61,10 +62,10 @@ export function normalizeBingoPlan(input){
  const issues=planIssues(plan);if(issues.length)throw new BingoError(issues[0],400,'invalid_plan');return plan;
 }
 export function makeGame(input,ownerId,origin,now=Date.now()){
- const count=integer(input.roundCount??4,1,8,'Aantal rondes'),plan=normalizeBingoPlan(input.plan?repairLegacyPlanBrand(input.plan,input.brandId):brandDefaults(defaultGamePlan(count),input.brandId));
+ const count=integer(input.roundCount??4,1,8,'Aantal rondes'),standard=brandId(input.brandId)==='milo'&&count===4&&!input.plan,plan=normalizeBingoPlan(input.plan?repairLegacyPlanBrand(input.plan,input.brandId):standard?standardMiloPlan():brandDefaults(defaultGamePlan(count),input.brandId));
  const schedule=normalizeShowTime(input.date,{timeZone:input.timeZone});
  if(plan.blocks.filter(b=>b.type==='round').length!==count)throw new BingoError('Het aantal rondes in de voorbereiding moet overeenkomen met het spel.');
- return {id:crypto.randomUUID(),brandId:validBrand(input.brandId||'vlampie'),ownerId,title:cleanText(input.title||plan.title,60,'spelnaam'),...schedule,origin,createdAt:now,status:'draft',settings:gameSettings(input.settings,input.brandId),plan,books:[],batches:[],results:[],events:[],ops:[],state:{phase:'lobby',blockIndex:-1,roundIndex:-1,goalIndex:0,goalOpenedAt:0,epoch:'',drawn:[],history:[],deck:[],pending:null,window:null,windowSequence:0,resultId:null,goalWon:false,paused:false}};
+ return {id:crypto.randomUUID(),brandId:validBrand(input.brandId||'vlampie'),ownerId,title:cleanText(input.title||plan.title,60,'spelnaam'),...schedule,origin,createdAt:now,status:'draft',preparationRevision:0,settings:gameSettings(standard?{...input.settings,mode:'auto',rulesProfile:STANDARD_MILO_PROFILE}:input.settings,input.brandId),plan,books:[],batches:[],results:[],events:[],ops:[],state:{phase:'lobby',blockIndex:-1,roundIndex:-1,goalIndex:0,goalOpenedAt:0,epoch:'',drawn:[],history:[],deck:[],pending:null,window:null,windowSequence:0,resultId:null,goalWon:false,paused:false}};
 }
 export function activeRound(game){return game.plan.blocks.filter(b=>b.type==='round')[game.state.roundIndex];}
 export function activeGoal(game){const r=activeRound(game),g=r?.goals[game.state.goalIndex];if(!g)return null;return {id:g.id,round:r,pattern:game.plan.patterns.find(p=>p.id===g.patternId),prize:game.plan.prizes.find(p=>p.id===g.prizeId)};}
@@ -108,9 +109,9 @@ export function activateBlock(game,index,goalIndex=0,now=Date.now()){
  const changed=game.state.blockIndex!==index||game.state.goalIndex!==goalIndex;
  game.state.blockIndex=index;game.state.paused=false;if(changed)productionEvent(game,'block-activated',{blockId:b.id,title:b.title,blockIndex:index,roundIndex:b.type==='round'?roundIndex:game.state.roundIndex,goalIndex},now);
  if(b.type!=='round'){if(!game.state.drawHold){game.state.phase='interlude';game.state.pending=null;}return b;}
- if(roundIndex!==game.state.roundIndex){if(game.state.roundIndex>=0)game.state.history.push({roundIndex:game.state.roundIndex,drawn:[...game.state.drawn],closedAt:now});game.state.drawn=[];game.state.deck=shuffle(Array.from({length:75},(_,i)=>i+1));game.state.pending=null;}
+ if(roundIndex!==game.state.roundIndex){if(game.state.roundIndex>=0)game.state.history.push({roundIndex:game.state.roundIndex,drawn:[...game.state.drawn],closedAt:now});game.state.drawn=[];game.state.lastCommit=null;game.state.deck=shuffle(Array.from({length:75},(_,i)=>i+1));game.state.pending=null;}
  if(roundIndex!==game.state.roundIndex||goalIndex!==game.state.goalIndex||!game.state.epoch){game.state.epoch=crypto.randomUUID();if(game.state.pending)game.state.pending={number:game.state.pending.number,token:crypto.randomUUID(),epoch:game.state.epoch};game.state.goalOpenedAt=game.state.drawn.length;game.state.window=null;game.state.windowSequence=0;game.state.resultId=null;game.state.goalWon=false;}
- game.state.roundIndex=roundIndex;game.state.goalIndex=goalIndex;game.state.phase='running';return b;
+ game.state.roundIndex=roundIndex;game.state.goalIndex=goalIndex;game.state.phase='running';if(changed)resetDrawClock(game,now);return b;
 }
 // Use the normalized pattern itself as a collision-free, deterministic version.
 export function claimContext(game){
@@ -140,9 +141,10 @@ export function assertOwnedBook(game,accountId,bookId){
  if(!book)throw new BingoError('Dit boekje hoort niet bij jouw account of deze show.',403,'book_forbidden');return book;
 }
 export function assertDrawAvailable(game){if(game.state.drawHold||game.state.callId)throw new BingoError('De trekking is geblokkeerd voor een belmoment. Bevestig eerst de terugkeer en hervat de trekking vanuit de belregie.',409,'call_draw_hold');}
-export function reserveBall(game){
- assertDrawAvailable(game);const s=game.state;if(game.status!=='running'||s.phase!=='running'||s.paused||s.goalWon||!activeGoal(game))throw new BingoError('De trekking wacht op de regie of het meldvenster.',409,'draw_paused');
+export function reserveBall(game,now=Date.now()){
+ assertDrawAvailable(game);const s=game.state;if(game.status!=='running'||s.phase!=='running'||s.paused||s.goalWon||s.window?.status==='open'||s.resultId||!activeGoal(game))throw new BingoError('De trekking wacht op de regie of het meldvenster.',409,'draw_paused');
  if(s.drawn.length>=75)throw new BingoError('Alle 75 ballen zijn getrokken.',409);
+ if(!s.pending&&isStandardMiloGame(game)&&now<drawDueAt(game)-STANDARD_DRAW_RESERVATION_MS)throw new BingoError('De volgende bal wacht op de officiële afteller van vijftien seconden.',409,'draw_wait');
  return s.pending??(s.pending={token:crypto.randomUUID(),number:s.deck[s.drawn.length],epoch:s.epoch});
 }
 export function commitBall(game,token,now=Date.now()){
@@ -150,7 +152,8 @@ export function commitBall(game,token,now=Date.now()){
  assertDrawAvailable(game);
  if(game.status!=='running'||s.phase!=='running'||s.paused||s.goalWon||s.window?.status==='open')throw new BingoError('Het meldvenster heeft de trekking stilgezet.',409,'draw_paused');
  if(!s.pending||s.pending.token!==token||s.pending.epoch!==s.epoch)throw new BingoError('Deze trekking is niet meer actief.',409);
- const number=s.pending.number;s.drawn.push(number);s.lastCommit={token,number,index:s.drawn.length,at:now};s.pending=null;productionEvent(game,'ball-committed',{number,index:s.drawn.length,roundIndex:s.roundIndex,goalIndex:s.goalIndex,epoch:s.epoch},now);return s.lastCommit;
+ if(isStandardMiloGame(game)&&now<drawDueAt(game))throw new BingoError('De volgende officiële bal wacht tot de vijftien seconden verstreken zijn.',409,'draw_wait');
+ const number=s.pending.number;s.drawn.push(number);s.lastCommit={token,number,index:s.drawn.length,at:now};s.pending=null;resetDrawClock(game,now);productionEvent(game,'ball-committed',{number,index:s.drawn.length,roundIndex:s.roundIndex,goalIndex:s.goalIndex,epoch:s.epoch},now);return s.lastCommit;
 }
 export function checkAccount(family,game,now=Date.now()){
  if(family.blocked||family.blockedGames?.[game.id])throw new BingoError('Dit account is geblokkeerd. De host kan het deblokkeren.',403,'blocked');
@@ -178,7 +181,7 @@ export function claimBook(game,family,accountId,bookId,now=Date.now()){
 export function settleWindow(game,now=Date.now()){
  const s=game.state,w=s.window;if(!w||w.status!=='open'||now<w.endsAt)return null;
  w.status='closed';w.closedAt=now;const production=productionSettings(game.production);for(const a of w.announcements){a.bookIds=w.claims.filter(c=>c.accountId===a.accountId).map(c=>c.bookId);a.status=a.bookIds.length?'complete':'incomplete';if(a.status==='incomplete'){const row=(game.emptyAnnouncements??={})[a.accountId]??={count:0,until:0};row.count++;if(row.count>=production.emptyLimit)row.until=now+production.emptyCooldownSeconds*1000;}}game.events.push({type:'window-closed',at:now,closedAt:now,windowId:w.id,startedAt:w.startedAt,endsAt:w.endsAt,frozenAt:w.frozenAt,roundIndex:s.roundIndex,goalIndex:s.goalIndex,claims:structuredClone(w.claims),announcements:structuredClone(w.announcements)});const valid=w.claims.filter(c=>c.status==='valid');
- if(!valid.length){s.phase='running';return {empty:true};}
+ if(!valid.length){s.phase='running';if(isStandardMiloGame(game))s.pending=null;resetDrawClock(game,now);return {empty:true};}
  const prior=savedGoalResult(game);if(prior){s.resultId=prior.acknowledged?null:prior.id;s.goalWon=true;s.phase=prior.acknowledged?'running':'result';return prior;}
  const first=Math.min(...valid.map(c=>c.completeAt)),entrants=valid.filter(c=>c.completeAt===first),winner=entrants[randomIndex(entrants.length)],goal=activeGoal(game);
  const pool=enabledMinigameIds(game);
@@ -201,7 +204,7 @@ export function settleWindow(game,now=Date.now()){
 export function familyDefault(email=''){return {email,profiles:[],blocked:false,blockedGames:{},falseCounts:{},cooldowns:{},ops:[]};}
 export function playerGame(game,accountId){
  const {settings,plan,state}=game,goal=activeGoal(game),window=state.window;
-  return {id:game.id,brandId:brandId(game),title:game.title,date:game.date,status:game.status,settings,rounds:plan.blocks.filter(b=>b.type==='round').map(b=>({id:b.id,title:b.title})),revision:game.revision,showRules:game.presentationSnapshot?.rules||[],rulesPublication:projectedGameRules(game),production:playerProduction(game,accountId),state:{epoch:state.epoch,claimContext:claimContext(game),history:(state.history||[]).filter(entry=>Number.isInteger(entry.roundIndex)&&entry.roundIndex>=0).map(entry=>({roundIndex:entry.roundIndex,drawn:[...new Set((entry.drawn||[]).filter(number=>Number.isInteger(number)&&number>=1&&number<=75))],closedAt:entry.closedAt})),phase:state.phase,paused:state.paused,drawHold:state.drawHold?{id:state.drawHold.id,reason:'Belmoment: de trekking wacht op bevestigde terugkeer.',checkpoint:state.drawHold.checkpoint}:null,roundIndex:state.roundIndex,goalIndex:state.goalIndex,drawn:state.drawn,goal:goal?{pattern:goal.pattern,prize:{...goal.prize,image:goal.prize.image?`/api/bingo/prize-image?game=${game.id}&id=${goal.prize.image.split('/').at(-1)}`:''},round:goal.round.title,step:state.goalIndex+1,total:goal.round.goals.length,next:game.plan.patterns.find(p=>p.id===goal.round.goals[state.goalIndex+1]?.patternId)?.title||''}:null,window:window?{id:window.id,status:window.status,startedAt:window.startedAt,endsAt:window.endsAt,frozenAt:window.frozenAt,announced:window.announcements.some(a=>a.accountId===accountId),announcementStatus:window.announcements.find(a=>a.accountId===accountId)?.status||null,claims:window.claims.filter(c=>c.accountId===accountId).map(({operation,...claim})=>claim)}:null},books:game.books.filter(b=>b.accountId===accountId).map(({token,...b})=>b),results:game.results.filter(r=>r.acknowledged).map(r=>{
+  return {id:game.id,brandId:brandId(game),title:game.title,date:game.date,status:game.status,settings,rounds:plan.blocks.filter(b=>b.type==='round').map(b=>({id:b.id,title:b.title})),revision:game.revision,showRules:brandId(game)==='milo'?[...projectedGameRules(game).rules,...(game.presentationSnapshot?.rules||[]).filter(rule=>!rule.id?.startsWith('core-'))]:game.presentationSnapshot?.rules||[],rulesPublication:projectedGameRules(game),production:playerProduction(game,accountId),state:{epoch:state.epoch,claimContext:claimContext(game),history:(state.history||[]).filter(entry=>Number.isInteger(entry.roundIndex)&&entry.roundIndex>=0).map(entry=>({roundIndex:entry.roundIndex,drawn:[...new Set((entry.drawn||[]).filter(number=>Number.isInteger(number)&&number>=1&&number<=75))],closedAt:entry.closedAt})),phase:state.phase,paused:state.paused,drawHold:state.drawHold?{id:state.drawHold.id,reason:'Belmoment: de trekking wacht op bevestigde terugkeer.',checkpoint:state.drawHold.checkpoint}:null,roundIndex:state.roundIndex,goalIndex:state.goalIndex,drawn:state.drawn,goal:goal?{pattern:goal.pattern,prize:{...goal.prize,image:goal.prize.image?`/api/bingo/prize-image?game=${game.id}&id=${goal.prize.image.split('/').at(-1)}`:''},round:goal.round.title,step:state.goalIndex+1,total:goal.round.goals.length,next:game.plan.patterns.find(p=>p.id===goal.round.goals[state.goalIndex+1]?.patternId)?.title||''}:null,window:window?{id:window.id,status:window.status,startedAt:window.startedAt,endsAt:window.endsAt,frozenAt:window.frozenAt,announced:window.announcements.some(a=>a.accountId===accountId),announcementStatus:window.announcements.find(a=>a.accountId===accountId)?.status||null,claims:window.claims.filter(c=>c.accountId===accountId).map(({operation,...claim})=>claim)}:null},books:game.books.filter(b=>b.accountId===accountId).map(({token,...b})=>b),results:game.results.filter(r=>r.acknowledged).map(r=>{
  const prize=p=>({title:p.title,description:p.description,image:p.image?`/api/bingo/prize-image?game=${game.id}&id=${p.image.split('/').at(-1)}`:''});
  const entrant=e=>({name:e.name,ticket:e.ticket,...(e.accountId===accountId?{bookId:e.bookId}:{}),entrantId:`${r.id}:${r.entrants.findIndex(candidate=>candidate.bookId===e.bookId)}`});
  return {id:r.id,type:r.type,roundIndex:r.roundIndex,goalIndex:r.goalIndex,pattern:r.pattern?{id:r.pattern.id,title:r.pattern.title,cells:r.pattern.cells,freeCenter:true,variant:r.pattern.variant}:undefined,completeAt:r.completeAt,minigame:r.minigame,createdAt:r.createdAt,acknowledged:true,acknowledgedAt:r.acknowledgedAt,delivered:!!r.delivered,deliveredAt:r.deliveredAt??null,consolations:(r.consolations||[]).map(a=>({id:a.id,...(a.accountId===accountId?{bookId:a.bookId}:{}),name:a.name,ticket:a.ticket,completeAt:a.completeAt,prize:prize(a.prize),delivered:!!a.delivered,deliveredAt:a.deliveredAt??null,mine:a.accountId===accountId})),winner:entrant(r.winner),entrants:r.entrants.map(entrant),prize:prize(r.prize),mine:r.winner.accountId===accountId};

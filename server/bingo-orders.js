@@ -4,6 +4,8 @@ import {dispatchOrderMail} from './bingo-order-mail.js';
 import {bookPdf,printVersion} from './bingo-pdf.js';
 import {brandId} from './show-brands.js';
 import {recoverOrderMailEvents} from './mail-domain-events.js';
+import {automaticRules} from './standard-show.js';
+import {prepareAutomaticRules} from './game-rules.js';
 
 const snapshots=(game,user,admin,now)=>({orders:(game.orders||[]).filter(o=>admin||o.accountId===user).map(o=>projectOrder(o,game,{admin})),config:orderingConfig(game.ordering),available:orderingAvailable(game,now),serverTime:now});
 const emailKind=kind=>{if(!['payment','ready'].includes(kind))throw new BingoError('Kies de betaalmail of de boekjesmail.');return kind;};
@@ -47,7 +49,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  }
  if(part==='config'){
   requireHost();if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
-  await store.mutate(gameId,{requestId:scopedId},game=>{if(game.status!=='draft')throw new BingoError('Bestellen kan alleen voor een show die nog niet is gestart.',409);const next=orderingConfig(body),publishedMaximum=game.rulesPublication?.contract?.maxOrderQuantity;if(game.rulesPublication&&next.maxQuantity!==(publishedMaximum??orderingConfig(game.ordering).maxQuantity))throw new BingoError('Het maximale aantal bladen per bestelling staat vast in de gepubliceerde spelregels. Pas de bindende regels alleen via een gecontroleerde regelwijziging aan.',409,'rules_locked');game.ordering=next;});
+  await store.mutate(gameId,{requestId:scopedId},(game,_family,now)=>{if(game.status!=='draft')throw new BingoError('Bestellen kan alleen voor een show die nog niet is gestart.',409);const next=orderingConfig(body),publishedMaximum=game.rulesPublication?.contract?.maxOrderQuantity,flexible=automaticRules(game)&&game.rulesPublication?.automatic===true&&!game.rulesPublication.finalizedAt&&!(game.orders||[]).length&&!game.books.some(book=>book.accountId);if(game.rulesPublication&&!flexible&&next.maxQuantity!==(publishedMaximum??orderingConfig(game.ordering).maxQuantity))throw new BingoError('Het maximale aantal bladen per bestelling staat vast in de gepubliceerde spelregels. Pas de bindende regels alleen via een gecontroleerde regelwijziging aan.',409,'rules_locked');game.ordering=next;if(automaticRules(game))prepareAutomaticRules(game,now);});
   return response(null);
  }
  const order=orderById(row.data,part);

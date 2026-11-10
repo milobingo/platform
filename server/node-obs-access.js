@@ -99,7 +99,8 @@ function showView(show){
  return result;
 }
 export function obsOutputState(state,access){
- const visible={producer:pick(state?.producer,['id','instanceId','generation','gameId','until']),output:pick(state?.output,['id','until','at','audioReady','generation','seq','meters','voiceAck']),generation:state?.generation||0,seq:state?.seq||0,publishedAt:state?.publishedAt||null,snapshot:null,show:null,events:[],voice:null,mixer:pick(state?.mixer,['voice','music','effects']),routing:false};
+ const visible={producer:pick(state?.producer,['id','instanceId','generation','gameId','until']),output:pick(state?.output,['id','until','at','audioReady','audioPlayedAt','testAck','generation','seq','meters','voiceAck']),generation:state?.generation||0,seq:state?.seq||0,publishedAt:state?.publishedAt||null,snapshot:null,show:null,events:[],voice:null,mixer:pick(state?.mixer,['voice','music','effects']),routing:false};
+ if(visible.output?.testAck)visible.output.testAck=pick(visible.output.testAck,['id','status','at','error']);
  if(!state||state.producer?.gameId!==access.gameId||state.snapshot?.gameId!==access.gameId)return {...visible,producer:null,output:null,seq:0,publishedAt:null};
  visible.snapshot=pick(state.snapshot,visualFields);if(state.snapshot.pattern)visible.snapshot.pattern=patternView(state.snapshot.pattern);
  for(const key of ['showCue','movement'])if(state.snapshot[key])visible.snapshot[key]=pick(state.snapshot[key],['id','instanceId','elapsed','duration','paused','source','hostId','returnAt']);

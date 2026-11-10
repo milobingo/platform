@@ -1,0 +1,15 @@
+✔ Supabase missing-object envelopes allow first-open mail templates and conditional creation (76.420397ms)
+✔ Supabase object reads preserve bucket, permission, server and malformed-response failures (3.742583ms)
+✔ durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior (197.380556ms)
+✔ local data, private objects and roles survive a new storage instance (25.783719ms)
+✔ local object CAS coordinates separate processes and recovers a process-killed lock (131.175885ms)
+✔ PostgreSQL translator numbers placeholders outside quoted literals and rejects unknown JSON shapes (1.218847ms)
+﹣ PostgreSQL adapter executes the same persistence/concurrency contract with RLS and shared object CAS (0.104419ms) # SKIP
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 440.994335

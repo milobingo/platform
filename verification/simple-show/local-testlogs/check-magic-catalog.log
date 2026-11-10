@@ -1,0 +1,14 @@
+✔ twelve different authored tricks have complete, immutable performance metadata (2.380168ms)
+✔ all twelve can be planned with their own default duration; explicit saved timings remain compatible (2.346095ms)
+✔ adding any trick to the rundown uses its exact duration and never changes game state (0.920385ms)
+✔ every manual trick has one audio cue, freezes, resumes, settles and preserves official game data (2.096777ms)
+✔ a call/draw hold survives magic, on-air speech freezes it, and invalid or late requests cannot start (0.81171ms)
+✔ all twelve execute in a timed rundown with cast context, pause and cleanup, without any drawn ball (5.08026ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20.213907

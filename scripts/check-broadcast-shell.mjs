@@ -22,13 +22,13 @@ const rendererPlugin={name:'vlampie-renderer-boundary',setup(builder){
  }`}));
 }};
 async function bundle(options){return (await build({bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',loader:{'.css':'empty'},logLevel:'warning',...options})).outputFiles[0].text;}
-function harness(fetcher=async()=>Response.json({}),pathname='/'){
+function harness(fetcher=async()=>Response.json({}),pathname='/',production='milo'){
  const {window}=parseHTML('<!doctype html><html><body><div id="root"></div></body></html>'),{document}=window;
  const timers=new Set(),intervals=new Set(),errors=[],requests=[];
  const timeout=(fn,ms,...args)=>{const t=setTimeout(()=>{timers.delete(t);fn(...args);},ms);timers.add(t);return t;};
  const interval=(fn,ms)=>{const t=setInterval(fn,ms);intervals.add(t);return t;};
  const storage=()=>{const m=new Map();return {getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};};
- const localStorage=storage(),sessionStorage=storage(),url=new URL(pathname,'https://bingo.example');
+ const localStorage=storage(),sessionStorage=storage(),url=new URL(pathname,'https://bingo.example');localStorage.setItem('mf-production',production);
  const location={get href(){return url.href},set href(v){url.href=v},get pathname(){return url.pathname},get search(){return url.search},get hash(){return url.hash},set hash(v){url.hash=v;timeout(()=>window.dispatchEvent(new window.Event('hashchange')),0)},get origin(){return url.origin},reload(){}};
  const gradient={addColorStop(){}};
  const canvas=new Proxy({measureText:s=>({width:String(s).length*8}),createLinearGradient:()=>gradient,createRadialGradient:()=>gradient,canvas:{width:1280,height:720}},{get:(t,k)=>t[k]??(()=>{})});
@@ -69,10 +69,9 @@ const h=harness(({url})=>{
  return Response.json({});
 });
 try{
- h.run(await bundle({entryPoints:[root+'/frontend/main.jsx']}));await wait(900);
+ const app=await bundle({entryPoints:[root+'/frontend/main.jsx'],plugins:[rendererPlugin]});h.run(app);await wait(900);
  assert(h.document.querySelector('.mf-broadcast-shell'));
- assert(h.document.querySelector('.bs-show-hero .mf-stage-frame'));
- assert.equal(h.document.querySelectorAll('.bs-preflight>button').length,4);
+ assert(h.document.querySelector('.mf-simple-preparation'));assert.equal(h.document.querySelectorAll('.mf-preparation-steps>button').length,3);assert.equal(h.document.querySelectorAll('.mf-standard-rounds>section').length,4);assert.equal(h.document.querySelectorAll('.mf-standard-rounds>section>ol>li').length,10);assert.equal(h.document.querySelector('.bs-show-hero'),null,'Milo opens its preparation route');
  assert.equal(h.document.querySelectorAll('.mf-sidebar .mf-nav-label').length,4);
  assert.equal(h.document.querySelectorAll('.mf-sidebar nav>a').length,13);
  await h.navigate('studio');
@@ -85,5 +84,7 @@ try{
  const refreshed=findSelect('Overgang tussen shots');Object.defineProperty(refreshed,'value',{configurable:true,value:'smooth'});h.event(refreshed,'change');await wait(30);
  assert(!findSelect('Duur van de beweging').disabled);
  assert.deepEqual(h.errors,[]);
+ const legacy=harness(({url})=>{if(url==='/api/bingo/games')return Response.json({games:[]});if(url==='/api/characters')return Response.json({characters:Object.values(CHARACTERS),revision:0});if(url==='/api/openai/status')return Response.json({configured:false});return Response.json({});},'/','vlampie');
+ try{legacy.run(app);await wait(600);assert(legacy.document.querySelector('.bs-show-hero .mf-stage-frame'),'Vlampie keeps its separate overview monitor');assert.equal(legacy.document.querySelectorAll('.bs-preflight>button').length,4,'Vlampie keeps its legacy preparation shortcuts');assert.equal(legacy.document.querySelector('.mf-simple-preparation'),null);assert(legacy.body().includes('VLAMPIES EIGEN STUDIO'));assert.deepEqual(legacy.errors,[]);}finally{legacy.close();}
  console.log('✓ Broadcast shell: overview, thirteen reachable routes including mail, four clear navigation groups, new studio monitor and actual cut/smooth camera controls');
 }finally{h.close();}

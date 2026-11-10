@@ -1,0 +1,10 @@
+✔ restart with retained v70 data preserves the saved prize and accepted mail without replay (82.870921ms)
+✔ restart with retained v70 data preserves the saved prize and uncertain mail without replay (40.042859ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.044903

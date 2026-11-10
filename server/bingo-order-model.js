@@ -3,7 +3,7 @@ import {brandId} from './show-brands.js';
 import {birthAge} from './player-identity.js';
 import {normalizeShowTime} from './show-time.js';
 import {recordOrderMailEvent} from './order-events.js';
-import {assertRulesCurrent} from './game-rules.js';
+import {prepareAutomaticRules} from './game-rules.js';
 
 const text=(value,max,label)=>value==null||value===''?'':cleanText(value,max,label);
 const MAX_PAYMENT_VERSIONS=20;
@@ -56,7 +56,7 @@ function profileIdsFor(family,values,quantity){
 }
 export function createOrder(game,family,{accountId,email,requestId,quantity,profileIds},now=Date.now()){
  const prior=(game.orders||[]).find(o=>o.accountId===accountId&&o.createRequestId===requestId);if(prior)return prior;
- assertRulesCurrent(game);
+ prepareAutomaticRules(game,now);
  if(!orderingAvailable(game,now))throw new BingoError('Bestellen voor deze show is nog niet geopend of inmiddels gesloten.',409,'ordering_closed');
  if(!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email||''))throw new BingoError('Je account heeft nog geen bevestigd e-mailadres.',409,'order_email');
  const config=orderingConfig(game.ordering),count=integer(quantity,1,config.maxQuantity,'Aantal bingobladen');

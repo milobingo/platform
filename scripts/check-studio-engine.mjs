@@ -2,6 +2,9 @@ import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {webcrypto} from 'node:crypto';
 import {makeGame,activateBlock,reserveBall,commitBall} from '../server/bingo-model.js';
+import {handleBingo} from '../server/bingo.js';
+import {BingoStore} from '../server/bingo-store.js';
+import {createSqliteDatabase} from '../server/node-storage.js';
 
 const intervals=globalThis.setInterval,clearIntervals=globalThis.clearInterval;
 globalThis.crypto??=webcrypto;
@@ -35,6 +38,7 @@ async function rig({live=false,goal=0}={}){
   if(action===server.id&&(!opts.method||opts.method==='GET'))return Response.json({game:hostCopy(server)});
   let result;
   if(action==='activate')activateBlock(server,body.blockIndex,body.goalIndex);
+  else if(action==='start'){server.status='running';server.state.phase='interlude';}
   else if(action==='reserve')result={pending:reserveBall(server)};
   else if(action==='commit')result={commit:commitBall(server,body.token)};
   else if(action==='pause')server.state.paused=!!body.paused;
@@ -57,18 +61,19 @@ test('stage restores cohost and all saved settings, mouth follows the active aud
  e.isOutput=false;e.magic={id:'star-hat',elapsed:3.5};assert.equal(e.stage().magic.elapsed,3500);
  }finally{e.dispose();}
 });
-test('real shows require configured AI and never silently fall back to a browser voice',async()=>{
- const {e,calls}=await rig({live:true});try{
- e.voiceMode='browser';await assert.rejects(()=>e.start(),/browserstem/);assert.equal(calls.length,0);
- e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/OpenAI/);assert.equal(calls.length,0);
+test('starting a real draft requires configured AI and never silently falls back to a browser voice',async()=>{
+ const {e,server,calls}=await rig({live:true});try{
+ server.status='draft';e.game=hostCopy(server);
+ e.voiceMode='browser';await assert.rejects(()=>e.start(),/browserstem/);assert.equal(calls.some(call=>call.action==='start'),false);
+ e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
  }finally{e.dispose();}
 });
-test('live recovery unpauses and restores the current goal without activating an earlier goal',async()=>{
+test('live recovery restores the current goal and keeps the server and local director paused until explicit resume',async()=>{
  const {e,server,calls,round}=await rig({live:true,goal:1});try{
  server.state.paused=true;e.game=hostCopy(server);e.hostId=e.speakerId='bruno';const epoch=server.state.epoch;
- await e.start();await flush();await flush();
- assert.equal(e.hostId,'milo');assert.equal(e.speakerId,'milo');assert.equal(e.runner.index,round);assert.equal(e.runner.goal,1);assert.equal(server.state.paused,false);assert.equal(server.state.epoch,epoch);
- const acts=calls.filter(c=>c.action==='activate');assert(acts.length>0);assert(acts.every(c=>c.body.blockIndex===round&&c.body.goalIndex===1));assert.equal(calls[0].action,'pause');
+ await e.resumeRegie();await flush();await flush();
+ assert.equal(e.hostId,'milo');assert.equal(e.speakerId,'milo');assert.equal(e.runner.index,round);assert.equal(e.runner.goal,1);assert.equal(server.state.paused,true);assert.equal(e.director.paused,true);assert.equal(server.state.epoch,epoch);
+ assert.equal(calls.filter(c=>c.action==='activate'||c.action==='start'||c.action==='pause').length,0);assert.deepEqual(calls.map(call=>call.action),[server.id,'heartbeat']);
  }finally{e.dispose();}
 });
 test('real reserve and commit stay authoritative; pausing the spin cannot commit or duplicate a number',async()=>{
@@ -78,6 +83,20 @@ test('real reserve and commit stay authoritative; pausing the spin cannot commit
  await e.pause(false);await until(()=>server.state.drawn.length===1);await until(()=>!e.director.flow);
  assert.equal(calls.filter(c=>c.action==='reserve').length,1);assert.equal(calls.filter(c=>c.action==='commit').length,1);assert.deepEqual(e.director.drawn,server.state.drawn);assert.deepEqual(e.game.state.drawn,server.state.drawn);
  }finally{e.dispose();}
+});
+test('a delayed official reveal rechecks cancellation and every local hold before sending a commit',async t=>{
+ for(const kind of ['pause','cancel','minigame','show-cue','window'])await t.test(kind,async()=>{
+  const {e,calls}=await rig({live:true});try{
+   e.game.settings.rulesProfile='milo-standard-v1';e.game.state.drawClock={intervalMs:15000,nextAt:Date.now()+30};e.director.flow={kind:'draw',index:0,steps:[{scene:'draw',duration:4.3}],age:0};
+   const committing=e.director.requestCommit('not-yet-committed');
+   if(kind==='pause')e.director.pause();
+   if(kind==='cancel')e.director.cancel(false);
+   if(kind==='minigame')e.showRuntime={holding:true,visual:value=>value,dispose(){}};
+   if(kind==='show-cue')e.showCues.active={source:'manual',elapsed:0,duration:10,id:'star-shower',restore:{camera:e.camera,motion:e.motion}};
+   if(kind==='window')e.game.state.window={status:'open'};
+   await assert.rejects(committing,/veilig hervatten/);assert.equal(calls.some(call=>call.action==='commit'),false);assert.deepEqual(e.game.state.drawn,[]);
+  }finally{e.dispose();}
+ });
 });
 test('acknowledging a claim cancels the interrupted draw and advances only after winner speech ends',async()=>{
  const {e,server,round,tick}=await rig();try{
@@ -110,6 +129,7 @@ test('an old polling response cannot rewind a newer commit',async()=>{
 });
 test('stop waits for pending activation before pausing the server and never leaves the old block running',async()=>{
  const {e,server,round}=await rig({live:true});try{
+ server.status='draft';e.game=hostCopy(server);
  let resolve;const normal=router;router=async(url,opts)=>{if(url.endsWith('/activate'))await new Promise(r=>resolve=r);return normal(url,opts);};
  await e.start({blockIndex:round,goalIndex:0});await flush();assert(resolve);const stopping=e.stop();await flush();resolve();await stopping;await flush();assert.equal(server.state.paused,true);assert.equal(e.runner.active,false);assert.equal(e.director.flow,null);
  }finally{e.dispose();}
@@ -123,15 +143,15 @@ test('output snapshots retain the authoritative director scene through the bridg
 });
 
 test('saved rehearsal survives reload and production switches, then becomes a real show with edited plan/settings and no demo players',async()=>{
- storage.clear();const {e}=await rig();let reloaded;
+ storage.clear();const {e}=await rig();let reloaded,db;
  try{
  e.editPlan(plan=>{plan.leadId='stella';plan.cohostId='milo';plan.blocks.find(b=>b.type==='welcome').text='Stella opent onze eigen première.';});e.game.settings.claimSeconds=90;e.game.title='Onze eigen première';await e.savePlan();assert.equal(e.dirty,false);e.dispose();
  reloaded=new StudioEngine();await flush();reloaded.audio=noAudio;reloaded.bridge.showAudio=noAudio;
  assert.equal(reloaded.game.plan.blocks.find(b=>b.type==='welcome').text,'Stella opent onze eigen première.');assert.equal(reloaded.hostId,'stella');assert.equal(reloaded.cohostId,'milo');assert.equal(reloaded.game.settings.claimSeconds,90);assert.equal(reloaded.game.title,'Onze eigen première');
  await reloaded.productionSwitch('vlampie');assert.equal(reloaded.production,'vlampie');await reloaded.productionSwitch('milo');assert.equal(reloaded.hostId,'stella');assert.equal(reloaded.game.settings.claimSeconds,90);
- const requests=[];let real;router=async(url,opts)=>{const body=JSON.parse(opts.body);requests.push({url,method:opts.method,body});if(url==='/api/bingo/games'&&opts.method==='POST'){real=makeGame({title:body.title,timeZone:'Europe/Amsterdam',date:body.date,brandId:body.brandId,roundCount:body.roundCount},'real-owner',location.origin);return Response.json({game:hostCopy(real)});}if(url==='/api/bingo/games/'+real.id&&opts.method==='PUT'){const {normalizePlan}=await import('../server/plan-model.js');real.plan=normalizePlan(body.plan);real.settings=body.settings;return Response.json({game:hostCopy(real)});}throw Error('Unexpected rehearsal save request');};
- await reloaded.savePremiere();assert.equal(reloaded.demo,false);assert.equal(reloaded.dirty,false);assert.equal(reloaded.game.status,'draft');assert.equal(reloaded.game.plan.leadId,'stella');assert.equal(reloaded.game.plan.cohostId,'milo');assert.equal(reloaded.game.plan.blocks.find(b=>b.type==='welcome').text,'Stella opent onze eigen première.');assert.equal(reloaded.game.plan.blocks.filter(b=>b.type==='round').length,2);assert.equal(reloaded.game.settings.claimSeconds,90);assert.equal(reloaded.game.books.length,0);assert.equal(reloaded.game.batches.length,0);assert.equal(reloaded.game.results.length,0);assert.equal(requests.length,2);assert.equal(requests[1].method,'PUT');assert(requests.every(({body})=>!('books'in body)&&!('state'in body)&&!('results'in body)));
- }finally{e.dispose();reloaded?.dispose();storage.clear();}
+ const requests=[];db=createSqliteDatabase(':memory:');router=async(url,opts)=>{const body=opts.body&&JSON.parse(opts.body);requests.push({url,method:opts.method,body});return handleBingo(new Request(location.origin+url,{...opts,headers:{...opts.headers,Origin:location.origin}}),{DB:db,AUTH_IDENTITY:{user:'real-owner',email:'owner@example.test',admin:true}});};
+ await reloaded.savePremiere();assert.equal(reloaded.demo,false);assert.equal(reloaded.dirty,false);assert.equal(reloaded.game.status,'draft');assert.equal(reloaded.game.plan.leadId,'stella');assert.equal(reloaded.game.plan.cohostId,'milo');assert.equal(reloaded.game.plan.blocks.find(b=>b.type==='welcome').text,'Stella opent onze eigen première.');assert.equal(reloaded.game.plan.blocks.filter(b=>b.type==='round').length,2);assert.equal(reloaded.game.settings.claimSeconds,90);assert.equal(reloaded.game.books.length,0);assert.equal(reloaded.game.batches.length,0);assert.equal(reloaded.game.results.length,0);assert.equal(requests.length,1);assert.equal(requests[0].method,'POST');assert(requests.every(({body})=>!('books'in body)&&!('state'in body)&&!('results'in body)));const real=(await new BingoStore(db).game(reloaded.game.id)).data;assert.equal(real.plan.leadId,'stella');assert.equal(real.settings.claimSeconds,90);assert.equal(real.books.length,0);assert.equal(real.rulesPublication.automatic,true);
+ }finally{e.dispose();reloaded?.dispose();storage.clear();await db?.close();}
 });
 
 test('stop during a pending result acknowledgement cannot start late winner speech or progression',async()=>{

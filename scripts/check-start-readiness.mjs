@@ -12,10 +12,10 @@ import {BingoStore} from '../server/bingo-store.js';
 import {createSqliteDatabase} from '../server/node-storage.js';
 import {handleBingo} from '../server/bingo.js';
 
-function snapshot(){
- const game=makeGame({brandId:'milo',title:'Startcontrole',date:'2027-01-01T18:00:00Z',roundCount:1},'host','https://studio.example');
+function snapshot({brand='milo'}={}){
+ const game=makeGame({brandId:brand,title:'Startcontrole',date:'2027-01-01T18:00:00Z',roundCount:1},'host','https://studio.example');
  generateBooks(game,1,'startcheck-books');game.books[0].accountId='family';game.books[0].name='Deelnemer';publishGameRules(game);
- return {game,production:'milo',demo:false,dirty:false,working:false,runner:{active:false,index:0,phase:'idle'},apiStatus:{configured:true},voiceMode:'ai',outputConnected:false,stage:{production:'milo',hostId:'milo',camera:'wide',paused:false},characters:[{id:'milo',name:'Milo'}],voicePhase:'idle',voiceText:'',previewCamera:'wide',showRuntime:{},now:Date.now()};
+ return {game,production:brand,demo:false,dirty:false,working:false,runner:{active:false,index:0,phase:'idle'},apiStatus:{configured:true},voiceMode:'ai',outputConnected:false,stage:{production:'milo',hostId:'milo',camera:'wide',paused:false},characters:[{id:'milo',name:'Milo'}],voicePhase:'idle',voiceText:'',previewCamera:'wide',showRuntime:{},now:Date.now()};
 }
 const row=(s,id,live)=>startReadiness(s,live).rows.find(item=>item.id===id);
 async function actualStart(t,s){
@@ -51,7 +51,7 @@ test('U03: fulfilled orders require the same complete, owned, nonrevoked issuanc
 
 test('U03: rules, effective patterns, schedule and admission remain current server-derived checks',async t=>{
  for(const [name,change] of [['rules',s=>{s.game.settings.claimSeconds++;}],['plan',s=>{s.game.plan.patterns[0].cells=[12];}],['schedule',s=>{s.game.date='2027-01-01T18:00';delete s.game.timeZone;}],['accounts',s=>{s.game.books[0].admitted=false;}]]){
-  const s=snapshot();change(s);assert.equal(row(s,name).status,'blocked');assert.equal(startReadiness(s).canStart,false);
+  const s=snapshot({brand:name==='rules'?'vlampie':'milo'});change(s);assert.equal(row(s,name).status,'blocked');assert.equal(startReadiness(s).canStart,false);
   const api=await actualStart(t,s);assert(api.response.status>=400);assert.equal(api.after,api.before);
  }
 });
@@ -80,6 +80,12 @@ test('U03: key/configuration/output never claim audible success; disabled option
  s.demo=false;assert.equal(row(s,'voice').status,'blocked');
 });
 
+test('U03/Milo: pending preparation does not require manual save or rules publication; the atomic start finalizes current rules',async t=>{
+ const s=snapshot();delete s.game.rulesPublication;s.dirty=true;s.preparation={status:'saving'};
+ assert.equal(row(s,'saved').status,'warning');assert.match(row(s,'saved').detail,/Start show bewaart eerst/);assert.equal(row(s,'rules').status,'ready');assert.match(row(s,'rules').detail,/automatisch vast/);assert.equal(startReadiness(s).canStart,true);
+ const api=await actualStart(t,s);assert.equal(api.response.status,200);assert.equal(api.data.game.status,'running');assert(api.data.game.rulesPublication.finalizedAt);assert.deepEqual(api.data.game.rulesPublication.contract,rulesContract(s.game));
+});
+
 async function ui(){
  const {window}=parseHTML('<!doctype html><html><body><div id="root"></div></body></html>');
  const errors=[],context={window,document:window.document,navigator:{userAgent:'startcheck-qa'},location:{hash:''},console,setTimeout,clearTimeout,setInterval,clearInterval,performance,queueMicrotask,TextEncoder,TextDecoder,URL,URLSearchParams,crypto,structuredClone};
@@ -97,7 +103,7 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const rulesNode=h=>h.document.querySelector('[data-check="rules"]');
 const buttonNamed=(node,label)=>[...node.querySelectorAll('button')].find(button=>button.textContent===label);
 function rulesSnapshot({published=false,stale=false,dirty=false}={}){
- const s=snapshot();s.game.books=[];s.game.batches=[];
+ const s=snapshot({brand:'vlampie'});s.game.books=[];s.game.batches=[];
  if(!published)delete s.game.rulesPublication;
  if(stale)s.game.settings.claimSeconds+=30;
  s.dirty=dirty;return s;
@@ -114,7 +120,7 @@ async function rulesUi(t,s,{failPublish=false,onSave}={}){
  render();return {...h,s,operator,store,posts,notices,render,async settle(){for(let attempt=0;attempt<20;attempt++){await tick();if(!h.document.querySelector('[aria-busy="true"]')){await tick();return;}}}};
 }
 
-test('U03: rules readiness distinguishes missing publication, changed preparation and the current published version',()=>{
+test('U03/Vlampie: rules readiness distinguishes missing publication, changed preparation and the current published version',()=>{
  const missing=rulesSnapshot(),stale=rulesSnapshot({published:true,stale:true}),current=rulesSnapshot({published:true});
  assert.equal(row(missing,'rules').status,'blocked');assert.match(row(missing,'rules').detail,/nog niet gepubliceerd/i);
  assert.equal(row(stale,'rules').status,'blocked');assert.match(row(stale,'rules').detail,/gewijzigd|verouderd|niet meer.*actueel/i);
@@ -122,7 +128,7 @@ test('U03: rules readiness distinguishes missing publication, changed preparatio
  assert.equal(row(current,'rules').status,'ready');assert.match(row(current,'rules').detail,/versie\s*1/i);
 });
 
-test('U03: the inline rules preview publishes only after an explicit click and stays ready after stored reload',async t=>{
+test('U03/Vlampie: the inline rules preview publishes only after an explicit click and stays ready after stored reload',async t=>{
  const h=await rulesUi(t,rulesSnapshot()),inline=rulesNode(h);assert(inline);
  assert.equal(inline.getAttribute('data-status'),'blocked');assert.equal(inline.querySelector('summary')?.textContent,'Spelregels bekijken');
  for(const rule of bindingRules(rulesContract(h.s.game))){assert(inline.textContent.includes(rule.title));assert(inline.textContent.includes(rule.text));}
@@ -132,27 +138,27 @@ test('U03: the inline rules preview publishes only after an explicit click and s
  h.operator.game=h.s.game=(await h.store.game(h.s.game.id)).data;h.render();await h.settle();assert.equal(rulesNode(h).getAttribute('data-status'),'ready');assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.errors.length,0);
 });
 
-test('U03: a failed rules publication stays blocked and does not announce successful publication',async t=>{
+test('U03/Vlampie: a failed rules publication stays blocked and does not announce successful publication',async t=>{
  const h=await rulesUi(t,rulesSnapshot(),{failPublish:true});h.click(buttonNamed(rulesNode(h),'Publiceer spelregels'));await h.settle();
  assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.notices.length,0);assert.equal(rulesNode(h).getAttribute('data-status'),'blocked');assert.equal(h.s.game.rulesPublication,undefined);assert.equal((await h.store.game(h.s.game.id)).data.rulesPublication,undefined);
  assert.equal(h.errors.length,1);assert.match(h.errors[0].message,/tijdelijk niet beschikbaar/);
 });
 
-test('U03: changed saved rules without participants offer an explicit current-version publication beside the blocker',async t=>{
+test('U03/Vlampie: changed saved rules without participants offer an explicit current-version publication beside the blocker',async t=>{
  const h=await rulesUi(t,rulesSnapshot({published:true,stale:true})),before=structuredClone(h.s.game.rulesPublication),inline=rulesNode(h);
  assert.equal(inline.getAttribute('data-status'),'blocked');const publish=buttonNamed(inline,'Publiceer actuele spelregels');assert(publish);assert.equal(publish.disabled,false);assert.equal(h.posts.length,0);
  assert(inline.textContent.includes(bindingRules(rulesContract(h.s.game)).find(rule=>rule.id==='core-window').text),'The review must contain the current rules being published');
  h.click(publish);await h.settle();assert.deepEqual(h.posts,['publish-rules']);assert.equal(h.s.game.rulesPublication.version,2);assert.deepEqual(structuredClone(h.s.game.rulesHistory),[before]);assert.equal(rulesNode(h).getAttribute('data-status'),'ready');assert.equal(h.errors.length,0);
 });
 
-test('U03: unsaved preparation explains the prerequisite and saves without automatically publishing',async t=>{
+test('U03/Vlampie: unsaved preparation explains the prerequisite and saves without automatically publishing',async t=>{
  const s=rulesSnapshot({dirty:true});let saves=0,h;
  h=await rulesUi(t,s,{onSave:async()=>{saves++;s.dirty=false;h.render();}});const inline=rulesNode(h);assert.match(inline.textContent,/sla.*eerst.*op|eerst.*opslaan/i);
  assert.equal(!!buttonNamed(inline,'Publiceer spelregels'),false);const save=buttonNamed(inline,'Draaiboek opslaan');assert(save);h.click(save);await h.settle();
  assert.equal(saves,1);assert.deepEqual(h.posts,[]);assert.equal(rulesNode(h).getAttribute('data-status'),'blocked');assert.equal(!!buttonNamed(rulesNode(h),'Publiceer spelregels'),true);assert.equal(h.errors.length,0);
 });
 
-test('U03: existing participation locks changed rules while current rules expose only their published version',async t=>{
+test('U03/Vlampie: existing participation locks changed rules while current rules expose only their published version',async t=>{
  for(const participation of ['book','order']){
   const s=rulesSnapshot({published:true,stale:true});if(participation==='book')s.game.books=[{id:'locked-book',accountId:'family',admitted:true}];else s.game.orders=[{id:'locked-order',status:'requested'}];
   const h=await rulesUi(t,s),inline=rulesNode(h);assert.equal(inline.getAttribute('data-status'),'blocked');assert.match(inline.textContent,/deelnemers|bestellingen/i);assert.equal([...inline.querySelectorAll('button')].some(button=>/Publiceer/.test(button.textContent)),false);assert.equal(h.posts.length,0);assert.equal(h.errors.length,0);
@@ -163,18 +169,18 @@ test('U03: existing participation locks changed rules while current rules expose
 test('U03: actual StartCheck disables blocked native starts, exposes reasons and permits an explicit healthy start',async()=>{
  const h=await ui();try{
   let starts=0;const operator={start:async()=>{starts++;}},s=snapshot();s.game.orders=[{status:'payment_reported'}];h.window.renderTest('start',s,operator);
-  let start=[...h.document.querySelectorAll('button')].find(node=>node.textContent==='Start de show');assert.equal(start.disabled,true);assert.match(h.document.querySelector('#mf-start-blockers').textContent,/Betaalcontrole: 1/);h.click(start);await new Promise(resolve=>setTimeout(resolve,0));assert.equal(starts,0);
-  s.game.orders=[];h.window.renderTest('start',s,operator);start=[...h.document.querySelectorAll('button')].find(node=>node.textContent==='Start de show');assert.equal(start.disabled,false);h.click(start);await new Promise(resolve=>setTimeout(resolve,0));assert.equal(starts,1);assert.deepEqual(h.errors,[]);
+  let start=[...h.document.querySelectorAll('button')].find(node=>node.textContent==='Start show');assert.equal(start.disabled,true);assert.match(h.document.querySelector('.mf-preparation-blockers').textContent,/Betaalcontrole: 1/);h.click(start);await new Promise(resolve=>setTimeout(resolve,0));assert.equal(starts,0);
+  s.game.orders=[];h.window.renderTest('start',s,operator);start=[...h.document.querySelectorAll('button')].find(node=>node.textContent==='Start show');assert.equal(start.disabled,false);h.click(start);await new Promise(resolve=>setTimeout(resolve,0));assert.equal(starts,1);assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });
 
 test('U03: fixed Program/Preview transport keeps pause and explicit voice/guest mute available independently of modules',async()=>{
  const h=await ui();try{
-  const s=snapshot(),actions=[];let stopped=0,paused=0,starts=0;
+  const s=snapshot({brand:'vlampie'}),actions=[];let stopped=0,paused=0,starts=0;
   const operator={calls:{held:false},stopSpeech(){stopped++;},pause(){paused++;},start(){starts++;},liveCalls:{onAir:true,getSnapshot:()=>({call:{phase:'live'}}),action:async(action,body)=>{actions.push({action,...body});}}};
   h.window.renderTest('regie',s,operator);assert(h.document.querySelector('.rd-monitor-wall>.rd-program'));assert(h.document.querySelector('.rd-monitor-wall>.rd-preview'));
-  const transport=h.document.querySelector('.rd-transport');const button=label=>transport.querySelector(`button[aria-label="${label}"]`);
-  assert.equal(button('Start draaiboek').disabled,true);h.click(button('Start draaiboek'));assert.equal(starts,0);
+  const transport=h.document.querySelector('.rd-transport');assert(transport);const button=label=>h.document.querySelector(`button[aria-label="${label}"]`);
+  assert.equal(button('Start show').disabled,true);h.click(button('Start show'));assert.equal(starts,0);
   h.click(button('Pauzeren'));h.click(button('Stem dempen'));h.click(button('Gast dempen'));await new Promise(resolve=>setTimeout(resolve,0));assert.equal(paused,1);assert.equal(stopped,1);assert.deepEqual(actions,[{action:'ai-mute',muted:true},{action:'mute',muted:true}]);assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });

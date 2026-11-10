@@ -1,0 +1,11 @@
+✔ all five Milo scenes keep a one-second visual clock above repeated 100 ms output snapshots (102.429346ms)
+✔ older packets cannot rewind the same play, while new plays and explicit paused seeks reset exactly (12.515259ms)
+✔ actual studio minigame age freezes on pause and resumes without a catch-up jump (24.46489ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.444931
