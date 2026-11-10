@@ -1,0 +1,119 @@
+{
+  "stagingRelease": {
+    "version": 1,
+    "sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+    "id": "42713543591-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "port": 4173,
+    "artifactSha256": null,
+    "artifactHashNote": "Native wrapper/helper pins and exact main CI are verified; 94 public modules/assets exactly match this release. No new privileged host artifact inventory claimed.",
+    "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+    "toolchain": {
+      "node": "24.18.0",
+      "pnpm": "11.25.0"
+    },
+    "path": "/srv/sites/milobingo-staging/releases/a8bccabba771-42713543591-1",
+    "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42713543591"
+  },
+  "stagingStatus": {
+    "deployed": true,
+    "observed_at": "2026-11-09T22:41:46.080Z",
+    "source_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+    "ci": "https://github.com/milobingo/platform/actions/runs/42711956992",
+    "ci_result": "success",
+    "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42713543591",
+    "deploy_result": "success",
+    "database_mutated": false,
+    "database_upgrade": "https://github.com/milobingo/platform/actions/runs/42627576733",
+    "database_readonly_audit": "passed; existing 23 RLS tables, verified limited TLS runtime and private bucket; no new DDL",
+    "acceptance": {
+      "public_release_assets_and_access_boundaries": "passed; 94 public modules/assets exact; anonymous, forged identity and invalid synthetic OBS capability rejected; local login disabled",
+      "browser_tests": {
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "regie_backend": "simulated Auth, regie/family API and OBS capability transport; actual staging HTML/CSS/canvas/assets and unauthenticated HTTP boundaries",
+        "duration_seconds": 61.7,
+        "source_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+        "release_id": "42713543591-1",
+        "manual_screenshots_passed": 7,
+        "real_obs_installation_verified": false,
+        "actual_user_rules_publication": false
+      },
+      "capacity_100_households": "Passed only for the explicit native PostgreSQL storage profile: 100 concurrent fixture API tasks, pool 10, 400 books and 500 successful operations with a real 180-second lease on cb84f03. Response p95: 27,105 ms; claims finished about 127.9 seconds after opening. Public HTTP/OAuth/feed/stream load is not qualified.",
+      "default_30_second_peak_window": "Prior cb84f03 proof; NO-GO: the separate 100-concurrent, pool-10, 30-second proof returned 409 closed. 100 begins and 21 claims succeeded, out of 500 intended primary operations. The fixture was removed and all 23 public tables were unchanged. The application default remains 30 seconds.",
+      "real_family_google_otp_and_regie_accounts": "pending actual account rehearsal",
+      "mail_gateway_worker_and_delivery": "pending; mail disabled; staging wrapper fields and real gateway contract required",
+      "paid_provider_and_live_audio": "pending",
+      "production_promotion": "blocked by missing real target/config and full real integration acceptance",
+      "real_storage_mail_and_provider_settings": {
+        "passed": true,
+        "template_counts": {
+          "milo": 17,
+          "vlampie": 17
+        },
+        "provider_settings_editable": true,
+        "credentials_returned": false,
+        "provider_requests": 0,
+        "writes": 0,
+        "real_account_login_verified": false
+      },
+      "obs_browser_source": {
+        "available": true,
+        "show_bound": true,
+        "interactive_google_login_required_in_obs": false,
+        "expiry_days": 7,
+        "revocable": true,
+        "full_regie_privileges": false,
+        "new_runtime_secrets": false,
+        "new_schema_migration": false,
+        "backend_fixture_tests_passed": 14,
+        "client_fixture_tests_passed": 11,
+        "actual_local_postgres_lookup_and_cas_verified": true,
+        "real_obs_installation_or_audio_acceptance": false,
+        "real_account_link_created": false,
+        "evidence": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/release-acceptance.json"
+      },
+      "rules_start_action": {
+        "available": true,
+        "requires_explicit_organizer_publication": true,
+        "marks_ready_only_after_current_server_publication": true,
+        "actual_user_rules_published": false
+      }
+    },
+    "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
+    "evidence": {
+      "ci": "verification/obs-source/main-ci.json",
+      "ci_summary": "verification/obs-source/main-ci-summary.json",
+      "deploy": "verification/obs-source/staging-deploy.json",
+      "inventory": "verification/v70/staging-inventory.json",
+      "upgrade": "verification/v70/staging-upgrade.json",
+      "restore": "verification/v70/staging-restore.json",
+      "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
+      "public": "verification/obs-source/public.json",
+      "public_assets": "verification/obs-source/staging-public.json",
+      "public_routes": "verification/obs-source/staging-public.json",
+      "runtime_role": "verification/v70/staging-runtime-role.json",
+      "browser": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/release-acceptance.json",
+      "capacity_first": "verification/v70/staging-capacity-first.json",
+      "capacity_180": "verification/v70/queue-repair/staging-capacity-180.json",
+      "runtime_role_current_release": "verification/obs-source/runtime-database-role.json",
+      "capacity_30": "verification/v70/queue-repair/staging-capacity-30.json",
+      "local_release": "verification/obs-source/local-acceptance.json",
+      "first_v70_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-EERSTE-V70.md",
+      "workspace_settings": "verification/obs-source/staging-workspace.json",
+      "manual_visual_review": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/manual-visual-review.json",
+      "previous_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-REGIESLEUTELS.md",
+      "deployment_gates": "verification/obs-source/staging-gates.json",
+      "local_full_suite": "verification/obs-source/local-tests.json",
+      "obs_backend": "verification/obs-source/local-testlogs/check-obs-access.log",
+      "obs_client": "verification/obs-source/local-testlogs/check-obs-source-ui.log",
+      "previous_staging_status": "verification/obs-source/previous-staging-status.json"
+    },
+    "result_document": "docs/STAGING-RESULTAAT.md",
+    "database_schema_tables": 23,
+    "database_upgrade_applied_separately": true,
+    "local_postgres_fixture_cleanup": "verification/obs-source/local-fixture-cleanup.json"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "realReactAndBrowser": true,
+  "realAccountOrProviderAcceptance": false,
+  "transport": "explicit-browser-local-demo",
+  "defaultOptOut": true,
+  "brandIsolation": true,
+  "errors": [],
+  "external": [],
+  "api": [],
+  "writes": [],
+  "unexpected": []
+}

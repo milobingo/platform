@@ -1,13 +1,13 @@
-✔ native REST fetch stays native, upgrade allowlist never forwards secrets to another origin (26.477961ms)
-✔ upgrade resolves only once open, buffers early messages and supports listener removal and close (11.721375ms)
-✔ rejected and redirected handshakes return bounded safe status without leaking key or following redirects (4.844491ms)
-✔ abort before or during handshake and handshake timeout close pending sockets (63.792646ms)
-✔ synthesis runs the transferred voice/session protocol and caches only complete confirmed PCM (14.334004ms)
-✔ request cancellation after socket open closes synthesis and never returns partial audio (4.046012ms)
-✔ session teardown confirms session.closed; rejected close stays unconfirmed (7.783357ms)
-✔ live whisper uses an existing Node WebSocket session, accepts only its ACK and leaves primary media open (5.141954ms)
-✔ an early buffered Node sideband ACK cannot confirm a later whisper send (63.215462ms)
-✔ request abort on an open Node whisper sideband reports uncertain and never sends primary-session close (3.785788ms)
+✔ native REST fetch stays native, upgrade allowlist never forwards secrets to another origin (25.245483ms)
+✔ upgrade resolves only once open, buffers early messages and supports listener removal and close (11.120085ms)
+✔ rejected and redirected handshakes return bounded safe status without leaking key or following redirects (4.670759ms)
+✔ abort before or during handshake and handshake timeout close pending sockets (64.712159ms)
+✔ synthesis runs the transferred voice/session protocol and caches only complete confirmed PCM (13.931073ms)
+✔ request cancellation after socket open closes synthesis and never returns partial audio (4.074667ms)
+✔ session teardown confirms session.closed; rejected close stays unconfirmed (7.723436ms)
+✔ live whisper uses an existing Node WebSocket session, accepts only its ACK and leaves primary media open (6.207077ms)
+✔ an early buffered Node sideband ACK cannot confirm a later whisper send (63.081968ms)
+✔ request abort on an open Node whisper sideband reports uncertain and never sends primary-session close (3.216745ms)
 ℹ tests 10
 ℹ suites 0
 ℹ pass 10
@@ -15,4 +15,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 210.990315
+ℹ duration_ms 208.929096

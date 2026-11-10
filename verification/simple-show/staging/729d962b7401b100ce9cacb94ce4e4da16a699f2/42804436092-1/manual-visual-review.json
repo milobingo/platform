@@ -1,0 +1,84 @@
+{
+  "observedAt": "2026-11-10T11:13:19.037947+00:00",
+  "status": "passed",
+  "releaseSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "releaseId": "42804436092-1",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "screenshots": [
+    {
+      "path": "preparation/screenshots/preparation-1366-ten-price-steps.png",
+      "sha256": "66422c29f763f4eb0b4fedb5557b9ab07428b20763f63d91a7dd5d7077039312",
+      "observations": "De desktopvoorbereiding toont de drie stappen en vier rondekaarten met alle tien prijsstappen; boven én onder heeft beide rijen en expliciete uitleg. Geen aparte opslag- of publicatieactie.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "preparation/screenshots/preparation-390-ten-price-steps.png",
+      "sha256": "ea67db03ebf330b97be3fe23e3142d00a8281972b1f32e721f50845f3cd9e283",
+      "observations": "Op 390 px blijven de drie stappen en uitleg van boven én onder leesbaar; rondekaarten staan onder elkaar, zonder horizontale pagina-overloop.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "preparation/screenshots/preparation-1366-failed-save-retains-input.png",
+      "sha256": "5562de1ac085a428960265a7ea67cb67654acfed9c060660ca9a5ceb87f90f4c",
+      "observations": "De geforceerde opslagfout heeft een rustige melding met Opnieuw proberen; de gewijzigde tekst staat nog in het bewerkbare invoerveld.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "preparation/screenshots/preparation-390-failed-save-retains-input.png",
+      "sha256": "2653a78e27e43e5a6b0bddbfb5b944f45b19f39d9d3a71c7e33890f5a3b6e6af",
+      "observations": "Het mobiele draaiboek behoudt de gewijzigde titel in de lijst en het invoerveld. De test controleert de foutstatus buiten deze scrolpositie.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "preparation/screenshots/preparation-1366-started-once.png",
+      "sha256": "2d051211b426d2dd82963472978b4ccb51f55b56dd83b2fdee438410e5e70ca4",
+      "observations": "Na één serverstart is de live regie zichtbaar met ronde/prijsstap, laatste bal, aftellerstatus en Pauze; BINGO-controle staat voorop en zelden gebruikte panelen staan onder Geavanceerd. De opname is tijdens de eerste voorbereidingscue, vóór de eerste ronde.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "preparation/screenshots/preparation-390-started-once.png",
+      "sha256": "cc92ff783f66c93299c5cde8f692d17777505cb2c2249e785949305768816086",
+      "observations": "Op 390 px staan live status, actuele ronde/prijsstap, laatste bal, teller en Pauze boven de BINGO-controle; Geavanceerd is ingeklapt. Eerste voorbereidingscue, nog geen officiële bal.",
+      "reviewer": "root; actual view_image inspection"
+    },
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-preparation-three-checks.png",
+      "sha256": "5a028e5678f29f69d319591d1d0dd6a8f9ce53c1523978061e2b52ada7cc095b",
+      "observations": [
+        "Drie aparte en leesbare statussen: regieverbinding, geluid afgespeeld in het uitzendvenster en controle in OBS.",
+        "De twee OBS-bevestigingen staan nog uit; de interface claimt geen mixerontvangst of geslaagde OBS-opname.",
+        "Open uitzendvenster, Speel testgeluid en Kopieer OBS-link zijn zichtbaar."
+      ],
+      "reviewer": "broadcast_test; actual view_image inspection"
+    },
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-reconnected-existing-show.png",
+      "sha256": "70f09d1958323122ead097ea4f9b48b3265c32bcf08455311d545f5b63c6707b",
+      "observations": [
+        "Het herstelde uitzendbeeld is gevuld en bevat geen activatie-overlay.",
+        "SHOW GEPAUZEERD, Ronde 1 · Vier hoeken en de getrokken nummers 7, 19, 41 blijven zichtbaar.",
+        "Behoud van hetzelfde geopende BINGO-venster volgt uit de bijbehorende fixture-JSON; de afbeelding toont de behouden pauze en nummerstand."
+      ],
+      "reviewer": "broadcast_test; actual view_image inspection"
+    },
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-audio-blocked.png",
+      "sha256": "b551a8686e963382d4efe38b277103a5dc1fc0a0a716961123447f374867408a",
+      "observations": [
+        "Bij geblokkeerd geluid blijft het activatiescherm staan.",
+        "Beeld & geluid activeren is zichtbaar en de uitleg verwijst naar Interactie in OBS.",
+        "Geen onterechte succesmelding of claim over OBS-ontvangst zichtbaar."
+      ],
+      "reviewer": "broadcast_test; actual view_image inspection"
+    }
+  ],
+  "blockingVisualIssues": [],
+  "scope": {
+    "actualStagingPageRendering": true,
+    "regieAuthAndProviderTransportSimulated": true,
+    "preparationUsesIsolatedRealBingoHandlerAndInMemorySQLite": true,
+    "realStagingDatabaseWrites": false,
+    "realOBSInstallation": false
+  },
+  "remainingRealOBSControl": "Controleer op de daadwerkelijke OBS-installatie de Browserbronmeter en maak/luister een korte proefopname met beeld én testgeluid; browseropname bewijst dit niet."
+}

@@ -1,13 +1,13 @@
 {
-  "observedAt": "2026-11-10T10:33:22.098374+00:00",
+  "observedAt": "2026-11-10T10:53:39.521924+00:00",
   "status": "passed",
   "programCount": 97,
   "programFailures": 0,
   "fullLocalSuitePostgresConfigured": false,
-  "focusedActualPostgresTestsPassed": 14,
+  "focusedActualPostgresTestsPassed": 1,
   "browserStats": {
-    "startTime": "2026-11-10T10:31:41.086Z",
-    "duration": 76118.38,
+    "startTime": "2026-11-10T10:51:18.250Z",
+    "duration": 76067.408,
     "expected": 30,
     "skipped": 0,
     "unexpected": 0,
@@ -24,8 +24,8 @@
   "sourceSha256": {
     "frontend/App.jsx": "10e14127356896dce7a042e39177f0fa573affa2f26ce5e1e2bd0157161f7a92",
     "frontend/RegieWorkspace.jsx": "3867746de2a47fcddb2ee81e97085df6cc6ec83bdcf0e2f6a97ffb80e65828e8",
-    "frontend/engine.js": "c79e7916dff25a50387695dd34f6cfb00dfe95816c6b1ac029039029bd4d9b5c",
-    "frontend/show-preparation.js": "efab8cb9bdc845fc8cae3edb8e5f8ef91cb7496409a2731d38886d8d670e8e45",
+    "frontend/engine.js": "bf6344b8a07da25484fd960171b8ec35e0b29472ed57568c7619c2bd2daf9ddc",
+    "frontend/show-preparation.js": "85a18ea0a4ad5aa7aa4534e9add1006b1caaccaf150c48fa5b87469745aa0059",
     "frontend/ShowPreparation.jsx": "e1849721b69983136a07d33adaabcec0086b5961b1818d759cfa37ae7c1efac6",
     "frontend/BroadcastPreparation.jsx": "1782c57fecc9e2f2553555ec82b2ec7df358b2ba86d70f93e1c251205ede646f",
     "frontend/workspace-system.css": "a33547d2251405f28d0daa295af31e375e37ee50a65e7fd2779df2400a9d028c",
@@ -34,8 +34,11 @@
     "server/bingo-model.js": "1f1ec2fa7e7f42cf97ffceeca2e1946c6405cbda9c40b397bbabeb1eba671fb4",
     "server/bingo.js": "e54091e4e4268be66d94d8c4e67d17e1e6c50897129c7f6ba614c7d778422268",
     "server/game-rules.js": "36c9dd995a5c86a5d1f7581404b6a973afd04970f79e7ee2e1324d73b962745f",
-    "tests/browser/start-rules.spec.mjs": "1097ec828165779a80cc5d1ea18ec50f6cb25236eeb3499154d63f4e7ba64109",
+    "tests/browser/start-rules.spec.mjs": "87463543c1d5a2119e4a79c80dd5126c282e15deaa401f9bbe83e5d405ac6ff6",
     "tests/browser/broadcast-preparation.spec.mjs": "1fa41674667905a13a8831dd37b8a8ec1d10abb29a04cf230c3f58a4601a479a",
     "tests/browser/handoff-v6.spec.mjs": "4ceed1bcfda2b97dba51662ddab8881bf779f6d2b87efea8d1a43fca15e5747a"
-  }
+  },
+  "standardShowSuitePassed": 14,
+  "releaseSourceSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "appCodeUnchangedSinceStandaloneBuild": true
 }

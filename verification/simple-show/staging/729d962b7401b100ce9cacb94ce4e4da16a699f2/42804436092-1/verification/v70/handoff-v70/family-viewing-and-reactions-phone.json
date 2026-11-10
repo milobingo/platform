@@ -1,0 +1,15 @@
+{
+  "realReactAndBrowser": true,
+  "realAccountOrProviderAcceptance": false,
+  "transport": "explicit-browser-local-demo",
+  "reactionProfile": "Sem",
+  "typedDraftRetained": true,
+  "viewingPreferencesPersist": true,
+  "brandIsolation": true,
+  "actualCaptionTrackVerified": false,
+  "errors": [],
+  "external": [],
+  "api": [],
+  "writes": [],
+  "unexpected": []
+}

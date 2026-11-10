@@ -1,9 +1,9 @@
-✔ prepare atomically blocks every draw before ringing; private call and explicit return never close bingo windows early (58.348986ms)
-✔ child selection, explicit catchup and two isolated rooms enforce backstage privacy before on-air (33.486814ms)
-✔ failure, no answer and reload preserve hold; next caller receives fresh context and only server-confirmed facts (19.997169ms)
-✔ one AI session starts only live; role snapshots hide secrets and old call API cannot mutate LiveKit (26.014509ms)
-✔ a stale host can recover explicitly from a new regie client without releasing the hold early (9.802037ms)
-✔ output meter is bounded and a lost output lease still permits its bound AI teardown (17.407794ms)
+✔ prepare atomically blocks every draw before ringing; private call and explicit return never close bingo windows early (80.279562ms)
+✔ child selection, explicit catchup and two isolated rooms enforce backstage privacy before on-air (54.08336ms)
+✔ failure, no answer and reload preserve hold; next caller receives fresh context and only server-confirmed facts (17.225988ms)
+✔ one AI session starts only live; role snapshots hide secrets and old call API cannot mutate LiveKit (25.804249ms)
+✔ a stale host can recover explicitly from a new regie client without releasing the hold early (11.213045ms)
+✔ output meter is bounded and a lost output lease still permits its bound AI teardown (18.831081ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 6
@@ -11,4 +11,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 169.815159
+ℹ duration_ms 212.930962

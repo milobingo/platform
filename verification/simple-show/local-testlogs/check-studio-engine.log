@@ -1,35 +1,40 @@
-✔ stage restores cohost and all saved settings, mouth follows the active audio owner, magic uses renderer milliseconds (43.109358ms)
-✔ starting a real draft requires configured AI and never silently falls back to a browser voice (13.917404ms)
-✔ live recovery restores the current goal and keeps the server and local director paused until explicit resume (19.518703ms)
-✔ real reserve and commit stay authoritative; pausing the spin cannot commit or duplicate a number (14.955536ms)
+✔ stage restores cohost and all saved settings, mouth follows the active audio owner, magic uses renderer milliseconds (45.676969ms)
+✔ starting a real draft requires configured AI and never silently falls back to a browser voice (16.253224ms)
+✔ an explicit successful retry clears the failed-start error while preserving input and never starts the show (35.625484ms)
+▶ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly
+  ✔ bingo-window (30.101323ms)
+  ✔ call-hold (27.809058ms)
+✔ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly (58.969364ms)
+✔ live recovery restores the current goal and keeps the server and local director paused until explicit resume (17.995835ms)
+✔ real reserve and commit stay authoritative; pausing the spin cannot commit or duplicate a number (19.474757ms)
 ▶ a delayed official reveal rechecks cancellation and every local hold before sending a commit
-  ✔ pause (44.197647ms)
-  ✔ cancel (42.160209ms)
-  ✔ minigame (41.667924ms)
-  ✔ show-cue (49.202272ms)
-  ✔ window (44.347194ms)
-✔ a delayed official reveal rechecks cancellation and every local hold before sending a commit (223.768483ms)
-✔ acknowledging a claim cancels the interrupted draw and advances only after winner speech ends (16.974238ms)
-✔ a failed browser phrase is retried on resume and stale callbacks cannot end its replacement (16.27678ms)
-✔ cast cue timing pauses, ends cleanly, preserves cohost, and Vlampie keeps native cameras (12.185019ms)
-✔ an old polling response cannot rewind a newer commit (12.497653ms)
-✔ stop waits for pending activation before pausing the server and never leaves the old block running (21.734922ms)
-✔ output snapshots retain the authoritative director scene through the bridge show channel (10.124976ms)
-✔ saved rehearsal survives reload and production switches, then becomes a real show with edited plan/settings and no demo players (46.0608ms)
-✔ stop during a pending result acknowledgement cannot start late winner speech or progression (10.779738ms)
-✔ the local call demonstration is explicitly reachable without replacing real books or bypassing an active hold (26.273371ms)
-✔ manual show cue holds automatic drawing, publishes the same clock, and restores without unpausing an idle show (13.866908ms)
-✔ rundown show cue can feature another friend, clears previews, and stopping it does not draw (16.63919ms)
-✔ manual speech animates the presenter above a paused rundown without releasing game state (10.144634ms)
-✔ slow voice design survives the normal settings deadline and saves the returned profile once (11.712582ms)
-✔ voice design timeout gives a recovery message and never automatically creates another voice (15.106707ms)
-✔ overview snapshot always exposes the active presenter identity (9.657797ms)
-✔ invalid character settings and voice-design calls cannot emit undefined API routes (10.859569ms)
-ℹ tests 26
+  ✔ pause (42.390256ms)
+  ✔ cancel (42.225277ms)
+  ✔ minigame (42.355194ms)
+  ✔ show-cue (46.690895ms)
+  ✔ window (41.806673ms)
+✔ a delayed official reveal rechecks cancellation and every local hold before sending a commit (217.421499ms)
+✔ acknowledging a claim cancels the interrupted draw and advances only after winner speech ends (15.646614ms)
+✔ a failed browser phrase is retried on resume and stale callbacks cannot end its replacement (18.672261ms)
+✔ cast cue timing pauses, ends cleanly, preserves cohost, and Vlampie keeps native cameras (13.086173ms)
+✔ an old polling response cannot rewind a newer commit (10.499353ms)
+✔ stop waits for pending activation before pausing the server and never leaves the old block running (16.775444ms)
+✔ output snapshots retain the authoritative director scene through the bridge show channel (10.991007ms)
+✔ saved rehearsal survives reload and production switches, then becomes a real show with edited plan/settings and no demo players (49.857025ms)
+✔ stop during a pending result acknowledgement cannot start late winner speech or progression (16.647752ms)
+✔ the local call demonstration is explicitly reachable without replacing real books or bypassing an active hold (23.625166ms)
+✔ manual show cue holds automatic drawing, publishes the same clock, and restores without unpausing an idle show (11.686703ms)
+✔ rundown show cue can feature another friend, clears previews, and stopping it does not draw (15.534754ms)
+✔ manual speech animates the presenter above a paused rundown without releasing game state (9.975929ms)
+✔ slow voice design survives the normal settings deadline and saves the returned profile once (11.151942ms)
+✔ voice design timeout gives a recovery message and never automatically creates another voice (10.34499ms)
+✔ overview snapshot always exposes the active presenter identity (15.070211ms)
+✔ invalid character settings and voice-design calls cannot emit undefined API routes (17.631962ms)
+ℹ tests 30
 ℹ suites 0
-ℹ pass 26
+ℹ pass 30
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 584.251162
+ℹ duration_ms 687.960764

@@ -1,19 +1,19 @@
-✔ one saved custom voice serves scripted audio and spontaneous Live sessions without a TTS fallback (29.045943ms)
-✔ incomplete or different script audio is rejected and the connection is closed (21.827903ms)
-✔ WebRTC uses JSON Live startup and returns the typed session id; rejected upstream never exposes keys (7.009614ms)
-✔ invalid Live SDP answer closes an allocated session before reporting failure (0.735004ms)
-✔ voice design uses the saved prompt and revision, and persists the returned ID per character (16.114074ms)
-✔ extended character knowledge is durable and each caller gets only fresh verified context (5.881634ms)
-✔ microphone rehearsal owns its session and only its owner can close that allocated session (5.636552ms)
-✔ voice design waits for a slow provider and retains its result beyond the old server deadline (6.52511ms)
-✔ unconfirmed voice design times out cleanly without a retry or changing the saved voice (5.957178ms)
-✔ the owner can close the previous rehearsal after reload and a closed record never blocks the next test (5.736674ms)
-✔ previous-test recovery is owner-only, same-origin and creates no new session when nothing is open (4.773876ms)
-✔ 503 closure preserves the unconfirmed session and a user-initiated replacement can proceed (4.711672ms)
-✔ first start after reload can recover a stale 503 session without a permanent 409 loop (4.372147ms)
-✔ new-session service failures surface 503 separately and never overwrite the old recovery record (4.333928ms)
-✔ invalid character and invalid SDP are rejected separately before any provider request (6.632242ms)
-✔ a terminal receipt is limited to the owner-bound local preview and is recorded as a client observation (4.642016ms)
+✔ one saved custom voice serves scripted audio and spontaneous Live sessions without a TTS fallback (32.082174ms)
+✔ incomplete or different script audio is rejected and the connection is closed (21.8065ms)
+✔ WebRTC uses JSON Live startup and returns the typed session id; rejected upstream never exposes keys (5.329807ms)
+✔ invalid Live SDP answer closes an allocated session before reporting failure (0.701864ms)
+✔ voice design uses the saved prompt and revision, and persists the returned ID per character (17.26749ms)
+✔ extended character knowledge is durable and each caller gets only fresh verified context (6.758563ms)
+✔ microphone rehearsal owns its session and only its owner can close that allocated session (6.055979ms)
+✔ voice design waits for a slow provider and retains its result beyond the old server deadline (7.708632ms)
+✔ unconfirmed voice design times out cleanly without a retry or changing the saved voice (5.52302ms)
+✔ the owner can close the previous rehearsal after reload and a closed record never blocks the next test (6.272437ms)
+✔ previous-test recovery is owner-only, same-origin and creates no new session when nothing is open (5.722754ms)
+✔ 503 closure preserves the unconfirmed session and a user-initiated replacement can proceed (5.096014ms)
+✔ first start after reload can recover a stale 503 session without a permanent 409 loop (4.819224ms)
+✔ new-session service failures surface 503 separately and never overwrite the old recovery record (5.840432ms)
+✔ invalid character and invalid SDP are rejected separately before any provider request (5.325191ms)
+✔ a terminal receipt is limited to the owner-bound local preview and is recorded as a client observation (4.040363ms)
 ℹ tests 16
 ℹ suites 0
 ℹ pass 16
@@ -21,7 +21,7 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 139.981681
+ℹ duration_ms 146.909148
 gpt_live_start_failed {
   status: 403,
   responseType: 'text/plain',

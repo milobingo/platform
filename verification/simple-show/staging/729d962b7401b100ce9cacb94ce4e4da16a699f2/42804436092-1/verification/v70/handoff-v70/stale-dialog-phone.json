@@ -1,0 +1,27 @@
+{
+  "realReactAndBrowser": true,
+  "realAccountOrProviderAcceptance": false,
+  "transport": "browser-route-simulator-no-server-auth-bypass",
+  "oldPattern": "Vier hoeken",
+  "staleClaimDisabled": true,
+  "errors": [],
+  "external": [],
+  "api": [
+    "/api/player/session",
+    "/api/player/brand",
+    "/api/bingo/games",
+    "/api/bingo/games/fd78bdb3-3844-4af1-9a6c-d37dd2ab8df4/live",
+    "/api/bingo/games/fd78bdb3-3844-4af1-9a6c-d37dd2ab8df4/chat",
+    "/api/live-calls",
+    "/api/bingo/games/fd78bdb3-3844-4af1-9a6c-d37dd2ab8df4/chat/stream",
+    "/api/bingo/games/fd78bdb3-3844-4af1-9a6c-d37dd2ab8df4/chat",
+    "/api/bingo/me",
+    "/api/bingo/games",
+    "/api/bingo/games/fd78bdb3-3844-4af1-9a6c-d37dd2ab8df4/live"
+  ],
+  "writes": [],
+  "unexpected": [],
+  "blockedSimulatedMedia": [
+    "https://www.youtube-nocookie.com/embed/abcdefghijk"
+  ]
+}

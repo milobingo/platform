@@ -1,13 +1,13 @@
-✔ database preflight binds API and TLS database to the explicitly confirmed project (2.336802ms)
-✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (143.191536ms)
-✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (5.917509ms)
-✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (41.374038ms)
-✔ CLI failures do not echo malformed secret values (66.355632ms)
-✔ backup capacity uses measured available filesystem bytes and database size (0.420347ms)
-✔ v70 upgrade pins both reviewed manifests and keeps the historical source migration byte-identical (1.962805ms)
-﹣ v70 isolated PostgreSQL upgrade proves actual encrypted restore before DDL, rejects unmanaged additions, preserves data and is idempotent (0.206382ms) # SKIP
-﹣ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (0.100993ms) # SKIP
-﹣ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (0.0921ms) # SKIP
+✔ database preflight binds API and TLS database to the explicitly confirmed project (2.8243ms)
+✔ audit verifies the actual TLS peer for direct and pooled connections independently of the backend hop (165.681729ms)
+✔ apply fails before any connection when backup, scratch restore or reviewed manifest is missing (2.584677ms)
+✔ encrypted backups roundtrip binary data, hide plaintext, reject tampering and use private file permissions (29.27516ms)
+✔ CLI failures do not echo malformed secret values (71.436591ms)
+✔ backup capacity uses measured available filesystem bytes and database size (0.541151ms)
+✔ v70 upgrade pins both reviewed manifests and keeps the historical source migration byte-identical (2.388841ms)
+﹣ v70 isolated PostgreSQL upgrade proves actual encrypted restore before DDL, rejects unmanaged additions, preserves data and is idempotent (0.247996ms) # SKIP
+﹣ real PostgreSQL preflight refuses unmanaged data, atomically bootstraps, tracks checksums and detects rights/schema drift (0.148776ms) # SKIP
+﹣ real pg_dump backup is encrypted and restored with matching data checksums before receiving a proof (0.150207ms) # SKIP
 ℹ tests 10
 ℹ suites 0
 ℹ pass 7
@@ -15,4 +15,4 @@
 ℹ cancelled 0
 ℹ skipped 3
 ℹ todo 0
-ℹ duration_ms 266.888074
+ℹ duration_ms 281.571174

@@ -1,7 +1,7 @@
-✔ account welcome records one immutable domain marker per account and show brand (1.493524ms)
-✔ concurrent duplicate native onboarding offers at most one welcome per brand and never opts into newsletters (115.399522ms)
-✔ welcome recovery requires the current verified address to match the durable marker and ignores a client recipient override (46.10542ms)
-✔ native onboarding preserves its welcome marker during private-storage configuration failure and repairs preparation once (39.545096ms)
+✔ account welcome records one immutable domain marker per account and show brand (1.383586ms)
+✔ concurrent duplicate native onboarding offers at most one welcome per brand and never opts into newsletters (93.322411ms)
+✔ welcome recovery requires the current verified address to match the durable marker and ignores a client recipient override (34.780845ms)
+✔ native onboarding preserves its welcome marker during private-storage configuration failure and repairs preparation once (35.216054ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 206.756085
+ℹ duration_ms 168.497628

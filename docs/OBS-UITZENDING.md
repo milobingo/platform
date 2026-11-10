@@ -1,8 +1,14 @@
 # Het uitzendbeeld in OBS
 
-Open in de aangemelde regie de gewenste opgeslagen show en ga naar **Studio & camera’s → OBS-browserbron**. Kies **OBS-link beheren → OBS-link maken** en kopieer de getoonde link. Kies **Beeld naar OBS sturen** en houd deze regiebrowser open. Voeg in OBS een **Browserbron** toe, plak de link en stel **1920 × 1080** in. Schakel **Audio beheren via OBS** in en controleer de audiomixer. Kies in de live regie de bestaande geluidsroute via het uitzendvenster wanneer het showgeluid door OBS moet lopen.
+Open in de aangemelde regie de gewenste Milo-show en kies **Overzicht → Uitzending testen**. **Open uitzendvenster** opent de gekozen show. **Kopieer OBS-link** opent het beheer van de aparte OBS-link; maak de link zo nodig bewust aan en kopieer hem. Houd de regiepagina open. Vlampie behoudt de route **Studio & camera’s → OBS-browserbron**.
 
-De link opent het uitzendbeeld zonder Google-aanmelding in de OBS-browser. Geluid wordt automatisch gestart als de browser dat toestaat. Blijft de activatieknop zichtbaar, open dan **Interactie** op de browserbron en kies **Beeld & geluid activeren**. Controleer beeld, stem, gastgeluid, mute en noodstop tijdens een repetitie op de werkelijk gebruikte OBS-computer. Een geslaagde browsertest vervangt die audioproef niet.
+Voeg in OBS een **Browserbron** toe, plak de OBS-link en stel **1920 × 1080** in. Zet **Audio beheren via OBS** aan. De link werkt zonder Google-aanmelding in de OBS-browser. Activeer zo nodig via **OBS → Bronnen → rechtsklik → Interactie → Beeld & geluid activeren**. Het activatiescherm verdwijnt pas nadat het uitzendvenster echt een kort testgeluid heeft afgespeeld.
+
+Kies vervolgens **Speel testgeluid** in de regie. Dit geluid gebruikt dezelfde uitzendmix als de presentator. De voorbereiding toont drie afzonderlijke controles: verbinding met deze show, audio in het uitzendvenster en jouw OBS-controle. **Geluid afgespeeld** bewijst nog geen ontvangst door OBS. Controleer de meter van de juiste bron in de OBS-mixer, maak een korte proefopname met beeld en testgeluid en luister die terug. Vink beide OBS-controles pas daarna aan. Een browseropname vervangt deze controle op de echte OBS-computer niet.
+
+Gebruik je **Vensteropname**, open de OBS-link dan in een aparte browsertoepassing zonder regie- of backstagetabs. Activeer beeld en geluid en kies **OBS → Bronnen → + → Vensteropname**. Leg alleen deze uitzendbrowser vast met **Toepassingsaudio vastleggen** en zet algemene desktopaudio uit. Gebruik de Browserbron als audio per toepassing niet beschikbaar is. Privé-audio uit regie of backstage hoort buiten de uitzendmix te blijven.
+
+Bij verbindingsverlies kies je **Opnieuw verbinden** in hetzelfde uitzendvenster. Het herstelt de gekozen show, het beeld en de officiële spelstand. Pauze, BINGO-meldvensters en belblokkades blijven behouden. Controleer bij een verlopen of ingetrokken link het linkbeheer in de regie. Test stem, gastgeluid, mute, noodstop en terugkeer naar de show afzonderlijk tijdens een echte repetitie.
 
 ## Geldigheid en vervangen
 
@@ -20,4 +26,4 @@ Het toegangsbewijs staat achter `#obs=` in de link; de browser stuurt het voor d
 
 Bewaar de link bij de persoon die OBS bedient. OBS slaat browserbron-URL’s op in zijn scènecollectie; deel zo’n collectie alleen als je die toegang wilt delen. Bij een vermoeden dat de link is gedeeld kun je hem in de regie vervangen of intrekken.
 
-Een terugrol naar een appversie van vóór deze functie kan de OBS-link niet gebruiken. Kies bij een correctie een release die ook de native regiesleutels en de OBS-toegang ondersteunt.
+Kies bij een correctie een release die native regiesleutels, OBS-toegang en de actuele showinstellingen ondersteunt. Voor nieuwe standaardshows moet die release ook de officiële vijftiensecondenklok, automatische Milo-regels en versiecontrole bij opslaan behouden.

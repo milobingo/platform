@@ -1,14 +1,14 @@
-✔ central hold rejects fresh reserve/commit/round activation without changing deck, board, pending draw or epoch (6.494973ms)
-✔ entertainment during hold retains the last active round and a delayed viewer can still announce and claim bingo (2.996112ms)
-✔ a hold never shortens or closes an existing claim window, including failed round changes and draw attempts (3.139219ms)
-✔ player snapshot exposes the public checkpoint and all drawn numbers without private hold context or another family book (2.343611ms)
-✔ director blocks manual and scripted draws while held; ordinary entertainment keeps moving (0.854165ms)
-✔ a hold freezes a pending spin and explicit release resumes the same token exactly once (2.564777ms)
-✔ a hold between entering a draw step and its microtask prevents any server request (0.423542ms)
-✔ late successful commit acknowledgement is displayed once, and cancelled flows ignore late responses (0.544325ms)
-✔ runner continues entertainment while held and waits at the next round without activating or resetting it (2.047293ms)
-✔ runner freezes automatic draws, round announcements and next-goal progression while held (0.648783ms)
-✔ runner blocks a round before async activation and stale failures after stop stay inert (1.570852ms)
+✔ central hold rejects fresh reserve/commit/round activation without changing deck, board, pending draw or epoch (10.691375ms)
+✔ entertainment during hold retains the last active round and a delayed viewer can still announce and claim bingo (7.743676ms)
+✔ a hold never shortens or closes an existing claim window, including failed round changes and draw attempts (8.593084ms)
+✔ player snapshot exposes the public checkpoint and all drawn numbers without private hold context or another family book (4.248369ms)
+✔ director blocks manual and scripted draws while held; ordinary entertainment keeps moving (1.776844ms)
+✔ a hold freezes a pending spin and explicit release resumes the same token exactly once (7.908357ms)
+✔ a hold between entering a draw step and its microtask prevents any server request (0.54792ms)
+✔ late successful commit acknowledgement is displayed once, and cancelled flows ignore late responses (0.565647ms)
+✔ runner continues entertainment while held and waits at the next round without activating or resetting it (2.708664ms)
+✔ runner freezes automatic draws, round announcements and next-goal progression while held (0.892993ms)
+✔ runner blocks a round before async activation and stale failures after stop stay inert (1.592994ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -16,4 +16,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 28.25196
+ℹ duration_ms 54.773925

@@ -1,0 +1,114 @@
+{
+  "fixtureMigrations": {
+    "kind": "release-pinned-read-only-SQL-for-in-memory-SQLite",
+    "sha256": {
+      "drizzle/0000_broad_gravity.sql": "19c6aaceb71c862c6891695696be4d376c72c549df7c88991c4f036958532b6d",
+      "drizzle/0001_black_nemesis.sql": "e1b136529e19f503f5fc1a495d13055bad10f3d78b1f11f03ae494f8506ba7f4",
+      "drizzle/0002_silly_prodigy.sql": "404bf3ed5fe3f5063eb57962483f403cdbbe2a435ad4d8261d0b562b8876cf08",
+      "drizzle/0003_eminent_meggan.sql": "5f7287b6a525d8f84c816df0a39e4166524d780f70b44c19b5a759b8567835e1",
+      "drizzle/0004_nasty_sugar_man.sql": "ef4c0c2c2fa4cead522f31c340f80c27c4f9133b00e18a7a313e3f1dd8ebbc75",
+      "drizzle/0005_tan_screwball.sql": "48aee1b14787eda787122c72ee970de16a0a479df2404744cca13c73277a38da",
+      "drizzle/0006_broad_loners.sql": "232aa8d4dac743e4c74f24c09c8e90ecfb388e26081e6e15d1c5d1cce86e81cc",
+      "drizzle/0007_stiff_lord_hawal.sql": "02b944c3093fc9ead28cd8b37b89c1f3bf43a1f69a1a806910fd553a27dcfcbe",
+      "drizzle/0008_character_settings.sql": "d53c58af7acf018df6d9484482f0d9b493aa45f9a2a4338cab6e3c09192fe7ea",
+      "drizzle/0009_studio_mail_v70.sql": "51d0582bc69ee6dd147ac84f2b9f31151877c432dfb517730e3f639f3e607726"
+    },
+    "database": ":memory:",
+    "actualStagingDatabaseWrites": false
+  },
+  "format": 1,
+  "kind": "actual-staging-browser-acceptance",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "releaseId": "42804436092-1",
+  "deployWorkflowRun": 42804436092,
+  "deployWorkflow": {
+    "url": "https://github.com/milobingo/platform/actions/runs/42804436092",
+    "headSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "release-gate",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "verify-public",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "startedAt": "2026-11-10T11:11:27.643Z",
+  "preHealth": {
+    "observedAt": "2026-11-10T11:11:27.600Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+    "releaseId": "42804436092-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "testSourceSha256": {
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0",
+    "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
+    "tests/browser/handoff-v6.spec.mjs": "4ceed1bcfda2b97dba51662ddab8881bf779f6d2b87efea8d1a43fca15e5747a",
+    "tests/browser/handoff-v70.spec.mjs": "16030585adb4639e2697dfe62a5cf47afdf06fe5f3f779c4df329376e6829c07",
+    "tests/browser/regie-settings.spec.mjs": "ffc8145624359ba2e8034232936e4ff5f7ef07af166def9fa86d31d58fff398a",
+    "tests/browser/start-rules.spec.mjs": "87463543c1d5a2119e4a79c80dd5126c282e15deaa401f9bbe83e5d405ac6ff6",
+    "tests/browser/obs-source.spec.mjs": "a31a6de18f451fc222b7174f9cb7b0048680b439403e8deb180436bede7ea0c8",
+    "tests/browser/broadcast-preparation.spec.mjs": "1fa41674667905a13a8831dd37b8a8ec1d10abb29a04cf230c3f58a4601a479a"
+  },
+  "localEvidenceSha256Before": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/simple-show/local-browser-tests.json": "e746318e80b9ea71d0569898410cf31dbb9363c948986f8ed0d2f7b66103fc0f",
+    "verification/simple-show/browser.log": "c48502772cc1fd160512a037f0ef4d3e7ecae9901863f06714facd306f7f57bb"
+  },
+  "scope": {
+    "actualStagingHtmlCssCanvasAndAssets": true,
+    "actualUnauthenticatedAuthChecks": true,
+    "regieAndFamilyApiTransportSimulated": true,
+    "providersSimulatedOrBlocked": true,
+    "realAccountAcceptance": false,
+    "realCaptionTrackVerified": false,
+    "realDbOrProviderOrMailWrites": false
+  },
+  "finishedAt": "2026-11-10T11:12:47.300Z",
+  "postHealth": {
+    "observedAt": "2026-11-10T11:12:47.297Z",
+    "httpStatus": 200,
+    "status": "ok",
+    "revision": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+    "releaseId": "42804436092-1",
+    "configVersion": "staging-2026-11-05-v1",
+    "checks": [
+      "http"
+    ]
+  },
+  "healthFailure": null,
+  "exitCode": 0,
+  "stats": {
+    "startTime": "2026-11-10T11:11:28.055Z",
+    "duration": 79071.20199999999,
+    "expected": 30,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "localEvidenceSha256After": {
+    "verification/browser-tests.json": "3a03f1f4d8444e70bb5d1882c57c5325b65cb4c5941b93f66d4f00ba9825f6ba",
+    "verification/simple-show/local-browser-tests.json": "e746318e80b9ea71d0569898410cf31dbb9363c948986f8ed0d2f7b66103fc0f",
+    "verification/simple-show/browser.log": "c48502772cc1fd160512a037f0ef4d3e7ecae9901863f06714facd306f7f57bb"
+  },
+  "localEvidencePreserved": true,
+  "testSourcesUnchanged": true,
+  "status": "passed"
+}

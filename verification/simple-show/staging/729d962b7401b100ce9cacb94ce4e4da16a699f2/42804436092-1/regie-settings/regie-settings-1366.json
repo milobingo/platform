@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-11-10T11:12:42.412Z",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountOrProviderAcceptance": false,
+  "actualBackendWrites": false,
+  "savedShowBranch": true,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "f8c1ac09-09b0-4c39-96c4-b98c1e26ee2c",
+  "requestedMailState": 2,
+  "requestedSavedGame": 2,
+  "gets": {
+    "/api/auth/session": 2,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 2,
+    "/api/bingo/games/f8c1ac09-09b0-4c39-96c4-b98c1e26ee2c": 2,
+    "/api/mail/state": 2,
+    "/api/live-calls": 3,
+    "/api/bingo/games/f8c1ac09-09b0-4c39-96c4-b98c1e26ee2c/chat": 1,
+    "/api/bingo/games/f8c1ac09-09b0-4c39-96c4-b98c1e26ee2c/chat/stream": 12,
+    "/api/livekit/settings": 1
+  },
+  "mailResponses": [
+    503,
+    200
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [],
+  "unexpected": [],
+  "expectedSandboxScriptBlocks": 2,
+  "expectedMailLoadConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ]
+}

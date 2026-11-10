@@ -1,21 +1,21 @@
-✔ S03: effective free centre rejects a centre-only pattern for either imported flag (10.806459ms)
-✔ S02: an acknowledged goal cannot reopen, reroll or reset the round deck (10.125476ms)
-✔ S02: a second regie tab cannot finish an unpublished saved result (40.028528ms)
-✔ S05: changed-input replay never returns another family claim (18.780325ms)
-✔ S01/S04: concurrent same-goal dialogs share one window; a historical open dialog cannot create its successor (16.352534ms)
-✔ S01: after a false window, another own book can announce after cooldown without deleting history (13.723971ms)
-✔ S04: stale goal, round, pattern and foreign-show contexts do not claim, sanction or change a deadline (12.255045ms)
-✔ S05: concurrent request collisions bind the authenticated actor, input and action without another family projection (15.398128ms)
-✔ S02: simultaneous refresh settlement persists one result and one winner, including an imported old result without goalKey (65.694028ms)
-✔ S03: imported invalid drafts fail publication, save and start; valid free centre completes at the last real ball (8.011652ms)
-✔ S05: public results use explicit aliases, own fields stay private and unrelated host family lists are scoped (6.813017ms)
-✔ L01 shared game invariant: every model draw path blocks callId and drawHold, including pending commit (4.939026ms)
-✔ S01/S04: real cooldown persists; at the exact server deadline no claim or false sanction is accepted (16.011688ms)
-✔ S04: an exact claim retry after window closure and progression returns its own immutable outcome without a second sanction (8.962924ms)
-✔ U01/S05: the published 150-book family limit applies to direct registration and host assignment atomically (84.005202ms)
-✔ S05: the original bound claim outcome survives more than 250 other operations without a growing replay cache (102.903523ms)
-✔ U01: a legacy draft above the family limit blocks publication and start without rewriting existing books (75.317594ms)
-✔ U03/L01: a direct start cannot activate a draft while a durable call cleanup hold remains (6.295552ms)
+✔ S03: effective free centre rejects a centre-only pattern for either imported flag (8.017963ms)
+✔ S02: an acknowledged goal cannot reopen, reroll or reset the round deck (8.998098ms)
+✔ S02: a second regie tab cannot finish an unpublished saved result (34.601993ms)
+✔ S05: changed-input replay never returns another family claim (16.309579ms)
+✔ S01/S04: concurrent same-goal dialogs share one window; a historical open dialog cannot create its successor (16.016536ms)
+✔ S01: after a false window, another own book can announce after cooldown without deleting history (14.026699ms)
+✔ S04: stale goal, round, pattern and foreign-show contexts do not claim, sanction or change a deadline (13.695597ms)
+✔ S05: concurrent request collisions bind the authenticated actor, input and action without another family projection (20.376894ms)
+✔ S02: simultaneous refresh settlement persists one result and one winner, including an imported old result without goalKey (81.368585ms)
+✔ S03: imported invalid drafts fail publication, save and start; valid free centre completes at the last real ball (7.472745ms)
+✔ S05: public results use explicit aliases, own fields stay private and unrelated host family lists are scoped (5.777577ms)
+✔ L01 shared game invariant: every model draw path blocks callId and drawHold, including pending commit (4.095468ms)
+✔ S01/S04: real cooldown persists; at the exact server deadline no claim or false sanction is accepted (13.753956ms)
+✔ S04: an exact claim retry after window closure and progression returns its own immutable outcome without a second sanction (9.081533ms)
+✔ U01/S05: the published 150-book family limit applies to direct registration and host assignment atomically (86.760496ms)
+✔ S05: the original bound claim outcome survives more than 250 other operations without a growing replay cache (95.361011ms)
+✔ U01: a legacy draft above the family limit blocks publication and start without rewriting existing books (69.671484ms)
+✔ U03/L01: a direct start cannot activate a draft while a durable call cleanup hold remains (5.799369ms)
 ℹ tests 18
 ℹ suites 0
 ℹ pass 18
@@ -23,4 +23,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 523.556909
+ℹ duration_ms 517.533231

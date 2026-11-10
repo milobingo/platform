@@ -1,7 +1,7 @@
 {"feedMeasurements":{"fullBytes":15988,"unchangedBytes":200,"updateBytes":1858}}
-✔ feed versions reduce payload, preserve cards and converge after a missed update (50.932144ms)
-✔ feed scope, account revocation, brand variants and database caches remain isolated (21.407005ms)
-✔ the feed closes an expired window before answering unchanged (16.170288ms)
+✔ feed versions reduce payload, preserve cards and converge after a missed update (45.257123ms)
+✔ feed scope, account revocation, brand variants and database caches remain isolated (19.212448ms)
+✔ the feed closes an expired window before answering unchanged (15.728129ms)
 ℹ tests 3
 ℹ suites 0
 ℹ pass 3
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 92.909087
+ℹ duration_ms 84.547451

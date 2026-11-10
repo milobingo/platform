@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-11-10T11:08:02.035214+00:00",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42804436092",
+  "releaseSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "gate": "public",
+  "status": "passed",
+  "releaseId": "42804436092-1",
+  "configVersion": "staging-2026-11-05-v1",
+  "checks": [
+    "exact-health-identity",
+    "demo-assets",
+    "unauthenticated-access",
+    "local-login-disabled"
+  ],
+  "notTested": [
+    "real-otp-email",
+    "google-oauth-account",
+    "paid-provider-access",
+    "live-broadcast-audio"
+  ]
+}

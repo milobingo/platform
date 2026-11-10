@@ -1,17 +1,17 @@
-✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (66.231823ms)
-✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (48.258121ms)
-✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (29.444747ms)
-✔ output projection contains programme visuals only; another show produces waiting state and no voice access (36.345426ms)
-✔ OBS can retrieve only the current published voice clip and never create a paid voice request (35.250047ms)
-✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (40.532473ms)
-✔ malformed durable access metadata fails closed without provider or Auth contact (32.46166ms)
-✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (23.012458ms)
-✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (48.575653ms)
-✔ queued realtime rechecks revoked capability and aborted request before any provider start (111.841811ms)
-✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (100.051001ms)
-✔ revocation during ready CAS closes the durably known session and leaves the draw hold (45.682479ms)
-✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (55.574321ms)
-﹣ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (0.140332ms) # SKIP
+✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (59.289789ms)
+✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (34.389441ms)
+✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (37.329657ms)
+✔ output projection contains programme visuals only; another show produces waiting state and no voice access (34.566129ms)
+✔ OBS can retrieve only the current published voice clip and never create a paid voice request (28.000389ms)
+✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (33.58414ms)
+✔ malformed durable access metadata fails closed without provider or Auth contact (30.70712ms)
+✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (23.737657ms)
+✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (37.565154ms)
+✔ queued realtime rechecks revoked capability and aborted request before any provider start (99.995475ms)
+✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (60.07542ms)
+✔ revocation during ready CAS closes the durably known session and leaves the draw hold (26.953981ms)
+✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (28.127942ms)
+﹣ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (0.060211ms) # SKIP
 ℹ tests 14
 ℹ suites 0
 ℹ pass 13
@@ -19,7 +19,7 @@
 ℹ cancelled 0
 ℹ skipped 1
 ℹ todo 0
-ℹ duration_ms 680.842398
+ℹ duration_ms 540.654545
 gpt_live_close_unconfirmed {
   restStatus: 500,
   attachStatus: 500,

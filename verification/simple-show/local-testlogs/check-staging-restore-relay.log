@@ -1,8 +1,8 @@
-✔ restore relay exposes two fixed plans, refuses root/wrong runner/missing local Tailscale address and cannot extend30min (1.745876ms)
-✔ fixed relay preserves binary streams and final half-close bytes through actual isolated loopback sockets (19.183804ms)
-✔ wrong Tailscale peer is closed before any outbound scratch connection (1.68868ms)
-✔ occupied port fails without replacing the existing listener (2.285655ms)
-✔ hard expiry closes listener and active connections; cleanup is idempotent (103.144519ms)
+✔ restore relay exposes two fixed plans, refuses root/wrong runner/missing local Tailscale address and cannot extend30min (1.632353ms)
+✔ fixed relay preserves binary streams and final half-close bytes through actual isolated loopback sockets (20.040584ms)
+✔ wrong Tailscale peer is closed before any outbound scratch connection (1.482256ms)
+✔ occupied port fails without replacing the existing listener (1.358369ms)
+✔ hard expiry closes listener and active connections; cleanup is idempotent (101.752248ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -10,4 +10,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 133.088463
+ℹ duration_ms 130.203478

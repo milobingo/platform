@@ -1,11 +1,11 @@
-✔ queued claim is rejected at the exact server deadline without a sanction, deadline or control-lease write (37.171729ms)
-✔ queued begin is rejected at the exact server deadline without a sanction, deadline or control-lease write (7.063926ms)
-✔ optional store mode: queued extend is rejected at the exact server deadline without a sanction, deadline or control-lease write (6.679503ms)
-✔ a queued first announcement opens its full configured window from execution time (11.765301ms)
-✔ optional store mode: a queued control heartbeat checks the current lease and grants fifteen seconds from execution (5.9436ms)
-✔ the actual control heartbeat route uses normal CAS without entering the native family FIFO (5.099479ms)
-✔ an accepted durable claim replay after settlement returns its original receipt without another sanction or mutation (7.956109ms)
-✔ a lost database CAS refreshes the execution clock before retrying a claim at the deadline (32.486347ms)
+✔ queued claim is rejected at the exact server deadline without a sanction, deadline or control-lease write (32.519587ms)
+✔ queued begin is rejected at the exact server deadline without a sanction, deadline or control-lease write (5.537263ms)
+✔ optional store mode: queued extend is rejected at the exact server deadline without a sanction, deadline or control-lease write (4.593251ms)
+✔ a queued first announcement opens its full configured window from execution time (8.490409ms)
+✔ optional store mode: a queued control heartbeat checks the current lease and grants fifteen seconds from execution (4.751791ms)
+✔ the actual control heartbeat route uses normal CAS without entering the native family FIFO (3.60968ms)
+✔ an accepted durable claim replay after settlement returns its original receipt without another sanction or mutation (7.063906ms)
+✔ a lost database CAS refreshes the execution clock before retrying a claim at the deadline (66.624507ms)
 ℹ tests 8
 ℹ suites 0
 ℹ pass 8
@@ -13,4 +13,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 120.653117
+ℹ duration_ms 138.21434

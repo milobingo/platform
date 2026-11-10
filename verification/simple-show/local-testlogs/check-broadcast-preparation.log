@@ -1,17 +1,17 @@
-✔ audio activation waits for a completed non-silent programme source before claiming ready or hiding the overlay (666.872947ms)
-✔ a running audio context without a measured signal keeps the activation overlay and never acknowledges ready (661.756631ms)
-✔ an ended callback without audio-clock progress is not proof of playback (660.326625ms)
-✔ disconnect during the test silences its source and cannot acknowledge a late successful activation (51.994576ms)
-✔ reconnect restores the exact paused show, pending bingo and official history using only read and output heartbeat (663.775171ms)
-✔ reconnect refuses a different show and a stale producer without opening audio or releasing the game (0.875057ms)
-✔ test request plays once through output, acknowledges only its own event and never resumes a paused show (722.237759ms)
-✔ regie test awaits the matching playback acknowledgement, not a routed or connected status alone (30.58135ms)
-✔ audio and reconnect never connect a microphone or backstage stream, and active calls prevent a test sound (0.517605ms)
-✔ a live call arriving during a programme test stops the test and keeps its acknowledgement unsuccessful (30.600679ms)
-✔ relay stores a bounded public playback acknowledgement while preserving producer, game and paused state (41.149847ms)
-✔ preparation separates connection, audio activation and unconfirmed OBS checks; opening stays on the user gesture (113.083804ms)
-✔ preparation reports a real playback failure without claiming sound or OBS acceptance (88.140128ms)
-✔ audio proof for a previous show never becomes a successful preparation status after switching shows (140.063615ms)
+✔ audio activation waits for a completed non-silent programme source before claiming ready or hiding the overlay (667.415285ms)
+✔ a running audio context without a measured signal keeps the activation overlay and never acknowledges ready (661.264603ms)
+✔ an ended callback without audio-clock progress is not proof of playback (662.81335ms)
+✔ disconnect during the test silences its source and cannot acknowledge a late successful activation (50.33546ms)
+✔ reconnect restores the exact paused show, pending bingo and official history using only read and output heartbeat (661.599941ms)
+✔ reconnect refuses a different show and a stale producer without opening audio or releasing the game (0.729175ms)
+✔ test request plays once through output, acknowledges only its own event and never resumes a paused show (720.686564ms)
+✔ regie test awaits the matching playback acknowledgement, not a routed or connected status alone (31.407372ms)
+✔ audio and reconnect never connect a microphone or backstage stream, and active calls prevent a test sound (0.37586ms)
+✔ a live call arriving during a programme test stops the test and keeps its acknowledgement unsuccessful (31.476446ms)
+✔ relay stores a bounded public playback acknowledgement while preserving producer, game and paused state (45.260246ms)
+✔ preparation separates connection, audio activation and unconfirmed OBS checks; opening stays on the user gesture (105.461588ms)
+✔ preparation reports a real playback failure without claiming sound or OBS acceptance (85.331399ms)
+✔ audio proof for a previous show never becomes a successful preparation status after switching shows (139.701945ms)
 ℹ tests 14
 ℹ suites 0
 ℹ pass 14
@@ -19,4 +19,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 3886.114031
+ℹ duration_ms 3876.424781

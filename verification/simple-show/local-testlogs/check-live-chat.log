@@ -1,15 +1,15 @@
-✔ chat identity comes from the authenticated account; profile switching retains strict ownership and privacy (64.835218ms)
-✔ chat enforces sign-in, same-origin access, show membership and non-spoofable host ownership (16.13193ms)
-✔ chat validates nonempty text, Unicode message limits and stable request identifiers (20.343073ms)
-✔ idempotent sends do not duplicate messages and rate limits cover simultaneous tabs and profile switches (35.879621ms)
-✔ host manages moderators; moderators can only delete or mute players and mutes cover the full account (34.319445ms)
-✔ transaction guards prevent sending after a concurrent mute and moderating after concurrent role changes (33.929474ms)
-✔ host and moderators can remove their own posts and clean up finished-show chat while players cannot (38.346009ms)
-✔ deleted messages disappear from snapshots and historic event replay without exposing the original body (16.742535ms)
-✔ simultaneous accounts produce ordered events and cursor replay catches every event across pages (129.174812ms)
-✔ 100 simultaneous player accounts each receive one durable acknowledgement with no lost cursor events (327.787266ms)
-✔ chat persists independently of bingo documents and checks revoked membership on every read (14.561139ms)
-✔ SSE delivers an initial chat update and cancellation closes without waiting for heartbeat (11.67755ms)
+✔ chat identity comes from the authenticated account; profile switching retains strict ownership and privacy (49.489047ms)
+✔ chat enforces sign-in, same-origin access, show membership and non-spoofable host ownership (16.070197ms)
+✔ chat validates nonempty text, Unicode message limits and stable request identifiers (13.593332ms)
+✔ idempotent sends do not duplicate messages and rate limits cover simultaneous tabs and profile switches (20.796599ms)
+✔ host manages moderators; moderators can only delete or mute players and mutes cover the full account (26.459833ms)
+✔ transaction guards prevent sending after a concurrent mute and moderating after concurrent role changes (20.785693ms)
+✔ host and moderators can remove their own posts and clean up finished-show chat while players cannot (32.398724ms)
+✔ deleted messages disappear from snapshots and historic event replay without exposing the original body (16.325063ms)
+✔ simultaneous accounts produce ordered events and cursor replay catches every event across pages (130.279815ms)
+✔ 100 simultaneous player accounts each receive one durable acknowledgement with no lost cursor events (294.144961ms)
+✔ chat persists independently of bingo documents and checks revoked membership on every read (14.40286ms)
+✔ SSE delivers an initial chat update and cancellation closes without waiting for heartbeat (10.310307ms)
 ℹ tests 12
 ℹ suites 0
 ℹ pass 12
@@ -17,4 +17,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 753.414032
+ℹ duration_ms 653.2468

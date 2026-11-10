@@ -1,0 +1,65 @@
+{
+  "reviewedAt": "2026-11-10T11:09:13.170472+00:00",
+  "releaseSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "releaseId": "42804436092-1",
+  "reviewMethod": "view_image inspection of these three actual staging captures, plus inspection of recorded-clip decode/playback evidence",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualOBSInstallation": false,
+  "captures": [
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-preparation-three-checks.png",
+      "sha256": "5a028e5678f29f69d319591d1d0dd6a8f9ce53c1523978061e2b52ada7cc095b",
+      "observations": [
+        "De drie controlestappen zijn apart en leesbaar weergegeven.",
+        "Verbinding met regie en Geluid afgespeeld staan los van de nog onbevestigde OBS-mixer en proefopname.",
+        "Open uitzendvenster, Speel testgeluid en Kopieer OBS-link zijn zichtbaar."
+      ]
+    },
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-reconnected-existing-show.png",
+      "sha256": "70f09d1958323122ead097ea4f9b48b3265c32bcf08455311d545f5b63c6707b",
+      "observations": [
+        "Het uitzendbeeld is hersteld zonder activatie-overlay.",
+        "SHOW GEPAUZEERD blijft zichtbaar, met Ronde 1 · Vier hoeken en precies de getrokken nummers 7, 19 en 41.",
+        "De bijbehorende fixture-JSON behoudt daarnaast hetzelfde geopende BINGO-venster; de afbeelding bewijst op zichzelf de pauze en nummerstand."
+      ]
+    },
+    {
+      "path": "broadcast-preparation/screenshots/broadcast-audio-blocked.png",
+      "sha256": "5b2611be1c40e6bbe37c83ebf75bf64d097f4d056138b7c4561006a15379858c",
+      "observations": [
+        "Het activatiescherm blijft zichtbaar zolang het geluid geblokkeerd is.",
+        "Beeld & geluid activeren is duidelijk zichtbaar; de uitleg verwijst naar Interactie in OBS.",
+        "De opname toont geen onterechte succesmelding of bevestiging van OBS-ontvangst."
+      ]
+    }
+  ],
+  "recordingEvidence": {
+    "path": "broadcast-preparation/broadcast-two-page-record-reconnect.json",
+    "sha256": "9cac37133aa8068a0065d974f6a0cf1c05484af8222e2451677b30552b93da78",
+    "metrics": {
+      "width": 1920,
+      "height": 1080,
+      "mime": "video/webm;codecs=vp8,opus",
+      "videoWidth": 1920,
+      "videoHeight": 1080,
+      "decodedAudioChannels": 2,
+      "decodedAudioFrames": 60857,
+      "decodedAudioDuration": 1.3799773242630387,
+      "decodedPeakRms": 0.1159574642180058,
+      "recordedPlaybackRms": 0.11684826386989744,
+      "recordedPlaybackEnded": true,
+      "recordedVideoPixelRange": 199.33333333333334,
+      "recordedPlaybackTime": 3.687,
+      "bytes": 403347,
+      "peak": 0.11470141251084234,
+      "microphoneRequests": 0,
+      "actualOBSRecording": false
+    }
+  },
+  "reconnectStatePreservedExceptControlLease": true,
+  "forbiddenWrites": [],
+  "concreteBlockers": [],
+  "remainingCheck": "Controleer de Browserbronmixer en luister een korte proefopname met beeld en testgeluid terug op een echte OBS-installatie. Deze beoordeling bevestigt uitsluitend de browseropname en browserinterface."
+}

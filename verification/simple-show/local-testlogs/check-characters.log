@@ -1,10 +1,10 @@
-✔ the twelve cast roles have distinct genuine voice identities and Vlampie remains separate (1.271788ms)
-✔ settings are durable, per-owner, and a stale tab cannot overwrite a newer cast revision (33.171175ms)
-✔ owner identity, same origin and a dedicated write header protect cast preferences (1.743964ms)
-✔ invalid settings never write a record or permit a per-character API secret (4.668617ms)
-✔ speech uses the saved character voice and the existing single global key; cache isolates revisions (22.12281ms)
-✔ an unknown character or missing durable cast store cannot spend upstream credit (0.968679ms)
-✔ new Milo shows include two magic cues, retain game rounds, and optional cast data survives normalization (2.044188ms)
+✔ the twelve cast roles have distinct genuine voice identities and Vlampie remains separate (1.289173ms)
+✔ settings are durable, per-owner, and a stale tab cannot overwrite a newer cast revision (34.178732ms)
+✔ owner identity, same origin and a dedicated write header protect cast preferences (1.927331ms)
+✔ invalid settings never write a record or permit a per-character API secret (5.771387ms)
+✔ speech uses the saved character voice and the existing single global key; cache isolates revisions (24.183012ms)
+✔ an unknown character or missing durable cast store cannot spend upstream credit (1.20671ms)
+✔ new Milo shows include two magic cues, retain game rounds, and optional cast data survives normalization (2.104189ms)
 ℹ tests 7
 ℹ suites 0
 ℹ pass 7
@@ -12,4 +12,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 70.346841
+ℹ duration_ms 75.723187

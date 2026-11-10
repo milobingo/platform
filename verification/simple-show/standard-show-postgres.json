@@ -11,5 +11,8 @@
   "failed": 0,
   "skipped": 0,
   "sourceSha256": "07d20640fa2596595efd1686ac8e0357292695626cbfb11dbe1d50d05136ae27",
-  "credentialValuesRecorded": false
+  "credentialValuesRecorded": false,
+  "postgresSpecificTests": 1,
+  "postgresSpecificPassed": 1,
+  "suiteScope": "14 tests total: model/SQLite coverage plus one actual PostgreSQL production-adapter integration covering CAS, concurrent start, 15-second commit guard and reload."
 }

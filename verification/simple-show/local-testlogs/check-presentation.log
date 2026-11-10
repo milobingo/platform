@@ -1,16 +1,16 @@
-✔ profiles and rules use owner-only CAS; stale writes preserve document (24.688229ms)
-✔ game snapshot fixes profile/rules and player response cannot leak prompt (3.181582ms)
-✔ four corners, top/bottom and full card share numbers, then round ends (4.643066ms)
-✔ question intro ends before banner and question reading; answer restores owned scene (4.377004ms)
-✔ bingo preempts optional speech; late completion cannot overwrite checking (0.759811ms)
-✔ static scene survives a host utterance until explicit return (0.834324ms)
-✔ priority speech holds a countdown without losing elapsed time and resumes it (0.644877ms)
-✔ stopping preparation invalidates its late result and test context uses requested profile (0.741765ms)
-✔ moderation surrounds structured answer and malformed output never airs (6.946459ms)
-✔ round editor reorders/adds/removes goals without losing other form edits (60.209677ms)
-✔ speech splitting preserves Unicode and all original words within API bound (0.479146ms)
-✔ real chat source is canonical, owner checked, revalidated after generation, and hidden result excluded (4.378326ms)
-✔ profile studio mounts tabs and both save controls recover after successful save (26.21299ms)
+✔ profiles and rules use owner-only CAS; stale writes preserve document (25.371093ms)
+✔ game snapshot fixes profile/rules and player response cannot leak prompt (3.267411ms)
+✔ four corners, top/bottom and full card share numbers, then round ends (6.092674ms)
+✔ question intro ends before banner and question reading; answer restores owned scene (6.71696ms)
+✔ bingo preempts optional speech; late completion cannot overwrite checking (0.716926ms)
+✔ static scene survives a host utterance until explicit return (0.553248ms)
+✔ priority speech holds a countdown without losing elapsed time and resumes it (0.532888ms)
+✔ stopping preparation invalidates its late result and test context uses requested profile (0.708895ms)
+✔ moderation surrounds structured answer and malformed output never airs (6.118363ms)
+✔ round editor reorders/adds/removes goals without losing other form edits (48.809046ms)
+✔ speech splitting preserves Unicode and all original words within API bound (0.513849ms)
+✔ real chat source is canonical, owner checked, revalidated after generation, and hidden result excluded (4.582265ms)
+✔ profile studio mounts tabs and both save controls recover after successful save (30.240204ms)
 ℹ tests 13
 ℹ suites 0
 ℹ pass 13
@@ -18,4 +18,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 143.762593
+ℹ duration_ms 140.010242

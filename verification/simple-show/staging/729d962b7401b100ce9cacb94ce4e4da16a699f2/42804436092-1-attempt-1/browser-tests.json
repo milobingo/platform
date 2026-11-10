@@ -1,0 +1,1253 @@
+{
+  "config": {
+    "argv": [
+      "/home/codex/.nvm/versions/node/v24.18.0/bin/node",
+      "/home/codex/repos/milobingo/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/home/codex/repos/milobingo/playwright.config.mjs",
+      "--output",
+      "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results"
+    ],
+    "configFile": "/home/codex/repos/milobingo/playwright.config.mjs",
+    "rootDir": "/home/codex/repos/milobingo/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "snapshotDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "baseURL": "https://milo-staging.dgwebservices.nl",
+          "headless": true,
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "verification/browser-tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "broadcast-preparation.spec.mjs",
+      "file": "broadcast-preparation.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 100000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14960,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:08.179Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c2e3903c35c7b71120e0-b9dd0abe3b118dec8592",
+          "file": "broadcast-preparation.spec.mjs",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "autoplay failure keeps the activation overlay until a real programme tone finishes after explicit interaction; simulated scoped API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3042,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:08.161Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c2e3903c35c7b71120e0-0cba40282df794facc79",
+          "file": "broadcast-preparation.spec.mjs",
+          "line": 123,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "family.spec.mjs",
+      "file": "family.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "family demo 320px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3608,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:11.289Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-7b4895033c819a4f6b92",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 390px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3290,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:14.910Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-5e68cd79428826fb8409",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 430px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3191,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:18.211Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-bcf849f6d61573226f9d",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 768px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3398,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:21.412Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-9035ce2a45628c29d5f5",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "family demo 1280px: five tabs, fixed player, balls and no provider access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3664,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:23.236Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-e1b41764246f14e8b50e",
+          "file": "family.spec.mjs",
+          "line": 5,
+          "column": 3
+        },
+        {
+          "title": "real API rejects forged Sites identity and demo flag",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 145,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:24.821Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-557c6dbe208c8fdf6c35",
+          "file": "family.spec.mjs",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "production cannot create a local regie session",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 164,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:24.972Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-d8c7042c85de2eaa68d9",
+          "file": "family.spec.mjs",
+          "line": 46,
+          "column": 1
+        },
+        {
+          "title": "ordinary family entry uses real sign-in, legacy link preserves selected show",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 776,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:25.142Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4c4418e533edc25dbeff-c92a64e3be0c8f5c400a",
+          "file": "family.spec.mjs",
+          "line": 54,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "handoff-v6.spec.mjs",
+      "file": "handoff-v6.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 29030,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:25.935Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-c9e4c46bb44e9205a341",
+          "file": "handoff-v6.spec.mjs",
+          "line": 113,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30020,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:26.920Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-ef2022479e99c3b4934d",
+          "file": "handoff-v6.spec.mjs",
+          "line": 113,
+          "column": 2
+        },
+        {
+          "title": "handoff v6 short-screen workspace and family modals; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2523,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:54.974Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-8fa3f98422c860e1f4bc",
+          "file": "handoff-v6.spec.mjs",
+          "line": 165,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 family orders, retained broadcast and whisper dialog; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2876,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:56.951Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-33024b4c5dfcadf3e5b3",
+          "file": "handoff-v6.spec.mjs",
+          "line": 186,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 Vlampie retains all seven console modules and its manual draw controls; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 4333,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:57.504Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-dceabb3c0eb7bee3e8dd",
+          "file": "handoff-v6.spec.mjs",
+          "line": 211,
+          "column": 1
+        },
+        {
+          "title": "handoff v6 actual tour transport, new magic reveal and order detail; simulated transport",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6037,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:08:59.838Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de2d393c4d456efccc7d-1c4a7e6e6770bbf9184e",
+          "file": "handoff-v6.spec.mjs",
+          "line": 219,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "handoff-v70.spec.mjs",
+      "file": "handoff-v70.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "v70 family demo 320px: real BINGO from Books, retained show and one shared countdown",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2685,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:01.859Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-b2b5ea1de05820f8b2ab",
+          "file": "handoff-v70.spec.mjs",
+          "line": 31,
+          "column": 31
+        },
+        {
+          "title": "v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2970,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:04.554Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-86e958c68bac71287468",
+          "file": "handoff-v70.spec.mjs",
+          "line": 31,
+          "column": 31
+        },
+        {
+          "title": "v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2825,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:05.890Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-e9630c30d7057f51607a",
+          "file": "handoff-v70.spec.mjs",
+          "line": 54,
+          "column": 1
+        },
+        {
+          "title": "v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2148,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:07.531Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-a2a586ef98d69ab1767a",
+          "file": "handoff-v70.spec.mjs",
+          "line": 92,
+          "column": 1
+        },
+        {
+          "title": "v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2859,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:08.724Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-111760d7de1d62210a57",
+          "file": "handoff-v70.spec.mjs",
+          "line": 105,
+          "column": 1
+        },
+        {
+          "title": "v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 228,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:09.686Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "11a188fafcda1aca29ff-d7627e25bae69fbf5ead",
+          "file": "handoff-v70.spec.mjs",
+          "line": 119,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "obs-source.spec.mjs",
+      "file": "obs-source.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "saved-show OBS link management is explicit and revocable 390px; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1473,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:09.927Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e95cb9e000690c6f53c-293b8138543825a32e60",
+          "file": "obs-source.spec.mjs",
+          "line": 55,
+          "column": 31
+        },
+        {
+          "title": "saved-show OBS link management is explicit and revocable 1366px; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1848,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:11.406Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e95cb9e000690c6f53c-0b39c67bfba5562983e7",
+          "file": "obs-source.spec.mjs",
+          "line": 55,
+          "column": 31
+        },
+        {
+          "title": "OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3613,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:11.597Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e95cb9e000690c6f53c-f2e326f7e8f6c14df2f5",
+          "file": "obs-source.spec.mjs",
+          "line": 74,
+          "column": 1
+        },
+        {
+          "title": "invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 663,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:13.262Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e95cb9e000690c6f53c-7fc40e1bba6b1b10ebf5",
+          "file": "obs-source.spec.mjs",
+          "line": 103,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "regie-settings.spec.mjs",
+      "file": "regie-settings.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "saved-show mail recovery and editable redacted provider settings 390px; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 4258,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:13.940Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "eae7a3fe6dcba330b320-67e9a76ddfed899130a3",
+          "file": "regie-settings.spec.mjs",
+          "line": 93,
+          "column": 2
+        },
+        {
+          "title": "saved-show mail recovery and editable redacted provider settings 1366px; simulated API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4687,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:15.226Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "eae7a3fe6dcba330b320-5a86b53e116615784eea",
+          "file": "regie-settings.spec.mjs",
+          "line": 93,
+          "column": 2
+        }
+      ]
+    },
+    {
+      "title": "start-rules.spec.mjs",
+      "file": "start-rules.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 108,
+                  "error": {
+                    "message": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'",
+                    "stack": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'\n    at applySqliteMigrations (/home/codex/repos/milobingo/server/node-storage.js:36:22)\n    at createSqliteDatabase (/home/codex/repos/milobingo/server/node-storage.js:66:3)\n    at savedShow (/home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:17:92)\n    at /home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:77:17",
+                    "location": {
+                      "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                      "column": 22,
+                      "line": 36
+                    },
+                    "snippet": "   at ../../server/node-storage.js:36\n\n  34 | function applySqliteMigrations(db) {\n  35 |   db.exec('CREATE TABLE IF NOT EXISTS __milo_migrations (name TEXT PRIMARY KEY, checksum TEXT NOT NULL)');\n> 36 |   const migrations = readdirSync(join(projectRoot, 'drizzle')).filter(name => name.endsWith('.sql')).sort();\n     |                      ^\n  37 |   for (const name of migrations) {\n  38 |     const sql = readFileSync(join(projectRoot, 'drizzle', name), 'utf8');\n  39 |     const hash = checksum(sql);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                        "column": 22,
+                        "line": 36
+                      },
+                      "message": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'\n\n   at ../../server/node-storage.js:36\n\n  34 | function applySqliteMigrations(db) {\n  35 |   db.exec('CREATE TABLE IF NOT EXISTS __milo_migrations (name TEXT PRIMARY KEY, checksum TEXT NOT NULL)');\n> 36 |   const migrations = readdirSync(join(projectRoot, 'drizzle')).filter(name => name.endsWith('.sql')).sort();\n     |                      ^\n  37 |   for (const name of migrations) {\n  38 |     const sql = readFileSync(join(projectRoot, 'drizzle', name), 'utf8');\n  39 |     const hash = checksum(sql);\n    at applySqliteMigrations (/home/codex/repos/milobingo/server/node-storage.js:36:22)\n    at createSqliteDatabase (/home/codex/repos/milobingo/server/node-storage.js:66:3)\n    at savedShow (/home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:17:92)\n    at /home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:77:17"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:18.504Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results/start-rules-Milo-preparati-2f3b8-0px-real-isolated-Bingo-API/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results/start-rules-Milo-preparati-2f3b8-0px-real-isolated-Bingo-API/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                    "column": 22,
+                    "line": 36
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c1d1893ccee025032b3c-aed5d9c1110a19dd723e",
+          "file": "start-rules.spec.mjs",
+          "line": 75,
+          "column": 2
+        },
+        {
+          "title": "Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 141,
+                  "error": {
+                    "message": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'",
+                    "stack": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'\n    at applySqliteMigrations (/home/codex/repos/milobingo/server/node-storage.js:36:22)\n    at createSqliteDatabase (/home/codex/repos/milobingo/server/node-storage.js:66:3)\n    at savedShow (/home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:17:92)\n    at /home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:77:17",
+                    "location": {
+                      "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                      "column": 22,
+                      "line": 36
+                    },
+                    "snippet": "   at ../../server/node-storage.js:36\n\n  34 | function applySqliteMigrations(db) {\n  35 |   db.exec('CREATE TABLE IF NOT EXISTS __milo_migrations (name TEXT PRIMARY KEY, checksum TEXT NOT NULL)');\n> 36 |   const migrations = readdirSync(join(projectRoot, 'drizzle')).filter(name => name.endsWith('.sql')).sort();\n     |                      ^\n  37 |   for (const name of migrations) {\n  38 |     const sql = readFileSync(join(projectRoot, 'drizzle', name), 'utf8');\n  39 |     const hash = checksum(sql);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                        "column": 22,
+                        "line": 36
+                      },
+                      "message": "Error: ENOENT: no such file or directory, scandir '/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/drizzle'\n\n   at ../../server/node-storage.js:36\n\n  34 | function applySqliteMigrations(db) {\n  35 |   db.exec('CREATE TABLE IF NOT EXISTS __milo_migrations (name TEXT PRIMARY KEY, checksum TEXT NOT NULL)');\n> 36 |   const migrations = readdirSync(join(projectRoot, 'drizzle')).filter(name => name.endsWith('.sql')).sort();\n     |                      ^\n  37 |   for (const name of migrations) {\n  38 |     const sql = readFileSync(join(projectRoot, 'drizzle', name), 'utf8');\n  39 |     const hash = checksum(sql);\n    at applySqliteMigrations (/home/codex/repos/milobingo/server/node-storage.js:36:22)\n    at createSqliteDatabase (/home/codex/repos/milobingo/server/node-storage.js:66:3)\n    at savedShow (/home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:17:92)\n    at /home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:77:17"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-10T11:09:19.447Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results/start-rules-Milo-preparati-e6daf-6px-real-isolated-Bingo-API/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/codex/repos/milobingo/verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/test-results/start-rules-Milo-preparati-e6daf-6px-real-isolated-Bingo-API/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/codex/repos/milobingo/server/node-storage.js",
+                    "column": 22,
+                    "line": 36
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c1d1893ccee025032b3c-54459160f8e5bfae9799",
+          "file": "start-rules.spec.mjs",
+          "line": 75,
+          "column": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-10T11:08:07.337Z",
+    "duration": 72769.02500000001,
+    "expected": 28,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

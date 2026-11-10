@@ -1,0 +1,253 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-11-10T11:04:30Z",
+  "event": "workflow_dispatch",
+  "headBranch": "main",
+  "headSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "jobs": [
+    {
+      "completedAt": "2026-11-10T11:04:52Z",
+      "conclusion": "success",
+      "databaseId": 129789881013,
+      "name": "release-gate",
+      "startedAt": "2026-11-10T11:04:34Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-10T11:04:35Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-10T11:04:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:43Z",
+          "conclusion": "success",
+          "name": "Read the trusted dispatch workflow revision",
+          "number": 2,
+          "startedAt": "2026-11-10T11:04:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:49Z",
+          "conclusion": "success",
+          "name": "Use the pinned validation toolchain",
+          "number": 3,
+          "startedAt": "2026-11-10T11:04:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:50Z",
+          "conclusion": "success",
+          "name": "Require successful own main CI on the exact release SHA",
+          "number": 4,
+          "startedAt": "2026-11-10T11:04:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:50Z",
+          "conclusion": "success",
+          "name": "Post Use the pinned validation toolchain",
+          "number": 7,
+          "startedAt": "2026-11-10T11:04:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:51Z",
+          "conclusion": "success",
+          "name": "Post Read the trusted dispatch workflow revision",
+          "number": 8,
+          "startedAt": "2026-11-10T11:04:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:51Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-10T11:04:51Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/milobingo/platform/actions/runs/42804436092/job/129789881013"
+    },
+    {
+      "completedAt": "2026-11-10T11:06:56Z",
+      "conclusion": "success",
+      "databaseId": 129790043809,
+      "name": "deploy",
+      "startedAt": "2026-11-10T11:04:55Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-10T11:04:58Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-10T11:04:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:04:58Z",
+          "conclusion": "success",
+          "name": "Fail before checkout or runtime secrets when host bootstrap is absent",
+          "number": 2,
+          "startedAt": "2026-11-10T11:04:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:10Z",
+          "conclusion": "success",
+          "name": "Check out only the CI-approved release",
+          "number": 3,
+          "startedAt": "2026-11-10T11:04:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:11Z",
+          "conclusion": "success",
+          "name": "Verify checkout, rootwrapper hash, service contract and capacity",
+          "number": 4,
+          "startedAt": "2026-11-10T11:05:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:14Z",
+          "conclusion": "success",
+          "name": "Install locked dependencies without application or deployment credentials",
+          "number": 5,
+          "startedAt": "2026-11-10T11:05:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:15Z",
+          "conclusion": "success",
+          "name": "Validate all runtime names before any requested database mutation",
+          "number": 6,
+          "startedAt": "2026-11-10T11:05:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:15Z",
+          "conclusion": "skipped",
+          "name": "Apply only explicitly reviewed database changes with backup and restore proof",
+          "number": 7,
+          "startedAt": "2026-11-10T11:05:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:05:17Z",
+          "conclusion": "success",
+          "name": "Verify real mail templates and editable provider settings without writes or provider contact",
+          "number": 8,
+          "startedAt": "2026-11-10T11:05:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:06:53Z",
+          "conclusion": "success",
+          "name": "Audit ready database and deploy through the reviewed four-argument DG interface",
+          "number": 9,
+          "startedAt": "2026-11-10T11:05:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:06:53Z",
+          "conclusion": "success",
+          "name": "Post Check out only the CI-approved release",
+          "number": 18,
+          "startedAt": "2026-11-10T11:06:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:06:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-10T11:06:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/milobingo/platform/actions/runs/42804436092/job/129790043809"
+    },
+    {
+      "completedAt": "2026-11-10T11:07:22Z",
+      "conclusion": "success",
+      "databaseId": 129791022920,
+      "name": "verify-public",
+      "startedAt": "2026-11-10T11:07:00Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-10T11:07:02Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-10T11:07:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:09Z",
+          "conclusion": "success",
+          "name": "Read release-bound verification and asset checksums",
+          "number": 2,
+          "startedAt": "2026-11-10T11:07:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:14Z",
+          "conclusion": "success",
+          "name": "Use the pinned validation toolchain",
+          "number": 3,
+          "startedAt": "2026-11-10T11:07:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:19Z",
+          "conclusion": "success",
+          "name": "Verify exact public release, demo assets and anonymous access boundaries",
+          "number": 4,
+          "startedAt": "2026-11-10T11:07:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:19Z",
+          "conclusion": "success",
+          "name": "Record scoped staging evidence",
+          "number": 5,
+          "startedAt": "2026-11-10T11:07:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:19Z",
+          "conclusion": "success",
+          "name": "Post Use the pinned validation toolchain",
+          "number": 9,
+          "startedAt": "2026-11-10T11:07:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:20Z",
+          "conclusion": "success",
+          "name": "Post Read release-bound verification and asset checksums",
+          "number": 10,
+          "startedAt": "2026-11-10T11:07:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T11:07:20Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-10T11:07:20Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/milobingo/platform/actions/runs/42804436092/job/129791022920"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-10T11:07:23Z",
+  "url": "https://github.com/milobingo/platform/actions/runs/42804436092"
+}

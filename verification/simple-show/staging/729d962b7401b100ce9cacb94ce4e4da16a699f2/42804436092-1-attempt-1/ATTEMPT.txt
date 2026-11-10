@@ -1,0 +1,1 @@
+First attempt: 28 passed; two fixture setup failures because isolated evidence cwd lacked drizzle SQL. No application failure. Retained unmodified raw report/log and captures. Retry supplies source-pinned, read-only SQL to the in-memory SQLite fixture; no real staging database writes.

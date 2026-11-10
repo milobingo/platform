@@ -1,14 +1,14 @@
-✔ no viewer/backstage AI sessions; first live greeting waits for actual selected guest playback readiness (4.818123ms)
-✔ return/failure immediately silences programme and AI, stale callbacks cannot attach old audio (2.33538ms)
-✔ a delayed SDP after stop is discarded and explicitly closed instead of opening a late voice (0.727562ms)
-✔ next caller replaces active name/session and mute never feeds the AI input (4.511898ms)
-✔ demonstration and missing output activation cannot masquerade as a real connection (0.362469ms)
-✔ an untrusted free AI prize claim mutes locally and requests a held failure instead of an official announcement (1.395325ms)
-✔ a skipped return snapshot cannot retain a previous caller in the next live session (0.639209ms)
-✔ a suspended audio context immediately closes live audio and never releases the draw hold (0.584096ms)
-✔ studio mouth samples the real presenter analyser on every snapshot without waiting for a poll (0.734745ms)
-✔ starting live invalidates a scripted voice decode already in flight (1.504031ms)
-✔ a pending resume cannot resurrect scripted speech over a live caller; pause does not suspend the programme context (0.264973ms)
+✔ no viewer/backstage AI sessions; first live greeting waits for actual selected guest playback readiness (3.843185ms)
+✔ return/failure immediately silences programme and AI, stale callbacks cannot attach old audio (1.686786ms)
+✔ a delayed SDP after stop is discarded and explicitly closed instead of opening a late voice (0.588761ms)
+✔ next caller replaces active name/session and mute never feeds the AI input (0.885231ms)
+✔ demonstration and missing output activation cannot masquerade as a real connection (0.253784ms)
+✔ an untrusted free AI prize claim mutes locally and requests a held failure instead of an official announcement (1.142322ms)
+✔ a skipped return snapshot cannot retain a previous caller in the next live session (0.552367ms)
+✔ a suspended audio context immediately closes live audio and never releases the draw hold (0.494289ms)
+✔ studio mouth samples the real presenter analyser on every snapshot without waiting for a poll (0.578609ms)
+✔ starting live invalidates a scripted voice decode already in flight (1.434694ms)
+✔ a pending resume cannot resurrect scripted speech over a live caller; pause does not suspend the programme context (0.225051ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -16,4 +16,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 24.673987
+ℹ duration_ms 20.866796

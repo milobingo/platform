@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-11-10T11:05:17.477Z",
+  "workflow": "https://github.com/milobingo/platform/actions/runs/42804436092",
+  "releaseSha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+  "gate": "staging-workspace",
+  "status": "passed",
+  "templates": [
+    {
+      "brand": "milo",
+      "templateCount": 17,
+      "authTemplateReadOnly": true
+    },
+    {
+      "brand": "vlampie",
+      "templateCount": 17,
+      "authTemplateReadOnly": true
+    }
+  ],
+  "providerSettingsReadable": true,
+  "providerSettingsEditable": true,
+  "storedCredentialsReturned": false,
+  "databaseWrites": 0,
+  "objectWrites": 0,
+  "providerRequests": 0,
+  "realAccountLoginVerified": false,
+  "storageReads": [
+    {
+      "httpStatus": 400,
+      "storageStatus": "404",
+      "code": "NoSuchKey"
+    },
+    {
+      "httpStatus": 400,
+      "storageStatus": "404",
+      "code": "NoSuchKey"
+    },
+    {
+      "httpStatus": 200
+    },
+    {
+      "httpStatus": 200
+    }
+  ],
+  "releaseId": "42804436092-1"
+}

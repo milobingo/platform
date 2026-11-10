@@ -1,5 +1,5 @@
-✔ v70 local SQLite migration preserves every existing show/card/order/result and creates only the reviewed additive tables (12.279001ms)
-✔ v70 local SQLite refuses a preexisting empty addition and rolls the entire additive transaction back (8.802342ms)
+✔ v70 local SQLite migration preserves every existing show/card/order/result and creates only the reviewed additive tables (10.911147ms)
+✔ v70 local SQLite refuses a preexisting empty addition and rolls the entire additive transaction back (4.142027ms)
 ℹ tests 2
 ℹ suites 0
 ℹ pass 2
@@ -7,4 +7,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 25.95662
+ℹ duration_ms 18.704609

@@ -1,0 +1,7 @@
+{
+  "observedAt": "2026-11-10T10:53:47.582302+00:00",
+  "temporaryBrowserArtifactRemoved": true,
+  "isolatedServerStopped": true,
+  "taskOwnedWebpackDataCacheRemoved": true,
+  "scope": "Only this task temporary browser copy/cache; dependency installations and unrelated projects preserved"
+}

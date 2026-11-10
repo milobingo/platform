@@ -1,21 +1,21 @@
-✔ preparation debounce coalesces typing; a save never replaces newer input (2.072051ms)
-✔ a real failed write retains input; explicit retry sends the same preparation revision (0.575252ms)
-✔ a stale tab cannot silently adopt the new revision or overwrite another tab (0.229378ms)
-✔ switching shows invalidates the old response without dirtying the newly selected show (0.170619ms)
-✔ Start show flushes the last edit, verifies server status and freezes rules once; double clicks share one start (46.02011ms)
-✔ a failed preparation blocks the start without losing input and retries successfully (15.414042ms)
-✔ two tabs keep preparation conflicts visible and cannot both claim live control (17.620686ms)
-✔ polling accepts live server state while retaining pending preparation input (8.365319ms)
-✔ printing new booklets first flushes preparation and cannot restore an older plan over the editor (14.701852ms)
+✔ preparation debounce coalesces typing; a save never replaces newer input (1.78183ms)
+✔ a real failed write retains input; explicit retry sends the same preparation revision (0.590566ms)
+✔ a stale tab cannot silently adopt the new revision or overwrite another tab (0.226335ms)
+✔ switching shows invalidates the old response without dirtying the newly selected show (0.156477ms)
+✔ Start show flushes the last edit, verifies server status and freezes rules once; double clicks share one start (41.773934ms)
+✔ a failed preparation blocks the start without losing input and retries successfully (18.561211ms)
+✔ two tabs keep preparation conflicts visible and cannot both claim live control (20.323262ms)
+✔ polling accepts live server state while retaining pending preparation input (7.664377ms)
+✔ printing new booklets first flushes preparation and cannot restore an older plan over the editor (14.341916ms)
 ▶ Hervat regie checks the real server and restores an existing board without starting or releasing any hold
-  ✔ paused (8.670803ms)
-  ✔ window (6.999499ms)
-  ✔ result (6.528766ms)
-  ✔ call (7.161775ms)
-✔ Hervat regie checks the real server and restores an existing board without starting or releasing any hold (30.305932ms)
-✔ a reload restores an unsaved draft from this tab and leaves another production untouched (12.095843ms)
-✔ opening a running show only reads its status; the idle page cannot claim the control lease (8.745146ms)
-✔ the authoritative fifteen-second clock has no catch-up batch and starts a fresh interval after every hold (0.971453ms)
+  ✔ paused (6.961811ms)
+  ✔ window (5.666248ms)
+  ✔ result (5.708111ms)
+  ✔ call (5.400024ms)
+✔ Hervat regie checks the real server and restores an existing board without starting or releasing any hold (24.482176ms)
+✔ a reload restores an unsaved draft from this tab and leaves another production untouched (8.945607ms)
+✔ opening a running show only reads its status; the idle page cannot claim the control lease (7.098168ms)
+✔ the authoritative fifteen-second clock has no catch-up batch and starts a fresh interval after every hold (0.746192ms)
 ℹ tests 17
 ℹ suites 0
 ℹ pass 17
@@ -23,4 +23,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 162.700485
+ℹ duration_ms 151.248094

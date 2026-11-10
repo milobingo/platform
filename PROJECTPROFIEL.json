@@ -1,6 +1,6 @@
 {
   "project": "Milo & Friends BingoShow",
-  "updated_at": "2026-11-09",
+  "updated_at": "2026-11-10",
   "authorized_scope": "local_build_repository_sync_staging_and_production_deployment",
   "source": {
     "sites_project_id": "appgprj_6ac2dd7f3d6c819190b17cc04ae8daad",
@@ -87,19 +87,19 @@
     ],
     "staging_release": {
       "version": 1,
-      "sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
-      "id": "42713543591-1",
+      "sha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+      "id": "42804436092-1",
       "configVersion": "staging-2026-11-05-v1",
       "port": 4173,
       "artifactSha256": null,
-      "artifactHashNote": "Native wrapper/helper pins and exact main CI are verified; 94 public modules/assets exactly match this release. No new privileged host artifact inventory claimed.",
+      "artifactHashNote": "Native wrapper/helper pins and exact main CI verified; 95 source-identical public assets. No new privileged host inventory claimed.",
       "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
       "toolchain": {
         "node": "24.18.0",
         "pnpm": "11.25.0"
       },
-      "path": "/srv/sites/milobingo-staging/releases/a8bccabba771-42713543591-1",
-      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42713543591"
+      "path": "/srv/sites/milobingo-staging/releases/729d962b7401-42804436092-1",
+      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42804436092"
     },
     "production_release": null,
     "github_repository_url": "https://github.com/milobingo/platform",
@@ -107,27 +107,27 @@
     "git_remote_url": "https://github.com/milobingo/platform.git",
     "staging_status": {
       "deployed": true,
-      "observed_at": "2026-11-09T22:41:46.080Z",
-      "source_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
-      "ci": "https://github.com/milobingo/platform/actions/runs/42711956992",
+      "observed_at": "2026-11-10T11:12:47.300Z",
+      "source_sha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+      "ci": "https://github.com/milobingo/platform/actions/runs/42802522209",
       "ci_result": "success",
-      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42713543591",
+      "deploy_attempt": "https://github.com/milobingo/platform/actions/runs/42804436092",
       "deploy_result": "success",
       "database_mutated": false,
       "database_upgrade": "https://github.com/milobingo/platform/actions/runs/42627576733",
-      "database_readonly_audit": "passed; existing 23 RLS tables, verified limited TLS runtime and private bucket; no new DDL",
+      "database_readonly_audit": "passed; existing 23 RLS tables and verified limited TLS runtime; no DDL, schema downgrade or runtime role changes",
       "acceptance": {
-        "public_release_assets_and_access_boundaries": "passed; 94 public modules/assets exact; anonymous, forged identity and invalid synthetic OBS capability rejected; local login disabled",
+        "public_release_assets_and_access_boundaries": "passed; 95 source-identical public assets; anonymous/forged identity/scoped capability boundaries tested; local login disabled",
         "browser_tests": {
-          "passed": 27,
+          "passed": 30,
           "failed": 0,
           "skipped": 0,
           "flaky": 0,
-          "regie_backend": "simulated Auth, regie/family API and OBS capability transport; actual staging HTML/CSS/canvas/assets and unauthenticated HTTP boundaries",
-          "duration_seconds": 61.7,
-          "source_sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
-          "release_id": "42713543591-1",
-          "manual_screenshots_passed": 7,
+          "regie_backend": "simulated Auth, regie/family/OBS API transport; actual staging HTML/CSS/canvas/assets, Web Audio, recorded encoded audio/video playback and unauthenticated boundaries",
+          "duration_seconds": 79.1,
+          "source_sha": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+          "release_id": "42804436092-1",
+          "manual_screenshots_passed": 9,
           "real_obs_installation_verified": false,
           "actual_user_rules_publication": false
         },
@@ -163,48 +163,133 @@
           "actual_local_postgres_lookup_and_cas_verified": true,
           "real_obs_installation_or_audio_acceptance": false,
           "real_account_link_created": false,
-          "evidence": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/release-acceptance.json"
+          "evidence": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/release-acceptance.json",
+          "prior_specialist_test_evidence": {
+            "ci": "verification/obs-source/main-ci.json",
+            "ci_summary": "verification/obs-source/main-ci-summary.json",
+            "deploy": "verification/obs-source/staging-deploy.json",
+            "inventory": "verification/v70/staging-inventory.json",
+            "upgrade": "verification/v70/staging-upgrade.json",
+            "restore": "verification/v70/staging-restore.json",
+            "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
+            "public": "verification/obs-source/public.json",
+            "public_assets": "verification/obs-source/staging-public.json",
+            "public_routes": "verification/obs-source/staging-public.json",
+            "runtime_role": "verification/v70/staging-runtime-role.json",
+            "browser": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/release-acceptance.json",
+            "capacity_first": "verification/v70/staging-capacity-first.json",
+            "capacity_180": "verification/v70/queue-repair/staging-capacity-180.json",
+            "runtime_role_current_release": "verification/obs-source/runtime-database-role.json",
+            "capacity_30": "verification/v70/queue-repair/staging-capacity-30.json",
+            "local_release": "verification/obs-source/local-acceptance.json",
+            "first_v70_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-EERSTE-V70.md",
+            "workspace_settings": "verification/obs-source/staging-workspace.json",
+            "manual_visual_review": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/manual-visual-review.json",
+            "previous_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-REGIESLEUTELS.md",
+            "deployment_gates": "verification/obs-source/staging-gates.json",
+            "local_full_suite": "verification/obs-source/local-tests.json",
+            "obs_backend": "verification/obs-source/local-testlogs/check-obs-access.log",
+            "obs_client": "verification/obs-source/local-testlogs/check-obs-source-ui.log",
+            "previous_staging_status": "verification/obs-source/previous-staging-status.json"
+          }
         },
         "rules_start_action": {
           "available": true,
-          "requires_explicit_organizer_publication": true,
-          "marks_ready_only_after_current_server_publication": true,
-          "actual_user_rules_published": false
+          "milo_requires_explicit_organizer_publication": false,
+          "milo_server_finalizes_rules_atomically_on_start": true,
+          "milo_rules_visible_before_participation": true,
+          "existing_participant_rules_remain_locked": true,
+          "vlampie_requires_explicit_organizer_publication": true,
+          "actual_user_rules_published": false,
+          "evidence": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/release-acceptance.json"
+        },
+        "simple_show_preparation": {
+          "steps": [
+            "Voorbereiden",
+            "Uitzending testen",
+            "Start show"
+          ],
+          "standard_profile_for_new_milo_shows": "milo-standard-v1",
+          "round_goal_counts": [
+            3,
+            3,
+            3,
+            1
+          ],
+          "draw_interval_seconds": 15,
+          "second_goal_requires_top_and_bottom_rows": true,
+          "draft_autosave_and_conflict_protection": true,
+          "start_flushes_latest_draft": true,
+          "resume_preserves_board_claims_and_call_holds": true,
+          "vlampie_environment_preserved": true,
+          "standard_show_suite_tests_passed": 14,
+          "actual_local_postgres_tests_passed": 1,
+          "full_local_suite_postgres_configured": false,
+          "real_account_or_provider_acceptance": false,
+          "evidence": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/release-acceptance.json"
+        },
+        "broadcast_preparation": {
+          "connection_audio_activation_and_obs_check_separate": true,
+          "programme_mix_test_recorded": true,
+          "recorded_width": 1920,
+          "recorded_height": 1080,
+          "recorded_playback_seconds": 3.633,
+          "decoded_audio_channels": 2,
+          "decoded_audio_rms": 0.1152965725515653,
+          "recorded_playback_rms": 0.11526954243567586,
+          "private_microphone_requests": 0,
+          "real_obs_installation_verified": false,
+          "recording_evidence": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/broadcast-preparation/broadcast-two-page-record-reconnect.json",
+          "recording": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/broadcast-preparation/browser-programme-test.webm",
+          "recording_sha256": "7905267cae4631896de22725aca309612a37e35c0f1bc5366f2e160a6cd83aae"
         }
       },
       "historical_bootstrap_backup_restore_recovery_and_access_cleanup": "verification/staging-status-2026-11-05.json",
       "evidence": {
-        "ci": "verification/obs-source/main-ci.json",
-        "ci_summary": "verification/obs-source/main-ci-summary.json",
-        "deploy": "verification/obs-source/staging-deploy.json",
+        "ci": "verification/simple-show/main-ci.json",
+        "ci_summary": "verification/simple-show/main-ci-summary.json",
+        "deploy": "verification/simple-show/staging-deploy.json",
         "inventory": "verification/v70/staging-inventory.json",
         "upgrade": "verification/v70/staging-upgrade.json",
         "restore": "verification/v70/staging-restore.json",
         "restore_cleanup": "verification/v70/staging-restore-cleanup.json",
-        "public": "verification/obs-source/public.json",
-        "public_assets": "verification/obs-source/staging-public.json",
-        "public_routes": "verification/obs-source/staging-public.json",
+        "public": "verification/simple-show/public.json",
+        "public_assets": "verification/simple-show/staging-public.json",
+        "public_routes": "verification/simple-show/staging-public.json",
         "runtime_role": "verification/v70/staging-runtime-role.json",
-        "browser": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/release-acceptance.json",
+        "browser": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/release-acceptance.json",
         "capacity_first": "verification/v70/staging-capacity-first.json",
         "capacity_180": "verification/v70/queue-repair/staging-capacity-180.json",
-        "runtime_role_current_release": "verification/obs-source/runtime-database-role.json",
+        "runtime_role_current_release": "verification/simple-show/runtime-database-role.json",
         "capacity_30": "verification/v70/queue-repair/staging-capacity-30.json",
-        "local_release": "verification/obs-source/local-acceptance.json",
+        "local_release": "verification/simple-show/local-acceptance.json",
         "first_v70_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-EERSTE-V70.md",
-        "workspace_settings": "verification/obs-source/staging-workspace.json",
-        "manual_visual_review": "verification/obs-source/staging/a8bccabba771b6d2ada33e946d2b2d148bf03b76/42713543591-1/manual-visual-review.json",
-        "previous_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-REGIESLEUTELS.md",
-        "deployment_gates": "verification/obs-source/staging-gates.json",
-        "local_full_suite": "verification/obs-source/local-tests.json",
-        "obs_backend": "verification/obs-source/local-testlogs/check-obs-access.log",
-        "obs_client": "verification/obs-source/local-testlogs/check-obs-source-ui.log",
-        "previous_staging_status": "verification/obs-source/previous-staging-status.json"
+        "workspace_settings": "verification/simple-show/staging-workspace.json",
+        "manual_visual_review": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/manual-visual-review.json",
+        "previous_staging_report": "docs/STAGING-RESULTAAT-2026-11-09-OBS.md",
+        "deployment_gates": "verification/simple-show/staging-gates.json",
+        "local_full_suite": "verification/simple-show/local-tests.json",
+        "obs_backend": "verification/simple-show/local-testlogs/check-obs-access.log",
+        "obs_client": "verification/simple-show/local-testlogs/check-obs-source-ui.log",
+        "previous_staging_status": "verification/simple-show/previous-staging-status.json",
+        "local_browser": "verification/simple-show/local-browser-tests.json",
+        "standard_show_postgres": "verification/simple-show/standard-show-postgres.json",
+        "postgres_cleanup": "verification/simple-show/postgres-fixture-cleanup.json",
+        "programme_audio_recording": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/broadcast-preparation/browser-programme-test.webm",
+        "programme_audio_recording_review": "verification/simple-show/staging/729d962b7401b100ce9cacb94ce4e4da16a699f2/42804436092-1/broadcast-preparation/broadcast-two-page-record-reconnect.json"
       },
       "result_document": "docs/STAGING-RESULTAAT.md",
       "database_schema_tables": 23,
       "database_upgrade_applied_separately": true,
-      "local_postgres_fixture_cleanup": "verification/obs-source/local-fixture-cleanup.json"
+      "local_postgres_fixture_cleanup": "verification/simple-show/postgres-fixture-cleanup.json",
+      "rollback_compatibility": {
+        "requires_native_encrypted_regie_settings_and_obs_capabilities": true,
+        "requires_standard_profile_draw_clock_and_preparation_revision_cas": true,
+        "requires_automatic_milo_rules_and_existing_participant_locks": true,
+        "old_v6_or_a8b_app_is_not_a_safe_rollback_for_new_standard_shows": true,
+        "preserve_existing_shows_cards_draws_claims_results_and_history": true,
+        "recovery": "compatible forward correction; no automatic downgrade, restore, redraw or history deletion"
+      }
     },
     "production_status": {
       "authorized": true,
@@ -215,19 +300,19 @@
     },
     "previous_staging_release": {
       "version": 1,
-      "sha": "a2723018022a96849dcc769cdc21aac3864ef659",
-      "id": "42704066094-1",
+      "sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+      "id": "42713543591-1",
       "configVersion": "staging-2026-11-05-v1",
       "port": 4173,
       "artifactSha256": null,
-      "artifactHashNote": "Native wrapper/helper pins and CI source are verified; 93 public modules/assets exactly match this release. No new privileged host inventory claimed.",
+      "artifactHashNote": "Native wrapper/helper pins and exact main CI are verified; 94 public modules/assets exactly match this release. No new privileged host artifact inventory claimed.",
       "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
       "toolchain": {
         "node": "24.18.0",
         "pnpm": "11.25.0"
       },
-      "path": "/srv/sites/milobingo-staging/releases/a2723018022a-42704066094-1",
-      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42704066094"
+      "path": "/srv/sites/milobingo-staging/releases/a8bccabba771-42713543591-1",
+      "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42713543591"
     },
     "staging_release_history": [
       {
@@ -293,6 +378,22 @@
         },
         "path": "/srv/sites/milobingo-staging/releases/a2723018022a-42704066094-1",
         "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42704066094"
+      },
+      {
+        "version": 1,
+        "sha": "a8bccabba771b6d2ada33e946d2b2d148bf03b76",
+        "id": "42713543591-1",
+        "configVersion": "staging-2026-11-05-v1",
+        "port": 4173,
+        "artifactSha256": null,
+        "artifactHashNote": "Native wrapper/helper pins and exact main CI are verified; 94 public modules/assets exactly match this release. No new privileged host artifact inventory claimed.",
+        "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+        "toolchain": {
+          "node": "24.18.0",
+          "pnpm": "11.25.0"
+        },
+        "path": "/srv/sites/milobingo-staging/releases/a8bccabba771-42713543591-1",
+        "deploy_workflow": "https://github.com/milobingo/platform/actions/runs/42713543591"
       }
     ]
   },
@@ -368,6 +469,13 @@
       "access": "separate show-bound revocable seven-day capability; only hash and public locator in existing studio_outputs document",
       "new_accounts_variables_secrets_or_schema": false,
       "instructions": "docs/OBS-UITZENDING.md"
+    },
+    "show_preparation": {
+      "milo": "Voorbereiden → Uitzending testen → Start show; draft autosave with preparationRevision CAS; server finalizes current rules on start",
+      "standard_new_shows": "milo-standard-v1; goals 3/3/3/1; top AND bottom rows; server interval 15 seconds without catch-up",
+      "vlampie": "separate existing environment; explicit rule-publication contract retained",
+      "new_accounts_variables_secrets_or_schema": false,
+      "instructions": "docs/SIMPELE-SHOW-VOORBEREIDING.md"
     }
   },
   "notes": [
@@ -378,6 +486,6 @@
     "Credentials use protected staging workflow inputs and root-only release env files; temporary private bootstrap duplicates were removed after verification. Values are never logged or committed.",
     "The user explicitly authorized production deployment on 2026-11-06. Production target fields remain unresolved until the real host, URL and isolated backend are supplied.",
     "v70 integrated through reviewed pull requests into main and deployed to staging at the exact target.staging_release.sha. Handoff scope excludes real email/payment/provider changes or new public admission; remaining practical gates are recorded separately.",
-    "OBS browser-source access and actionable rules publication are integrated on the exact target.staging_release.sha. Actual OBS hardware/audio, real account acceptance and public rules publication remain separate; no new migration or runtime secret."
+    "Current Milo staging uses draft autosave, automatic server rules finalization, the 3/3/3/1 standard profile and a 15-second official clock; Vlampie retains its separate environment and manual rule-publication contract. Actual encoded programme audio/video was recorded and played back in Chromium; real OBS, account and provider acceptance remain open. Historic capacity and mail/production restrictions are unchanged."
   ]
 }

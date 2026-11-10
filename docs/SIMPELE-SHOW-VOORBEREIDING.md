@@ -17,7 +17,7 @@ Dat zijn tien prijsstappen. Bij **bovenste én onderste rij** moeten alle tien g
 
 Bestaande draaiboeken en lopende shows worden niet automatisch vervangen. Alleen bij een afwijkend, bewerkbaar Milo-concept verschijnt **Standaardregels laden**. Deze bewuste actie bewaart bestaande presentatieonderdelen en prijzen waar die bij de ronde horen. Regels die al aan deelnemers of bestellingen zijn gekoppeld blijven beschermd.
 
-Wijzigingen in het draaiboek worden automatisch opgeslagen. **Opslaan…** en **Opgeslagen** tonen de voortgang. Bij **Niet opgeslagen — Opnieuw proberen** blijft de invoer staan; controleer de verbinding en probeer opnieuw. Een tijdelijke kopie in dezelfde browsertab helpt de invoer na herladen terug te zetten. Een andere tab kan jouw voorbereiding niet stil overschrijven: bij een versieconflict vergelijk je eerst de opgeslagen versie. **Mijn wijzigingen vervangen** vraagt een bewuste keuze; kopieer eerst tekst die je wilt bewaren.
+Wijzigingen in het draaiboek worden automatisch opgeslagen. **Opslaan…** en **Opgeslagen** tonen de voortgang. Bij **Niet opgeslagen — Opnieuw proberen** blijft de invoer staan; controleer de verbinding en probeer opnieuw. Een tijdelijke kopie in dezelfde browsertab helpt de invoer na herladen terug te zetten. Een andere tab kan jouw voorbereiding niet stil overschrijven: bij een versieconflict vergelijk je eerst de opgeslagen versie. **Mijn wijzigingen vervangen** vraagt een bewuste keuze; kopieer eerst tekst die je wilt bewaren. Is de show intussen in een andere tab gestart, dan blijft jouw invoer behouden. Neem de opgeslagen versie pas na bevestiging over en kies daarna **Hervat regie**; bestaande meldingen en belblokkades blijven staan.
 
 ## Uitzending testen
 
