@@ -77,6 +77,37 @@ async function inViewport(page,locator){
  expect(box.x+box.width).toBeLessThanOrEqual(viewport.width+1);
  expect(box.y+box.height).toBeLessThanOrEqual(viewport.height+1);
 }
+async function revealLiveAdvanced(main){
+ const advanced=main.locator('.mf-live-advanced');
+ for(let index=0;index<await advanced.count();index++){
+  const details=advanced.nth(index);if(await details.getAttribute('open')===null)await details.locator(':scope>summary').click();
+  await expect(details).toHaveAttribute('open','');
+ }
+}
+async function inspectLiveModules(page,main,width,modules){
+ const simple=await main.locator('.mf-live-essentials').count()>0;
+ if(simple){
+  await expect(main.locator('.mf-live-bingo').getByRole('heading',{name:'Bingo regie',exact:true})).toBeVisible();
+  await expect(main.locator('.mf-live-bingo').getByRole('heading',{name:'Bingo & controle',exact:true})).toBeVisible();
+  await expect(main.locator('.mf-live-advanced')).toHaveCount(2);
+  await expect(main.locator('.mf-live-advanced[open]')).toHaveCount(0);
+  await expect(main.getByRole('timer',{name:'Volgende officiële bal'})).toBeVisible();
+  await revealLiveAdvanced(main);
+ }
+ const take=main.getByRole('button',{name:'TAKE',exact:true});await take.scrollIntoViewIfNeeded();await inViewport(page,take);
+ const speak=main.getByRole('button',{name:'Laat spreken',exact:true}).first();await speak.scrollIntoViewIfNeeded();await inViewport(page,speak);
+ if(simple)await expect(main.locator('.rd-transport').getByText('Automatische trekking · 15 seconden per bal',{exact:true})).toBeVisible();
+ else {const draw=main.getByRole('button',{name:'Volgende bal',exact:false}).first();await draw.scrollIntoViewIfNeeded();await inViewport(page,draw);}
+ const gestures=main.locator('.rd-quick-gestures>button');await expect(gestures).toHaveCount(4);
+ for(let index=0;index<4;index++){await gestures.nth(index).scrollIntoViewIfNeeded();await inViewport(page,gestures.nth(index));expect(await gestures.nth(index).evaluate(node=>node.scrollWidth-node.clientWidth)).toBeLessThanOrEqual(1);}
+ const controls=main.locator('[data-module-id]'),expected=simple?6:7;await expect(controls).toHaveCount(expected);
+ for(let index=0;index<expected;index++){
+  const control=controls.nth(index),moduleId=await control.getAttribute('data-module-id');
+  if(simple)expect(moduleId).not.toBe('bingo');
+  if(width<1100)await main.getByRole('combobox',{name:'Mobiel werkpaneel'}).selectOption(moduleId);else await control.click();
+  const panel=main.locator(`[data-panel-id="${moduleId}"]`);await expect(panel).toBeVisible();await panel.scrollIntoViewIfNeeded();modules.push(moduleId);await noOverflow(page);
+ }
+}
 
 for(const width of [390,1366]){
  test(`handoff v6 actual browser ${width}px: routes, nested tabs and controls; simulated transport`,async({page},testInfo)=>{
@@ -90,16 +121,7 @@ for(const width of [390,1366]){
   for(const id of routes){
    await openRoute(page,id);visited.push(id);
    if(id==='live'){
-    await inViewport(page,main.getByRole('button',{name:'TAKE',exact:true}));
-    await inViewport(page,main.getByRole('button',{name:'Laat spreken',exact:true}).first());
-    await inViewport(page,main.getByRole('button',{name:'Volgende bal',exact:false}).first());
-    const gestures=main.locator('.rd-quick-gestures>button');await expect(gestures).toHaveCount(4);
-    for(let index=0;index<4;index++){await inViewport(page,gestures.nth(index));expect(await gestures.nth(index).evaluate(node=>node.scrollWidth-node.clientWidth)).toBeLessThanOrEqual(1);}
-    const controls=main.locator('[data-module-id]');await expect(controls).toHaveCount(7);
-    for(let index=0;index<7;index++){
-     const control=controls.nth(index),moduleId=await control.getAttribute('data-module-id');
-     if(width<1100)await main.getByRole('combobox',{name:'Mobiel werkpaneel'}).selectOption(moduleId);else await control.click();await expect(main.locator(`[data-panel-id="${moduleId}"]`)).toBeVisible();modules.push(moduleId);await noOverflow(page);
-    }
+    await inspectLiveModules(page,main,width,modules);
     await screenshot(page,`regie-${width}`);
    }
    if(id==='characters')await expect(main.locator('a[href^="#/characters/"]')).toHaveCount(12);
@@ -175,6 +197,7 @@ test('handoff v6 family orders, retained broadcast and whisper dialog; simulated
   if(name==='Bingobladen bestellen')await screenshot(page,'family-order-phone');
  }
  await page.goto('/#/live');await expect(page.locator('main#mf-main')).toBeVisible();
+ await revealLiveAdvanced(page.locator('main#mf-main'));
  await page.getByRole('button',{name:/^Fluister naar /}).first().click();
  const whisper=page.getByRole('dialog');await expect(whisper).toBeVisible();
  await whisper.locator('textarea').fill('Bouw op een vrolijke manier wat spanning op, zonder een uitslag te verzinnen.');
@@ -182,6 +205,14 @@ test('handoff v6 family orders, retained broadcast and whisper dialog; simulated
  await whisper.getByRole('button',{name:'Fluister in',exact:true}).click();
  await expect(whisper.getByText(/Gesimuleerd|Simulatie/i).first()).toBeVisible();
  await noOverflow(page);await screenshot(page,'whisper-simulated-proposal-phone');
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
+});
+
+test('handoff v6 Vlampie retains all seven console modules and its manual draw controls; simulated transport',async({page},testInfo)=>{
+ const proof=await simulatedTransport(page,testInfo);await page.setViewportSize({width:1366,height:720});await page.emulateMedia({reducedMotion:'reduce'});
+ await page.addInitScript(()=>localStorage.setItem('mf-production','vlampie'));
+ await page.goto('/#/live');const main=page.locator('main#mf-main');await expect(main).toBeVisible();await expect(page.locator('body')).toHaveAttribute('data-brand','vlampie');await expect(main.locator('.mf-live-essentials')).toHaveCount(0);
+ const modules=[];await inspectLiveModules(page,main,1366,modules);expect(modules).toHaveLength(7);expect(modules).toContain('bingo');await noOverflow(page);
  expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.writes).toEqual([]);expect(proof.unexpected).toEqual([]);
 });
 

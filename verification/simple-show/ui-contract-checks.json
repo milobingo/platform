@@ -1,0 +1,40 @@
+{
+  "recordedAt": "2026-11-10T10:29:01.830899+00:00",
+  "scope": "Four updated legacy UI contract checks after the preparation/live layout change; source application unchanged by this follow-up",
+  "actualBrowserRendering": false,
+  "lightweightDOM": true,
+  "actualProviderAcceptance": false,
+  "checks": [
+    {
+      "path": "scripts/check-regie-workspace.mjs",
+      "exitCode": 0,
+      "sha256": "5afc052fbdda213ba2ea8a40bf8370c6bad35303e72fa318c817f5f84e80ea53"
+    },
+    {
+      "path": "scripts/check-workspace-navigation.mjs",
+      "exitCode": 0,
+      "sha256": "39e93a14514fa41b1d7bfb73842f86ba97216339ceabf58631a1fa08a1474e1d"
+    },
+    {
+      "path": "scripts/check-character-navigation.mjs",
+      "exitCode": 0,
+      "sha256": "efb19d5cfa7b100e3b30ad791bc32223820ec18511c9e7f59a2f2c30c1000e23"
+    },
+    {
+      "path": "scripts/check-broadcast-shell.mjs",
+      "exitCode": 0,
+      "sha256": "a11e759e1f6a74c63b3fd4ef2c3015c7a9a0e6ff44ce47b5f1939fa3fafbf027"
+    }
+  ],
+  "sourceToolOutputs": [
+    "36e184",
+    "c6e0a4",
+    "ac5b62"
+  ],
+  "characterNavigationTests": 4,
+  "characterNavigationPassed": 4,
+  "workspaceMainRoutes": 13,
+  "workspaceNestedTabs": 33,
+  "miloAdvancedModules": 6,
+  "vlampieLegacyModules": 7
+}

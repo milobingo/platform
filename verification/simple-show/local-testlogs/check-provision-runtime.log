@@ -1,0 +1,13 @@
+✔ runtime proof binds the newest exact migration while preserving known earlier backup/release identities (5.98454ms)
+✔ derived runtime credentials preserve target, remove TLS overrides and use an ASCII SCRAM verifier (3.917228ms)
+✔ runtime provisioning rejects stale, mismatched, modified and unsafe backup proof before opening a database (37.207974ms)
+﹣ real PostgreSQL accepts the generated SCRAM login, enforces backend-only rights and refuses account reuse (0.215366ms) # SKIP
+✔ database-only workflows stay manual, use exact CI and keep source admin credentials out of app activation (1.176484ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 55.151749

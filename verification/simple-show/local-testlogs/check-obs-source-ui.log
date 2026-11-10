@@ -1,0 +1,19 @@
+✔ OBS capability is fragment-only and attaches only to the dedicated same-origin output API scope (28.977168ms)
+✔ ordinary regie/player transport remains unchanged and cannot read an OBS token from another route (0.405715ms)
+✔ scoped denial and network loss signal immediate silence; deliberate fetch cancellation does not (1.21367ms)
+✔ output live-call polling and pagehide keepalive use the scoped capability transport (6.080337ms)
+✔ OBS output never opens the unprojected BroadcastChannel and fails closed before audio activation (1.98668ms)
+✔ activation cannot heartbeat ready with a suspended context or failed show-audio unlock (1.607617ms)
+✔ a valid producer snapshot retries transient OBS activation while autoplay-blocked audio keeps its explicit fallback (9.147424ms)
+✔ starting the show-bound producer is explicit, opens no popup and is unavailable for unsaved edits (201.928629ms)
+✔ OBS management is lazy; initial create and revoke are explicit, scoped and keep the raw link out of status/storage (309.576876ms)
+✔ an existing link for another show requires explicit replacement and a stale status error never auto-retries the mutation (242.767607ms)
+✔ show changes discard a delayed capability and reset lazy management; rehearsal cannot create one (263.874257ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1593.570238

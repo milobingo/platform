@@ -84,6 +84,7 @@ try{
   assert(main().textContent.trim().length>60,'Workspace has no usable content: '+id);
   assert.equal(h.document.querySelector('nav[aria-label="Hoofdnavigatie"] a[aria-current="page"]')?.getAttribute('href'),'#/'+id);
   assert(!h.body().includes('De studio kon niet starten.'),'Workspace crashed: '+id);
+  if(id==='overview'){const steps=main().querySelector('nav[aria-label="Show voorbereiden"]');assert(steps);assert.deepEqual([...steps.querySelectorAll('button')].map(button=>button.textContent.replace(/^\d/,'')),['Voorbereiden','Uitzending testen','Start show']);assert.equal(main().querySelectorAll('.mf-standard-rounds>section>ol>li').length,10);}
   if(id==='shows'){expect('input');assert(buttons().some(b=>b.textContent.includes('Nieuwe show')));}
   if(id==='script'){
    const labels=['Draaiboek','Cast & stemmen','Rondes & patronen','Prijzen','Startcheck'];
@@ -98,8 +99,9 @@ try{
   if(id==='live'){
    expect('[aria-label="Programmonitor"]');expect('[aria-label="Previewmonitor"]');expect('[aria-label="Showtransport"]');
    expect('[aria-label="Modulaire werkpanelen"]');
-   const modules=buttons('[data-module-id]');assert.equal(modules.length,7,'All seven live modules must remain reachable');for(const control of modules){const moduleId=control.getAttribute('data-module-id');h.event(control,'click');await wait(60);assert(main().querySelector('[data-panel-id=\"'+moduleId+'\"]'),'Live module cannot be opened: '+moduleId);}
-   assert(buttons().some(b=>b.textContent.includes('Volgende bal')));assert(buttons().some(b=>b.textContent.trim()==='TAKE'));
+   expect('.mf-live-essentials [role="timer"]');expect('.mf-live-bingo .rd-claims');assert.equal(main().querySelector('.mf-live-bingo').closest('details'),null,'Live BINGO review stays outside Advanced');const advanced=main().querySelector('.mf-live-advanced-panels');assert(advanced);advanced.open=true;
+   const modules=buttons('[data-module-id]');assert.equal(modules.length,6,'Milo keeps six Advanced modules and its main BINGO controls');for(const control of modules){const moduleId=control.getAttribute('data-module-id');h.event(control,'click');await wait(60);assert(main().querySelector('[data-panel-id=\"'+moduleId+'\"]'),'Live module cannot be opened: '+moduleId);}
+   assert.equal(main().querySelector('.rd-next-ball'),null,'A standard Milo show uses the official automatic clock');assert(main().textContent.includes('Automatische trekking · 15 seconden per bal'));assert(buttons().some(b=>b.textContent.trim()==='TAKE'));
   }
   if(id==='audience'){
    const tabs=main().querySelector('nav[aria-label="Publiekswerkplek"]');assert(tabs);
@@ -144,5 +146,5 @@ try{
  for(const label of ['Stem & uitspraak','Karakter & wereld','Trucjes & show','Gesprek met kinderen','Kennis & geheugen','Beweging']){await clickExact(label,castNav);nested++;assert(main().querySelector('input,select,textarea,summary'),'Missing editable character worktab '+label);}
  assert.deepEqual(h.errors,[],'Workspace navigation must not generate unhandled React/runtime errors');
  assert(!h.requests.some(r=>r.method!=='GET'),'Opening workspaces must not send state-changing or provider requests');
- console.log(`✓ Workspace navigation: ${pages} main routes, ${nested} nested worktabs, seven live modules and all twelve character settings links; no provider calls or writes`);
+ console.log(`✓ Workspace navigation: ${pages} main routes, ${nested} nested worktabs, six Advanced live modules plus main BINGO review and all twelve character settings links; no provider calls or writes`);
 }finally{h.close();}

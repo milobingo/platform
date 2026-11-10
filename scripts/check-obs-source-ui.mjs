@@ -63,7 +63,7 @@ test('OBS output never opens the unprojected BroadcastChannel and fails closed b
 
 test('activation cannot heartbeat ready with a suspended context or failed show-audio unlock',async()=>{
  for(const [state,unlocked] of [['suspended',true],['running',false],['running',true]]){
-  let heartbeats=0;const bridge=Object.assign(Object.create(OutputBridge.prototype),{accessEpoch:0,audioGraphReady:true,context:{state,resume:async()=>{}},showAudio:{unlock:async()=>unlocked,setMuted(){},stop(){}},panel:{hidden:false,querySelector:()=>({textContent:''})},heartbeat:async()=>{heartbeats++;},stopSource(){}});
+  let heartbeats=0;const bridge=Object.assign(Object.create(OutputBridge.prototype),{accessEpoch:0,audioGraphReady:true,context:{state,resume:async()=>{}},showAudio:{unlock:async()=>unlocked,setMuted(){},stop(){}},panel:{hidden:false,querySelector:()=>({textContent:''})},heartbeat:async()=>{heartbeats++;},playProgramTest:async()=>{},stopSource(){}});
   if(state==='running'&&unlocked){await bridge.activate();assert.equal(bridge.audioReady,true);assert.equal(bridge.active,true);assert.equal(heartbeats,1);}
   else {await assert.rejects(bridge.activate(),/Geluid is nog geblokkeerd/);assert.equal(bridge.audioReady,false);assert.equal(bridge.active,false);assert.equal(heartbeats,0);}
  }

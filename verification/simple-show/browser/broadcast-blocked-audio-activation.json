@@ -1,0 +1,208 @@
+{
+  "observedAt": "2026-11-10T10:31:45.339Z",
+  "actualBrowserRendering": true,
+  "actualWebAudio": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "remainingOBSCheck": "Controleer op een echte OBS-installatie de Browserbronmixer en luister een korte proefopname met beeld en testgeluid terug.",
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "47236e70-e7ec-4c6a-b41e-3613d4d9b18c",
+  "outputOnly": true,
+  "requests": [
+    {
+      "path": "/api/obs/session",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    }
+  ],
+  "producerActions": [],
+  "heartbeats": [
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794306704489,
+      "testAck": {
+        "id": "3a41fbb2-59ad-467a-8fec-0b220bc10c3f",
+        "status": "played",
+        "at": 1794306704489,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794306704489,
+      "testAck": {
+        "id": "3a41fbb2-59ad-467a-8fec-0b220bc10c3f",
+        "status": "played",
+        "at": 1794306704489,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    }
+  ],
+  "leaseHeartbeats": [],
+  "forbiddenWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedNetworkErrors": [],
+  "initialGameState": {
+    "phase": "running",
+    "blockIndex": 3,
+    "roundIndex": 0,
+    "goalIndex": 0,
+    "goalOpenedAt": 0,
+    "epoch": "e59f6932-f36d-47b8-868c-a1125e54fa70",
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "history": [],
+    "deck": [
+      35,
+      60,
+      27,
+      16,
+      34,
+      23,
+      43,
+      17,
+      33,
+      69,
+      54,
+      26,
+      48,
+      46,
+      8,
+      13,
+      50,
+      74,
+      73,
+      68,
+      51,
+      10,
+      52,
+      49,
+      70,
+      61,
+      72,
+      59,
+      40,
+      44,
+      36,
+      56,
+      62,
+      24,
+      67,
+      63,
+      9,
+      41,
+      18,
+      55,
+      32,
+      29,
+      7,
+      25,
+      75,
+      37,
+      30,
+      28,
+      47,
+      64,
+      31,
+      6,
+      45,
+      21,
+      66,
+      57,
+      58,
+      3,
+      19,
+      22,
+      4,
+      20,
+      1,
+      5,
+      11,
+      42,
+      39,
+      65,
+      53,
+      15,
+      12,
+      38,
+      14,
+      71,
+      2
+    ],
+    "pending": null,
+    "window": {
+      "id": "qa-open-bingo",
+      "status": "open",
+      "startedAt": 1794306701098,
+      "endsAt": 1794307302098,
+      "announcements": [],
+      "claims": []
+    },
+    "windowSequence": 0,
+    "resultId": null,
+    "goalWon": false,
+    "paused": true,
+    "lastCommit": {
+      "number": 41,
+      "committedAt": 1794306682098
+    },
+    "drawClock": {
+      "intervalMs": 15000,
+      "nextAt": 1794306717097
+    }
+  }
+}

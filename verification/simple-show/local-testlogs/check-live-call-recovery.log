@@ -1,0 +1,43 @@
+✔ atomic hold/call batch stays invisible before commit; an earlier ball wins CAS and joins checkpoint (45.249122ms)
+✔ failure between the two writes rolls back both hold and call and never opens media (8.17344ms)
+✔ atomic call preparation preserves the shared game history capacity reserve (48.947586ms)
+✔ late provider creation after cancellation is hung up and never returns SDP or resumes drawing (27.610948ms)
+✔ expired unknown orphan stays explicitly uncertain; closing an unrelated session cannot release the hold (16.234175ms)
+✔ provider timeout remains uncertain and rotated credentials cannot falsely close the orphan (16.698068ms)
+✔ known provider hangup failure remains held and a later verified cleanup can finish it (18.575184ms)
+✔ LiveKit deployment credential rotation cannot issue new tokens or falsely close the original rooms (15.925588ms)
+✔ second tab stays passive and cannot cancel, but parent consent withdrawal always closes media and keeps hold (15.236173ms)
+✔ unpublished results never enter live context and active-call key replacement performs no provider probe (14.096896ms)
+✔ 120s playback at a 240s live edge and plain audible playback cannot prove return; a current cue can (13.274689ms)
+✔ fresh output generation restarts sequence safely and rejects delayed old producer; output acknowledges actual rendered generation (8.58368ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.569144
+gpt_live_close_unconfirmed {
+  restStatus: 502,
+  attachStatus: 502,
+  reason: 'attach_rejected',
+  rest: {
+    status: 502,
+    responseType: 'application/json',
+    requestId: null,
+    errorCode: 'fixture_unavailable',
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 502,
+    responseType: 'application/json',
+    requestId: null,
+    errorCode: 'fixture_unavailable',
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}

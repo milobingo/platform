@@ -1,0 +1,14 @@
+✓ Profiles switch identity without leaking ages; same game does not reconnect
+✓ User content is plaintext, host identity is server-role based, and moderator can delete own message
+✓ Sending retains the draft until acknowledgement and uses the selected player profile
+✓ A lost send response is retried with one stable request ID
+✓ An old game response cannot overwrite a newly selected game
+✓ A late POST acknowledgement never restores a deleted message
+✓ Out-of-order acknowledgements are displayed in event order, without duplicates
+✓ Stale polling cannot undo a newer mute or role change
+✓ SSE access revocation disables sending and invalidates in-flight responses
+✓ Empty selection and disposal abort work and never pretend to be connected
+✓ A transient initial failure reconnects automatically without losing the composer draft
+✓ A transient SSE error falls back to polling and preserves the draft
+✓ Emoji count uses the same 500 Unicode codepoint limit as the server
+13/13 chat client checks passed.

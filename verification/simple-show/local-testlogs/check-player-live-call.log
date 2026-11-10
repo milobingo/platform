@@ -1,0 +1,16 @@
+✔ ordinary viewers and ringing calls open no room; heard checkpoint and updated cards are required (8.099637ms)
+✔ an unverified YouTube mute prevents answer and any direct audio room (0.396301ms)
+✔ live handover leaves backstage before joining live; participant unmute requires explicit republish (0.73265ms)
+✔ unexpected staged-room loss fails safely; only a server-confirmed handover suppresses failure (0.847324ms)
+✔ returning restores controls without inventing playback; explicit audible normal-show confirmation precedes server return (0.984131ms)
+✔ fallback return is explicitly a parent manual check, and absent video cannot be confirmed (0.362209ms)
+✔ preflight is opt-in for the selected child and disposal closes media without releasing the hold (0.31008ms)
+✔ a passive second call tab opens no microphone and cannot cancel; parent withdrawal remains a separate action (0.468ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21.305421

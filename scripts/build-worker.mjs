@@ -10,7 +10,8 @@ await cp('server/production-model.js','public/production-model.js');
 await cp('server/plan-model.js','public/plan-model.js');
 await cp('server/presentation-model.js','public/presentation-model.js');
 await cp('server/bingo-model.js','public/bingo-model.js');
-for(const name of ['plan-model','presentation-model','bingo-model','production-model','show-brands','characters','show-cues']){const path=`public/${name}.js`;await writeFile(path,(await readFile(path,'utf8')).replace(/from (['"])(\.\/[a-z-]+\.js)\1/g,"from '$2?v=36'"));}
+await cp('server/standard-show.js','public/standard-show.js');
+for(const name of ['plan-model','presentation-model','bingo-model','standard-show','production-model','show-brands','characters','show-cues']){const path=`public/${name}.js`;await writeFile(path,(await readFile(path,'utf8')).replace(/from (['"])(\.\/[a-z-]+\.js)\1/g,"from '$2?v=36'"));}
 await rm('dist',{recursive:true,force:true});
 await mkdir('dist/server',{recursive:true});
 await mkdir('dist/.openai',{recursive:true});

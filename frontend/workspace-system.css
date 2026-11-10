@@ -174,3 +174,107 @@
 
 /* OBS access is managed beside the studio without storing a browser session. */
 .mf-obs-settings{gap:14px;min-width:0}.mf-obs-settings p,.mf-obs-settings ol{margin:0;line-height:1.6}.mf-obs-settings ol{padding-left:20px}.mf-obs-settings li+li{margin-top:8px}.mf-obs-settings small{line-height:1.6;color:var(--muted,#8a779b)}.mf-obs-settings input{min-width:0;max-width:100%;font-size:12px}.mf-obs-actions{display:flex;flex-wrap:wrap;gap:8px}.mf-obs-actions .mf-btn{min-width:0;white-space:normal}.mf-obs-confirm{border:1px solid #dfcce9;border-radius:12px;padding:12px;background:#faf6fd}.mf-obs-confirm>.mf-btn{margin:10px 8px 0 0}.mf-obs-settings [role="alert"]{color:#a7315a;overflow-wrap:anywhere}.mf-obs-status{font-weight:600}
+
+/* Milo's preparation route and live priorities; Vlampie keeps its own console. */
+[data-brand=milo] .mf-simple-preparation{max-width:1320px;margin-inline:auto;min-width:0}
+[data-brand=milo] .mf-preparation-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 20px;padding:5px;border:1px solid var(--mf-border);border-radius:14px;background:#eee8f24f}
+[data-brand=milo] .mf-preparation-steps>button{display:flex;align-items:center;gap:10px;min-width:0;min-height:50px;padding:10px 14px;border:1px solid transparent;border-radius:10px;background:transparent;color:#786583;font-size:13px;font-weight:650;text-align:left;line-height:1.4}
+[data-brand=milo] .mf-preparation-steps>button>span{display:grid;place-items:center;flex:none;width:25px;height:25px;border-radius:8px;background:#e8deef;color:#79558f;font-size:12px}
+[data-brand=milo] .mf-preparation-steps>button[aria-current=step]{border-color:#d9c8e5;background:#fffefd;color:#5d3b75;box-shadow:0 2px 6px #3f225f08}
+[data-brand=milo] .mf-preparation-steps>button[aria-current=step]>span{background:#7952a5;color:#fff}
+[data-brand=milo] .mf-save-status{display:flex;align-items:center;flex-wrap:wrap;gap:5px 8px;min-width:0;margin:0 0 16px;color:#46745e;font-size:12px;line-height:1.6}
+[data-brand=milo] .mf-page-head .mf-save-status{margin:0}
+[data-brand=milo] .mf-save-status>span{display:inline-flex;align-items:center;gap:6px}
+[data-brand=milo] .mf-save-status .mf-btn{min-height:34px}
+[data-brand=milo] .mf-save-status.has-error{padding:12px 14px;border:1px solid #ead9b6;border-radius:11px;background:#fffaf0;color:#775b31}
+[data-brand=milo] .mf-save-status.has-error>p{flex-basis:100%;margin:0;color:#775b31;font-size:12px;overflow-wrap:anywhere}
+[data-brand=milo] .mf-save-status.has-error>div{flex-basis:100%;border-top:1px solid #ead9b6;padding-top:10px;margin-top:4px}
+[data-brand=milo] .mf-save-status.has-error>div>.mf-btn{margin:8px 8px 0 0}
+[data-brand=milo] .mf-standard-rounds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+[data-brand=milo] .mf-standard-rounds>section{min-width:0;border:1px solid var(--mf-border);border-radius:12px;background:#fcf9fd;padding:15px}
+[data-brand=milo] .mf-standard-rounds h3{font-size:15px;margin-bottom:4px;color:#52355f}
+[data-brand=milo] .mf-standard-rounds>section>small{display:block;color:#806e8c;font-size:11px;line-height:1.6}
+[data-brand=milo] .mf-standard-rounds ol{list-style:none;display:grid;gap:15px;padding:15px 0 0;margin:12px 0 0;border-top:1px solid var(--mf-border)}
+[data-brand=milo] .mf-standard-rounds li{display:flex;align-items:flex-start;gap:10px;min-width:0}
+[data-brand=milo] .mf-standard-rounds li .mf-pattern{width:40px;height:40px;gap:2px;margin-top:3px}
+[data-brand=milo] .mf-standard-rounds li>div{display:grid;gap:3px;min-width:0}
+[data-brand=milo] .mf-standard-rounds li b{font-size:12px;line-height:1.5;color:#594266}
+[data-brand=milo] .mf-standard-rounds li span{font-size:12px;color:#786383}
+[data-brand=milo] .mf-standard-rounds li small{font-size:11px;line-height:1.6;color:#806e8c}
+[data-brand=milo] :is(.mf-rules-preview,.mf-preparation-advanced){margin:18px 0 0;border-top:1px solid var(--mf-border);padding-top:12px;min-width:0}
+[data-brand=milo] :is(.mf-rules-preview,.mf-preparation-advanced)>summary{cursor:pointer;min-height:40px;padding:8px 0;color:#79548e;font-size:12px;font-weight:650;line-height:1.6}
+[data-brand=milo] .mf-rules-preview>ol{display:grid;gap:14px;padding-left:22px;margin:10px 0;color:#74617e}
+[data-brand=milo] .mf-rules-preview li{padding-left:3px;font-size:12px;line-height:1.7}
+[data-brand=milo] .mf-rules-preview li b{color:#5d446b}
+[data-brand=milo] .mf-rules-preview li p{margin-top:4px}
+[data-brand=milo] .mf-rules-readonly{display:flex;align-items:flex-start;gap:8px;color:#64756c;font-size:12px;line-height:1.7;margin:0 0 18px}
+[data-brand=milo] .mf-rules-readonly>svg{flex:none;margin-top:2px;color:#63957a}
+[data-brand=milo] .mf-preparation-start>.mf-btn.primary{min-width:180px;margin-top:8px}
+[data-brand=milo] .mf-preparation-blockers{margin:0 0 18px;padding:13px 15px;border:1px solid #eadcc3;border-radius:11px;background:#fffbf3;color:#80663c;font-size:12px;line-height:1.7}
+[data-brand=milo] .mf-preparation-blockers ul{padding-left:18px;margin:7px 0 0}
+[data-brand=milo] .mf-preparation-blockers li+li{margin-top:6px}
+[data-brand=milo] .mf-preparation-blockers a{font-weight:650;text-decoration:underline;text-underline-offset:3px}
+[data-brand=milo] .mf-broadcast-preparation{display:grid;gap:18px;min-width:0}
+[data-brand=milo] .mf-broadcast-checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
+[data-brand=milo] .mf-broadcast-checks>li{min-width:0;padding:16px;border:1px solid var(--mf-border);border-radius:12px;background:#fcf9fd}
+[data-brand=milo] .mf-broadcast-checks strong{display:block;margin-bottom:8px;color:#594066;font-size:13px}
+[data-brand=milo] .mf-broadcast-checks p{color:#796685;font-size:12px;line-height:1.7;margin:0}
+[data-brand=milo] .mf-broadcast-checks label{display:flex;align-items:flex-start;gap:8px;margin-top:12px;color:#796685;font-size:12px;line-height:1.6}
+[data-brand=milo] .mf-broadcast-checks input[type=checkbox]{margin:2px 0 0}
+[data-brand=milo] .mf-broadcast-confirmed{display:flex;align-items:center;gap:6px;margin-top:12px;color:#46745e;font-size:12px}
+[data-brand=milo] .mf-broadcast-preparation>details{border-top:1px solid var(--mf-border);padding-top:8px}
+[data-brand=milo] .mf-broadcast-preparation>details>summary{min-height:40px;padding:8px 0;color:#79548e;cursor:pointer;font-size:12px;font-weight:650}
+[data-brand=milo] .mf-broadcast-preparation>details p{margin:6px 0 12px;font-size:12px;line-height:1.8;color:#796685}
+[data-brand=milo] .mf-editor-fieldset{border:0;margin:0;min-inline-size:0;width:100%}
+[data-brand=milo] .mf-editor-fieldset:disabled{opacity:.82}
+[data-brand=milo] .mf-editor-fieldset :disabled{cursor:not-allowed}
+
+[data-brand=milo] .mf-broadcast-shell.is-regie .mf-main:has(.mf-live-essentials){overflow-y:auto;overflow-x:hidden}
+[data-brand=milo] .mf-route-view:has(.mf-live-essentials){flex:0 0 auto}
+[data-brand=milo] .rd-workspace:has(>.mf-live-essentials){height:auto;flex:0 0 auto;padding:14px;gap:12px}
+[data-brand=milo] .mf-live-essentials{display:grid;grid-template-columns:minmax(110px,1fr) minmax(180px,1.6fr) minmax(100px,.8fr) minmax(120px,1fr) auto;align-items:center;gap:18px;padding:20px;border:1px solid var(--rd-console-line,#d4b5ef24);border-radius:14px;background:var(--rd-panel,#281c37);color:var(--rd-ink,#f6eefb)}
+[data-brand=milo] .mf-live-essentials>div{display:grid;gap:5px;min-width:0}
+[data-brand=milo] .mf-live-essentials span{font-size:11px;color:#bca9ce;line-height:1.6}
+[data-brand=milo] .mf-live-essentials strong{font-size:18px;font-weight:700;line-height:1.4;color:#f7effb}
+[data-brand=milo] .mf-live-essentials small{font-size:12px;line-height:1.5;color:#c2aed3}
+[data-brand=milo] .mf-live-essentials .mf-live-ball{font-size:38px;font-variant-numeric:tabular-nums;line-height:1.2;color:#f0d395}
+[data-brand=milo] .mf-live-countdown strong{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums;color:#91e0d4}
+[data-brand=milo] .mf-live-essentials>.mf-btn{min-width:104px;min-height:46px}
+[data-brand=milo] .mf-live-bingo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;min-width:0}
+[data-brand=milo] .mf-live-bingo>.rd-section{margin:0;border-radius:12px}
+[data-brand=milo] .mf-live-bingo .rd-claims-empty p{color:#b9a9c8}
+[data-brand=milo] .mf-live-advanced{min-width:0;max-width:100%;border:1px solid var(--rd-console-line,#d4b5ef24);border-radius:12px;background:#21162f;padding:0 12px}
+[data-brand=milo] .mf-live-advanced>summary{min-height:46px;padding:13px 2px;cursor:pointer;color:#cbb5dc;font-size:12px;font-weight:600;line-height:1.6}
+[data-brand=milo] .mf-live-advanced[open]{padding-bottom:12px}
+[data-brand=milo] .mf-live-advanced .rd-modular{min-height:420px}
+[data-brand=milo] .rd-transport>.mf-rules-readonly{margin:0;color:#b9a4cb}
+@media(max-width:1100px){
+ [data-brand=milo] .mf-standard-rounds{grid-template-columns:repeat(2,minmax(0,1fr))}
+ [data-brand=milo] .mf-live-essentials{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:16px}
+ [data-brand=milo] .mf-live-essentials>.mf-btn{grid-column:1/-1;justify-self:stretch}
+}
+@media(max-width:760px){
+ [data-brand=milo] .mf-broadcast-checks{grid-template-columns:1fr}
+ [data-brand=milo] .mf-live-bingo{grid-template-columns:1fr}
+ [data-brand=milo] .mf-live-essentials{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ [data-brand=milo] .mf-preparation-steps{gap:4px;padding:4px;margin-bottom:16px}
+ [data-brand=milo] .mf-preparation-steps>button{flex-direction:column;align-items:flex-start;gap:7px;padding:10px 8px;font-size:12px;min-height:83px}
+ [data-brand=milo] .mf-standard-rounds{grid-template-columns:1fr;gap:10px;margin:16px 0}
+ [data-brand=milo] .mf-standard-rounds>section{padding:14px}
+ [data-brand=milo] .mf-standard-rounds ol{gap:12px}
+ [data-brand=milo] .mf-standard-rounds li .mf-pattern{width:45px;height:45px}
+ [data-brand=milo] .mf-save-status{font-size:12px}
+ [data-brand=milo] .mf-save-status.has-error{padding:11px}
+ [data-brand=milo] .mf-preparation-start>.mf-btn.primary{width:100%;min-height:46px}
+ [data-brand=milo] .mf-broadcast-preparation .mf-obs-actions>.mf-btn{flex:1 1 140px}
+ [data-brand=milo] .mf-broadcast-checks>li{padding:14px}
+ [data-brand=milo] .rd-workspace:has(>.mf-live-essentials){padding:10px;gap:10px}
+ [data-brand=milo] .mf-live-essentials{padding:14px;gap:15px 12px}
+ [data-brand=milo] .mf-live-essentials strong{font-size:16px}
+ [data-brand=milo] .mf-live-essentials .mf-live-ball{font-size:36px}
+ [data-brand=milo] .mf-live-countdown strong{font-size:28px}
+ [data-brand=milo] .mf-live-advanced{padding-inline:10px}
+ [data-brand=milo] .mf-live-advanced .rd-modular{min-height:480px}
+}

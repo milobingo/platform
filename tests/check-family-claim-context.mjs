@@ -47,26 +47,26 @@ test('rules are available before login and expose no family, book or private set
  await DB.close();
 });
 
-async function nativeRulesFixture(t){
+async function nativeRulesFixture(t,brand='milo'){
  const DB=createSqliteDatabase(':memory:');t.after(()=>DB.close());const env={DB,NODE_ENV:'development',MILO_LOCAL_AUTH:'true'};let cookie='';
  const call=async(path,{method='POST',body={}}={},status=200)=>{
   const response=await dispatchNodeRequest(new Request('http://localhost:3000'+path,{method,headers:{Origin:'http://localhost:3000',Cookie:cookie,'Content-Type':'application/json','X-Vlampie-Bingo':'1',...(path.startsWith('/api/player/')?{'X-Vlampie-Player':'1'}:{})},...(method==='GET'?{}:{body:JSON.stringify(body)})}),{env,providerFetch:()=>{throw Error('No providers in rules tests');}});
   for(const value of response.headers.getSetCookie())cookie=value.split(';')[0];const data=await response.json();assert.equal(response.status,status,JSON.stringify(data));return data;
  };
  await call('/auth/local',{body:{role:'regie'}});
- const {game}=await call('/api/bingo/games',{body:{brandId:'milo',title:'Regels voor deelname',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam',roundCount:1}},201);
+ const {game}=await call('/api/bingo/games',{body:{brandId:brand,title:'Regels voor deelname',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam',roundCount:1}},201);
  await call(`/api/bingo/games/${game.id}/publish-rules`);return {DB,call,id:game.id,store:new BingoStore(DB)};
 }
-test('native game PUT explicitly republishes version 2 before participation and preserves version 1 plus a reasoned audit',async t=>{
- const h=await nativeRulesFixture(t),path='/api/bingo/games/'+h.id,before=(await h.store.game(h.id)).data,plan=structuredClone(before.plan);plan.prizes[0].title='Gecontroleerde nieuwe prijs';
+test('Vlampie native game PUT explicitly republishes version 2 before participation and preserves version 1 plus a reasoned audit',async t=>{
+ const h=await nativeRulesFixture(t,'vlampie'),path='/api/bingo/games/'+h.id,before=(await h.store.game(h.id)).data,plan=structuredClone(before.plan);plan.prizes[0].title='Gecontroleerde nieuwe prijs';
  const body={plan,settings:{...before.settings,retroBalls:4},publishRules:true,rulesChangeReason:'Prijs en terugkijkmarge gecontroleerd vóór deelname.',requestId:'rules-republish-api-fixture'};
  const result=await h.call(path,{method:'PUT',body}),saved=(await h.store.game(h.id)).data;
  assert.equal(result.game.rulesPublication.version,2);assert.equal(saved.rulesPublication.version,2);assert.notEqual(saved.rulesPublication.id,before.rulesPublication.id);assert.deepEqual(saved.rulesHistory,[before.rulesPublication]);assert.equal(saved.rulesPublication.contract.retroBalls,4);assert.equal(saved.plan.prizes[0].title,plan.prizes[0].title);
  assert.deepEqual(saved.events.filter(event=>event.type==='rules-republished').map(({at,...event})=>{assert(Number.isFinite(at));return event;}),[{type:'rules-republished',previousVersion:1,version:2,reason:body.rulesChangeReason}]);
  await h.call(path,{method:'PUT',body});const replayed=(await h.store.game(h.id)).data;assert.equal(replayed.rulesHistory.length,1);assert.equal(replayed.events.filter(event=>event.type==='rules-republished').length,1);
 });
-test('native game PUT requires explicit publication and a meaningful reason; rejected edits leave the complete stored game unchanged',async t=>{
- const h=await nativeRulesFixture(t),path='/api/bingo/games/'+h.id,before=await h.DB.prepare('SELECT revision,document FROM bingo_games WHERE id = ?').bind(h.id).first(),current=JSON.parse(before.document),settings={...current.settings,retroBalls:4};
+test('Vlampie native game PUT requires explicit publication and a meaningful reason; rejected edits leave the complete stored game unchanged',async t=>{
+ const h=await nativeRulesFixture(t,'vlampie'),path='/api/bingo/games/'+h.id,before=await h.DB.prepare('SELECT revision,document FROM bingo_games WHERE id = ?').bind(h.id).first(),current=JSON.parse(before.document),settings={...current.settings,retroBalls:4};
  await h.call(path,{method:'PUT',body:{settings}},409);assert.deepEqual(await h.DB.prepare('SELECT revision,document FROM bingo_games WHERE id = ?').bind(h.id).first(),before);
  await h.call(path,{method:'PUT',body:{settings,publishRules:true,rulesChangeReason:'kort'}},400);assert.deepEqual(await h.DB.prepare('SELECT revision,document FROM bingo_games WHERE id = ?').bind(h.id).first(),before);
 });

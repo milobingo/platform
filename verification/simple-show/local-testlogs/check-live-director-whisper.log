@@ -1,0 +1,16 @@
+✔ one confirmed sideband instruction reaches the existing session, remains private and is permanently idempotent (62.473956ms)
+✔ the live route rejects player/output, wrong host client, cross-origin, backstage and a different character (22.276122ms)
+✔ a lost acknowledgement is uncertain and a retry never sends the command again (32.249919ms)
+✔ only one send can be in flight and both duplicate and separate concurrent requests are blocked (16.966174ms)
+✔ a changed guest is checked again after attachment; ending after ACK never reports current-session success (17.793688ms)
+✔ explicit provider rejection and transport close are distinguished; no key/media or primary-close event leaks (0.940176ms)
+✔ an acknowledged append with a failed receipt write is uncertain, never a safely repeatable rejection (16.094594ms)
+✔ an early replayed ACK cannot confirm a new send, and an expired call after attach receives no instruction (28.260912ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 202.426034

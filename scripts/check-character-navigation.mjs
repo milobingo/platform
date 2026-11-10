@@ -97,11 +97,18 @@ async function setup({host='milo',hash='',saved=true}={}){
 }
 function profileRequests(h){return h.requests.filter(r=>r.url.startsWith('/api/characters/')||r.url==='/api/openai/design-voice'||r.url==='/api/openai/live-preview');}
 
-await test('the overview presenter button opens the actual Milo, Stella and Vlampie profiles',async()=>{
+await test('Milo preparation cast and the separate Vlampie overview open canonical presenter profiles',async()=>{
  for(const host of ['milo','stella','vlampie']){
   const h=await setup({host,saved:host!=='milo'});try{
-   await until(()=>h.document.querySelector('.bs-presenter-card h2')?.textContent===CHARACTERS[host].name,'Overview lost selected host '+host);
-   h.click('Personage-instellingen');await until(()=>h.context.location.hash==='#/characters/'+host,'Overview generated an invalid profile route for '+host);
+   if(host==='vlampie'){
+    await until(()=>h.document.querySelector('.bs-presenter-card h2')?.textContent===CHARACTERS[host].name,'The separate Vlampie overview lost its presenter');h.click('Personage-instellingen');
+   }else{
+    await until(()=>h.document.querySelector('.mf-simple-preparation'),'Milo must open its three-step preparation');assert.equal(h.document.querySelector('.bs-presenter-card'),null,'Milo preparation no longer needs an overview presenter tile');
+    h.click('Draaiboek bewerken');await until(()=>h.context.location.hash==='#/script','Preparation did not open the actual script');await until(()=>[...h.document.querySelectorAll('[role=tab]')].some(tab=>tab.textContent==='Cast & stemmen'),'The script tabs did not mount');h.click('Cast & stemmen');await until(()=>h.document.querySelector('.mf-character-mini-grid'),'The cast editor did not mount');
+    const lead=[...h.document.querySelectorAll('label')].find(label=>label.textContent.startsWith('Hoofdpresentator'))?.querySelector('select');assert(lead);assert.equal(lead.value,host,'Preparation must preserve the selected presenter');
+    const profile=[...h.document.querySelectorAll('.mf-character-mini-grid button')].find(button=>button.querySelector('b')?.textContent===CHARACTERS[host].name);assert(profile,'Selected presenter profile must remain reachable from Cast & stemmen');h.event(profile,'click');
+   }
+   await until(()=>h.context.location.hash==='#/characters/'+host,'Preparation generated an invalid profile route for '+host);
    await until(()=>h.document.querySelector('.cp-heading h1')?.textContent===CHARACTERS[host].name,'Wrong profile opened for '+host);
    assert.equal(h.context.location.hash.includes('undefined'),false);assert.deepEqual(h.errors,[]);
   }finally{h.close();}
