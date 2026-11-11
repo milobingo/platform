@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-11-11T12:41:53.121671+00:00",
+  "reason": "Filesystem capacity failure; original log, error contexts, captures and acceptance remain in this attempt directory. Bulky temporary trace artifacts moved to RAM.",
+  "archived": [
+    {
+      "path": "test-results/.playwright-artifacts-2",
+      "kind": "temporary-unpacked-Playwright-trace",
+      "temporaryArchiveRemoved": true
+    },
+    {
+      "path": "test-results/.playwright-artifacts-3",
+      "kind": "temporary-unpacked-Playwright-trace",
+      "temporaryArchiveRemoved": true
+    },
+    {
+      "path": "test-results/handoff-v6-handoff-v6-actu-65357-ontrols-simulated-transport/trace.zip",
+      "bytes": 30666,
+      "sha256": "676ec89c37f2780088f0648845ac7c4451f8adaf7efbab0339199c650e5b3075",
+      "kind": "failure-trace",
+      "temporaryArchiveRemoved": true
+    },
+    {
+      "path": "test-results/regie-settings-saved-show--f1458--1366px-isolated-native-API/trace.zip",
+      "bytes": 20365312,
+      "sha256": "e5363bd7d558491259f1a648d6ed98e7c8518097332306e9709b69e7d6362fdc",
+      "kind": "failure-trace",
+      "temporaryArchiveRemoved": true
+    },
+    {
+      "path": "test-results/regie-settings-saved-show--92285-D-390px-isolated-native-API/trace.zip",
+      "bytes": 22818816,
+      "sha256": "b757caf22ee056f3a3451a8984aabcde7808a996f2e6e0bb215f01af30d93dd8",
+      "kind": "failure-trace",
+      "temporaryArchiveRemoved": true
+    }
+  ],
+  "temporaryTraceCleanupAt": "2026-11-11T12:48:38.039389+00:00",
+  "temporaryTraceDisposition": "Unpacked traces and interrupted trace zips were removed after the successful 30-test retry. Failure log, error contexts, acceptance report, captures and recorded trace hashes remain in the attempt archive."
+}

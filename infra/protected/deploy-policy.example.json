@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "allowedConfigIds": [],
+  "legacySha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+  "gateSha256": null,
+  "extractorSha256": null,
+  "guardianSha256": null,
+  "accounts": {
+    "run-mil-stg": {"uid": null, "gid": null},
+    "build-mil-stg": {"uid": null, "gid": null},
+    "app-mil-stg": {"uid": null, "gid": null}
+  }
+}

@@ -14,6 +14,7 @@ import {handleCharacterSettings} from './character-settings.js';
 import {nodeProviderFetch} from './node-provider-fetch.js';
 import {createOrderMailDelivery} from './node-mail-gateway.js';
 import {handleMail} from './mail-api.js';
+import {handleResend} from './resend.js';
 import {handlePublicRules} from './game-rules-api.js';
 import {handleLiveFeed} from './live-feed.js';
 import {withProviderSettingsLock} from './node-provider-settings.js';
@@ -81,8 +82,8 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   if(cleanRequest.headers.get('upgrade')?.toLowerCase()==='websocket')return finish(json('Deze Node-runtime ondersteunt hier geen WebSocket-upgrade.',501,'websocket_unavailable'));
   if(!['GET','HEAD','POST','PUT','PATCH','DELETE'].includes(cleanRequest.method))return finish(json('Deze aanvraag wordt niet ondersteund.',405,'method'));
   let providerAction;
-  if(cleanRequest.method==='POST'&&(path==='/api/calls'||path.startsWith('/api/live-calls')||path.startsWith('/api/livekit/')||['/api/openai/settings','/api/openai/live-preview'].includes(path))){const buffered=await bufferedProviderRequest(cleanRequest);cleanRequest=buffered.request;providerAction=buffered.action;}
-  const verifiedEnv={...env,AUTH_IDENTITY:context.identity,OPENAI_ENV_ONLY:true,NATIVE_PROVIDER_SETTINGS:true,ORDER_MAIL_DELIVERY:env.ORDER_MAIL_DELIVERY||createOrderMailDelivery(env)};
+  if(cleanRequest.method==='POST'&&(path==='/api/calls'||path.startsWith('/api/live-calls')||path.startsWith('/api/livekit/')||['/api/openai/settings','/api/openai/live-preview','/api/resend/settings'].includes(path))){const buffered=await bufferedProviderRequest(cleanRequest);cleanRequest=buffered.request;providerAction=buffered.action;}
+  const verifiedEnv={...env,AUTH_IDENTITY:context.identity,OPENAI_ENV_ONLY:true,NATIVE_PROVIDER_SETTINGS:true,MAIL_PROVIDER_FETCH:providerFetch,ORDER_MAIL_DELIVERY:env.ORDER_MAIL_DELIVERY||createOrderMailDelivery(env)};
   const providerOperation=handler=>withProviderSettingsLock(verifiedEnv,async locked=>{
    // A request may wait behind a provider operation. Recheck Auth and the
    // private role AFTER admission, before any provider or credential write.
@@ -109,6 +110,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   let response;
   if(path==='/api/obs/access')response=await handleObsAccess(cleanRequest,verifiedEnv);
   else if(/^\/api\/characters(?:\/|$)/.test(path))response=await handleCharacterSettings(cleanRequest,verifiedEnv);
+  else if(path==='/api/resend/settings')response=cleanRequest.method==='POST'?await providerOperation((locked,guardedFetch)=>handleResend(cleanRequest,locked,guardedFetch)):await handleResend(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/mail/'))response=await handleMail(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/player/'))response=await handlePlayerAuth(cleanRequest,verifiedEnv);
   else if(path==='/api/output')response=await handleOutput(cleanRequest,verifiedEnv);

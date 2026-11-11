@@ -1,0 +1,24 @@
+✔ native Resend status needs no provider environment keys and never imports prototype credentials (73.921922ms)
+✔ save encrypts credentials and policy with fresh IVs, sends nothing and defaults to disabled (24.856067ms)
+✔ invalid replacements, injected headers and staging live mode preserve the previous encrypted record (43.757075ms)
+✔ admin can explicitly enable a staging recipient list while a key-only edit retains that policy (21.910997ms)
+✔ the bounded settings request accepts the documented 100 long recipient addresses and refuses 101 without changing storage (27.938395ms)
+✔ legacy host mail limits are upper bounds and production live sending requires explicit record selection (25.825867ms)
+✔ native authorization strips forged identities and checks roles, exact origin, custom header and player context (22.241187ms)
+✔ revision CAS accepts one tab and refuses the stale tab without a provider call (24.154393ms)
+✔ domain test uses only the stored key and verified exact domain, never emails, and binds a redacted receipt (24.100743ms)
+✔ bounded domain pagination verifies the exact sender domain and rejects unrelated verified domains (20.833113ms)
+✔ failed or malformed domain checks revoke the old green receipt without replacing credentials or revealing provider bodies (52.72575ms)
+✔ remove leaves an encrypted tombstone blocking the DG fallback; only explicit environment restores that gateway (28.048462ms)
+✔ corrupt settings and wrong master key fail closed without reactivating the environment gateway (26.170817ms)
+✔ role revocation during the provider queue is rechecked before a credential write (21.604562ms)
+✔ storage failure and cancelled requests preserve the previous key and never echo secret exception text (28.738928ms)
+✔ a lost provider lock lease prevents any Resend credential write (15.559997ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 489.595846

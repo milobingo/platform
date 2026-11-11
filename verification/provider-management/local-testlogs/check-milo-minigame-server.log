@@ -1,0 +1,18 @@
+✔ new Milo games are available only to Milo while legacy selections remain intact (2.168375ms)
+✔ new shows use their brand defaults without expanding an explicitly saved game pool (4.761371ms)
+▶ every chosen Milo game persists one authoritative tied-bingo result and never changes cards or drawn balls
+  ✔ plingo (37.261507ms)
+  ✔ ribbons (9.932294ms)
+  ✔ mirrors (7.716808ms)
+  ✔ potion (7.841967ms)
+  ✔ butterfly (8.260772ms)
+✔ every chosen Milo game persists one authoritative tied-bingo result and never changes cards or drawn balls (72.532778ms)
+✔ raffle retry keeps its winner and an active show cannot change brand (13.025168ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.993412

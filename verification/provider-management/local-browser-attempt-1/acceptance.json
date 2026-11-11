@@ -1,0 +1,54 @@
+{
+  "kind": "isolated-standalone-browser-acceptance",
+  "status": "failed",
+  "startedAt": "2026-11-11T12:39:38.364Z",
+  "headSha": "67e1039a270488601c5e010da4eb25b1c7619812",
+  "workingTreeSnapshot": true,
+  "sourceSha256": {
+    "frontend/ResendSettings.jsx": "647d086c9473b4f8cf2b2f8fbec016517596d0d2f1cfe5e17baee71d3ccfaa4f",
+    "frontend/provider-settings.css": "c430f67ff33abc2595f36f1ab0c8bab56adf6bb400d8df3cbc3ff0bc7d2e395e",
+    "frontend/CommunicationWorkspace.jsx": "0289078de1a23e5a0177aed97cef84a3deee5c4ab80dc94a218d4578dc2ffcfc",
+    "frontend/Administration.jsx": "789ce9f7115bfc4bfa03b7363b61a318d82cb026a687ae2b9a61d0aab6a792b0",
+    "frontend/OpenAISettings.jsx": "0dce2a8c19c781fe405b9194f7241ae233627fad9b81e5b88550f0e4b0d85542",
+    "frontend/LiveKitSettings.jsx": "6b5304f890e1f2d4c9a356dc5625b3e801cd213d78d53b2f9b43921ffbd29e10",
+    "server/resend.js": "01d58606e3571ef5c783f9d04e0a6391088b6428abafdd1176d159daeab00f0b",
+    "server/node-resend-mail.js": "a2093b68c59e8bc75463fed5964dbb4937470809517255cebb19054eaa4607ee",
+    "server/node-runtime.js": "2e4729cdcb3bd783ee922fb29bb8a0f689efa6caaf62479ca46d73879b203902",
+    "server/node-provider-settings.js": "f4b2854739b085080d182d60345f52abccdbde32efda0a4378634f948d788af1",
+    "server/secrets.js": "638c07594adcf3c8de60d74b00273344d0b7b22e0bbe39135e4dc309cf7f37d5",
+    "tests/browser/regie-settings.spec.mjs": "ab7432f5cd36c13fd790fb27e19d42429ab105b3fc4e846d402d99a0495aa050",
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0"
+  },
+  "migrationSourceSha256": {
+    "0000_broad_gravity.sql": "19c6aaceb71c862c6891695696be4d376c72c549df7c88991c4f036958532b6d",
+    "0001_black_nemesis.sql": "e1b136529e19f503f5fc1a495d13055bad10f3d78b1f11f03ae494f8506ba7f4",
+    "0002_silly_prodigy.sql": "404bf3ed5fe3f5063eb57962483f403cdbbe2a435ad4d8261d0b562b8876cf08",
+    "0003_eminent_meggan.sql": "5f7287b6a525d8f84c816df0a39e4166524d780f70b44c19b5a759b8567835e1",
+    "0004_nasty_sugar_man.sql": "ef4c0c2c2fa4cead522f31c340f80c27c4f9133b00e18a7a313e3f1dd8ebbc75",
+    "0005_tan_screwball.sql": "48aee1b14787eda787122c72ee970de16a0a479df2404744cca13c73277a38da",
+    "0006_broad_loners.sql": "232aa8d4dac743e4c74f24c09c8e90ecfb388e26081e6e15d1c5d1cce86e81cc",
+    "0007_stiff_lord_hawal.sql": "02b944c3093fc9ead28cd8b37b89c1f3bf43a1f69a1a806910fd553a27dcfcbe",
+    "0008_character_settings.sql": "d53c58af7acf018df6d9484482f0d9b493aa45f9a2a4338cab6e3c09192fe7ea",
+    "0009_studio_mail_v70.sql": "51d0582bc69ee6dd147ac84f2b9f31151877c432dfb517730e3f639f3e607726"
+  },
+  "buildId": "ubiJvSxjxnRY0yBYW-mSf",
+  "scope": {
+    "actualStandaloneHtmlCssCanvasAudio": true,
+    "actualRegieResendNativeHandlers": true,
+    "actualLocalSQLiteAndEncryptedObjectStore": true,
+    "authAndProviderTransportFixtures": true,
+    "otherApiFixtures": true,
+    "realAccountOrProviderWrites": false,
+    "actualOBSInstallation": false
+  },
+  "error": {
+    "name": "Error",
+    "message": "ENOENT: no such file or directory, open '/home/codex/repos/milobingo/verification/provider-management/local-browser/browser-tests.json'"
+  },
+  "finishedAt": "2026-11-11T12:40:55.297Z",
+  "cleanup": {
+    "ownedStandaloneStopped": true,
+    "ownedMemoryDirectoryRemoved": true,
+    "isolatedFixtureMigrationCopyRemoved": true
+  }
+}

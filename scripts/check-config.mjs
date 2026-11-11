@@ -109,8 +109,18 @@ if(phase==='runtime'&&['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'].som
     }catch{errors.push('LIVEKIT_URL: verwacht een wss:// LiveKit Cloud-projectorigin.');}
   }
 }
-if(phase==='runtime'&&has('MAIL_MODE')&&environment.MAIL_MODE!=='disabled'&&!createOrderMailDelivery(environment)){
-  errors.push('MAIL_MODE/MAIL_ENVIRONMENT/SEND_EMAIL_HOOK_SECRET/MAIL_ALLOWED_RECIPIENTS: de gesigneerde DG-mailgatewayconfiguratie is onvolledig of ongeldig. Staging vereist een ontvangerlijst; live verzending vereist productie.');
+if(phase==='runtime'){
+  if(has('MAIL_ENVIRONMENT')&&!['staging','production'].includes(environment.MAIL_ENVIRONMENT))errors.push('MAIL_ENVIRONMENT: gebruik staging of production.');
+  if(has('MAIL_MODE')&&!['disabled','allowlist','live'].includes(environment.MAIL_MODE))errors.push('MAIL_MODE: gebruik disabled, allowlist of live.');
+  if(has('MAIL_MODE')&&environment.MAIL_MODE!=='disabled'){
+    if(!['staging','production'].includes(environment.MAIL_ENVIRONMENT)||environment.MAIL_MODE==='live'&&environment.MAIL_ENVIRONMENT!=='production')errors.push('MAIL_MODE: live verzending vereist de productieomgeving.');
+    const recipients=String(environment.MAIL_ALLOWED_RECIPIENTS||'').split(',').map(value=>value.trim()).filter(Boolean);
+    if(environment.MAIL_MODE==='allowlist'&&(!recipients.length||recipients.length>100||recipients.some(value=>value.length>320||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))))errors.push('MAIL_ALLOWED_RECIPIENTS: stel geldige testontvangers in.');
+    // Resend is selected from encrypted beheer settings at request time.
+    // Validate an explicitly supplied legacy gateway secret, without requiring
+    // provider credentials before the beheeromgeving can be opened.
+    if(has('SEND_EMAIL_HOOK_SECRET')&&!createOrderMailDelivery(environment))errors.push('SEND_EMAIL_HOOK_SECRET: de bestaande DG-mailgatewayconfiguratie is ongeldig.');
+  }
 }
 
 if(errors.length){

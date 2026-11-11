@@ -91,26 +91,22 @@ test('DG wrapper receives only approved runtime keys and basic process metadata'
  assert.throws(()=>wrapperEnvironment({...runtime,DEPLOY_PASSWORD:'not-runtime'}));
 });
 
-test('workflow keeps deployment manual, gates host mutation on CI, and isolates database-apply credentials',()=>{
+test('normal deployment exposes no project secrets and builds only through the protected root broker',()=>{
  const workflow=readFileSync(new URL('../.github/workflows/deploy-staging.yml',import.meta.url),'utf8');
  assert.match(workflow,/workflow_dispatch:/);assert.doesNotMatch(workflow,/^  (?:push|pull_request):/m);
- assert.match(workflow,/apply_database:[\s\S]*?default: false/);
+ assert.match(workflow,/config_id:/);assert.doesNotMatch(workflow,/apply_database:/);
  assert.match(workflow,/deploy:\n    needs: release-gate/);
  assert.match(workflow,/runs-on: \[self-hosted, Linux, X64, dg-nxttrack-01, milobingo, staging\]/);
  assert.match(workflow,/name: staging/);assert.doesNotMatch(workflow,/name: production/);
- const install=workflow.slice(workflow.indexOf('      - name: Install locked dependencies'),workflow.indexOf('      - name: Validate all runtime'));
- assert.match(install,/env -i HOME="\$HOME" PATH="\$PATH"/);assert.doesNotMatch(install,/secrets\.|DATABASE_URL|OPENAI_API_KEY|GITHUB_TOKEN/);
- const apply=workflow.slice(workflow.indexOf('      - name: Apply only'),workflow.indexOf('      - name: Audit ready'));
- assert.match(apply,/if: \$\{\{ inputs.apply_database \}\}/);assert.match(apply,/loadManifest/);assert.match(apply,/--reviewed-manifest-sha256=/);
- assert.match(apply,/secrets.BACKUP_ENCRYPTION_KEY/);assert.match(apply,/secrets.RESTORE_TEST_DATABASE_URL/);
- assert.match(apply,/DATABASE_URL: \$\{\{ secrets.MIGRATION_DATABASE_URL \}\}/);
- assert.match(apply,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
- const deploy=workflow.slice(workflow.indexOf('      - name: Audit ready'),workflow.indexOf('\n  verify-public:'));
- assert.doesNotMatch(deploy,/BACKUP_ENCRYPTION_KEY|RESTORE_TEST_DATABASE_URL/);
- assert.match(deploy,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
- const audit=readFileSync(new URL('../.github/workflows/staging-database-audit.yml',import.meta.url),'utf8');
- assert.match(audit,/SUPABASE_DB_CA_BASE64: \$\{\{ vars.SUPABASE_DB_CA_BASE64 \}\}/);
- assert.match(workflow,/CONFIG_VERSION: \$\{\{ vars.DG_CONFIG_VERSION \}\}/);
+ assert.doesNotMatch(workflow,/\$\{\{\s*(?:secrets|vars)\.|DATABASE_URL|OPENAI_API_KEY|LIVEKIT_API_SECRET|SUPABASE_SECRET_KEY|VLAMPIE_SETTINGS_KEY/);
+ const deploy=workflow.slice(workflow.indexOf('  deploy:'),workflow.indexOf('\n  verify-public:'));
+ assert.doesNotMatch(deploy,/actions\/checkout|pnpm install|pnpm build|scripts\/deploy/);
+ assert.match(deploy,/JSON\.stringify\(\{githubToken:process\.env\.GITHUB_TOKEN\}\)/);
+ assert.match(deploy,/\| \/usr\/local\/bin\/dg-milo-deploy deploy "\$RELEASE_SHA" "\$RELEASE_ID" "\$CONFIG_ID"/);
+ assert.match(deploy,/test "\$result" != 75/);assert.match(deploy,/attempt in 1 2 3 4/);
+ assert.match(workflow,/CONFIG_VERSION: \$\{\{ inputs.config_id \}\}/);
+ const archived=readFileSync(new URL('../infra/legacy/github/staging-database-audit.yml.retired',import.meta.url),'utf8');
+ assert.match(archived,/secrets.MIGRATION_DATABASE_URL/,'old management contract is preserved outside active workflows');
 });
 
 const properRole=()=>({user:'milo_app_staging',session_user:'milo_app_staging',login:true,backend_member:true,superuser:false,createdb:false,createrole:false,bypassrls:false,elevated_membership:false,unexpected_membership:false});

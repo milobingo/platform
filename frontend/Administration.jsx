@@ -3,6 +3,7 @@ import {ArrowDown,ArrowUp,ArrowUpRight,BookOpen,Check,CheckCircle2,ChevronRight,
 import {Badge,Button,Empty,Field,Modal,Panel,Pattern} from './components.jsx';
 import {bingoApi} from '../public/bingo-api.js';
 import LiveKitSettings from './LiveKitSettings.jsx';
+import ResendSettings from './ResendSettings.jsx';
 import {jsonFetch} from './engine.js';
 import {activeGoal} from '../server/bingo-model.js';
 import {defaultProfile,fillRule,normalizePresentation} from '../server/presentation-model.js';
@@ -60,7 +61,7 @@ export function RecoveryPanel({s,engine,run}){
 }
 
 export function ConnectionSettings({s,engine,run}){
- return <div className="adm-workspace adm-connections"><div className="adm-section-lead"><div><span className="adm-eyebrow">VERBINDINGEN</span><h2>Klaar voor je publiek.</h2><p>Aanmelden per e-mail en live bellen beheer je vanuit dezelfde studio.</p></div><span className="adm-section-icon"><Wifi size={24}/></span></div><div className="adm-connection-grid"><MailConnection s={s} engine={engine} run={run}/><LiveKitSettings s={s} engine={engine}/></div><CallPreparation s={s} engine={engine} run={run}/></div>;
+ return <div className="adm-workspace adm-connections"><div className="adm-section-lead"><div><span className="adm-eyebrow">VERBINDINGEN</span><h2>Klaar voor je publiek.</h2><p>Aanmelden per e-mail en live bellen beheer je vanuit dezelfde studio.</p></div><span className="adm-section-icon"><Wifi size={24}/></span></div><div className="adm-connection-grid"><MailConnection s={s} engine={engine} run={run}/><LiveKitSettings s={s} engine={engine}/></div>{!s.demo&&<ResendSettings/>}<CallPreparation s={s} engine={engine} run={run}/></div>;
 }
 function MailConnection({s,engine,run}){
  const resource=useRemote(()=>jsonFetch('/api/auth/session'),[]),task=useTask(engine,run),[testEmail,setTestEmail]=useState(''),[testNotice,setTestNotice]=useState('');

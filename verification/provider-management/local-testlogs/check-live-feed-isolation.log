@@ -1,0 +1,12 @@
+✔ equal numeric versions from another family never authorize unchanged or reuse its books (40.964915ms)
+✔ a response arriving after account change cannot repopulate the previous family cache (0.760863ms)
+✔ logout-style clear invalidates an in-flight request even when the same account later returns (0.274406ms)
+✔ two concurrent snapshots cannot roll back the current account cache when an older response arrives late (0.229338ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46.312917

@@ -1,0 +1,13 @@
+✔ ten separate illusions are finite, deterministic, visible and isolated from their caller (1214.237336ms)
+✔ all new Milo magic performances remain continuous and have their own arm choreography (140.04965ms)
+✔ reduced motion holds a complete still tableau throughout the middle of every extra act (617.859351ms)
+{"renderer":"actual mountStudio + articulated Milo + approved decor","acts":10,"distinctFrames":10,"paused":"identical pixels","state":"unchanged","thumbnails":"pass --generate to write","contactSheet":null}
+✔ actual studio magic holds preview pixels, preserves game fields, accepts custom duration and creates unique broadcast thumbnails (599.039356ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2608.897128

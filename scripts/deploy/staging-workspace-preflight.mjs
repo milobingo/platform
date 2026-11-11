@@ -5,6 +5,7 @@ import {createStorageEnvironment,createSupabaseObjectStore} from '../../server/n
 import {mailState} from '../../server/mail-service.js';
 import {handleOpenAI} from '../../server/openai.js';
 import {manageLivekitSettings} from '../../server/livekit.js';
+import {handleResend} from '../../server/resend.js';
 
 const ORIGIN='https://milo-staging.dgwebservices.nl',PROJECT='https://lfsdgxcpdyghidzkzzvn.supabase.co';
 const fail=phase=>Object.assign(new Error('De read-only werkplekcontrole is niet geslaagd.'),{phase});
@@ -23,11 +24,12 @@ export async function inspectWorkspace(environment){
   if(state.brandId!==brand||state.templates.length!==17||new Set(state.templates.map(t=>t.id)).size!==17||state.templates.find(t=>t.id==='auth-code')?.editable!==false)throw fail('mail_templates_'+brand);
   templates.push({brand,templateCount:state.templates.length,authTemplateReadOnly:true});
  }
- let openai,livekit;
+ let openai,livekit,resend;
  try{const response=await handleOpenAI(new Request(ORIGIN+'/api/openai/status'),env,forbidden);openai=await response.json();if(!response.ok||typeof openai.configured!=='boolean'||openai.canManage!==true)throw fail('openai_settings');}catch{throw fail('openai_settings');}
  try{livekit=await manageLivekitSettings(new Request(ORIGIN+'/api/livekit/settings'),env,{},forbidden);if(typeof livekit.configured!=='boolean'||livekit.canManage!==true)throw fail('livekit_settings');}catch{throw fail('livekit_settings');}
- for(const status of [openai,livekit])if(status.key||status.apiKey||status.apiSecret||status.OPENAI_API_KEY)throw fail('provider_projection');
- return {gate:'staging-workspace',status:'passed',templates,providerSettingsReadable:true,providerSettingsEditable:true,storedCredentialsReturned:false,databaseWrites:0,objectWrites:0,providerRequests:0,realAccountLoginVerified:false};
+ try{const response=await handleResend(new Request(ORIGIN+'/api/resend/settings'),env,forbidden);resend=await response.json();if(!response.ok||typeof resend.configured!=='boolean'||resend.canManage!==true)throw fail('resend_settings');}catch{throw fail('resend_settings');}
+ for(const status of [openai,livekit,resend])if(status.key||status.apiKey||status.apiSecret||status.OPENAI_API_KEY||status.credentials)throw fail('provider_projection');
+ return {gate:'staging-workspace',status:'passed',templates,readableProviders:['openai','livekit','resend'],providerSettingsReadable:true,providerSettingsEditable:true,storedCredentialsReturned:false,databaseWrites:0,objectWrites:0,providerRequests:0,realAccountLoginVerified:false};
 }
 
 export async function main(env=process.env){
@@ -48,4 +50,4 @@ export async function main(env=process.env){
  }catch(error){console.log(JSON.stringify({gate:'staging-workspace',status:'failed',phase:error.phase||'runtime_storage',storageReads,databaseWrites:0,objectWrites:0,providerRequests:0}));process.exitCode=1;}
  finally{await storage?.close();}
 }
-if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url)await main();
+if(process.argv[1]?.endsWith('/staging-workspace-preflight.mjs')&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url)await main();

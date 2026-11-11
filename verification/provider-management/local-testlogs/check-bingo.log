@@ -1,0 +1,22 @@
+✔ simultaneous creation retries make one show and retain legacy retry identity (47.231817ms)
+✔ 50 A5 books have 200 unique cards, persistent reprints, unique codes and show-specific activation (1601.227095ms)
+✔ A5 appearance is persisted, reprints are isolated and legacy books remain printable (243.553914ms)
+✔ JA freezes before book selection, one fixed window permits multiple books and preserves a reserved ball after false bingo (48.281586ms)
+✔ retroactive priority, tied games and result reveal are canonical and cannot reroll (56.532453ms)
+✔ false-bingo sanctions apply to all persons in one account for this show and host can unblock (27.280569ms)
+✔ CAS batches do not save a family penalty without its claim, even for colliding request IDs (97.302875ms)
+✔ host lease, origin and identity prevent unauthorized writes and concurrent controllers (24.312703ms)
+✔ late complete bingo has no false penalty and two-row patterns require two full rows (2.889657ms)
+✔ async runner gates wait safely and pause buffers a draw acknowledgement until resume (4.137597ms)
+✔ host configuration, delayed poll and lost winner acknowledgement keep the correct local progression (888.613716ms)
+✔ game tabs preserve edits across navigation and save all settings before generating books (85.085219ms)
+✔ player confirmation sends nothing for NEE, then JA opens the host window before any card choice (126.481478ms)
+✔ 100 households can announce simultaneously without losing claims across 400 show books (9583.502498ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12844.825208

@@ -166,9 +166,10 @@ test('real PostgreSQL accepts the generated SCRAM login, enforces backend-only r
   assert.equal((await stat(output)).mode & 0o777, 0o600, 'post-commit failure preserves private recovery credentials without publishing them');
 });
 
-test('database-only workflows stay manual, use exact CI and keep source admin credentials out of app activation', async () => {
+test('retired database-only workflows preserve their contract and cannot run as active workflows', async () => {
   for (const filename of ['staging-database-apply.yml', 'staging-runtime.yml']) {
-    const source = await readFile(new URL(`../.github/workflows/${filename}`, import.meta.url), 'utf8');
+    await assert.rejects(readFile(new URL(`../.github/workflows/${filename}`, import.meta.url), 'utf8'), {code:'ENOENT'});
+    const source = await readFile(new URL(`../infra/legacy/github/${filename}.retired`, import.meta.url), 'utf8');
     assert.match(source, /workflow_dispatch:/); assert.match(source, /run: node scripts\/deploy\/release-preflight.mjs ci/);
     assert.match(source, /DATABASE_URL: \$\{\{ secrets.MIGRATION_DATABASE_URL \}\}/); assert.match(source, /group: milobingo-staging/);
     assert.doesNotMatch(source, /dg-site-deploy|secrets\.DATABASE_URL|pull_request:/);

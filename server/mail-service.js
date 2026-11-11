@@ -27,18 +27,18 @@ export async function mailState(env,brandId){
  const ownerId=env.AUTH_IDENTITY?.user;
  const store=new MailStore(env.DB),settings=await readMailSettings(env,brandId),config=await mailConfig(env),subscribers=await store.subscribers(brandId),families=(await env.DB.prepare('SELECT count(*) AS total FROM bingo_families').first())?.total||0;
  const outbox=[...(await store.list('delivery',brandId)).filter(r=>!ownerId||r.ownerId===ownerId).map(projectOutbox),...await orderOutbox(env,brandId,ownerId)].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,200);
- return {brandId,revision:settings.revision,settings:{newsletterEnabled:settings.value.newsletterEnabled!==false},templates:listMailTemplates(brandId,settings.value.templates).map(t=>t.id==='auth-code'?{...t,editable:false,triggerLabel:'Supabase Auth · beheer buiten deze studio'}:t),campaigns:(await store.list('campaign',brandId)).filter(r=>!ownerId||r.ownerId===ownerId).map(projectCampaign),outbox,audience:{subscribed:new Set(subscribers.map(r=>r.email)).size,total:families},provider:{configured:config.value.configured,from:config.value.from||'',source:'environment',canManage:false,marketingAvailable:env.ORDER_MAIL_DELIVERY?.supportsMarketing===true,assetBaseConfigured:!!env.MAIL_ASSET_BASE_URL}};
+ return {brandId,revision:settings.revision,settings:{newsletterEnabled:settings.value.newsletterEnabled!==false},templates:listMailTemplates(brandId,settings.value.templates).map(t=>t.id==='auth-code'?{...t,editable:false,triggerLabel:'Supabase Auth · beheer buiten deze studio'}:t),campaigns:(await store.list('campaign',brandId)).filter(r=>!ownerId||r.ownerId===ownerId).map(projectCampaign),outbox,audience:{subscribed:new Set(subscribers.map(r=>r.email)).size,total:families},provider:{configured:config.value.configured,deliveryEnabled:config.value.deliveryEnabled,deliveryReason:config.value.deliveryReason||'',from:config.value.from||'',source:config.value.source,canManage:env.NATIVE_PROVIDER_SETTINGS===true&&settingsReady(env),marketingAvailable:config.delivery?.supportsMarketing===true,assetBaseConfigured:!!env.MAIL_ASSET_BASE_URL}};
 }
 async function frozenPayload(env,id){return (await readPrivateSetting(env,'mail-message-'+id)).value;}
 async function persistPayload(env,id,payload){if(!settingsReady(env))return false;const prior=await readPrivateSetting(env,'mail-message-'+id);if(prior.value)return true;const saved=await writePrivateSetting(env,'mail-message-'+id,payload,null);return !!saved||!!(await readPrivateSetting(env,'mail-message-'+id)).value;}
-async function deliveryPolicy(env,record,store){
+async function deliveryPolicy(env,record,store,adapter=env.ORDER_MAIL_DELIVERY){
  if(!record.test&&(await readEffectiveMailTemplate(env,record.brandId,record.templateId)).enabled===false)return 'Dit mailtemplate is uitgeschakeld.';
  if(record.marketing&&!record.test){
   if((await readMailSettings(env,record.brandId)).value.newsletterEnabled===false)return 'De nieuwsbriefmodule is uitgeschakeld.';
   if(!await store.stillSubscribed(record.accountId,record.recipientEmail,record.brandId))return 'Toestemming ontbreekt of is ingetrokken voor deze showwereld.';
   const campaign=record.campaignId?await store.get(record.campaignId):null;
   if(!campaign||campaign.kind!=='campaign'||campaign.brandId!==record.brandId||campaign.ownerId!==record.ownerId||!['prepared','sending','completed'].includes(campaign.status))return 'De campagne is niet meer geldig.';
-  if(env.ORDER_MAIL_DELIVERY?.supportsMarketing!==true)return 'De ingestelde gateway is nog niet vrijgegeven voor marketing.';
+  if(adapter?.supportsMarketing!==true)return 'De ingestelde gateway is nog niet vrijgegeven voor marketing.';
  }
  return '';
 }
@@ -53,13 +53,13 @@ export async function sendOutbox({env,id,fetcher=fetch,retry=false}){
  }
  if(before.status==='claimed'&&before.leaseUntil>now)return {id,status:'claimed',message:'Een andere worker bereidt dit bericht voor.'};
  if(before.status==='failed'&&!retry)return {id,status:'failed',message:before.error};
- const policy=await deliveryPolicy(env,before,store);
+ const resolved=await mailConfig(env),adapter=resolved.delivery,config=resolved.value;
+ const policy=await deliveryPolicy(env,before,store,adapter);
  if(policy){await store.mutate(id,r=>{if(['pending','claimed','failed'].includes(r.status)){r.status='blocked';r.leaseUntil=0;r.error=policy;}});return {id,status:'blocked',message:policy};}
- const adapter=env.ORDER_MAIL_DELIVERY;
- const config=(await mailConfig(env)).value;
  if(!adapter||typeof adapter.send!=='function'||!config.contactReady){
-  await store.mutate(id,r=>{if(['pending','claimed','failed'].includes(r.status)){r.status='failed';r.error='De mailgateway is nog niet ingesteld. Het bericht blijft bewaard.';}});
-  return {id,status:'failed',message:'Stel eerst de servergateway in.'};
+  const reason=config.deliveryReason||'De mailgateway is nog niet ingesteld. Het bericht blijft bewaard.';
+  await store.mutate(id,r=>{if(['pending','claimed','failed'].includes(r.status)){r.status='failed';r.error=reason;}});
+  return {id,status:'failed',message:reason};
  }
  let payload=await frozenPayload(env,id);
  if(!payload){const missing=await store.mutate(id,r=>{if(!['pending','failed'].includes(r.status)||r.uncertain||r.attempts>0||r.offeredAt||r.acceptedAt||r.providerId)return false;r.status='failed';r.payloadReady=false;r.error='De beveiligde berichtopslag ontbreekt.';return true;});return {id,status:missing.record.status,message:'De beveiligde berichtopslag ontbreekt.'};}
@@ -76,7 +76,7 @@ export async function sendOutbox({env,id,fetcher=fetch,retry=false}){
  if(!claim.result)return {id,status:claim.record.status,message:'Een andere verzendpoging is bezig.'};
  // A claimed lease can be recovered before contact. Offering is durably marked
  // before the only outbound call; an interrupted offering is always uncertain.
- const current=await store.get(id),latePolicy=await deliveryPolicy(env,current,store);
+ const current=await store.get(id),latePolicy=await deliveryPolicy(env,current,store,adapter);
  if(latePolicy){await store.mutate(id,r=>{if(r.attemptId===attemptId){r.status='blocked';r.leaseUntil=0;r.error=latePolicy;}});return {id,status:'blocked',message:latePolicy};}
  const offered=await store.mutate(id,r=>{if(r.attemptId!==attemptId||r.status!=='claimed'||r.leaseUntil<Date.now())return false;r.status='offering';r.attempts=(r.attempts||0)+1;r.offeredAt=Date.now();return true;});
  if(!offered.result)return {id,status:offered.record.status,message:'De verzendlease is verlopen.'};
@@ -159,6 +159,7 @@ export async function sendCampaignBatch({env,id,ownerId,brandId,confirm,origin,f
  if(confirm!==true)throw new MailError('Bevestig bewust de verzending naar de klaargezette doelgroep.');
  if(!(await readMailSettings(env,brandId)).value.newsletterEnabled)throw new MailError('De nieuwsbriefmodule is uitgeschakeld.',409);
  const store=new MailStore(env.DB),campaign=await ownedCampaign(store,id,ownerId,brandId);if(!['prepared','sending','completed'].includes(campaign.status))throw new MailError('Zet eerst de doelgroep klaar.',409);if(campaign.status==='completed')return {campaign:projectCampaign(campaign),processed:0,maxBatch:5};
+ const config=await mailConfig(env);if(!config.delivery||!config.value.contactReady)throw new MailError(config.value.deliveryReason||'Stel eerst een toegestane e-mailkoppeling in. De campagne blijft bewaard.',409,'mail_disabled');
  if((await readEffectiveMailTemplate(env,brandId,campaign.templateId)).enabled===false)throw new MailError('Dit mailtemplate is uitgeschakeld.',409);
  const context=await campaignContext(env,campaign,origin),leaseId=crypto.randomUUID();
  // A campaign lease prevents browser tabs sending different batches at once.

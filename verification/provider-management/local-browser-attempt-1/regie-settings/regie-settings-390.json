@@ -1,0 +1,80 @@
+{
+  "observedAt": "2026-11-11T12:40:55.340Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "simulatedAuthAndProviderTransport": true,
+  "otherApiTransportFixtures": true,
+  "actualAccountOrProviderAcceptance": false,
+  "actualRemoteBackendWrites": false,
+  "isolatedProviderSettingsWrites": true,
+  "savedShowBranch": true,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "6c38ec08-cc12-40b9-8a08-d454abe316d5",
+  "requestedMailState": 2,
+  "requestedSavedGame": 3,
+  "gets": {
+    "/api/auth/session": 2,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 2,
+    "/api/bingo/games/6c38ec08-cc12-40b9-8a08-d454abe316d5": 3,
+    "/api/mail/state": 2,
+    "/api/live-calls": 7,
+    "/api/bingo/games/6c38ec08-cc12-40b9-8a08-d454abe316d5/chat": 1,
+    "/api/bingo/games/6c38ec08-cc12-40b9-8a08-d454abe316d5/chat/stream": 43,
+    "/api/livekit/settings": 1,
+    "/api/resend/settings": 1
+  },
+  "mailResponses": [
+    503,
+    200
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [],
+  "unexpected": [],
+  "expectedSandboxScriptBlocks": 2,
+  "expectedMailLoadConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "expectedResendConsoleErrors": [],
+  "resendRequests": [
+    {
+      "method": "GET",
+      "action": null,
+      "keySubmission": "absent",
+      "revisionSupplied": false,
+      "settingsHeader": false,
+      "at": 1794400850021,
+      "status": 200,
+      "completedAt": 1794400850036
+    }
+  ],
+  "resendStatuses": [
+    {
+      "method": "GET",
+      "action": null,
+      "configured": false,
+      "keyConfigured": false,
+      "source": "none",
+      "disabled": false,
+      "revision": null,
+      "from": "",
+      "replyTo": "",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    }
+  ],
+  "providerRequests": [],
+  "forbiddenProviderRequests": [],
+  "providerChecks": {},
+  "fixtureCleanup": true
+}

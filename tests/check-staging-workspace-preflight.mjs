@@ -19,6 +19,7 @@ test('read-only workspace preflight opens both mail catalogues and redacted nati
  const result=await inspectWorkspace(env);
  assert.equal(result.status,'passed');assert.deepEqual(result.templates.map(row=>[row.brand,row.templateCount]),[['milo',17],['vlampie',17]]);
  assert.equal(result.providerSettingsEditable,true);assert.equal(result.storedCredentialsReturned,false);
+ assert.deepEqual(result.readableProviders,['openai','livekit','resend']);
  assert.equal(result.databaseWrites,0);assert.equal(result.objectWrites,0);assert.equal(result.providerRequests,0);assert.equal(result.realAccountLoginVerified,false);
  assert(!JSON.stringify(result).includes('sk-fixture'));assert(!JSON.stringify(result).includes(env.LIVEKIT_API_SECRET));
  assert.deepEqual(await readdir(join(env.directory,'objects')),before);

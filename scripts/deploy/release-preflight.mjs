@@ -203,4 +203,4 @@ async function main(){
  else if(operation==='verify')await verifyPublic(environment);
  else fail('Gebruik release-preflight.mjs ci|host|runtime|deploy|verify.');
 }
-if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))main().catch(cause=>{console.error(cause instanceof ReleaseError?cause.message:'Releasecontrole mislukt: controleer de beschikbare rootwrapper, toolchain, runnergrens en configuratienamen. Secretwaarden zijn niet getoond.');process.exitCode=1;});
+if(process.argv[1]?.endsWith('/release-preflight.mjs')&&resolve(process.argv[1])===fileURLToPath(import.meta.url))main().catch(cause=>{console.error(cause instanceof ReleaseError?cause.message:'Releasecontrole mislukt: controleer de beschikbare rootwrapper, toolchain, runnergrens en configuratienamen. Secretwaarden zijn niet getoond.');process.exitCode=1;});

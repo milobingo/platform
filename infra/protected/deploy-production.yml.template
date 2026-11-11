@@ -1,0 +1,106 @@
+name: Deploy Milo production
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Exact main SHA already accepted on staging
+        required: true
+        type: string
+      config_id:
+        description: Existing root-approved immutable production configuration
+        required: true
+        default: '__CONFIG_ID__'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: __SITE_ID__
+  cancel-in-progress: false
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      release_sha: ${{ steps.gate.outputs.release_sha }}
+      ci_run_url: ${{ steps.gate.outputs.ci_run_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+      - name: Require exact successful CI and the same healthy staging source
+        id: gate
+        env:
+          RELEASE_SHA: ${{ inputs.release_sha }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/deploy/protected-production-root-gate.mjs hosted --profile=infra/production/profile.json
+      - name: Validate protected configuration identifier
+        env:
+          CONFIG_ID: ${{ inputs.config_id }}
+        run: '[[ "$CONFIG_ID" =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$ ]]'
+
+  deploy:
+    needs: release-gate
+    environment:
+      name: production
+      url: __APP_URL__
+    runs-on: __RUNNER_LABELS__
+    timeout-minutes: 35
+    steps:
+      # No application checkout, provider secret, database secret or build
+      # configuration is exposed to the runner. Root repeats both release gates
+      # and requires its own five-check staging acceptance record before build.
+      - name: Verify the fixed production runner and installed broker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = '__HOST__'
+          test "$(id -un)" = '__RUNNER_USER__'
+          test "$RUNNER_NAME" = '__RUNNER_NAME__'
+          test -x __ENTRY__
+      - name: Build and activate with protected production settings
+        env:
+          RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+          RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          CONFIG_ID: ${{ inputs.config_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            set +e
+            /opt/node-v24.18.0-linux-x64/bin/node -e 'process.stdout.write(JSON.stringify({githubToken:process.env.GITHUB_TOKEN}))' | __ENTRY__ deploy "$RELEASE_SHA" "$RELEASE_ID" "$CONFIG_ID"
+            result=$?
+            set -e
+            if test "$result" = 0; then exit 0; fi
+            if test "$result" != 75 || test "$attempt" = 4; then exit "$result"; fi
+            sleep "$((attempt * 15))"
+          done
+
+  verify-public:
+    needs: [release-gate, deploy]
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ needs.release-gate.outputs.release_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+      - name: Verify exact public production release and access boundaries
+        env:
+          RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
+          RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          CONFIG_ID: ${{ inputs.config_id }}
+        run: node scripts/deploy/protected-production-root-gate.mjs public --profile=infra/production/profile.json

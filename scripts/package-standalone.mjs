@@ -1,6 +1,8 @@
-import {cp, readdir, access, rm, realpath} from 'node:fs/promises';
+import {cp, readdir, access, rm, realpath, mkdir, writeFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {resolve, relative, isAbsolute, sep} from 'node:path';
+import {build} from 'esbuild';
+import {loadManifest} from './deploy/database.mjs';
 
 // Next's standalone server omits public/static assets by design. Include them
 // in each native release so Caddy only needs to proxy the loopback Node port.
@@ -25,4 +27,9 @@ for (const dependency of ['pg', 'ws']) {
   const location = relative(root, canonicalPath);
   if (location === '..' || location.startsWith(`..${sep}`) || isAbsolute(location)) throw new Error(`Standalone-dependency ${dependency} ontbreekt in het releaseartefact.`);
 }
-console.log('Native standalone-release compleet: server, pg/ws, public, static en lokale SQLite-migraties.');
+// Run the release's own read-only backend checks as the unprivileged app user,
+// before activation. Runtime credentials never enter this build environment.
+await mkdir(`${root}/.milo`, {recursive:true});
+await build({entryPoints:['scripts/deploy/runtime-audit.mjs'],outfile:`${root}/.milo/runtime-audit.mjs`,bundle:true,platform:'node',format:'esm',target:'node24',packages:'external',logLevel:'warning'});
+await writeFile(`${root}/.milo/schema-tables.json`,JSON.stringify([...(await loadManifest()).tables.keys()].sort())+'\n');
+console.log('Native standalone-release compleet: server, pg/ws, public, static, SQLite-migraties en read-only runtimecontrole.');

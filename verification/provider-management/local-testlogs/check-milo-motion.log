@@ -1,0 +1,23 @@
+✔ all Milo performances sample finite, bounded, continuous poses including both magic acts (425.968049ms)
+✔ greeting visibly raises Milo’s hand and animates elbow and wrist independently (0.447438ms)
+✔ clapping brings actual palms together in front of the waistcoat (0.245512ms)
+✔ high energy preserves the physical clap and chin destinations (1.128068ms)
+✔ gesture blend returns to the same ongoing idle phase at both cue edges (1.08955ms)
+✔ talking adds slow expressive gesture beats and respects an active choreography (0.295318ms)
+✔ magical choreography follows two distinct acts rather than one looping hand pose (0.21791ms)
+✔ the critically damped pose settles without snapping, freezes exactly and allows deterministic seeking (3.000024ms)
+✔ reduced motion and zero energy freeze the full skeleton while leaving facial audio independent (0.481059ms)
+✔ walking alternates planted feet and raised swing legs without stretching their source geometry (9.859183ms)
+✔ walking is continuous at every contact and can follow the travelled distance in either direction (0.829567ms)
+✔ walk stride and energy settle safely without destroying the inverse-kinematic foot destinations (1.001918ms)
+✔ long idle acting stays continuous and non-repeating across many episode boundaries (61.474549ms)
+✔ conversation has expressive phrases separated by quieter rests (7.89016ms)
+✔ contextual attention follows a guest gently and yields to exact choreographed cues (0.682956ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 521.306327

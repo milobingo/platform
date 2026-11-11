@@ -1,0 +1,50 @@
+{
+  "format": "milo-protected-broker-v1",
+  "installed": false,
+  "policyComplete": true,
+  "site": "milobingo-staging",
+  "host": "dg-nxttrack-01",
+  "port": 4173,
+  "runtimeBundles": "/etc/dg-sites/milobingo-staging/configs/<config_id>/runtime.json",
+  "legacyDependency": {
+    "path": "/usr/local/libexec/dg-milobingo-deploy-helper",
+    "sha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8"
+  },
+  "files": {
+    "/usr/local/libexec/dg-milo-deploy-helper": {
+      "sha256": "4afcc454f95efb00e44991b587fbccbf539dcc63385e741f4e9adce5fabaac48",
+      "bytes": 24308,
+      "mode": "0755"
+    },
+    "/usr/local/libexec/milo-protected-release-gate.mjs": {
+      "sha256": "537ed06a96d51c06ae25b99f4d0a62e67b3b117f49c3c3eed8ccfc7bcfccaf2e",
+      "bytes": 8862,
+      "mode": "0644"
+    },
+    "/usr/local/libexec/milo-protected-extract-source.py": {
+      "sha256": "f3c014830bd6134cbbd2561a79163267509a270cab42f916f55a9b5373532e72",
+      "bytes": 6011,
+      "mode": "0755"
+    },
+    "/usr/local/libexec/milo-protected-lock-guardian.py": {
+      "sha256": "5d5bbdc90bbb9ab6ea57514bcfd313de7f478323a6e36cd85a1f403730077c36",
+      "bytes": 6094,
+      "mode": "0755"
+    },
+    "/usr/local/bin/dg-milo-deploy": {
+      "sha256": "486ae60897be3192ad2c19a8cc75f9e52a3c9d89dcaf10baf454f357a8511e34",
+      "bytes": 2446,
+      "mode": "0755"
+    },
+    "/etc/sudoers.d/milobingo-protected-deploy": {
+      "sha256": "4c6bd6a257c1b41ebc742b9b9981b08735a8ec01f4f33960d313794a84c38503",
+      "bytes": 228,
+      "mode": "0440"
+    },
+    "/etc/dg-sites/milobingo-staging/protected-deploy.json": {
+      "sha256": "6ec63283fcbca09489061393cd1c3b80c5459557c53790932af320d3a53a7dad",
+      "bytes": 636,
+      "mode": "0600"
+    }
+  }
+}

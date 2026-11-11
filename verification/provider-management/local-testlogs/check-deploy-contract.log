@@ -1,0 +1,19 @@
+✔ release selection accepts only a complete immutable source SHA (1.164283ms)
+✔ reviewed native entry transitively pins its exact helper before database apply (1.337896ms)
+✔ CI proof binds successful required workflow to its own repository, branch and exact SHA (1.195991ms)
+✔ a later failed CI run cannot be hidden behind an older passing run or a pull request run (0.508219ms)
+✔ dedicated runner and wrapper configuration fail closed on identity or unreviewed metadata (0.665288ms)
+✔ runtime configuration is staging-only, keeps all privileged keys server-side and forces loopback (2.496801ms)
+✔ release metadata and local-mode overrides cannot override a verified runtime boundary (0.31025ms)
+✔ DG wrapper receives only approved runtime keys and basic process metadata (0.624175ms)
+✔ normal deployment exposes no project secrets and builds only through the protected root broker (1.397286ms)
+✔ runtime accepts the separate backend LOGIN and rejects administrative role flags and memberships (0.499076ms)
+✔ runtime database verification uses verified TLS and read-only role/table checks before releasing the connection (1.522266ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19.107459

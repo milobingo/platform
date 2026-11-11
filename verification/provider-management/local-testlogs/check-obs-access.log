@@ -1,0 +1,68 @@
+✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (53.98744ms)
+✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (34.463149ms)
+✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (35.25016ms)
+✔ output projection contains programme visuals only; another show produces waiting state and no voice access (27.297115ms)
+✔ OBS can retrieve only the current published voice clip and never create a paid voice request (27.989934ms)
+✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (40.14931ms)
+✔ malformed durable access metadata fails closed without provider or Auth contact (34.969926ms)
+✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (25.319358ms)
+✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (49.071073ms)
+✔ queued realtime rechecks revoked capability and aborted request before any provider start (109.115086ms)
+✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (81.529354ms)
+✔ revocation during ready CAS closes the durably known session and leaves the draw hold (40.438228ms)
+✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (39.76674ms)
+﹣ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (0.075023ms) # SKIP
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 605.890335
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}

@@ -1,0 +1,6 @@
+Standalone-test: pg/ws bevinden zich in het naar een tijdelijke map verplaatste artefact.
+▲ Next.js 16.4.5
+- Local:         http://127.0.0.1:4175
+- Network:       http://127.0.0.1:4175
+✓ Ready in 0ms
+✓ Running next.config took 1.2ms

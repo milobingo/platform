@@ -1,0 +1,20 @@
+✔ protected production refuses incomplete profiles, unverified account metadata and unsafe or missing immutable config IDs (6.665205ms)
+✔ review bundle binds production paths, root profile pin, helper hashes and source provenance without GitHub secrets or runtime variables (35.491285ms)
+✔ production binding replaces original template bytes once even when confirmed target strings contain staging tokens (13.99063ms)
+✔ rendered Python preserves infrastructure validation while rejecting delivery env and keeps settings mode out of runtime.json (1020.322809ms)
+✔ unreviewed protected source drift refuses rendering rather than silently installing altered root code (13.241625ms)
+✔ root production gate accepts exact green CI, own running workflow and actual same-SHA staging with five separately recorded checks (26.318493ms)
+✔ latest CI, exact jobs, main ancestry and own in-progress production attempt are independently required (13.373565ms)
+✔ actual staging run, health, all three job identities and full five-check root record cannot be substituted or inferred (11.248076ms)
+✔ hosted gate may report pending root acceptance but cannot manufacture the five-check root receipt (2.177729ms)
+✔ the actual installed gate subprocess has one production CLI and consumes stdin without running the staging CLI (54.572806ms)
+✔ root-only record reader refuses a runner-owned file or symbolic path rather than accepting writable evidence (1.55158ms)
+✔ public production verifier binds health to the chosen config ID and preserves anonymous auth/asset checks without providers (22.011509ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1294.239117

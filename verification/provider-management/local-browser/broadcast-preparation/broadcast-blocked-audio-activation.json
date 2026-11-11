@@ -1,0 +1,221 @@
+{
+  "observedAt": "2026-11-11T12:43:44.461Z",
+  "actualBrowserRendering": true,
+  "actualWebAudio": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "remainingOBSCheck": "Controleer op een echte OBS-installatie de Browserbronmixer en luister een korte proefopname met beeld en testgeluid terug.",
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "32849885-457d-4e60-9d77-c24da11699e6",
+  "outputOnly": true,
+  "requests": [
+    {
+      "path": "/api/obs/session",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    }
+  ],
+  "producerActions": [],
+  "heartbeats": [
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794401023565,
+      "testAck": {
+        "id": "85709bfb-f38d-4825-83a4-04092a14d963",
+        "status": "played",
+        "at": 1794401023565,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794401023565,
+      "testAck": {
+        "id": "85709bfb-f38d-4825-83a4-04092a14d963",
+        "status": "played",
+        "at": 1794401023565,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794401023565,
+      "testAck": {
+        "id": "85709bfb-f38d-4825-83a4-04092a14d963",
+        "status": "played",
+        "at": 1794401023565,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    }
+  ],
+  "leaseHeartbeats": [],
+  "forbiddenWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedNetworkErrors": [],
+  "initialGameState": {
+    "phase": "running",
+    "blockIndex": 3,
+    "roundIndex": 0,
+    "goalIndex": 0,
+    "goalOpenedAt": 0,
+    "epoch": "267ed344-6b43-44d8-afd8-731948641d8b",
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "history": [],
+    "deck": [
+      5,
+      66,
+      32,
+      33,
+      45,
+      42,
+      19,
+      34,
+      13,
+      39,
+      71,
+      14,
+      38,
+      25,
+      30,
+      69,
+      12,
+      53,
+      20,
+      48,
+      61,
+      62,
+      74,
+      47,
+      24,
+      29,
+      52,
+      10,
+      64,
+      51,
+      36,
+      31,
+      55,
+      8,
+      18,
+      70,
+      27,
+      60,
+      15,
+      68,
+      73,
+      46,
+      58,
+      3,
+      75,
+      57,
+      63,
+      50,
+      41,
+      17,
+      72,
+      49,
+      65,
+      22,
+      4,
+      54,
+      9,
+      6,
+      16,
+      23,
+      40,
+      35,
+      44,
+      11,
+      56,
+      1,
+      28,
+      21,
+      7,
+      2,
+      59,
+      67,
+      26,
+      37,
+      43
+    ],
+    "pending": null,
+    "window": {
+      "id": "qa-open-bingo",
+      "status": "open",
+      "startedAt": 1794401020342,
+      "endsAt": 1794401621342,
+      "announcements": [],
+      "claims": []
+    },
+    "windowSequence": 0,
+    "resultId": null,
+    "goalWon": false,
+    "paused": true,
+    "lastCommit": {
+      "number": 41,
+      "committedAt": 1794401001342
+    },
+    "drawClock": {
+      "intervalMs": 15000,
+      "nextAt": 1794401036341
+    }
+  }
+}

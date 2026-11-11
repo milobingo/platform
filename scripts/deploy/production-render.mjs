@@ -25,7 +25,19 @@ export async function renderProductionBundle(profile,{sourceRoot=root}={}){
  const rolePolicy=`    runtime_role = ${JSON.stringify(paths.runtimeRole)}\n    database_user = unquote(database.username)\n    require(database.port in [None, 5432] and ((database.hostname == f'db.{ref}.supabase.co' and database_user == runtime_role) or (database.hostname.endswith('.pooler.supabase.com') and database_user == runtime_role + '.' + ref)), 'Wrong limited production database principal or port')\n`;
  helper=change(helper,'    params = parse_qs(database.query, keep_blank_values=True)',rolePolicy+'    params = parse_qs(database.query, keep_blank_values=True)');
 
- const mail=`    require(all(values.get(key, '').strip() for key in ['OPENAI_API_KEY', 'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET']), 'Missing production AI or live-call credentials')\n    require(values.get('MAIL_ENVIRONMENT') == 'production' and values.get('MAIL_MODE') == ${JSON.stringify(p.mailMode)}, 'Wrong production mail policy')\n    if values.get('MAIL_MODE') != 'disabled':\n        secret = values.get('SEND_EMAIL_HOOK_SECRET', '')\n        if secret.startswith('v1,'): secret = secret[3:]\n        if secret.startswith('whsec_'): secret = secret[6:]\n        decoded = base64.b64decode(secret, validate=True)\n        require(len(decoded) >= 32 and base64.b64encode(decoded).decode() == secret, 'Invalid mail signing secret')\n        if values.get('MAIL_MODE') == 'allowlist':\n            recipients = [value.strip() for value in values.get('MAIL_ALLOWED_RECIPIENTS', '').split(',') if value.strip()]\n            require(1 <= len(recipients) <= 100 and all(len(value) <= 320 and re.fullmatch(r'[^\\s@]+@[^\\s@]+\\.[^\\s@]+', value) for value in recipients), 'Invalid approved mail recipients')\n`;
+ const mail=`    require(values.get('MAIL_ENVIRONMENT') == 'production' and values.get('MAIL_MODE') == ${JSON.stringify(p.mailMode)}, 'Wrong production mail policy')
+    # Providers are managed in encrypted beheer settings; environment values
+    # are optional compatibility fallbacks, not a hosting requirement.
+    if values.get('MAIL_MODE') != 'disabled' and values.get('SEND_EMAIL_HOOK_SECRET'):
+        secret = values['SEND_EMAIL_HOOK_SECRET']
+        if secret.startswith('v1,'): secret = secret[3:]
+        if secret.startswith('whsec_'): secret = secret[6:]
+        decoded = base64.b64decode(secret, validate=True)
+        require(len(decoded) >= 32 and base64.b64encode(decoded).decode() == secret, 'Invalid mail signing secret')
+    if values.get('MAIL_MODE') == 'allowlist':
+        recipients = [value.strip() for value in values.get('MAIL_ALLOWED_RECIPIENTS', '').split(',') if value.strip()]
+        require(1 <= len(recipients) <= 100 and all(len(value) <= 320 and re.fullmatch(r'[^\\s@]+@[^\\s@]+\\.[^\\s@]+', value) for value in recipients), 'Invalid approved mail recipients')
+`;
  helper=change(helper,'    return {key: values[key] for key in RUNTIME_KEYS if values.get(key, \'\') != \'\'}',mail+'    return {key: values[key] for key in RUNTIME_KEYS if values.get(key, \'\') != \'\'}');
  helper=helper.replace('\n',`\n# Bound production profile SHA256: ${profileDigest(p)}\n`);
  const helperDigest=sha256(helper);

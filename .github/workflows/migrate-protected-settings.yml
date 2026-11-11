@@ -1,0 +1,47 @@
+name: Move existing Milo admin settings to protected VPS storage
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Exact main SHA with successful CI for this one-time handoff
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: milobingo-staging
+  cancel-in-progress: false
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+      - name: Require exact successful main CI
+        env:
+          RELEASE_SHA: ${{ inputs.release_sha }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/deploy/release-preflight.mjs ci
+  transfer:
+    needs: release-gate
+    timeout-minutes: 5
+    environment: staging
+    runs-on: [self-hosted, Linux, X64, dg-nxttrack-01, milobingo, staging]
+    steps:
+      - name: Transfer only existing management credentials to the fixed protected destination
+        env:
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(hostname)" = dg-nxttrack-01
+          test "$(id -un)" = run-mil-stg
+          test "$RUNNER_NAME" = dg-nxttrack-01-nxttrack-staging
+          /opt/node-v24.18.0-linux-x64/bin/node -e 'process.stdout.write(JSON.stringify({MIGRATION_DATABASE_URL:process.env.MIGRATION_DATABASE_URL,BACKUP_ENCRYPTION_KEY:process.env.BACKUP_ENCRYPTION_KEY}))' | sudo -n /usr/local/libexec/dg-milo-move-admin-secrets

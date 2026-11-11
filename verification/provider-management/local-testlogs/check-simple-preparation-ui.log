@@ -1,0 +1,16 @@
+✔ Milo shows one preparation route, all ten shared price steps and a quiet rules preview without manual save or publication (291.373093ms)
+✔ a real failed autosave keeps every input and is retried only by the explicit retry control (28.105417ms)
+✔ a conflicting draft is replaced only after the explicit second confirmation and cancel preserves its input (29.363825ms)
+✔ a dirty start invokes one preparation-aware action and never asks for a separate save or publication (17.228013ms)
+✔ standard rules are offered only for an unbound deviating concept and never overwrite a running show (24.972133ms)
+✔ Hervat regie remains available for an existing window or call hold and uses the recovery action without start (15.714351ms)
+✔ Uitzending testen separates connection, actual audio and the operator OBS checks and provides both capture routes (39.176687ms)
+✔ Milo preparation status cannot appear in the separate Vlampie environment (6.812097ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458.328062

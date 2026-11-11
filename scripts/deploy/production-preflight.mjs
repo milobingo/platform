@@ -32,7 +32,7 @@ export function validateProductionStagingAcceptance(raw,{releaseSha,stagingRunId
  return {source:'protected-production-environment-record',observedAt:value.observedAt,checks:STAGING_ACCEPTANCE_CHECKS,digest:sha256(JSON.stringify(value))};
 }
 export async function productionReleaseGate(profile,env,{fetcher=fetch}={}){
- validateProductionProfile(profile);requireProfilePin(profile,env.DG_PRODUCTION_PROFILE_SHA256);if(profile.mailMode==='disabled')fail('Productiemail is nog uitgeschakeld; volledige staging-/gatewayacceptatie en productieconfiguratie zijn vereist.');const releaseSha=sha(env.RELEASE_SHA),id=runId(env.STAGING_RUN_ID);
+ validateProductionProfile(profile);requireProfilePin(profile,env.DG_PRODUCTION_PROFILE_SHA256);const releaseSha=sha(env.RELEASE_SHA),id=runId(env.STAGING_RUN_ID);
  if(env.GITHUB_REPOSITORY!=='milobingo/platform'||env.GITHUB_REF!=='refs/heads/main'||env.GITHUB_EVENT_NAME!=='workflow_dispatch'||!env.GITHUB_TOKEN)fail('Productie vereist de eigen handmatige main-workflow en een beperkt GitHub-leestoken.');
  const api=async path=>{const response=await fetcher('https://api.github.com/repos/milobingo/platform'+path,{headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+env.GITHUB_TOKEN,'X-GitHub-Api-Version':'2022-11-28'},redirect:'error',signal:AbortSignal.timeout(20000)});if(!response.ok)fail('Het vereiste GitHub-bronbewijs kon niet worden gecontroleerd.');return response.json();};
  const comparison=await api(`/compare/${releaseSha}...main`);if(!['ahead','identical'].includes(comparison.status))fail('De productiesource behoort niet tot de eigen main-historie.');
@@ -59,12 +59,16 @@ export function validateProductionRuntime(profile,values,{releaseSha,releaseId}=
  const user=decodeURIComponent(database.username),direct=database.hostname===`db.${p.supabaseRef}.supabase.co`&&user===paths.runtimeRole,pooled=database.hostname.endsWith('.pooler.supabase.com')&&user===`${paths.runtimeRole}.${p.supabaseRef}`;
  if(!['postgres:','postgresql:'].includes(database.protocol)||!database.password||database.pathname==='/'||database.hash||database.port&&database.port!=='5432'||!direct&&!pooled||database.searchParams.getAll('sslmode').length!==1||database.searchParams.get('sslmode')!=='verify-full'||[...database.searchParams.keys()].some(key=>(/^ssl/i.test(key)||key.toLowerCase()==='uselibpqcompat')&&key!=='sslmode'))fail('Gebruik uitsluitend de eigen beperkte productierol op het bevestigde project met verify-full.');
  try{postgresTlsOptions(runtime.DATABASE_URL,{caBase64:runtime.SUPABASE_DB_CA_BASE64});}catch{fail('De productiedatabase voldoet niet aan het geverifieerde TLS-contract.');}
- const providers=['OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'];if(providers.some(key=>!runtime[key]?.trim()))fail('De volledige productieversie vereist de centrale OpenAI-koppeling en alle LiveKit-servergegevens.');
+ // Hosting and encrypted beheer settings are independent. A newly installed
+ // app must be reachable before the organizer adds provider credentials.
+ // Existing environment fallbacks remain valid, but are never required.
  const live=['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'];if(live.some(key=>runtime[key])&&!live.every(key=>runtime[key]))fail('De productie-LiveKitconfiguratie is onvolledig.');
  if(runtime.LIVEKIT_URL){let url;try{url=new URL(runtime.LIVEKIT_URL);}catch{fail('Ongeldige productie-LiveKitorigin.');}if(url.protocol!=='wss:'||!url.hostname.endsWith('.livekit.cloud')||url.username||url.password||url.port||url.pathname!=='/'||url.search||url.hash)fail('Gebruik de eigen LiveKit Cloud-origin.');}
- if(p.mailMode!=='disabled'&&!createOrderMailDelivery(runtime))fail('De gekozen productiemailmodus mist geldige gatewayconfiguratie.');
+ if(p.mailMode==='allowlist'&&!validRecipients(runtime.MAIL_ALLOWED_RECIPIENTS))fail('De ingestelde serverlimiet voor mail vereist geldige testontvangers.');
+ if(p.mailMode!=='disabled'&&runtime.SEND_EMAIL_HOOK_SECRET&&!createOrderMailDelivery(runtime))fail('De bestaande DG-mailgatewayconfiguratie is ongeldig.');
  return Object.fromEntries(PRODUCTION_RUNTIME_KEYS.filter(key=>runtime[key]!==undefined&&runtime[key]!=='').map(key=>[key,runtime[key]]));
 }
+function validRecipients(value){const recipients=String(value||'').split(',').map(item=>item.trim()).filter(Boolean);return recipients.length>0&&recipients.length<=100&&recipients.every(item=>item.length<=320&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item));}
 export function productionWrapperEnvironment(runtime,env={}){
  if(Object.keys(runtime).some(key=>!PRODUCTION_RUNTIME_KEYS.includes(key)))fail('Onbekende productie-runtimekey.');
  const processKeys=['PATH','HOME','USER','LOGNAME','LANG','LC_ALL','TMPDIR'];return {...Object.fromEntries(processKeys.filter(key=>env[key]!==undefined).map(key=>[key,env[key]])),...runtime,CI:'true',DG_BUILD_ENV_KEYS:'',DG_RUNTIME_ENV_KEYS:Object.keys(runtime).join(' ')};

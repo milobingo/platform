@@ -1,0 +1,39 @@
+test_entry_passes_token_only_stdin_and_drops_inherited_provider_environment (__main__.EntryBoundary.test_entry_passes_token_only_stdin_and_drops_inherited_provider_environment) ... ok
+test_fixed_arguments_match_entry_and_helper (__main__.EntryBoundary.test_fixed_arguments_match_entry_and_helper) ... ok
+test_only_bounded_unique_token_stdin_is_accepted (__main__.EntryBoundary.test_only_bounded_unique_token_stdin_is_accepted) ... ok
+test_real_untrusted_or_symlinked_paths_are_rejected (__main__.EntryBoundary.test_real_untrusted_or_symlinked_paths_are_rejected) ... ok
+test_build_client_holds_locks_and_executes_without_inherited_runtime (__main__.IsolationAndLocks.test_build_client_holds_locks_and_executes_without_inherited_runtime) ... {"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+ok
+test_build_failure_stops_actual_unit_and_uncertain_cleanup_fails_closed (__main__.IsolationAndLocks.test_build_failure_stops_actual_unit_and_uncertain_cleanup_fails_closed) ... {"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+{"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+ok
+test_candidate_audit_runs_as_app_with_protected_envfile_path_and_no_secret_cli (__main__.IsolationAndLocks.test_candidate_audit_runs_as_app_with_protected_envfile_path_and_no_secret_cli) ... ok
+test_guardian_drains_only_own_build_audit_and_app_jobs (__main__.IsolationAndLocks.test_guardian_drains_only_own_build_audit_and_app_jobs) ... ok
+test_guardian_start_uses_only_lock_descriptors_and_waits_for_manager_ready (__main__.IsolationAndLocks.test_guardian_start_uses_only_lock_descriptors_and_waits_for_manager_ready) ... ok
+test_only_fixed_app_service_operations_keep_controller_locks (__main__.IsolationAndLocks.test_only_fixed_app_service_operations_keep_controller_locks) ... ok
+test_real_ofd_locks_survive_controller_death_until_guardian_job_drain (__main__.IsolationAndLocks.test_real_ofd_locks_survive_controller_death_until_guardian_job_drain) ... ok
+test_bundle_forbids_derived_values_injections_admin_and_mail_policy (__main__.ProtectedConfiguration.test_bundle_forbids_derived_values_injections_admin_and_mail_policy) ... ok
+test_bundle_preserves_infrastructure_key_and_provider_fallbacks_without_github (__main__.ProtectedConfiguration.test_bundle_preserves_infrastructure_key_and_provider_fallbacks_without_github) ... ok
+test_configuration_directory_cannot_be_group_readable (__main__.ProtectedConfiguration.test_configuration_directory_cannot_be_group_readable) ... ok
+test_private_json_rejects_world_readable_duplicate_hardlink_and_symlink (__main__.ProtectedConfiguration.test_private_json_rejects_world_readable_duplicate_hardlink_and_symlink) ... ok
+test_provider_keys_are_optional_and_new_beheer_configuration_does_not_block_deploy (__main__.ProtectedConfiguration.test_provider_keys_are_optional_and_new_beheer_configuration_does_not_block_deploy) ... ok
+test_wrong_project_tls_partial_livekit_and_unknown_config_fail_closed (__main__.ProtectedConfiguration.test_wrong_project_tls_partial_livekit_and_unknown_config_fail_closed) ... ok
+test_policy_binds_installed_code_hashes_real_account_ids_and_private_builder_groups (__main__.ReleaseContract.test_policy_binds_installed_code_hashes_real_account_ids_and_private_builder_groups) ... ok
+test_renderer_pins_every_new_root_component_and_keeps_legacy_dependency_unchanged (__main__.ReleaseContract.test_renderer_pins_every_new_root_component_and_keeps_legacy_dependency_unchanged) ... ok
+test_rootgate_proves_fixed_ci_latest_attempt_current_dispatch_and_hides_token (__main__.ReleaseContract.test_rootgate_proves_fixed_ci_latest_attempt_current_dispatch_and_hides_token) ... ok
+test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart (__main__.ReleaseSimulation.test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart) ... ok
+test_failed_candidate_health_restores_real_previous_app_and_original_config (__main__.ReleaseSimulation.test_failed_candidate_health_restores_real_previous_app_and_original_config) ... ok
+test_real_seal_audits_before_atomic_activation_and_binds_private_configuration (__main__.ReleaseSimulation.test_real_seal_audits_before_atomic_activation_and_binds_private_configuration) ... ok
+test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release (__main__.ReleaseSimulation.test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release) ... ok
+test_download_exact_github_source_has_no_credential_in_url_or_file (__main__.SourceBoundary.test_download_exact_github_source_has_no_credential_in_url_or_file) ... ok
+test_download_never_sends_token_to_cross_host_or_wrong_commit_redirect (__main__.SourceBoundary.test_download_never_sends_token_to_cross_host_or_wrong_commit_redirect) ... ok
+test_source_extraction_enforces_real_bytes_and_file_budget (__main__.SourceBoundary.test_source_extraction_enforces_real_bytes_and_file_budget) ... ok
+test_source_extraction_refuses_traversal_env_secrets_hardlinks_and_duplicate_members (__main__.SourceBoundary.test_source_extraction_refuses_traversal_env_secrets_hardlinks_and_duplicate_members) ... ok
+test_source_extraction_strips_only_top_level_wrapper_and_checks_internal_links (__main__.SourceBoundary.test_source_extraction_strips_only_top_level_wrapper_and_checks_internal_links) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.772s
+
+OK
+{"deployment": "passed", "version": 1, "site": "milobingo-staging", "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "releaseId": "42051941726-1"}
+{"deployment": "passed", "version": 1, "site": "milobingo-staging", "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "releaseId": "42051941726-1"}

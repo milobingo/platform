@@ -30,11 +30,17 @@ export default function OpenAISettings({s,engine,request=apiJSON}){
    if(action==='save')setKey('');
    const next=await request('status',undefined,AbortSignal.timeout(15000));
    if(alive.current&&token===epoch.current){accept(next);setNotice(result.message||(action==='save'?'Sleutel versleuteld opgeslagen. Test nu de opgeslagen koppeling.':action==='remove'?'De OpenAI-koppeling is uitgeschakeld.':action==='environment'?'De serverinstellingen worden weer gebruikt.':'De serververbinding is gecontroleerd.'));}
-  }catch(e){if(alive.current&&token===epoch.current)setError(e.message||'De wijziging is niet bevestigd. Herlaad de instellingen.');}
+  }catch(e){
+   if(alive.current&&token===epoch.current&&action==='test'){
+    setStatus(previous=>previous?{...previous,connectionTest:{tested:false,testedAt:null}}:previous);
+    try{const next=await request('status',undefined,AbortSignal.timeout(15000));if(alive.current&&token===epoch.current)accept({...next,connectionTest:{tested:false,testedAt:next.connectionTest?.testedAt||null}});}catch{}
+   }
+   if(alive.current&&token===epoch.current)setError(e.message||'De wijziging is niet bevestigd. Herlaad de instellingen.');
+  }
   finally{locked.current=false;if(alive.current&&token===epoch.current)setBusy('');}
  };
- const configured=!!status?.configured,canManage=status?.canManage===true;
- return <Panel title="Globale OpenAI-koppeling" subtitle="Eén gedeelde sleutel voor alle producties." action={<Badge tone={configured?'green':'amber'} dot>{configured?'Sleutel aanwezig':'Nog niet ingesteld'}</Badge>}>
+ const configured=!!status?.configured,canManage=status?.canManage===true,tested=status?.connectionTest?.tested===true;
+ return <Panel title="Globale OpenAI-koppeling" subtitle="Eén gedeelde sleutel voor alle producties." action={<Badge tone={tested?'green':configured?'purple':'amber'} dot>{tested?'Sleutel gecontroleerd':configured?'Sleutel aanwezig · nog testen':'Nog niet ingesteld'}</Badge>}>
   <div className="mf-editor-content">
    <div className="mf-key-visual"><span><KeyRound size={27}/></span><div><h3>{s?.production==='vlampie'?'Eén sleutel. Vlampies eigen stem.':'Eén sleutel. Twaalf eigen stemmen.'}</h3><p>Beheer de centrale OpenAI-sleutel hier. Ieder personage behoudt zijn eigen stemprofiel en karakterboek.</p></div></div>
    {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
@@ -46,6 +52,7 @@ export default function OpenAISettings({s,engine,request=apiJSON}){
      </Field>
      <Button type="submit" icon={Save} disabled={!!busy||!key.trim()}>{busy==='save'?'Veilig opslaan…':'Sleutel veilig opslaan'}</Button>
     </form>:<p>De beveiligde instellingenopslag is niet beschikbaar. De aanwezige koppeling kan wel worden getest.</p>}
+    {status.connectionTest?.testedAt&&<p>Laatste sleutelcontrole: {new Date(status.connectionTest.testedAt).toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'})} · {tested?'bevestigd':'niet bevestigd'}. Beluister apart de stemproef voor het geluid.</p>}
     <div className="mf-editor-actions">
      <Button icon={RefreshCw} disabled={!!busy||!configured||!!key.trim()} onClick={()=>perform('test')}>{busy==='test'?'Verbinding testen…':'Test verbinding'}</Button>
      <Button icon={Mic} disabled={!!busy||!configured||!!key.trim()} onClick={()=>perform('live-test')}>Test GPT-Live-toegang</Button>

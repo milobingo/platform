@@ -1,0 +1,42 @@
+{
+  "observedAt": "2026-11-11T12:40:45.169Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "33ce4b1b-5c80-4432-8f24-d253407b4e3f",
+  "gets": {
+    "/api/auth/session": 1,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 1,
+    "/api/bingo/games/33ce4b1b-5c80-4432-8f24-d253407b4e3f": 1,
+    "/api/obs/access": 1,
+    "/api/live-calls": 1,
+    "/api/bingo/games/33ce4b1b-5c80-4432-8f24-d253407b4e3f/chat": 1,
+    "/api/bingo/games/33ce4b1b-5c80-4432-8f24-d253407b4e3f/chat/stream": 1
+  },
+  "fixtureMutations": [
+    {
+      "method": "POST",
+      "path": "/api/obs/access",
+      "action": "create",
+      "gameId": "33ce4b1b-5c80-4432-8f24-d253407b4e3f",
+      "expectedAccessId": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/obs/access",
+      "action": "revoke",
+      "gameId": "33ce4b1b-5c80-4432-8f24-d253407b4e3f",
+      "expectedAccessId": "qa-obs-capability"
+    }
+  ],
+  "blockedWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": []
+}

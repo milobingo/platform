@@ -43,12 +43,14 @@ test('rendered production wrapper pins reviewed source and enforces fixed target
  assert.equal(execFileSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(values),encoding:'utf8'}).trim(),'native-policy-passed');
  for(const change of [
   {MAIL_ENVIRONMENT:'staging'},
-  {OPENAI_API_KEY:''},{LIVEKIT_URL:''},{LIVEKIT_API_KEY:''},{LIVEKIT_API_SECRET:''},
+  {LIVEKIT_URL:''},{LIVEKIT_API_KEY:''},{LIVEKIT_API_SECRET:''},
   {DATABASE_URL:values.DATABASE_URL.replace(productionPaths(profile).runtimeRole+':','postgres:')},
   {DATABASE_URL:values.DATABASE_URL.replace(':5432/',':6543/')},
   {DATABASE_URL:values.DATABASE_URL.replace('db.'+profile.supabaseRef+'.supabase.co','aws-fixture.pooler.supabase.com')},
   {DATABASE_URL:values.DATABASE_URL+'&host=attacker.example'},
  ]){const invalid={...values,...change};assert.notEqual(spawnSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(invalid),encoding:'utf8'}).status,0);}
+ const withoutProviders={...values};for(const key of ['OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SEND_EMAIL_HOOK_SECRET'])delete withoutProviders[key];
+ assert.equal(execFileSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(withoutProviders),encoding:'utf8'}).trim(),'native-policy-passed','The beheeromgeving must start before providers are configured');
  const pooled={...values,DATABASE_URL:values.DATABASE_URL.replace(productionPaths(profile).runtimeRole+':',productionPaths(profile).runtimeRole+'.'+profile.supabaseRef+':').replace('db.'+profile.supabaseRef+'.supabase.co','aws-fixture.pooler.supabase.com')};assert.equal(execFileSync('python3',['-I','-c',python,join(temporary,'deploy-helper.py'),sha,releaseId],{input:JSON.stringify(pooled),encoding:'utf8'}).trim(),'native-policy-passed');
  const {parser}=selectDigestVisudo();
  execFileSync(parser,['-cf',join(temporary,'deploy.sudoers')],{stdio:'pipe'});
@@ -87,7 +89,10 @@ test('production runtime binds TLS, limited account, mail mode and strips all de
  const values=validateProductionRuntime(profile,runtime(),{releaseSha:sha,releaseId});assert.equal(values.PORT,String(profile.port));assert.equal(values.MAIL_ENVIRONMENT,'production');
  const wrapped=productionWrapperEnvironment(values,{PATH:'/usr/bin',HOME:'/fixture',GITHUB_TOKEN:'never-forward',MIGRATION_DATABASE_URL:'never-forward',BACKUP_ENCRYPTION_KEY:'never-forward',RESTORE_TEST_DATABASE_URL:'never-forward',NODE_OPTIONS:'never-forward'});
  for(const key of ['GITHUB_TOKEN','MIGRATION_DATABASE_URL','BACKUP_ENCRYPTION_KEY','RESTORE_TEST_DATABASE_URL','NODE_OPTIONS'])assert(!Object.hasOwn(wrapped,key));assert(wrapped.DG_RUNTIME_ENV_KEYS.includes('SEND_EMAIL_HOOK_SECRET'));assert.equal(wrapped.DG_BUILD_ENV_KEYS,'');
- for(const key of ['OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET']){const incomplete=runtime();delete incomplete[key];assert.throws(()=>validateProductionRuntime(profile,incomplete,{releaseSha:sha,releaseId}));}
+ for(const key of ['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET']){const incomplete=runtime();delete incomplete[key];assert.throws(()=>validateProductionRuntime(profile,incomplete,{releaseSha:sha,releaseId}));}
+ const infrastructure=runtime();for(const key of ['OPENAI_API_KEY','LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SEND_EMAIL_HOOK_SECRET'])delete infrastructure[key];
+ assert.equal(validateProductionRuntime(profile,infrastructure,{releaseSha:sha,releaseId}).APP_URL,profile.appUrl,'encrypted beheer credentials do not have to be in the host environment');
+ const disabled={...profile,mailMode:'disabled'};assert.equal(validateProductionRuntime(disabled,{...infrastructure,MAIL_MODE:'disabled'},{releaseSha:sha,releaseId}).MAIL_MODE,'disabled');
  for(const change of [{MAIL_ENVIRONMENT:'staging'},{MAIL_MODE:'live'},{MAIL_ALLOWED_RECIPIENTS:''},{SEND_EMAIL_HOOK_SECRET:'invalid'},{DATABASE_URL:runtime().DATABASE_URL.replace('db.'+profile.supabaseRef,'db.lfsdgxcpdyghidzkzzvn')},{DATABASE_URL:runtime().DATABASE_URL+'&host=attacker.example'},{DATABASE_URL:runtime().DATABASE_URL.replace('verify-full','no-verify')},{LIVEKIT_URL:'wss://attacker.example'}])assert.throws(()=>validateProductionRuntime(profile,{...runtime(),...change},{releaseSha:sha,releaseId}));
 });
 
@@ -117,7 +122,8 @@ test('promotion consults own exact CI, staging identity and protected complete a
   if(url.includes(`/actions/runs/${stageId}/attempts/1/jobs`))return Response.json({jobs});throw Error('Unexpected fixture endpoint');
  };
  const result=await productionReleaseGate(profile,env,{fetcher});assert.equal(result.status,'passed');assert.equal(result.stagingAcceptance.source,'protected-production-environment-record');
- await assert.rejects(productionReleaseGate(profile,{...env,DG_STAGING_ACCEPTANCE_JSON:''},{fetcher}));await assert.rejects(productionReleaseGate({...profile,mailMode:'disabled'},{...env,DG_PRODUCTION_PROFILE_SHA256:profileDigest({...profile,mailMode:'disabled'})},{fetcher}));
+ await assert.rejects(productionReleaseGate(profile,{...env,DG_STAGING_ACCEPTANCE_JSON:''},{fetcher}));
+ const initiallyDisabled={...profile,mailMode:'disabled'};assert.equal((await productionReleaseGate(initiallyDisabled,{...env,DG_PRODUCTION_PROFILE_SHA256:profileDigest(initiallyDisabled)},{fetcher})).status,'passed','complete staging acceptance still applies, while production mail can remain explicitly disabled');
 });
 
 test('public production verification checks actual bytes and access boundaries without an account/provider call',async()=>{

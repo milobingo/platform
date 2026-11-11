@@ -20,8 +20,7 @@ function eligible(order,kind){return kind==='payment'?['payment_pending','paymen
  * ORDER_MAIL_DELIVERY = {id, idempotencyWindowMs, send({message, context,
  * idempotencyKey, signal}) -> {accepted:true,messageId} | {accepted:false,uncertain}}
  */
-function deliveryAdapter(env){
- const adapter=env.ORDER_MAIL_DELIVERY;
+function deliveryAdapter(adapter){
  if(!adapter||typeof adapter.send!=='function'||typeof adapter.id!=='string'||!/^[a-zA-Z0-9._:-]{1,120}$/.test(adapter.id))return null;
  const window=adapter.idempotencyWindowMs??0;
  if(!Number.isSafeInteger(window)||window<0)return null;
@@ -33,7 +32,7 @@ function deliveryAdapter(env){
 export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin}){
  const field=kind==='payment'?'paymentMail':'readyMail',row=await store.game(gameId),existing=orderById(row.data,orderId);
  if(!eligible(existing,kind)||existing[field]?.status==='sent')return;
- const config=(await mailConfig(env)).value,adapter=config.contactReady?deliveryAdapter(env):null;
+ const resolved=await mailConfig(env),config=resolved.value,adapter=config.contactReady?deliveryAdapter(resolved.delivery):null;
  if(!adapter){
   await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
    const order=orderById(game,orderId),mail=order[field];

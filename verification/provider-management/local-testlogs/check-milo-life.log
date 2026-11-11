@@ -1,0 +1,11 @@
+✔ irregular blinks are deterministic, smooth and bounded across schedule edges (16.870652ms)
+✔ attention follows the actual speaker and live listening takes priority over a board glance (0.234425ms)
+✔ confirmed-number glance enters softly and returns to the camera without keeping stale reactions (0.141575ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21.856964

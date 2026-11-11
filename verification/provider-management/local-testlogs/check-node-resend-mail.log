@@ -1,0 +1,19 @@
+✔ direct Resend requires explicit record policy, correct environment, recipient list and retained host upper bounds (3.946396ms)
+✔ adapter sends a single constrained HTTPS payload with stable idempotency and explicit reply-to, preserving sender (19.961283ms)
+✔ direct Resend marketing requires the existing one-click unsubscribe payload on the app origin (2.080751ms)
+✔ definite rejections, ambiguous responses and network loss remain distinct; no receipt/error body is exposed (2.863797ms)
+✔ credential/sender rotation changes adapter identity while recipient-policy changes preserve provider identity (0.684226ms)
+✔ existing encrypted outbox deduplicates native Resend events and retains frozen failed and uncertain histories across settings changes (81.912165ms)
+✔ a captured adapter rechecks disabled state, rotated credentials and changed recipient policy before HTTP contact (28.890878ms)
+✔ completed disable cannot race ahead of an in-flight contact; after disable even an old adapter cannot send again (34.390608ms)
+✔ manual mail contact rechecks an organizer role after admission while ordinary authorized domain events remain usable (23.744804ms)
+✔ a real order with an unknown prior Resend offering cannot retry across encrypted credential rotation (28.167683ms)
+✔ mail state distinguishes saved credentials from permission to send; disabled sending leaves a prepared campaign untouched (19.821692ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 252.517455

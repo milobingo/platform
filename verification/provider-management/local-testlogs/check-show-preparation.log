@@ -1,0 +1,26 @@
+✔ preparation debounce coalesces typing; a save never replaces newer input (1.784993ms)
+✔ a real failed write retains input; explicit retry sends the same preparation revision (0.622583ms)
+✔ a stale tab cannot silently adopt the new revision or overwrite another tab (0.228306ms)
+✔ switching shows invalidates the old response without dirtying the newly selected show (0.200163ms)
+✔ Start show flushes the last edit, verifies server status and freezes rules once; double clicks share one start (42.205114ms)
+✔ a failed preparation blocks the start without losing input and retries successfully (15.269848ms)
+✔ two tabs keep preparation conflicts visible and cannot both claim live control (16.506241ms)
+✔ polling accepts live server state while retaining pending preparation input (7.047244ms)
+✔ printing new booklets first flushes preparation and cannot restore an older plan over the editor (11.446617ms)
+▶ Hervat regie checks the real server and restores an existing board without starting or releasing any hold
+  ✔ paused (6.494456ms)
+  ✔ window (5.226245ms)
+  ✔ result (5.440361ms)
+  ✔ call (5.375322ms)
+✔ Hervat regie checks the real server and restores an existing board without starting or releasing any hold (23.200278ms)
+✔ a reload restores an unsaved draft from this tab and leaves another production untouched (9.083848ms)
+✔ opening a running show only reads its status; the idle page cannot claim the control lease (6.394176ms)
+✔ the authoritative fifteen-second clock has no catch-up batch and starts a fresh interval after every hold (0.780883ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.415267

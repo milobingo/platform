@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-11-11T12:50:54.232155+00:00",
+  "stage": "local-verification-complete-before-host-migration",
+  "testPrograms": 101,
+  "testProgramsPassed": 101,
+  "nativeLegacyTestsPassed": 23,
+  "protectedBrokerTestsPassed": 29,
+  "bootstrapTestsPassed": 6,
+  "protectedProductionGateCasesPassed": 12,
+  "browserCasesPassed": 30,
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "historicalVerificationFilesRestored": true,
+  "providerRequests": "mocked only; no live provider or email calls",
+  "browserScope": "real pages/assets; isolated native SQLite/AES provider CRUD and mocked verified Auth; no real account acceptance",
+  "production": "prepared only; confirmed domain and separate Supabase project unavailable",
+  "localLimitations": [
+    "PostgreSQL service integration is executed by exact GitHub CI, not this local SQLite test fixture",
+    "OBS hardware and real provider credentials were not tested"
+  ],
+  "records": {
+    "testPrograms": "local-tests.json",
+    "browser": "local-browser/acceptance.json",
+    "visual": "local-browser/manual-visual-review.json",
+    "failedInitialBrowserAttempt": "local-browser-attempt-1/acceptance.json",
+    "failedInitialTestProgramAttempt": "local-suite-attempt-1/local-tests.json"
+  }
+}

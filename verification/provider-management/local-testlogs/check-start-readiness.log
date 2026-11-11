@@ -1,0 +1,23 @@
+✔ U03: unpaid requests stay playable; each unresolved financial state agrees with the atomic API guard (85.112902ms)
+✔ U03: fulfilled orders require the same complete, owned, nonrevoked issuance as the server (15.307846ms)
+✔ U03: rules, effective patterns, schedule and admission remain current server-derived checks (13.52789ms)
+✔ U03: start reserve displays measured bytes and every reported shortage blocks the start (1.761338ms)
+✔ U03/L01: an active call, incomplete cleanup and a persisted hold cannot start a show (7.888889ms)
+✔ U03: key/configuration/output never claim audible success; disabled optional calls do not block offline rehearsal (4.207112ms)
+✔ U03/Milo: pending preparation does not require manual save or rules publication; the atomic start finalizes current rules (5.916962ms)
+✔ U03/Vlampie: rules readiness distinguishes missing publication, changed preparation and the current published version (3.052083ms)
+✔ U03/Vlampie: the inline rules preview publishes only after an explicit click and stays ready after stored reload (287.532639ms)
+✔ U03/Vlampie: a failed rules publication stays blocked and does not announce successful publication (184.241242ms)
+✔ U03/Vlampie: changed saved rules without participants offer an explicit current-version publication beside the blocker (208.469259ms)
+✔ U03/Vlampie: unsaved preparation explains the prerequisite and saves without automatically publishing (181.636799ms)
+✔ U03/Vlampie: existing participation locks changed rules while current rules expose only their published version (499.031196ms)
+✔ U03: actual StartCheck disables blocked native starts, exposes reasons and permits an explicit healthy start (171.669061ms)
+✔ U03: fixed Program/Preview transport keeps pause and explicit voice/guest mute available independently of modules (188.696572ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1886.953381

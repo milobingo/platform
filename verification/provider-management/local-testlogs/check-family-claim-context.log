@@ -1,0 +1,17 @@
+✔ the parent sees a frozen goal while later polls cannot retarget the dialog (6.266432ms)
+✔ two initial dialogs can join one shared window and a closed historic claim is not current (1.926248ms)
+✔ milo: binding rules cannot be hidden by presentation edits or changed after participation (1.829782ms)
+✔ vlampie: binding rules cannot be hidden by presentation edits or changed after participation (1.035958ms)
+✔ rules are available before login and expose no family, book or private settings data (24.539237ms)
+✔ Vlampie native game PUT explicitly republishes version 2 before participation and preserves version 1 plus a reasoned audit (24.067853ms)
+✔ Vlampie native game PUT requires explicit publication and a meaningful reason; rejected edits leave the complete stored game unchanged (9.076237ms)
+✔ native game PUT atomically refuses republishing after linked-book without changing plan, rules or revision (20.174897ms)
+✔ native game PUT atomically refuses republishing after active-order without changing plan, rules or revision (22.23661ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.351412
