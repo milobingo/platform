@@ -73,6 +73,7 @@ jobs:
         run: |
           python3 -B tests/check-protected-deployer.py
           python3 -B tests/check-protected-bootstrap.py
+          python3 -B tests/check-production-key-intake.py
       - name: Build Next.js
         run: pnpm build
       - name: Typecheck

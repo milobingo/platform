@@ -112,6 +112,51 @@ nieuwe bundel bevat geen `MAIL_MODE`, `MAIL_ALLOWED_RECIPIENTS` of
 `SEND_EMAIL_HOOK_SECRET` als verplichte gatewayroute. Zie
 [REGIE-SLEUTELS.md](REGIE-SLEUTELS.md).
 
+### Eenmalig de Supabase-serversleutel invoeren
+
+De doelgebonden invoerhelper staat in
+[intake-production-supabase-key.py](../infra/bootstrap/intake-production-supabase-key.py).
+Een beheerder installeert de beoordeelde bytes als
+`/usr/local/sbin/milo-productie-supabase`, eigendom `root:root`, modus `0755`.
+Dit is een handmatige beheeropdracht; de GitHub-runner krijgt hiervoor geen
+sudo-bevoegdheid.
+
+Op 11 november 2026 is deze helper op `dg-nxttrack-01` geïnstalleerd en is de
+verborgen invoer in een echte serverterminal gecontroleerd met ongeldige
+testinvoer. De productiekey was toen nog niet ingevoerd. De installatie,
+codehash en controles staan in
+[production-key-intake.json](../verification/provider-management/production-key-intake.json).
+
+1. Open het productieproject `milobingo-production`, ref `msupvdycmtbycaonqgan`,
+   in Supabase: **Settings → API Keys → Publishable and secret API keys**.
+   Kopieer een secret key met prefix `sb_secret_`. Een eigen key voor Milo
+   maakt latere onafhankelijke intrekking mogelijk.
+2. Open een vertrouwde interactieve beheerterminal op `dg-nxttrack-01`,
+   bijvoorbeeld de serverconsole van het VPS-beheerportaal, en voer uit:
+
+   ```sh
+   sudo /usr/local/sbin/milo-productie-supabase
+   ```
+
+3. Plak de sleutel uitsluitend bij de verborgen invoerprompt en druk op Enter.
+   Tijdens het plakken verschijnen geen tekens. Plaats de sleutel niet achter
+   de opdracht, in de chat of in GitHub.
+4. Wacht op **Supabase-sleutel gecontroleerd en beschermd opgeslagen.** De helper
+   controleert de sleutel met een alleen-lezen Storage-aanvraag aan precies het
+   productieproject. Een ongeldige sleutel wordt niet opgeslagen.
+
+De tijdelijke invoerbestemming is
+`/root/milo-production-bootstrap/supabase-storage-key.json` (`root:root 0600`
+in een `0700`-map). Dit is nog geen actieve runtimebundel. De invoeropdracht
+overschrijft geen andere bestaande sleutel en start geen service of deployment.
+Bij de verdere productie-inrichting neemt een beheerder de waarde rechtstreeks
+op de doelhost over in de eigen beschermde runtimebundel. Geen geheime waarde
+hoeft daarvoor via GitHub of de dev-VPS te lopen.
+
+De helper beheert geen databasewachtwoord of encryptiemasterkey. Die worden
+afzonderlijk voor productie aangemaakt. De schema-, bucket-, host- en
+Auth-inrichting en de productieacceptatie hieronder blijven noodzakelijk.
+
 Migratie-/backup-/restorecredentials staan in een apart beschermd beheerpad en
 komen niet bij runner, build of app. Schemawijzigingen vereisen een afzonderlijke
 backup en werkelijke herstelproef. De gewone broker voert geen automatische

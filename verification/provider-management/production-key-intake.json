@@ -1,0 +1,106 @@
+{
+  "status": "passed",
+  "host": "dg-nxttrack-01",
+  "created": true,
+  "helper": "/usr/local/sbin/milo-productie-supabase",
+  "helperSha256": "8690f7d08c83b0b47bf59c9e11cfa22cf834358e5fb5568908ab7da2d26ab51a",
+  "ownerUid": 0,
+  "ownerGid": 0,
+  "mode": "0o755",
+  "productionKeyPresent": false,
+  "servicesBefore": {
+    "services": {
+      "milobingo-staging": "active",
+      "dartflow-staging": "active",
+      "dartflow-production": "active",
+      "caddy": "active"
+    },
+    "health": {
+      "milo-staging": {
+        "status": "ok",
+        "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+        "releaseId": "43026808427-1",
+        "configVersion": "staging-2026-11-11-v2",
+        "checks": [
+          "http"
+        ]
+      },
+      "dartflow-staging": {
+        "status": "ok",
+        "mode": "supabase",
+        "sha": "38bceb0dfdfed70046d550e7b2f82839564f41cb",
+        "releaseId": "43038238892-1",
+        "buildConfigId": "staging-2026-11-11-v15-1",
+        "runtimeConfigId": "staging-2026-11-11-v15-1",
+        "configId": "staging-2026-11-11-v15-1"
+      },
+      "dartflow-production": {
+        "status": "ok",
+        "mode": "supabase",
+        "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+        "releaseId": "42995766522-1",
+        "buildConfigId": "production-2026-11-11-v1",
+        "runtimeConfigId": "production-2026-11-11-v1",
+        "configId": "production-2026-11-11-v1"
+      }
+    }
+  },
+  "servicesAfter": {
+    "services": {
+      "milobingo-staging": "active",
+      "dartflow-staging": "active",
+      "dartflow-production": "active",
+      "caddy": "active"
+    },
+    "health": {
+      "milo-staging": {
+        "status": "ok",
+        "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+        "releaseId": "43026808427-1",
+        "configVersion": "staging-2026-11-11-v2",
+        "checks": [
+          "http"
+        ]
+      },
+      "dartflow-staging": {
+        "status": "ok",
+        "mode": "supabase",
+        "sha": "38bceb0dfdfed70046d550e7b2f82839564f41cb",
+        "releaseId": "43038238892-1",
+        "buildConfigId": "staging-2026-11-11-v15-1",
+        "runtimeConfigId": "staging-2026-11-11-v15-1",
+        "configId": "staging-2026-11-11-v15-1"
+      },
+      "dartflow-production": {
+        "status": "ok",
+        "mode": "supabase",
+        "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+        "releaseId": "42995766522-1",
+        "buildConfigId": "production-2026-11-11-v1",
+        "runtimeConfigId": "production-2026-11-11-v1",
+        "configId": "production-2026-11-11-v1"
+      }
+    }
+  },
+  "existingServicesUnchanged": true,
+  "sudoGrantsAdded": false,
+  "credentialsPrinted": false,
+  "verifiedAt": "2026-11-11T15:51:06.755318+00:00",
+  "localFocusedTests": {
+    "pythonPassed": 14,
+    "deployContractPassed": 13,
+    "independentSecurityReview": "passed",
+    "realPtySyntheticKeyEchoTest": "passed",
+    "realSupabaseSecretTest": "pending-user-input"
+  },
+  "installedHelperTests": {
+    "status": "passed",
+    "noninteractiveRefused": true,
+    "actualInstalledInteractivePromptTested": true,
+    "inputEchoDisabled": true,
+    "invalidInputNotEchoed": true,
+    "invalidInputRejectedBeforeNetwork": true,
+    "productionKeyPresent": false,
+    "credentialsPrinted": false
+  }
+}
