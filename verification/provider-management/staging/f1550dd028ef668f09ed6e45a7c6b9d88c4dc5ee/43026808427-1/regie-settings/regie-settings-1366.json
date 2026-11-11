@@ -1,0 +1,383 @@
+{
+  "observedAt": "2026-11-11T13:24:10.158Z",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedAuthAndProviderTransport": true,
+  "otherApiTransportFixtures": true,
+  "actualAccountOrProviderAcceptance": false,
+  "actualRemoteBackendWrites": false,
+  "isolatedProviderSettingsWrites": true,
+  "savedShowBranch": true,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "e5bfa4e8-dc4a-4e54-b2f8-264e7c2939c9",
+  "requestedMailState": 3,
+  "requestedSavedGame": 2,
+  "gets": {
+    "/api/auth/session": 2,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 2,
+    "/api/bingo/games/e5bfa4e8-dc4a-4e54-b2f8-264e7c2939c9": 2,
+    "/api/mail/state": 3,
+    "/api/live-calls": 4,
+    "/api/bingo/games/e5bfa4e8-dc4a-4e54-b2f8-264e7c2939c9/chat": 1,
+    "/api/bingo/games/e5bfa4e8-dc4a-4e54-b2f8-264e7c2939c9/chat/stream": 18,
+    "/api/livekit/settings": 1,
+    "/api/resend/settings": 4
+  },
+  "mailResponses": [
+    503,
+    200,
+    200
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [],
+  "unexpected": [],
+  "expectedSandboxScriptBlocks": 0,
+  "expectedMailLoadConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "expectedResendConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "resendRequests": [
+    {
+      "method": "GET",
+      "action": null,
+      "keySubmission": "absent",
+      "revisionSupplied": false,
+      "settingsHeader": false,
+      "at": 1794403448351,
+      "status": 200,
+      "completedAt": 1794403448357
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "keySubmission": "replacement",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403448733,
+      "status": 503,
+      "completedAt": 1794403448738
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "keySubmission": "replacement",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403448863,
+      "status": 200,
+      "completedAt": 1794403448868
+    },
+    {
+      "method": "GET",
+      "action": null,
+      "keySubmission": "absent",
+      "revisionSupplied": false,
+      "settingsHeader": false,
+      "at": 1794403448948,
+      "status": 200,
+      "completedAt": 1794403448951
+    },
+    {
+      "method": "POST",
+      "action": "test",
+      "keySubmission": "absent",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403448996,
+      "status": 200,
+      "completedAt": 1794403449003
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "keySubmission": "blank",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403449165,
+      "status": 200,
+      "completedAt": 1794403449170
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "keySubmission": "blank",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403449297,
+      "status": 200,
+      "completedAt": 1794403449301
+    },
+    {
+      "method": "POST",
+      "action": "test",
+      "keySubmission": "absent",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403449379,
+      "status": 200,
+      "completedAt": 1794403449383
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "keySubmission": "absent",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403449479,
+      "status": 400,
+      "completedAt": 1794403449481
+    },
+    {
+      "method": "POST",
+      "action": "remove",
+      "keySubmission": "absent",
+      "revisionSupplied": true,
+      "settingsHeader": true,
+      "at": 1794403449548,
+      "status": 200,
+      "completedAt": 1794403449552
+    },
+    {
+      "method": "GET",
+      "action": null,
+      "keySubmission": "absent",
+      "revisionSupplied": false,
+      "settingsHeader": false,
+      "at": 1794403449968,
+      "status": 503,
+      "completedAt": 1794403449969
+    },
+    {
+      "method": "GET",
+      "action": null,
+      "keySubmission": "absent",
+      "revisionSupplied": false,
+      "settingsHeader": false,
+      "at": 1794403450031,
+      "status": 200,
+      "completedAt": 1794403450035
+    }
+  ],
+  "resendStatuses": [
+    {
+      "method": "GET",
+      "action": null,
+      "configured": false,
+      "keyConfigured": false,
+      "source": "none",
+      "disabled": false,
+      "revision": null,
+      "from": "",
+      "replyTo": "",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "ceb2da49-5012-4999-8f52-f6adb291fbbb",
+      "from": "show@example.test",
+      "replyTo": "organisatie@example.test",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "GET",
+      "action": null,
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "ceb2da49-5012-4999-8f52-f6adb291fbbb",
+      "from": "show@example.test",
+      "replyTo": "organisatie@example.test",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "test",
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "8193f55f-b9b9-4137-9b4d-c1d05ca89902",
+      "from": "show@example.test",
+      "replyTo": "organisatie@example.test",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": true,
+        "testedAt": 1794403449000
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "7e6f671f-64ca-4c7d-a6e7-de8a9d0b6894",
+      "from": "nieuwe-show@example.test",
+      "replyTo": "antwoord@example.test",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "save",
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "fc347cb3-5658-43fd-94d1-864cead302b5",
+      "from": "nieuwe-show@example.test",
+      "replyTo": "antwoord@example.test",
+      "deliveryMode": "allowlist",
+      "allowedRecipients": [
+        "approved@example.test",
+        "regie@example.test"
+      ],
+      "sendingAllowed": true,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "test",
+      "configured": true,
+      "keyConfigured": true,
+      "source": "regie",
+      "disabled": false,
+      "revision": "c15b1f66-755c-4586-ba38-dca865f6c8a8",
+      "from": "nieuwe-show@example.test",
+      "replyTo": "antwoord@example.test",
+      "deliveryMode": "allowlist",
+      "allowedRecipients": [
+        "approved@example.test",
+        "regie@example.test"
+      ],
+      "sendingAllowed": true,
+      "connectionTest": {
+        "tested": true,
+        "testedAt": 1794403449382
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "POST",
+      "action": "remove",
+      "configured": false,
+      "keyConfigured": false,
+      "source": "none",
+      "disabled": true,
+      "revision": "7e805c55-e96b-47d8-8aec-17916c262aa6",
+      "from": "",
+      "replyTo": "",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    },
+    {
+      "method": "GET",
+      "action": null,
+      "configured": false,
+      "keyConfigured": false,
+      "source": "none",
+      "disabled": true,
+      "revision": "7e805c55-e96b-47d8-8aec-17916c262aa6",
+      "from": "",
+      "replyTo": "",
+      "deliveryMode": "disabled",
+      "allowedRecipients": [],
+      "sendingAllowed": false,
+      "connectionTest": {
+        "tested": false,
+        "testedAt": null
+      },
+      "environment": "staging"
+    }
+  ],
+  "providerRequests": [
+    {
+      "path": "/domains",
+      "method": "GET",
+      "storedKeyUsed": true,
+      "simulatedProvider": true
+    },
+    {
+      "path": "/domains",
+      "method": "GET",
+      "storedKeyUsed": true,
+      "simulatedProvider": true
+    }
+  ],
+  "forbiddenProviderRequests": [],
+  "providerChecks": {
+    "actualNativeAdapter": true,
+    "actualRegieRoleLookup": true,
+    "actualSQLite": true,
+    "actualObjectCAS": true,
+    "actualAesGcm": true,
+    "failedSaveRetainsInput": true,
+    "saveDidNotCallProvider": true,
+    "statusRedacted": true,
+    "blankKeyPreserved": true,
+    "senderEditRevokesReceipt": true,
+    "explicitAllowlistSaved": true,
+    "stagingLiveRejected": true,
+    "removeLeavesDisabledTombstone": true,
+    "simulatedDomainChecks": 2,
+    "actualMailSends": 0,
+    "failedReadOffersRetry": true
+  },
+  "fixtureCleanup": true
+}

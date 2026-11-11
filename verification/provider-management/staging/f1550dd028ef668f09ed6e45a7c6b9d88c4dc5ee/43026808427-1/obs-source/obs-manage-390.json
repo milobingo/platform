@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-11-11T13:23:34.265Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "9e3a8ed8-322d-43d5-9459-c990568e9702",
+  "gets": {
+    "/api/auth/session": 1,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 1,
+    "/api/bingo/games/9e3a8ed8-322d-43d5-9459-c990568e9702": 1,
+    "/api/obs/access": 1
+  },
+  "fixtureMutations": [
+    {
+      "method": "POST",
+      "path": "/api/obs/access",
+      "action": "create",
+      "gameId": "9e3a8ed8-322d-43d5-9459-c990568e9702",
+      "expectedAccessId": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/obs/access",
+      "action": "revoke",
+      "gameId": "9e3a8ed8-322d-43d5-9459-c990568e9702",
+      "expectedAccessId": "qa-obs-capability"
+    }
+  ],
+  "blockedWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": []
+}

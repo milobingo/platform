@@ -1,0 +1,24 @@
+✔ release selection accepts only a complete immutable source SHA (0.93071ms)
+✔ reviewed native entry transitively pins its exact helper before database apply (1.521695ms)
+✔ CI proof binds successful required workflow to its own repository, branch and exact SHA (0.877729ms)
+✔ a later failed CI run cannot be hidden behind an older passing run or a pull request run (0.375299ms)
+✔ dedicated runner and wrapper configuration fail closed on identity or unreviewed metadata (0.460738ms)
+✔ runtime configuration is staging-only, keeps all privileged keys server-side and forces loopback (2.037095ms)
+✔ release metadata and local-mode overrides cannot override a verified runtime boundary (0.275578ms)
+✔ DG wrapper receives only approved runtime keys and basic process metadata (0.551887ms)
+✔ normal deployment exposes no project secrets and builds only through the protected root broker (1.104825ms)
+✔ runtime accepts the separate backend LOGIN and rejects administrative role flags and memberships (0.448729ms)
+✔ runtime database verification uses verified TLS and read-only role/table checks before releasing the connection (1.546684ms)
+✔ runtime proof binds the newest exact migration while preserving known earlier backup/release identities (9.525991ms)
+✔ derived runtime credentials preserve target, remove TLS overrides and use an ASCII SCRAM verifier (3.461573ms)
+✔ runtime provisioning rejects stale, mismatched, modified and unsafe backup proof before opening a database (23.401762ms)
+﹣ real PostgreSQL accepts the generated SCRAM login, enforces backend-only rights and refuses account reuse (0.262409ms) # SKIP
+✔ retired database-only workflows preserve their contract and cannot run as active workflows (1.363635ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 140.342407

@@ -1,0 +1,55 @@
+{
+  "kind": "manual-browser-capture-review",
+  "status": "passed",
+  "observedAt": "2026-11-11T13:24:54.963578+00:00",
+  "scope": {
+    "actualBrowserScreenshots": true,
+    "actualStandaloneBuild": false,
+    "localNativeResendHandlerAndEncryptedStorage": true,
+    "simulatedAuthAndProviderTransport": true,
+    "actualStaging": true,
+    "actualProviderAcceptance": false,
+    "actualOBSInstallation": false,
+    "actualStagingHtmlCssAndAssets": true
+  },
+  "screenshots": [
+    {
+      "path": "regie-settings/screenshots/regie-settings-1366-resend-settings-editable.png",
+      "sha256": "28a31b6e69e5495ce4628ec1375adbfb24f6918e811cb2ee76db8bc0a225f063",
+      "observations": "Desktop: volledige Resendkaart met lege sleutelvelden, aparte afzender en antwoordadres en standaard verzendmodus Uit; duidelijke ruimte en geen zichtbare overflow."
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-resend-failed-save-retains-input.png",
+      "sha256": "1eaf29619aa0b64e5e383586d217dab3139d5a73a0fb2fd2a2722ed37ba0293d",
+      "observations": "Mobiel: antwoordadres en gekozen verzendmodus blijven zichtbaar na mislukte opslag; opslaan is opnieuw beschikbaar. Deze uitsnede toont de onderste formulierhelft; de foutmelding en sleutelbehoud zijn afzonderlijk door browser-DOM- en native-storageasserties gecontroleerd."
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-1366-resend-allowlist-tested.png",
+      "sha256": "549b88947a3040f6fd871bce9dbe987a9c1bb6b668bbd40998b273812856160c",
+      "observations": "Desktop: expliciete testontvangers, afzonderlijke sleutelcontrole met tijdstip en beperkte verzending staan leesbaar bij elkaar; geen sleutel zichtbaar."
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-resend-tested-with-sending-off.png",
+      "sha256": "afc00c00b4a4e5a7ffc6da77c86c833355db798b52b5e85a3d9ecee9c04ef28a",
+      "observations": "Mobiel: bevestigde sleutelcontrole blijft duidelijk gescheiden van Verzending staat uit; knoppen en toelichting passen binnen de viewport."
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-390-resend-mail-settings.png",
+      "sha256": "5c268a3b01fee039e56ce0c4ca4025e3d8763e11cb4462e764feae5ab6339b0c",
+      "observations": "Mobiel: dezelfde beheerkaart staat direct bij Mailinstellingen, met lege sleutel en de leesstatus dat de koppeling bewust uitgeschakeld is."
+    },
+    {
+      "path": "regie-settings/screenshots/regie-settings-1366-resend-disabled.png",
+      "sha256": "0336817853629fd8e79ccc308cd78f5a5fc6b78dde4abd73b49e65ea0db88374",
+      "observations": "Desktop: na uitschakelen is testen uitgeschakeld, verzending staat uit en de overige showvoorbereiding blijft zichtbaar en beschikbaar."
+    }
+  ],
+  "blockingVisualIssues": [],
+  "limitations": [
+    "Een echte Resend-sleutel en domein, inboxbezorging, Google-account en OBS-installatie zijn niet met deze fixtures geaccepteerd."
+  ],
+  "releaseSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "releaseId": "43026808427-1",
+  "configVersion": "staging-2026-11-11-v2",
+  "origin": "https://milo-staging.dgwebservices.nl"
+}

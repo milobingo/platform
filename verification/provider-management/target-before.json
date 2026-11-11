@@ -1,0 +1,66 @@
+{
+  "services": {
+    "milobingo-staging": "active",
+    "dartflow-staging": "active",
+    "dartflow-production": "active",
+    "caddy": "active"
+  },
+  "health": {
+    "milo-staging": {
+      "status": "ok",
+      "revision": "729d962b7401b100ce9cacb94ce4e4da16a699f2",
+      "releaseId": "42804436092-1",
+      "configVersion": "staging-2026-11-05-v1",
+      "checks": [
+        "http"
+      ]
+    },
+    "dartflow-staging": {
+      "status": "ok",
+      "mode": "supabase",
+      "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+      "releaseId": "42995422162-1",
+      "buildConfigId": "staging-2026-11-11-v1",
+      "runtimeConfigId": "staging-2026-11-11-v1",
+      "configId": "staging-2026-11-11-v1"
+    },
+    "dartflow-production": {
+      "status": "ok",
+      "mode": "supabase",
+      "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+      "releaseId": "42995766522-1",
+      "buildConfigId": "production-2026-11-11-v1",
+      "runtimeConfigId": "production-2026-11-11-v1",
+      "configId": "production-2026-11-11-v1"
+    }
+  },
+  "accounts": {
+    "run-mil-stg": {
+      "uid": 1001,
+      "gid": 1002,
+      "groups": [
+        1002,
+        1001
+      ]
+    },
+    "build-mil-stg": {
+      "uid": 990,
+      "gid": 983,
+      "groups": [
+        983
+      ]
+    },
+    "app-mil-stg": {
+      "uid": 996,
+      "gid": 987,
+      "groups": [
+        987
+      ]
+    }
+  },
+  "legacySource": {
+    "/usr/local/bin/dg-site-deploy": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+    "/usr/local/libexec/dg-milobingo-deploy-helper": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8"
+  },
+  "runtimeValuesIncluded": false
+}

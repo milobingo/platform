@@ -1,0 +1,221 @@
+{
+  "observedAt": "2026-11-11T13:22:00.843Z",
+  "actualBrowserRendering": true,
+  "actualWebAudio": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "remainingOBSCheck": "Controleer op een echte OBS-installatie de Browserbronmixer en luister een korte proefopname met beeld en testgeluid terug.",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "cad71e03-f6b2-4e60-ba6c-2defd6e8a3ab",
+  "outputOnly": true,
+  "requests": [
+    {
+      "path": "/api/obs/session",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    }
+  ],
+  "producerActions": [],
+  "heartbeats": [
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794403320090,
+      "testAck": {
+        "id": "1f13b90a-1cff-47cf-863a-57408bb65655",
+        "status": "played",
+        "at": 1794403320090,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794403320090,
+      "testAck": {
+        "id": "1f13b90a-1cff-47cf-863a-57408bb65655",
+        "status": "played",
+        "at": 1794403320090,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794403320090,
+      "testAck": {
+        "id": "1f13b90a-1cff-47cf-863a-57408bb65655",
+        "status": "played",
+        "at": 1794403320090,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 1
+    }
+  ],
+  "leaseHeartbeats": [],
+  "forbiddenWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedNetworkErrors": [],
+  "initialGameState": {
+    "phase": "running",
+    "blockIndex": 3,
+    "roundIndex": 0,
+    "goalIndex": 0,
+    "goalOpenedAt": 0,
+    "epoch": "5f91238d-e26a-44cf-bcd4-efa38f79d8b6",
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "history": [],
+    "deck": [
+      70,
+      33,
+      13,
+      27,
+      67,
+      61,
+      66,
+      42,
+      25,
+      74,
+      39,
+      44,
+      9,
+      52,
+      36,
+      2,
+      65,
+      7,
+      23,
+      30,
+      72,
+      29,
+      38,
+      41,
+      10,
+      35,
+      57,
+      22,
+      54,
+      6,
+      28,
+      32,
+      17,
+      51,
+      12,
+      21,
+      19,
+      73,
+      3,
+      59,
+      75,
+      8,
+      34,
+      62,
+      56,
+      71,
+      53,
+      55,
+      58,
+      24,
+      43,
+      31,
+      49,
+      40,
+      5,
+      37,
+      4,
+      48,
+      63,
+      1,
+      60,
+      15,
+      47,
+      16,
+      69,
+      64,
+      45,
+      26,
+      68,
+      46,
+      50,
+      20,
+      18,
+      14,
+      11
+    ],
+    "pending": null,
+    "window": {
+      "id": "qa-open-bingo",
+      "status": "open",
+      "startedAt": 1794403316622,
+      "endsAt": 1794403917622,
+      "announcements": [],
+      "claims": []
+    },
+    "windowSequence": 0,
+    "resultId": null,
+    "goalWon": false,
+    "paused": true,
+    "lastCommit": {
+      "number": 41,
+      "committedAt": 1794403297622
+    },
+    "drawClock": {
+      "intervalMs": 15000,
+      "nextAt": 1794403332622
+    }
+  }
+}

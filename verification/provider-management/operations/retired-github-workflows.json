@@ -1,0 +1,35 @@
+{
+  "disabled": [
+    {
+      "id": 408286406,
+      "path": ".github/workflows/runner-test.yml"
+    },
+    {
+      "id": 414668916,
+      "path": ".github/workflows/migrate-protected-settings.yml"
+    }
+  ],
+  "states": [
+    {
+      "id": 407605323,
+      "path": ".github/workflows/ci.yml",
+      "state": "active"
+    },
+    {
+      "id": 408322724,
+      "path": ".github/workflows/deploy-staging.yml",
+      "state": "active"
+    },
+    {
+      "id": 408286406,
+      "path": ".github/workflows/runner-test.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 414668916,
+      "path": ".github/workflows/migrate-protected-settings.yml",
+      "state": "disabled_manually"
+    }
+  ],
+  "historyDeleted": false
+}

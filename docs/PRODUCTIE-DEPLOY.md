@@ -5,27 +5,43 @@ GitHub start een beoordeelde release, de doel-VPS bewaart infrastructuurgeheimen
 en de Milo-regie beheert OpenAI, LiveKit en Resend. Er is geen lange lijst met
 GitHub-runtimevariabelen of blijvende GitHub-secrets nodig.
 
-**Er is nog geen bevestigd Milo-productiedomein of Supabase-productieproject.**
-Daarom is deze pagina geen bewijs van een ingerichte of actieve productieomgeving.
+Het productiedomein **`https://milo.dgwebservices.nl`** en het afzonderlijke
+Supabase-project **`msupvdycmtbycaonqgan`** (`milobingo-production`, `eu-west-1`)
+zijn bevestigd. Het project is via het bestaande gekoppelde account
+**Duindorpdoet** beschikbaar; er is geen extra accountkoppeling of nieuw project
+nodig. De read-only [productie-inventaris](../verification/provider-management/production-inventory.json)
+legt de controle van 11 november 2026 vast.
+
+Deze bestemming is nog geen actieve productieomgeving. DNS wijst naar
+`128.140.93.95` op `dg-nxttrack-01`, maar er is geen Milo-productiehostfragment
+waargenomen en HTTPS faalt tijdens de TLS-handshake. Het nieuwe backendproject
+bevat nog geen publieke tabellen, Milo-databaserollen, buckets of gebruikers.
+Google-login staat uit; e-mailregistratie staat aan met bevestiging vereist.
+Private SMTP- en redirectinstellingen zijn nog niet gecontroleerd.
+
 Een renderer maakt alleen beoordeelbare bestanden; zij installeert niets. Het
 incomplete [voorbeeldprofiel](../infra/production/profile.example.json) kan geen
-productiedeployment activeren. De actuele feitelijke status staat in
-[PROJECTPROFIEL.json](../PROJECTPROFIEL.json) en [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
+productiedeployment activeren. Er is nog geen actief productieprofiel, geen
+productiepoort gereserveerd en geen productieworkflow geïnstalleerd. De actuele
+release- en hoststatus staat in [PROJECTPROFIEL.json](../PROJECTPROFIEL.json) en
+[STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
 
-## Eerst de echte bestemming bevestigen
+## Het bevestigde doel verder inrichten
 
-Leg het openbare productieprofiel vast volgens
+Leg het volledige openbare productieprofiel vast volgens
 [production-profile.mjs](../scripts/deploy/production-profile.mjs). Het profiel
-bevat geen secretwaarden. Bevestig ten minste:
+bevat geen secretwaarden. De origin en het project hierboven zijn bekend;
+controleer of leg daarnaast vast:
 
-- de eigen site-ID, canonieke HTTPS-origin, DNS en doelhost;
+- de eigen site-ID en de koppeling aan de bevestigde origin en doelhost;
 - afzonderlijke runnernaam, runner-, build- en appaccounts, werkelijke UID/GID,
   paden en beheergroep voor de gedeelde buildlock;
 - een werkelijk vrije loopbackpoort, eigen systemd-service en uitsluitend het
   eigen Caddy-hostfragment;
-- een afzonderlijk Supabase-productieproject met private bucket, beperkte
-  runtime-login, publieke CA, Auth-configuratie en oorspronkelijke masterkey
-  indien bestaande productiedata wordt overgenomen;
+- de private bucket, beperkte runtime-login, publieke CA en Auth-configuratie
+  binnen het bevestigde Supabase-productieproject, plus een eigen stabiele
+  productie-masterkey; behoud de oorspronkelijke key exact als later bestaande
+  versleutelde productiedata wordt overgenomen;
 - veilige configuratie-IDs, waaronder de openbare profielversie.
 
 Gebruik geen stagingproject, stagingcredentials of de Milo-stagingaccounts voor
@@ -80,6 +96,14 @@ Storage-secretkey en stabiele `VLAMPIE_SETTINGS_KEY`. De broker voegt identiteit
 loopbackpoort en de vaste `MAIL_ENVIRONMENT=production` toe. Een gebruikt
 configuratie-ID is onveranderbaar; bewaar de actieve en benodigde vorige bundels.
 
+De bestaande Supabase-koppeling heeft SQL-beheerrechten voor de afzonderlijk
+beoordeelde schema- en rolbootstrap. De huidige connector kan geen private
+server-API-key of bestaande databasewachtwoorden ophalen of beheren. Richt de
+beperkte appverbinding en server-side Storage-credential via een beschermd kanaal
+in op de doelhost; zet ze niet in GitHub. Richt ook Google OAuth, Auth-redirects
+en de eigen SMTP-route in en test die met echte accounts. De openbare
+projectgegevens hoeven daarvoor niet opnieuw te worden aangeleverd.
+
 Providerkeys zijn geen vereiste envwaarden voor de infrastructuurbuild of het
 openen van de beheeromgeving. OpenAI, LiveKit en Resend worden via versleutelde
 regie-instellingen ingesteld. Resend begint met verzending uit; een bevoegde
@@ -132,11 +156,22 @@ de exacte applicatie-SHA en accepteer diezelfde bron werkelijk op staging.
 Installeer/verifieer het root-only acceptatierecord. Start dan de gerenderde
 `deploy-production.yml` handmatig op `main` met `release_sha` en `config_id`.
 
-Het GitHub-environment `production` vereist geen blijvende runtime- of
-providersecrets. Hoogstens blijven dezelfde vier publieke kopieën optioneel:
-`APP_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_STORAGE_BUCKET`.
-De workflow gebruikt alleen het standaard kortlevende `github.token`. Er is geen
-PAT, eigen SSH-secret of handmatig onderhouden wrapperhashvariabele nodig.
+Het GitHub-environment `production` bevat al de volgende vier publieke
+variabelen en nul secrets. De publishable key is intern exact vergeleken met
+een actieve key van het bevestigde project; de waarde staat niet in het bewijs.
+
+| Bestaande GitHub-variable | Betekenis in de beschermde hostconfiguratie |
+| --- | --- |
+| `MILO_APP_ORIGIN` | Alias voor `APP_URL`: canoniek `https://milo.dgwebservices.nl`, zonder afsluitende slash. |
+| `MILO_DATA_MODE` | Gevalideerde bootstrapkeuze `supabase`; geen native runtime-envveld. |
+| `NEXT_PUBLIC_SUPABASE_URL` | Alias voor `SUPABASE_URL`: `https://msupvdycmtbycaonqgan.supabase.co`. |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Alias voor `SUPABASE_PUBLISHABLE_KEY`; actieve projectkey bevestigd. |
+
+Deze publieke kopieën vullen de hostbundel niet automatisch en vereisen geen
+hernoeming in GitHub. De beoordeelde hostbundel is leidend; de private bucketnaam
+wordt daar afzonderlijk vastgelegd. Er zijn geen blijvende GitHub-runtime- of
+providersecrets nodig. De workflow gebruikt alleen het standaard kortlevende
+`github.token`; er is geen PAT, eigen SSH-secret of wrapperhashvariabele nodig.
 
 De dedicated runner checkt geen appcode uit. De rootbroker controleert de gates
 opnieuw, bouwt de exacte bron als het afzonderlijke buildaccount en laat de

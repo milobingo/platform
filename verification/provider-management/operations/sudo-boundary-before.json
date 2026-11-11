@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "checks": {
+    "newExactDeploy": {
+      "allowed": true,
+      "expected": true
+    },
+    "extraArgument": {
+      "allowed": false,
+      "expected": false
+    },
+    "otherOperation": {
+      "allowed": false,
+      "expected": false
+    },
+    "temporaryHandoffNoArgs": {
+      "allowed": true,
+      "expected": true
+    },
+    "temporaryHandoffExtraArg": {
+      "allowed": false,
+      "expected": false
+    }
+  },
+  "privilegedCommandsExecuted": false
+}

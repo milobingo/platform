@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "observedAt": "2026-11-11T13:20:09.108986+00:00",
+  "stagingSecretNames": [],
+  "stagingVariableNames": [
+    "APP_URL",
+    "SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_STORAGE_BUCKET",
+    "SUPABASE_URL"
+  ],
+  "productionSecretNames": [],
+  "productionVariableNames": [
+    "MILO_APP_ORIGIN",
+    "MILO_DATA_MODE",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_SUPABASE_URL"
+  ],
+  "repositorySecretNames": [],
+  "repositoryVariableNames": [],
+  "removedStagingSecretNames": [
+    "BACKUP_ENCRYPTION_KEY",
+    "DATABASE_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
+    "MIGRATION_DATABASE_URL",
+    "OPENAI_API_KEY",
+    "SUPABASE_SECRET_KEY",
+    "VLAMPIE_SETTINGS_KEY"
+  ],
+  "removedStagingVariableNames": [
+    "DG_CONFIG_VERSION",
+    "DG_DEPLOY_WRAPPER_SHA256",
+    "DG_STAGING_PORT",
+    "LIVEKIT_URL",
+    "OPENAI_SPEECH_MODEL",
+    "OPENAI_TEXT_MODEL",
+    "SUPABASE_DB_CA_BASE64"
+  ],
+  "runtimePublicConfigurationCopiedAutomatically": false,
+  "valuesIncluded": false
+}

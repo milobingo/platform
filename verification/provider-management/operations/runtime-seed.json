@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "configId": "staging-2026-11-11-v2",
+  "created": true,
+  "runtimeKeys": [
+    "APP_URL",
+    "DATABASE_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
+    "LIVEKIT_URL",
+    "OPENAI_API_KEY",
+    "OPENAI_SPEECH_MODEL",
+    "OPENAI_TEXT_MODEL",
+    "SUPABASE_DB_CA_BASE64",
+    "SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_SECRET_KEY",
+    "SUPABASE_STORAGE_BUCKET",
+    "SUPABASE_URL",
+    "VLAMPIE_SETTINGS_KEY"
+  ],
+  "encryptionKeyPreserved": true,
+  "sourceReleaseId": "42804436092-1",
+  "credentialsPrinted": false
+}

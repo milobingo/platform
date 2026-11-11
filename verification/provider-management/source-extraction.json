@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "releaseSha": "53982b955a038628c9ab3674cdad579592b9b36f",
+  "source": "git archive tracked exact commit with GitHub-style wrapper",
+  "filesExtracted": 2132,
+  "unprivileged": true,
+  "cleanup": true
+}

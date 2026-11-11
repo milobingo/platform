@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "observedAt": "2026-11-11T13:15:22.866Z",
+  "before": {
+    "status": "ok",
+    "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "releaseId": "43026808427-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "checks": [
+      "http"
+    ]
+  },
+  "after": {
+    "status": "ok",
+    "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "releaseId": "43026808427-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "checks": [
+      "http"
+    ]
+  },
+  "cases": [
+    {
+      "path": "/api/openai/status",
+      "forgedIdentity": false,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/openai/status",
+      "forgedIdentity": true,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/livekit/settings",
+      "forgedIdentity": false,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/livekit/settings",
+      "forgedIdentity": true,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/resend/settings",
+      "forgedIdentity": false,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/resend/settings",
+      "forgedIdentity": true,
+      "status": 401,
+      "errorCode": "sign_in"
+    },
+    {
+      "path": "/api/resend/settings",
+      "crossSite": true,
+      "status": 403
+    }
+  ],
+  "actualAuthenticatedAccountOrProviderRequests": false,
+  "settingsWrites": false
+}

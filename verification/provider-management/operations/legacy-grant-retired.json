@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "legacySudoGrantArchived": "/etc/dg-sites/milobingo-staging/admin/milobingo-staging-deploy.retired-2026-11-11",
+  "legacyGrantSha256": "4bb9f998c0437665c2763564cf0f81c023721e44df97e239aacd3f93876de527",
+  "legacyHelperPreserved": true,
+  "sudoersValid": true,
+  "checks": {
+    "legacy": {
+      "allowed": false
+    },
+    "protected": {
+      "allowed": true
+    },
+    "handoff": {
+      "allowed": false
+    }
+  },
+  "appRestarted": false
+}

@@ -1,0 +1,71 @@
+{
+  "services": {
+    "milobingo-staging": "active",
+    "dartflow-staging": "active",
+    "dartflow-production": "active",
+    "caddy": "active"
+  },
+  "health": {
+    "milo-staging": {
+      "status": "ok",
+      "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "releaseId": "43026808427-1",
+      "configVersion": "staging-2026-11-11-v2",
+      "checks": [
+        "http"
+      ]
+    },
+    "dartflow-staging": {
+      "status": "ok",
+      "mode": "supabase",
+      "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+      "releaseId": "42995422162-1",
+      "buildConfigId": "staging-2026-11-11-v1",
+      "runtimeConfigId": "staging-2026-11-11-v1",
+      "configId": "staging-2026-11-11-v1"
+    },
+    "dartflow-production": {
+      "status": "ok",
+      "mode": "supabase",
+      "sha": "4634852c17cc7737bec246c0b48310e975a36920",
+      "releaseId": "42995766522-1",
+      "buildConfigId": "production-2026-11-11-v1",
+      "runtimeConfigId": "production-2026-11-11-v1",
+      "configId": "production-2026-11-11-v1"
+    }
+  },
+  "legacySource": {
+    "/usr/local/bin/dg-site-deploy": "aee3e1e2e76f05d99f668ed7c756802da82033c4983216b90d7ea50de9f49bc7",
+    "/usr/local/libexec/dg-milobingo-deploy-helper": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8"
+  },
+  "locks": {
+    "/run/lock/dg-build.lock": "available",
+    "/run/lock/milobingo-staging.deploy.lock": "available"
+  },
+  "credentialsPrinted": false,
+  "protectedReleaseMarker": {
+    "format": 1,
+    "configId": "staging-2026-11-11-v2",
+    "bundleSha256": "9a0606852a71352926c9635fb25413f0ff6026c0da9e0b750c85385fc6e3c6d5",
+    "runtimeSha256": "fe7f5813bc2773bd8f655e6863c271050b6aca66ce83e2219c99d35a48f4490b",
+    "brokerSha256": "4afcc454f95efb00e44991b587fbccbf539dcc63385e741f4e9adce5fabaac48",
+    "ciRunUrl": "https://github.com/milobingo/platform/actions/runs/43024966989"
+  },
+  "releaseMetadata": {
+    "version": 1,
+    "sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "id": "43026808427-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "port": 4173,
+    "artifactSha256": "905898839797f322dbcf1035127be4ed7a4a76dcb7cc5263744b6da556dbbc02",
+    "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+    "toolchain": {
+      "node": "24.18.0",
+      "pnpm": "11.25.0",
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+    }
+  },
+  "miloBuildUnitsRemaining": "",
+  "dartflowHealthAndReleasesUnchanged": true
+}

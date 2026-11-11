@@ -4,13 +4,18 @@ Milo krijgt dezelfde scheiding als Dartflow: GitHub bewaart broncode en start de
 release; de doel-VPS bewaart de infrastructuurgeheimen; bevoegde regisseurs beheren
 OpenAI, LiveKit en Resend in de app.
 
-**Migratiestatus bij voorbereiding op 11 november 2026:** de nieuwe route en
-beheerfuncties zijn in de bron voorbereid. Hostinstallatie, de eenmalige
-beheercredentialoverdracht en het verwijderen van de oude acht GitHub-secrets
-moeten na geslaagde CI nog worden uitgevoerd en vastgelegd. Dit document claimt
-die stappen niet als voltooid. De actuele uitvoering en release-identiteit staan
-uitsluitend in [PROJECTPROFIEL.json](../PROJECTPROFIEL.json) en
-[STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
+**Uitgevoerd op 11 november 2026:** de beschermde broker en bundel
+`staging-2026-11-11-v2` zijn geïnstalleerd na [geslaagde exacte CI](https://github.com/milobingo/platform/actions/runs/43024966989).
+De [stagingdeployment](https://github.com/milobingo/platform/actions/runs/43026808427)
+is volledig geslaagd. De runtime en bestaande encryptiesleutel zijn exact
+behouden; de twee beheercredentials zijn afzonderlijk beschermd overgedragen.
+De tijdelijke overdrachtsrechten en oude directe runnerbevoegdheid zijn
+ingetrokken. De acht stagingsecrets zijn uit GitHub verwijderd. Beide
+environments hebben nul secrets en elk vier publieke variabelen; normale
+deployments lezen ook die variabelen niet als runtimeconfiguratie.
+Zie [host- en rechtenbewijs](../verification/provider-management/operations/legacy-grant-retired.json),
+[GitHub-nacontrole](../verification/provider-management/github-config-after.json),
+[PROJECTPROFIEL.json](../PROJECTPROFIEL.json) en [STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
 
 ## Drie plaatsen met ieder een eigen taak
 
@@ -39,8 +44,8 @@ gekopieerd. Er is geen eigen PAT of SSH-secret nodig voor normale deployments.
     github-transfer-2026-11-11.json        root:root 0600
 ```
 
-Het genoemde configuratie-ID is de beoogde eerste bundel van deze migratie, geen
-bewijs dat zij al is geïnstalleerd. Een bestaand ID wordt niet overschreven.
+Het genoemde configuratie-ID is de werkelijk geïnstalleerde eerste bundel van
+deze migratie. Een bestaand ID wordt niet overschreven.
 Wijzigingen krijgen een nieuw goedgekeurd ID; actieve en benodigde vorige bundels
 blijven voor herstel beschikbaar.
 
@@ -70,7 +75,12 @@ De afzonderlijke `admin`-overdracht bevat alleen `MIGRATION_DATABASE_URL` en
 meegegeven. Een tijdelijke restoretestverbinding hoort uitsluitend bij de
 gecontroleerde beheerprocedure. Een appdeployment migreert of herstelt geen database.
 
-## Eenmalige migratie: pas uitvoeren na CI
+## Eenmalige migratie: uitgevoerde werkwijze
+
+Onderstaande procedure verklaart de uitgevoerde overgang. Herhaal de overdracht
+niet op de actieve host: de tijdelijke workflow is [gearchiveerd](../infra/legacy/github/migrate-protected-settings.yml.retired)
+en haar rootbevoegdheid is ingetrokken. Volgende appreleases gebruiken alleen
+de gewone [stagingprocedure](STAGING-DEPLOY.md).
 
 1. Leg de volledige bron-SHA en geslaagde eigen main-CI vast. Inventariseer
    uitsluitend metadata: bestaande entry/helperhashes, UID/GID, services, actieve

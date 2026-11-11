@@ -1,0 +1,52 @@
+{
+  "sourceSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "ciRun": "https://github.com/milobingo/platform/actions/runs/43024966989",
+  "installerSha256": "00b9f88070a855b655e3477f7e7f37a47cc9316cfdec48befe70ad133312a38e",
+  "payloadSha256": "e2431ed6e9464cbb76c80dec31c63cade5b4a73b1f0c7551ebac6fcee10aa9b3",
+  "result": {
+    "installed": [
+      {
+        "path": "/etc/dg-sites/milobingo-staging/protected-deploy.json",
+        "sha256": "6ec63283fcbca09489061393cd1c3b80c5459557c53790932af320d3a53a7dad"
+      },
+      {
+        "path": "/etc/sudoers.d/milobingo-admin-handoff",
+        "sha256": "ff09d3063aada71aae76b334fcfe32fda95caa71433d0edd8fd7d62ece5b1776"
+      },
+      {
+        "path": "/etc/sudoers.d/milobingo-protected-deploy",
+        "sha256": "4c6bd6a257c1b41ebc742b9b9981b08735a8ec01f4f33960d313794a84c38503"
+      },
+      {
+        "path": "/usr/local/bin/dg-milo-deploy",
+        "sha256": "486ae60897be3192ad2c19a8cc75f9e52a3c9d89dcaf10baf454f357a8511e34"
+      },
+      {
+        "path": "/usr/local/libexec/dg-milo-deploy-helper",
+        "sha256": "4afcc454f95efb00e44991b587fbccbf539dcc63385e741f4e9adce5fabaac48"
+      },
+      {
+        "path": "/usr/local/libexec/dg-milo-move-admin-secrets",
+        "sha256": "c202cc7365e8d2ea74d0ffcdeb7499fe3b43bbd5635973a6de778ceb44c1deed"
+      },
+      {
+        "path": "/usr/local/libexec/dg-milo-seed-protected-runtime",
+        "sha256": "194b5d150c1e588a9cf28decf3e1477e9d150ac624e4d6e0feb56c27e2cf02b1"
+      },
+      {
+        "path": "/usr/local/libexec/milo-protected-extract-source.py",
+        "sha256": "f3c014830bd6134cbbd2561a79163267509a270cab42f916f55a9b5373532e72"
+      },
+      {
+        "path": "/usr/local/libexec/milo-protected-lock-guardian.py",
+        "sha256": "5d5bbdc90bbb9ab6ea57514bcfd313de7f478323a6e36cd85a1f403730077c36"
+      },
+      {
+        "path": "/usr/local/libexec/milo-protected-release-gate.mjs",
+        "sha256": "537ed06a96d51c06ae25b99f4d0a62e67b3b117f49c3c3eed8ccfc7bcfccaf2e"
+      }
+    ]
+  },
+  "runtimeCredentialsIncluded": false,
+  "servicesChanged": false
+}

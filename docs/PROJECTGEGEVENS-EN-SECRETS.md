@@ -14,7 +14,7 @@ bewijst geen uitgerolde versie, echte aanmelding, mailbezorging of uitzending.
 ## GitHub: wat nog nodig is
 
 Repository: [milobingo/platform](https://github.com/milobingo/platform), branch
-`main`. Gebruik afzonderlijke environments `staging` en later `production` met
+`main`. Gebruik afzonderlijke environments `staging` en `production` met
 een eigen runnerroute. Een release wordt handmatig gestart met de exacte groene
 commit-SHA en een bestaand beschermd hostconfiguratie-ID.
 
@@ -35,6 +35,20 @@ Deze optionele kopieën vullen de hostbundel niet automatisch en bepalen de
 actieve runtime niet. De beoordeelde root-only bundel op de doel-VPS is leidend.
 Ook wrapperhashes, poort en acceptatiebewijs hoeven geen GitHub-variabelen te zijn:
 zij horen in de gecontroleerde hostpolicy en het releasebewijs.
+
+Het bestaande environment `production` bevat al vier publieke aliassen en nul
+secrets. Ze mogen blijven staan; hernoemen is niet nodig:
+
+| Bestaande productievariable | Koppeling bij het maken van de beschermde hostbundel |
+| --- | --- |
+| `MILO_APP_ORIGIN` | `APP_URL` = `https://milo.dgwebservices.nl`, canoniek zonder afsluitende slash. |
+| `MILO_DATA_MODE` | Bootstrapkeuze `supabase`, geen native runtime-envveld. |
+| `NEXT_PUBLIC_SUPABASE_URL` | `SUPABASE_URL` = `https://msupvdycmtbycaonqgan.supabase.co`. |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `SUPABASE_PUBLISHABLE_KEY`; intern gelijk bevonden aan een actieve key van dat project. |
+
+Deze aliassen worden niet tijdens de native build gelezen en vullen de private
+hostconfiguratie niet automatisch. Er zijn geen aanvullende openbare
+projectgegevens of GitHub-secrets gevraagd voor deze route.
 
 ## Waar de gegevens worden bewaard
 
@@ -68,21 +82,45 @@ komen alleen bij de app en de afzonderlijke audit als appaccount terecht.
 | Andere sites | Dartflow staging op `127.0.0.1:4174` en productie op `127.0.0.1:4175` blijven intact. Alle native builds gebruiken de bestaande hostbrede lock. |
 
 Controleer de werkelijke services, listeners, identiteiten en publieke health
-vóór en na hostwijzigingen. Een eventueel Milo-productiedoel krijgt eigen
-accounts, configuratie en een aantoonbaar vrije poort. De bestaande drie poorten
-worden daarvoor niet overgenomen.
+vóór en na hostwijzigingen. Milo productie krijgt eigen accounts, configuratie
+en een aantoonbaar vrije poort. De bestaande drie poorten worden daarvoor niet
+overgenomen.
 
-## Welke accounts of gegevens nog aan te leveren zijn
+## Bevestigd productiedoel en resterende inrichting
+
+De read-only [productie-inventaris](../verification/provider-management/production-inventory.json)
+van 11 november 2026 bevestigt:
+
+- `https://milo.dgwebservices.nl` wijst naar `128.140.93.95` op `dg-nxttrack-01`.
+  Een productiehostfragment is nog niet waargenomen; HTTPS faalt bij de
+  TLS-handshake. Er is nog geen productiepoort gereserveerd of actief
+  productieprofiel of productieworkflow geïnstalleerd.
+- Supabase `milobingo-production`, ref `msupvdycmtbycaonqgan`, is gezond in
+  `eu-west-1` en gekoppeld via **Duindorpdoet**. Geen nieuw project of extra
+  accountkoppeling nodig.
+- Het project is leeg: geen publieke tabellen, Milo-databaserollen, buckets of
+  gebruikers. De bestaande connector heeft SQL-beheerrechten voor de
+  afzonderlijk beoordeelde schema- en rolbootstrap.
+- Google-login staat uit. E-mailregistratie vereist bevestiging. SMTP en
+  toegestane redirects moeten nog afzonderlijk worden gecontroleerd en ingericht.
+
+De huidige Supabase-connector kan geen private serverkeys of bestaande
+databasewachtwoorden ophalen of beheren. De beperkte app-login,
+server-side Storage-credential en eigen stabiele productie-masterkey moeten via
+een beschermd kanaal op de doelhost worden ingericht. Providerkeys voor OpenAI,
+LiveKit en Resend kunnen daarna via de regie worden opgeslagen.
+
+## Nog in te richten of functioneel te controleren
 
 | Dienst | Nodig |
 | --- | --- |
-| Supabase | Toegang tot het bestaande stagingproject. Voor productie een eigen bevestigd project, eigenaar/teamtoegang, private bucket en Auth-configuratie. Een geschikt bestaand productieproject mag worden gekoppeld. |
+| Supabase | Bestaand stagingproject behouden. Productieproject en gekoppelde beheertoegang zijn bevestigd; schema, beperkte runtime-login, private bucket, beschermde servercredential en Auth-configuratie moeten nog worden ingericht. |
 | Regie | De echte Supabase user-UUID van bevoegde beheerders; roltoekenning via de private `app_user_roles`-tabel, geen invulbaar e-mailadres of gebruikersmetadata. |
 | OpenAI | Een eigen bruikbaar project/key met toegang tot de gebruikte functies; invoeren via de regie. |
 | LiveKit Cloud | Eigen Cloud-project met project-URL, API-key en API-secret; invoeren via de regie. |
 | Resend | Account met bruikbare key, geverifieerd afzenderdomein/DNS, afzender en eventueel antwoordadres; invoeren via de regie. Domeincontrole vereist daarvoor geschikte keyrechten. |
 | Supabase Auth / Google | Eigen Auth-provider-/SMTPinstellingen en juiste callback-origin; afzonderlijk testen met echte accounts. |
-| Productiedomein | Definitieve HTTPS-origin, DNS-beheer en het eigen Supabase-productieproject ontbreken nog; geen actieve productieomgeving veronderstellen. |
+| Productiehost | Origin en DNS zijn bevestigd. Nog nodig: eigen beoordeeld hostprofiel/accounts/poort, Caddy/TLS, service, broker en beschermde runtimebundel; de bestaande drie sites behouden. |
 | Uitzending | YouTube-uitzending/video-ID, OBS-computer en testapparaten voor beeld, uitzendmix en een echt belmoment. |
 
 De beheerpagina's kunnen openen voordat providerkeys zijn ingevuld. De betrokken

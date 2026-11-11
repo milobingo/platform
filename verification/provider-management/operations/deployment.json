@@ -1,0 +1,307 @@
+{
+  "workflow": {
+    "conclusion": "success",
+    "headSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "jobs": [
+      {
+        "completedAt": "2026-11-11T13:11:42Z",
+        "conclusion": "success",
+        "databaseId": 130543488641,
+        "name": "release-gate",
+        "startedAt": "2026-11-11T13:11:12Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-11T13:11:14Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-11T13:11:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:30Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 2,
+            "startedAt": "2026-11-11T13:11:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:37Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 3,
+            "startedAt": "2026-11-11T13:11:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:38Z",
+            "conclusion": "success",
+            "name": "Require successful main CI on the exact release",
+            "number": 4,
+            "startedAt": "2026-11-11T13:11:37Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:38Z",
+            "conclusion": "success",
+            "name": "Validate protected configuration identifier",
+            "number": 5,
+            "startedAt": "2026-11-11T13:11:38Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:38Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 9,
+            "startedAt": "2026-11-11T13:11:38Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:39Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 10,
+            "startedAt": "2026-11-11T13:11:38Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:39Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-11T13:11:39Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/milobingo/platform/actions/runs/43026808427/job/130543488641"
+      },
+      {
+        "completedAt": "2026-11-11T13:14:54Z",
+        "conclusion": "success",
+        "databaseId": 130543818536,
+        "name": "deploy",
+        "startedAt": "2026-11-11T13:11:46Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-11T13:11:47Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-11T13:11:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:11:47Z",
+            "conclusion": "success",
+            "name": "Verify the fixed runner and installed broker",
+            "number": 2,
+            "startedAt": "2026-11-11T13:11:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:14:51Z",
+            "conclusion": "success",
+            "name": "Build and activate using protected VPS settings",
+            "number": 3,
+            "startedAt": "2026-11-11T13:11:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:14:51Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 4,
+            "startedAt": "2026-11-11T13:14:51Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/milobingo/platform/actions/runs/43026808427/job/130543818536"
+      },
+      {
+        "completedAt": "2026-11-11T13:15:25Z",
+        "conclusion": "success",
+        "databaseId": 130545429122,
+        "name": "verify-public",
+        "startedAt": "2026-11-11T13:14:58Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-11T13:14:59Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-11T13:14:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:11Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 2,
+            "startedAt": "2026-11-11T13:14:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:19Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 3,
+            "startedAt": "2026-11-11T13:15:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:22Z",
+            "conclusion": "success",
+            "name": "Check exact public release and access boundaries",
+            "number": 4,
+            "startedAt": "2026-11-11T13:15:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:23Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 7,
+            "startedAt": "2026-11-11T13:15:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:23Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 8,
+            "startedAt": "2026-11-11T13:15:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:15:23Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 9,
+            "startedAt": "2026-11-11T13:15:23Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/milobingo/platform/actions/runs/43026808427/job/130545429122"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/milobingo/platform/actions/runs/43026808427"
+  },
+  "rootBrokerRecords": [
+    {
+      "gate": "ci",
+      "status": "passed",
+      "release_sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "workflow_sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "ci_run_id": "43024966989",
+      "ci_run_attempt": "1",
+      "ci_run_url": "https://github.com/milobingo/platform/actions/runs/43024966989"
+    },
+    {
+      "site": "milobingo-staging",
+      "buildStage": "extract",
+      "isolatedUser": "build-mil-stg"
+    },
+    {
+      "site": "milobingo-staging",
+      "buildStage": "version-node",
+      "isolatedUser": "build-mil-stg"
+    },
+    {
+      "site": "milobingo-staging",
+      "buildStage": "version-pnpm",
+      "isolatedUser": "build-mil-stg"
+    },
+    {
+      "site": "milobingo-staging",
+      "buildStage": "install",
+      "isolatedUser": "build-mil-stg"
+    },
+    {
+      "site": "milobingo-staging",
+      "buildStage": "build",
+      "isolatedUser": "build-mil-stg"
+    },
+    {
+      "gate": "runtime-database-role",
+      "status": "passed",
+      "verifiedTls": true,
+      "readableTables": 23,
+      "credentialsPrinted": false
+    },
+    {
+      "gate": "staging-workspace",
+      "status": "passed",
+      "templates": [
+        {
+          "brand": "milo",
+          "templateCount": 17,
+          "authTemplateReadOnly": true
+        },
+        {
+          "brand": "vlampie",
+          "templateCount": 17,
+          "authTemplateReadOnly": true
+        }
+      ],
+      "readableProviders": [
+        "openai",
+        "livekit",
+        "resend"
+      ],
+      "providerSettingsReadable": true,
+      "providerSettingsEditable": true,
+      "storedCredentialsReturned": false,
+      "databaseWrites": 0,
+      "objectWrites": 0,
+      "providerRequests": 0,
+      "realAccountLoginVerified": false,
+      "releaseSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "releaseId": "43026808427-1",
+      "configVersion": "staging-2026-11-11-v2",
+      "execution": "unprivileged-app-account"
+    },
+    {
+      "deployment": "passed",
+      "version": 1,
+      "site": "milobingo-staging",
+      "sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "releaseId": "43026808427-1"
+    },
+    {
+      "buildRuntimeCredentials": false,
+      "ciRunUrl": "https://github.com/milobingo/platform/actions/runs/43024966989",
+      "configId": "staging-2026-11-11-v2",
+      "operation": "deploy",
+      "releaseId": "43026808427-1",
+      "runtimeValuesPrinted": false,
+      "sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "site": "milobingo-staging",
+      "status": "passed"
+    },
+    {
+      "gate": "public",
+      "status": "passed",
+      "releaseSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+      "releaseId": "43026808427-1",
+      "configVersion": "staging-2026-11-11-v2",
+      "checks": [
+        "exact-health-identity",
+        "demo-assets",
+        "unauthenticated-access",
+        "local-login-disabled"
+      ],
+      "notTested": [
+        "real-otp-email",
+        "google-oauth-account",
+        "paid-provider-access",
+        "live-broadcast-audio"
+      ]
+    }
+  ]
+}

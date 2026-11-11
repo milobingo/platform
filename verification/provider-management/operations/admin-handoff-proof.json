@@ -1,0 +1,124 @@
+{
+  "status": "passed",
+  "handoffWorkflow": {
+    "conclusion": "success",
+    "headSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "jobs": [
+      {
+        "completedAt": "2026-11-11T13:09:47Z",
+        "conclusion": "success",
+        "databaseId": 130542642370,
+        "name": "release-gate",
+        "startedAt": "2026-11-11T13:09:22Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-11T13:09:23Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-11T13:09:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:35Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 2,
+            "startedAt": "2026-11-11T13:09:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:43Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 3,
+            "startedAt": "2026-11-11T13:09:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:44Z",
+            "conclusion": "success",
+            "name": "Require exact successful main CI",
+            "number": 4,
+            "startedAt": "2026-11-11T13:09:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:44Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+            "number": 7,
+            "startedAt": "2026-11-11T13:09:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:45Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+            "number": 8,
+            "startedAt": "2026-11-11T13:09:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:45Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 9,
+            "startedAt": "2026-11-11T13:09:45Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/milobingo/platform/actions/runs/43026562758/job/130542642370"
+      },
+      {
+        "completedAt": "2026-11-11T13:09:55Z",
+        "conclusion": "success",
+        "databaseId": 130542873397,
+        "name": "transfer",
+        "startedAt": "2026-11-11T13:09:50Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-11T13:09:51Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-11T13:09:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:51Z",
+            "conclusion": "success",
+            "name": "Transfer only existing management credentials to the fixed protected destination",
+            "number": 2,
+            "startedAt": "2026-11-11T13:09:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-11T13:09:52Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 3,
+            "startedAt": "2026-11-11T13:09:51Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/milobingo/platform/actions/runs/43026562758/job/130542873397"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/milobingo/platform/actions/runs/43026562758"
+  },
+  "backupAuthentication": {
+    "files": [
+      "milo-lfsdgxcpdyghidzkzzvn-20261109T134136676Z-edc7f203-0897-45c1-9d60-1a80f43592ea.dump.aesgcm",
+      "milo-lfsdgxcpdyghidzkzzvn-20261109T134136676Z-edc7f203-0897-45c1-9d60-1a80f43592ea.extensions.json.aesgcm"
+    ],
+    "authenticated": true,
+    "plaintextWritten": false
+  },
+  "verifierSha256": "c92626dfd854a7486ea5b224768b15b6f92828577195d8744b83e25f102a4f0b",
+  "databaseRestorationPerformed": false,
+  "credentialValuesPrinted": false
+}

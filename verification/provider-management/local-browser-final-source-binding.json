@@ -1,0 +1,21 @@
+{
+  "localSnapshotHead": "67e1039a270488601c5e010da4eb25b1c7619812",
+  "snapshotHadUncommittedChanges": true,
+  "verifiedReleasedSource": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "allRecordedSourceHashesMatchReleasedCommit": true,
+  "sha256": {
+    "frontend/ResendSettings.jsx": "647d086c9473b4f8cf2b2f8fbec016517596d0d2f1cfe5e17baee71d3ccfaa4f",
+    "frontend/provider-settings.css": "c430f67ff33abc2595f36f1ab0c8bab56adf6bb400d8df3cbc3ff0bc7d2e395e",
+    "frontend/CommunicationWorkspace.jsx": "0289078de1a23e5a0177aed97cef84a3deee5c4ab80dc94a218d4578dc2ffcfc",
+    "frontend/Administration.jsx": "789ce9f7115bfc4bfa03b7363b61a318d82cb026a687ae2b9a61d0aab6a792b0",
+    "frontend/OpenAISettings.jsx": "0dce2a8c19c781fe405b9194f7241ae233627fad9b81e5b88550f0e4b0d85542",
+    "frontend/LiveKitSettings.jsx": "6b5304f890e1f2d4c9a356dc5625b3e801cd213d78d53b2f9b43921ffbd29e10",
+    "server/resend.js": "01d58606e3571ef5c783f9d04e0a6391088b6428abafdd1176d159daeab00f0b",
+    "server/node-resend-mail.js": "a2093b68c59e8bc75463fed5964dbb4937470809517255cebb19054eaa4607ee",
+    "server/node-runtime.js": "2e4729cdcb3bd783ee922fb29bb8a0f689efa6caaf62479ca46d73879b203902",
+    "server/node-provider-settings.js": "f4b2854739b085080d182d60345f52abccdbde32efda0a4378634f948d788af1",
+    "server/secrets.js": "638c07594adcf3c8de60d74b00273344d0b7b22e0bbe39135e4dc309cf7f37d5",
+    "tests/browser/regie-settings.spec.mjs": "f1e5c1f90297185c7baaf7fbe039d59df1ec6f0365c51cc557bf0dd8938d2ed7",
+    "playwright.config.mjs": "103281347c462e8645d299ab983a762c6e3becccfd9f2bbc12b7131140386ac0"
+  }
+}

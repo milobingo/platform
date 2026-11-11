@@ -1,0 +1,41 @@
+
+Running 30 tests using 1 worker
+
+  ✓   1 ../../../../home/codex/repos/milobingo/tests/browser/broadcast-preparation.spec.mjs:109:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay (16.0s)
+  ✓   2 ../../../../home/codex/repos/milobingo/tests/browser/broadcast-preparation.spec.mjs:123:1 › autoplay failure keeps the activation overlay until a real programme tone finishes after explicit interaction; simulated scoped API (3.3s)
+  ✓   3 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓   4 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   5 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (3.0s)
+  ✓   6 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (3.1s)
+  ✓   7 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (3.2s)
+  ✓   8 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (140ms)
+  ✓   9 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (164ms)
+  ✓  10 ../../../../home/codex/repos/milobingo/tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (784ms)
+  ✓  11 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:113:2 › handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport (23.0s)
+  ✓  12 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:113:2 › handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport (23.4s)
+  ✓  13 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:165:1 › handoff v6 short-screen workspace and family modals; simulated transport (2.3s)
+  ✓  14 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:186:1 › handoff v6 family orders, retained broadcast and whisper dialog; simulated transport (2.6s)
+  ✓  15 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:211:1 › handoff v6 Vlampie retains all seven console modules and its manual draw controls; simulated transport (2.1s)
+  ✓  16 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v6.spec.mjs:219:1 › handoff v6 actual tour transport, new magic reveal and order detail; simulated transport (5.5s)
+  ✓  17 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 320px: real BINGO from Books, retained show and one shared countdown (3.3s)
+  ✓  18 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown (3.6s)
+  ✓  19 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:54:1 › v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot (2.9s)
+  ✓  20 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:92:1 › v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie (2.2s)
+  ✓  21 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:105:1 › v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions (3.9s)
+  ✓  22 ../../../../home/codex/repos/milobingo/tests/browser/handoff-v70.spec.mjs:119:1 › v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences (224ms)
+  ✓  23 ../../../../home/codex/repos/milobingo/tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 390px; simulated API (1.5s)
+  ✓  24 ../../../../home/codex/repos/milobingo/tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 1366px; simulated API (1.7s)
+  ✓  25 ../../../../home/codex/repos/milobingo/tests/browser/obs-source.spec.mjs:74:1 › OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API (3.8s)
+  ✓  26 ../../../../home/codex/repos/milobingo/tests/browser/obs-source.spec.mjs:103:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API (920ms)
+  ✓  27 ../../../../home/codex/repos/milobingo/tests/browser/regie-settings.spec.mjs:157:2 › saved-show mail recovery and encrypted Resend CRUD 390px; isolated native API (23.1s)
+  ✓  28 ../../../../home/codex/repos/milobingo/tests/browser/regie-settings.spec.mjs:157:2 › saved-show mail recovery and encrypted Resend CRUD 1366px; isolated native API (5.8s)
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+  ✓  29 ../../../../home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:75:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API (4.3s)
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+  ✓  30 ../../../../home/codex/repos/milobingo/tests/browser/start-rules.spec.mjs:75:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API (4.8s)
+
+  30 passed (2.7m)

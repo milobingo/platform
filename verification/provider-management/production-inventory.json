@@ -1,0 +1,153 @@
+{
+  "format": "milo-production-read-only-inventory-v1",
+  "observedAt": "2026-11-11T13:05:17.945796Z",
+  "scope": "Read-only public metadata, project metadata, SQL metadata/aggregates, public Auth settings and target host service/configuration inventory. Not production deployment or acceptance evidence.",
+  "github": {
+    "repository": "milobingo/platform",
+    "environment": "production",
+    "variableNames": [
+      "MILO_APP_ORIGIN",
+      "MILO_DATA_MODE",
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+    ],
+    "appOriginValue": "https://milo.dgwebservices.nl/",
+    "canonicalAppOrigin": "https://milo.dgwebservices.nl",
+    "dataMode": "supabase",
+    "supabaseUrl": "https://msupvdycmtbycaonqgan.supabase.co",
+    "publishableKey": {
+      "present": true,
+      "prefix": "sb_publishable_",
+      "matchesProjectActiveKey": true,
+      "matchedKeyDisabled": false,
+      "valueIncluded": false
+    },
+    "secretNames": [],
+    "aliasMapping": {
+      "MILO_APP_ORIGIN": "APP_URL",
+      "NEXT_PUBLIC_SUPABASE_URL": "SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "SUPABASE_PUBLISHABLE_KEY"
+    },
+    "dataModeHandling": "MILO_DATA_MODE=supabase is a validated bootstrap choice, not a native runtime environment field.",
+    "aliasesPopulateHostConfigurationAutomatically": false
+  },
+  "supabase": {
+    "account": {
+      "linked": true,
+      "name": "Duindorpdoet",
+      "linkId": "link_6ae013e4bce081918aeddc1ab3db2a9d"
+    },
+    "projectRef": "msupvdycmtbycaonqgan",
+    "name": "milobingo-production",
+    "organizationId": "ctygpxltmdabxisehhdf",
+    "region": "eu-west-1",
+    "status": "ACTIVE_HEALTHY",
+    "createdAt": "2026-11-11T12:22:59.732677Z",
+    "apiUrl": "https://msupvdycmtbycaonqgan.supabase.co",
+    "databaseHost": "db.msupvdycmtbycaonqgan.supabase.co",
+    "postgresVersion": "17.11.0.018",
+    "metadata": {
+      "publicTables": [],
+      "miloRoles": [],
+      "storageBuckets": [],
+      "authUserCount": 0,
+      "installedExtensions": [
+        {
+          "name": "pgcrypto",
+          "version": "1.3"
+        },
+        {
+          "name": "uuid-ossp",
+          "version": "1.1"
+        }
+      ]
+    },
+    "connectorSqlRole": {
+      "name": "postgres",
+      "canCreateRoles": true,
+      "canCreateDatabases": true,
+      "canCreatePublicObjects": true
+    },
+    "publicAuthSettings": {
+      "googleEnabled": false,
+      "emailEnabled": true,
+      "signupDisabled": false,
+      "emailAutoConfirm": false,
+      "anonymousUsersEnabled": false
+    },
+    "authPrivateSmtpAndRedirectConfiguration": "not inspected; current connector has no corresponding management tool",
+    "privateCredentialManagement": "Current connector exposes publishable keys, not private server-key management or existing database-password retrieval.",
+    "additionalProjectOrAccountConnectionRequiredForSchemaInventory": false
+  },
+  "target": {
+    "hostname": "dg-nxttrack-01",
+    "ipv4": "128.140.93.95",
+    "dns": {
+      "hostname": "milo.dgwebservices.nl",
+      "ipv4": [
+        "128.140.93.95"
+      ]
+    },
+    "productionHttps": {
+      "url": "https://milo.dgwebservices.nl/api/health",
+      "status": "tls-handshake-failed",
+      "errorType": "SSLError",
+      "reason": "TLSV1_ALERT_INTERNAL_ERROR"
+    },
+    "existingServices": {
+      "milobingo-staging.service": "active",
+      "dartflow-staging.service": "active",
+      "dartflow-production.service": "active"
+    },
+    "existingApplicationListeners": [
+      {
+        "address": "127.0.0.1",
+        "port": 4173,
+        "site": "milobingo-staging"
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 4174,
+        "site": "dartflow-staging"
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 4175,
+        "site": "dartflow-production"
+      }
+    ],
+    "caddyFragmentsObserved": [
+      "milobingo-staging.caddy",
+      "dartflow-staging.caddy",
+      "dartflow-production.caddy"
+    ],
+    "productionOriginPresentInObservedCaddyFragments": false,
+    "port4176HadListenerAtObservation": false,
+    "productionPortReserved": false,
+    "activeMiloProductionProfileOrWorkflowInstalledByThisTask": false
+  },
+  "remainingWork": [
+    "Review and bootstrap production schema and limited database role using existing linked SQL access.",
+    "Provision a private application Storage bucket and protected server-side Storage credential.",
+    "Provision the limited runtime connection, verified database CA and a stable independent production encryption key in root-only host configuration.",
+    "Configure and test production Auth Google provider, authorized redirects, email delivery/SMTP and real user/role access.",
+    "Review a separate production host profile and actual UID/GID/free port, then provision accounts, service, Caddy/TLS, broker and runtime bundle without changing the three existing sites.",
+    "Collect five genuine release-bound staging acceptance results before production promotion."
+  ],
+  "mutations": {
+    "database": false,
+    "storage": false,
+    "auth": false,
+    "dns": false,
+    "host": false,
+    "credentialsCreatedOrChanged": false
+  },
+  "privateCredentialValuesIncluded": false,
+  "publishableKeyValueIncluded": false,
+  "sources": [
+    "GitHub production environment variables and secret-name list via gh api",
+    "Supabase list_projects/get_project/execute_sql/get_publishable_keys through the existing Duindorpdoet connection",
+    "Public Supabase /auth/v1/settings with the existing publishable key, safe booleans retained only",
+    "Local DNS/TLS requests and read-only SSH service/listener/Caddy-fragment inventory"
+  ]
+}

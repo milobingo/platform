@@ -1,0 +1,7 @@
+{
+  "generatedNextBuildRemoved": true,
+  "sourceOrUserDataRemoved": false,
+  "stagingChanged": false,
+  "reason": "Release dev-VPS RAM after verified build and isolated local acceptance",
+  "canRegenerate": "pnpm build"
+}

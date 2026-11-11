@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-11-11T13:24:54.970191+00:00",
+  "status": "passed",
+  "textArtifactsChecked": 24,
+  "serializedSyntheticCredentials": 0,
+  "releaseSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "releaseId": "43026808427-1",
+  "sourceFilesPinned": 252,
+  "copiedArtifacts": 89,
+  "manualScreenshotsReviewed": 6,
+  "sourceAndBaselinePreserved": true,
+  "ownRamCleaned": true,
+  "noRealProviderOrMailRequests": true
+}

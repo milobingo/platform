@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-11-11T13:20:36.463Z",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "simulatedAuthAndProviderTransport": true,
+  "otherApiTransportFixtures": true,
+  "actualAccountOrProviderAcceptance": false,
+  "actualRemoteBackendWrites": false,
+  "isolatedProviderSettingsWrites": true,
+  "savedShowBranch": true,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "306ec036-3f78-4c3d-9235-a07684e2f016",
+  "requestedMailState": 0,
+  "requestedSavedGame": 0,
+  "gets": {
+    "/api/auth/session": 1
+  },
+  "mailResponses": [],
+  "errors": [],
+  "external": [],
+  "writes": [],
+  "unexpected": [],
+  "expectedSandboxScriptBlocks": 0,
+  "expectedMailLoadConsoleErrors": [],
+  "expectedResendConsoleErrors": [],
+  "resendRequests": [],
+  "resendStatuses": [],
+  "providerRequests": [],
+  "forbiddenProviderRequests": [],
+  "providerChecks": {},
+  "fixtureCleanup": true
+}

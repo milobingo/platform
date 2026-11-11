@@ -1,0 +1,89 @@
+{
+  "format": 1,
+  "scope": "local synthetic fixtures only; fixed-host main function not invoked",
+  "status": "passed",
+  "syntheticChecksPassed": 19,
+  "hostExecuted": false,
+  "databaseContacted": false,
+  "plaintextWritten": false,
+  "actualBackupKeyVerified": false,
+  "limits": "No real backup was read; no filesystem ownership checks or database restore were exercised by this local harness.",
+  "cases": [
+    {
+      "name": "own-project direct database with verify-full accepted",
+      "status": "passed"
+    },
+    {
+      "name": "own-project pooler database with verify-full accepted",
+      "status": "passed"
+    },
+    {
+      "name": "short backup key rejected",
+      "status": "passed"
+    },
+    {
+      "name": "extra handoff field rejected",
+      "status": "passed"
+    },
+    {
+      "name": "foreign database project rejected",
+      "status": "passed"
+    },
+    {
+      "name": "weaker database TLS rejected",
+      "status": "passed"
+    },
+    {
+      "name": "duplicate TLS query rejected",
+      "status": "passed"
+    },
+    {
+      "name": "additional database query rejected",
+      "status": "passed"
+    },
+    {
+      "name": "latest matching pair selected independently of directory order",
+      "status": "passed"
+    },
+    {
+      "name": "newest orphan rejected instead of falling back",
+      "status": "passed"
+    },
+    {
+      "name": "invalid backup timestamp rejected",
+      "status": "passed"
+    },
+    {
+      "name": "foreign project backup filenames rejected",
+      "status": "passed"
+    },
+    {
+      "name": "authenticated MILOBAK1 payload decrypted in memory",
+      "status": "passed"
+    },
+    {
+      "name": "wrong recovery key rejected",
+      "status": "passed"
+    },
+    {
+      "name": "modified magic rejected",
+      "status": "passed"
+    },
+    {
+      "name": "modified AAD nonce rejected",
+      "status": "passed"
+    },
+    {
+      "name": "modified ciphertext rejected",
+      "status": "passed"
+    },
+    {
+      "name": "modified authentication tag rejected",
+      "status": "passed"
+    },
+    {
+      "name": "truncated envelope rejected",
+      "status": "passed"
+    }
+  ]
+}

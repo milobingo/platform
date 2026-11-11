@@ -1,0 +1,72 @@
+{
+  "format": "milo-protected-installer-local-check-v1",
+  "observedAt": "2026-11-11T12:56:53.322993Z",
+  "status": "passed",
+  "sourceReleaseSha": "53982b955a038628c9ab3674cdad579592b9b36f",
+  "installer": {
+    "path": "verification/provider-management/operations/install-protected-host.py",
+    "sha256": "00b9f88070a855b655e3477f7e7f37a47cc9316cfdec48befe70ad133312a38e"
+  },
+  "checks": [
+    {
+      "id": "valid-reviewed-source-payload",
+      "status": "passed",
+      "sourceFiles": 10,
+      "scope": "Payload validation only; installation not invoked with root privileges."
+    },
+    {
+      "id": "runtime-destination-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "runtime-field-in-envelope-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "unexpected-permissions-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "missing-fixed-source-file-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "source-checksum-mismatch-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "malformed-source-encoding-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "broad-temporary-sudo-grant-rejected",
+      "status": "passed",
+      "result": "refused-before-installation"
+    },
+    {
+      "id": "non-root-installer-invocation-rejected",
+      "status": "passed",
+      "result": "early-root-boundary-refusal"
+    }
+  ],
+  "passedChecks": 9,
+  "negativePayloadsRefused": 7,
+  "temporaryRenderRemoved": true,
+  "targetVpsContacted": false,
+  "targetVpsFilesReadOrWritten": false,
+  "runtimeSecretsProvided": false,
+  "providerRequests": 0,
+  "notExercised": [
+    "Root installation and ownership changes",
+    "Atomic link/unlink, fsync and failure rollback on target filesystems",
+    "Target visudo or complete target sudoers parsing",
+    "Target services, listeners, Caddy, releases or runtime configuration"
+  ],
+  "scope": "Local parser/integrity/negative-input checks and actual non-root early refusal only. This record is not host-installation or host-acceptance evidence."
+}

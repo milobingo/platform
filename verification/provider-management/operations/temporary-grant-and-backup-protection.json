@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "temporaryHandoffGrantRemoved": true,
+  "temporaryHandoffHelperRemoved": true,
+  "sudoersValid": true,
+  "backupFiles": 12,
+  "backupBytesUnchanged": true,
+  "backupOwner": "root:root",
+  "backupDirectoryMode": "0700",
+  "backupFilesMode": "0600",
+  "backupReadableByRunner": false,
+  "appOrCaddyChanged": false
+}

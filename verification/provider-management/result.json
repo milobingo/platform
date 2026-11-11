@@ -1,0 +1,60 @@
+{
+  "status": "completed-on-staging",
+  "sourceSha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "releaseId": "43026808427-1",
+  "configId": "staging-2026-11-11-v2",
+  "ci": "https://github.com/milobingo/platform/actions/runs/43024966989",
+  "deploy": "https://github.com/milobingo/platform/actions/runs/43026808427",
+  "providerManagement": [
+    "openai",
+    "livekit",
+    "resend"
+  ],
+  "githubPermanentSecrets": {
+    "repository": 0,
+    "staging": 0,
+    "production": 0
+  },
+  "githubPublicVariableCounts": {
+    "staging": 4,
+    "production": 4
+  },
+  "normalDeployReferencesEnvironmentSecretsOrVariables": false,
+  "tests": {
+    "localPrograms": 101,
+    "nativeLegacy": 23,
+    "protectedBroker": 29,
+    "bootstrap": 6,
+    "ciBrowser": 30,
+    "actualStagingBrowser": 30,
+    "actualStagingStats": {
+      "startTime": "2026-11-11T13:21:39.624Z",
+      "duration": 159809.141,
+      "expected": 30,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "preserved": {
+    "existingMasterkeyExactly": true,
+    "existingRuntimeCredentialsExactly": true,
+    "miloDataAndVlampieEnvironment": true,
+    "dartflowStagingAndProductionReleasesAndHealth": true
+  },
+  "production": {
+    "authorized": true,
+    "public_target_confirmed": true,
+    "configured": false,
+    "deployed": false,
+    "reason": "Production public variables and project confirmed; backend is empty. Protected server credential/bootstrap, Auth Google/SMTP/redirects, production host profile and five actual staging integration acceptances remain. No production changes performed.",
+    "evidence": "verification/provider-management/production-inventory.json"
+  },
+  "limitations": {
+    "realAccountLoginTested": false,
+    "realProviderOrMailDeliveryTested": false,
+    "actualOBSInstallationTested": false,
+    "databaseRestorationPerformed": false
+  },
+  "evidence": "docs/STAGING-RESULTAAT.md"
+}

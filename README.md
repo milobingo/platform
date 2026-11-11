@@ -22,7 +22,7 @@ Open **http://127.0.0.1:4173/login**. Kies expliciet **Open lokale regie** of **
 
 De gevulde, duidelijk gemarkeerde familie-demo staat op **http://127.0.0.1:4173/spelen?demo=1**. Deze simulatie blijft in de browser en gebruikt geen spel-API, microfoon, YouTube, OpenAI of LiveKit. De PDF-links in de demo zijn herkenbare voorbeelden.
 
-Een `.env.local` is voor lokaal spelen niet nodig. Gebruik [.env.example](.env.example) als namenlijst voor latere aansluiting. Zet `PORT` om een andere poort te gebruiken en pas dan ook een eventueel ingesteld `APP_URL` aan. Bewaar secrets uitsluitend in genegeerde omgevingsbestanden of de gekozen GitHub environment; plaats ze niet in de chat of broncode.
+Een `.env.local` is voor lokaal spelen niet nodig. Gebruik [.env.example](.env.example) als namenlijst voor latere aansluiting. Zet `PORT` om een andere poort te gebruiken en pas dan ook een eventueel ingesteld `APP_URL` aan. Lokale secrets horen in genegeerde bestanden. Op de doel-VPS staan infrastructuurgeheimen in de beschermde hostconfiguratie en providersleutels in de versleutelde beheerinstellingen. GitHub heeft daarvoor geen blijvende secrets nodig; zie [de configuratiescheiding](docs/BESCHERMDE-CONFIGURATIE.md).
 
 ## Wat is omgezet
 
@@ -54,12 +54,12 @@ De concrete inventaris staat in [Projectgegevens, accounts en secrets](docs/PROJ
 
 Staging draait op [milo-staging.dgwebservices.nl](https://milo-staging.dgwebservices.nl); de openbare [familiedemo](https://milo-staging.dgwebservices.nl/spelen?demo=1) is direct te openen. De native releaseprocedure, databasebackup met echte herstelproef, beperkte runtime-login en publieke nacontrole zijn ingericht. Zie [het actuele resultaat en bewijs](docs/STAGING-RESULTAAT.md), [de volgende deployment uitvoeren](docs/STAGING-DEPLOY.md) en [de hostinrichting](docs/STAGING-HOST.md).
 
-OpenAI en LiveKit zijn vanuit de regie te beheren via **Instellingen → AI & stemmen** en **Instellingen → E-mail & bellen**. Sleutels worden versleuteld opgeslagen en niet teruggestuurd. [Bediening en verbindingstests](docs/REGIE-SLEUTELS.md).
+OpenAI, LiveKit en Resend zijn vanuit de regie te beheren via **Instellingen → AI & stemmen** en **Instellingen → E-mail & bellen**. Resend staat ook onder **E-mail & nieuwsbrieven → Instellingen**. Sleutels worden versleuteld opgeslagen en niet teruggestuurd. Stagingmail vereist een expliciete ontvangerlijst; opslaan activeert verzending niet automatisch. [Bediening en verbindingstests](docs/REGIE-SLEUTELS.md).
 
-De regels voor een opgeslagen show publiceer je onder **Draaiboek → Startcheck**, direct bij **Bindende spelregels**. Daar kun je de uit de show samengestelde regels bekijken en expliciet publiceren. De rij toont daarna de actuele versie; bij gewijzigde regels of bestaande deelname geeft de startcheck de passende vervolgstap.
+Milo volgt **Voorbereiden → Uitzending testen → Start show**. Wijzigingen slaan automatisch op en de server legt de actuele regels bij starten vast. Bestaande deelnameregels blijven behouden. Vlampie houdt zijn aparte omgeving en expliciete publicatieprocedure. [Showvoorbereiding](docs/SIMPELE-SHOW-VOORBEREIDING.md).
 
 Voor OBS maak je onder **Studio & camera’s → OBS-browserbron** een aparte uitzendlink. Die opent zonder Google-aanmelding in OBS en is vanuit de regie te vervangen of in te trekken. Zie [de OBS-instructies](docs/OBS-UITZENDING.md) voor beeld, geluid en geldigheid.
 
-Echte OTP/Google, bewuste regietoekenning, mailgateway, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De gesigneerde DG-bestelmailadapter is gebouwd; de eigen Milo-gateway/worker, afzender, signing secret en het reconciliatiecontract moeten nog worden ingericht. Benodigde gegevens en bestaande configuratie staan in [de inventaris](docs/PROJECTGEGEVENS-EN-SECRETS.md). Productie is geautoriseerd; de echte bestemming wordt gevalideerd via [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
+Echte OTP/Google, regietoekenning, mailbezorging, provider-/modeltoegang, stemmen, LiveKit/WebRTC, YouTube/OBS en de belrepetitie blijven afzonderlijke acceptatiestappen. De native Resend-route is beschikbaar; de bestaande gesigneerde DG-route blijft een bewuste fallback. Supabase Auth-SMTP staat los van showmail. Productiedomein en backendproject zijn bevestigd; de resterende inrichting staat in [de productieprocedure](docs/PRODUCTIE-DEPLOY.md).
 
 De oorspronkelijke overdrachtsdocumenten staan onder `docs/overdracht/`, de oorspronkelijke README onder `docs/overdracht/README-bron.md`. Het Cloudflare-buildpad is historische bron; de standaardbuild is nu Next.js. `.openai/hosting.json` hoort bij de oude Site en wordt niet gebruikt voor DG-releases.

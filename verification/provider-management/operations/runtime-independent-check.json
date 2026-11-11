@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "configId": "staging-2026-11-11-v2",
+  "protectedRuntimeExactlyMatchesActiveRuntime": true,
+  "encryptionKeyExactlyPreserved": true,
+  "bundleReadableBy": {
+    "run-mil-stg": false,
+    "build-mil-stg": false,
+    "app-mil-stg": false
+  },
+  "owner": "root:root",
+  "directoryMode": "0700",
+  "fileMode": "0600",
+  "credentialsPrinted": false
+}
