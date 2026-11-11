@@ -579,6 +579,9 @@ class ReleaseSimulation(unittest.TestCase):
         self.site, self.build, self.private = [self.root / p for p in ['site', 'build', 'private']]
         for path in [self.site / 'releases', self.build, self.private]:
             path.mkdir(parents=True)
+        # Hosted runners use umask 022; never inherit their world-readable
+        # default for a fixture representing the private isolated build root.
+        self.build.chmod(0o700)
         self.private.chmod(0o700)
         self.configroot = self.root / 'configs'
         self.bundle = self.configroot / CONFIG

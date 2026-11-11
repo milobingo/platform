@@ -1,0 +1,122 @@
+verify	Protected deployment and one-time handoff boundaries	﻿2026-11-11T12:57:51.8202480Z ##[group]Run python3 -B tests/check-protected-deployer.py
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8203012Z ^[[36;1mpython3 -B tests/check-protected-deployer.py^[[0m
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8203350Z ^[[36;1mpython3 -B tests/check-protected-bootstrap.py^[[0m
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8248911Z shell: /usr/bin/bash -e {0}
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8249210Z env:
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8249433Z   CI: true
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8249687Z   NEXT_TELEMETRY_DISABLED: 1
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8250387Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8250868Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8251267Z   MILO_TEST_VISUDO: /usr/sbin/visudo.ws
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.8251549Z ##[endgroup]
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9107597Z test_entry_passes_token_only_stdin_and_drops_inherited_provider_environment (__main__.EntryBoundary.test_entry_passes_token_only_stdin_and_drops_inherited_provider_environment) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9109468Z test_fixed_arguments_match_entry_and_helper (__main__.EntryBoundary.test_fixed_arguments_match_entry_and_helper) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9111311Z test_only_bounded_unique_token_stdin_is_accepted (__main__.EntryBoundary.test_only_bounded_unique_token_stdin_is_accepted) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9116941Z test_real_untrusted_or_symlinked_paths_are_rejected (__main__.EntryBoundary.test_real_untrusted_or_symlinked_paths_are_rejected) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9119857Z {"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9124831Z test_build_client_holds_locks_and_executes_without_inherited_runtime (__main__.IsolationAndLocks.test_build_client_holds_locks_and_executes_without_inherited_runtime) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9126232Z {"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9130071Z test_build_failure_stops_actual_unit_and_uncertain_cleanup_fails_closed (__main__.IsolationAndLocks.test_build_failure_stops_actual_unit_and_uncertain_cleanup_fails_closed) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9141177Z test_candidate_audit_runs_as_app_with_protected_envfile_path_and_no_secret_cli (__main__.IsolationAndLocks.test_candidate_audit_runs_as_app_with_protected_envfile_path_and_no_secret_cli) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9142963Z {"site": "milobingo-staging", "buildStage": "build", "isolatedUser": "build-mil-stg"}
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9144404Z test_guardian_drains_only_own_build_audit_and_app_jobs (__main__.IsolationAndLocks.test_guardian_drains_only_own_build_audit_and_app_jobs) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9149928Z test_guardian_start_uses_only_lock_descriptors_and_waits_for_manager_ready (__main__.IsolationAndLocks.test_guardian_start_uses_only_lock_descriptors_and_waits_for_manager_ready) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9151906Z test_only_fixed_app_service_operations_keep_controller_locks (__main__.IsolationAndLocks.test_only_fixed_app_service_operations_keep_controller_locks) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:51.9316996Z test_real_ofd_locks_survive_controller_death_until_guardian_job_drain (__main__.IsolationAndLocks.test_real_ofd_locks_survive_controller_death_until_guardian_job_drain) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.0175922Z test_bundle_forbids_derived_values_injections_admin_and_mail_policy (__main__.ProtectedConfiguration.test_bundle_forbids_derived_values_injections_admin_and_mail_policy) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.0383898Z test_bundle_preserves_infrastructure_key_and_provider_fallbacks_without_github (__main__.ProtectedConfiguration.test_bundle_preserves_infrastructure_key_and_provider_fallbacks_without_github) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.0543579Z test_configuration_directory_cannot_be_group_readable (__main__.ProtectedConfiguration.test_configuration_directory_cannot_be_group_readable) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.0693692Z test_private_json_rejects_world_readable_duplicate_hardlink_and_symlink (__main__.ProtectedConfiguration.test_private_json_rejects_world_readable_duplicate_hardlink_and_symlink) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.0853908Z test_provider_keys_are_optional_and_new_beheer_configuration_does_not_block_deploy (__main__.ProtectedConfiguration.test_provider_keys_are_optional_and_new_beheer_configuration_does_not_block_deploy) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.1276258Z test_wrong_project_tls_partial_livekit_and_unknown_config_fail_closed (__main__.ProtectedConfiguration.test_wrong_project_tls_partial_livekit_and_unknown_config_fail_closed) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.1293888Z test_policy_binds_installed_code_hashes_real_account_ids_and_private_builder_groups (__main__.ReleaseContract.test_policy_binds_installed_code_hashes_real_account_ids_and_private_builder_groups) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.1306627Z test_renderer_pins_every_new_root_component_and_keeps_legacy_dependency_unchanged (__main__.ReleaseContract.test_renderer_pins_every_new_root_component_and_keeps_legacy_dependency_unchanged) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.1886247Z test_rootgate_proves_fixed_ci_latest_attempt_current_dispatch_and_hides_token (__main__.ReleaseContract.test_rootgate_proves_fixed_ci_latest_attempt_current_dispatch_and_hides_token) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2019846Z test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart (__main__.ReleaseSimulation.test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart) ... FAIL
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2144975Z test_failed_candidate_health_restores_real_previous_app_and_original_config (__main__.ReleaseSimulation.test_failed_candidate_health_restores_real_previous_app_and_original_config) ... FAIL
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2270965Z test_real_seal_audits_before_atomic_activation_and_binds_private_configuration (__main__.ReleaseSimulation.test_real_seal_audits_before_atomic_activation_and_binds_private_configuration) ... ERROR
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2419719Z test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release (__main__.ReleaseSimulation.test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release) ... ERROR
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2438042Z test_download_exact_github_source_has_no_credential_in_url_or_file (__main__.SourceBoundary.test_download_exact_github_source_has_no_credential_in_url_or_file) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2448148Z test_download_never_sends_token_to_cross_host_or_wrong_commit_redirect (__main__.SourceBoundary.test_download_never_sends_token_to_cross_host_or_wrong_commit_redirect) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2457884Z test_source_extraction_enforces_real_bytes_and_file_budget (__main__.SourceBoundary.test_source_extraction_enforces_real_bytes_and_file_budget) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2476497Z test_source_extraction_refuses_traversal_env_secrets_hardlinks_and_duplicate_members (__main__.SourceBoundary.test_source_extraction_refuses_traversal_env_secrets_hardlinks_and_duplicate_members) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2483806Z test_source_extraction_strips_only_top_level_wrapper_and_checks_internal_links (__main__.SourceBoundary.test_source_extraction_strips_only_top_level_wrapper_and_checks_internal_links) ... ok
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2484853Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2485305Z ======================================================================
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2486734Z ERROR: test_real_seal_audits_before_atomic_activation_and_binds_private_configuration (__main__.ReleaseSimulation.test_real_seal_audits_before_atomic_activation_and_binds_private_configuration)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2488069Z ----------------------------------------------------------------------
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2488744Z Traceback (most recent call last):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2489858Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 675, in test_real_seal_audits_before_atomic_activation_and_binds_private_configuration
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2490829Z     result = self.candidate()
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2491587Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 665, in candidate
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2492829Z     return deploy.deploy_release(legacy, self.profile, self.policy, SHA, run, CONFIG, TOKEN)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2493658Z            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2494833Z   File "/home/runner/work/platform/platform/infra/protected/deploy-helper.py", line 450, in deploy_release
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2495763Z     legacy.deploy(sha, run, bundle['runtime'], profile,
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2496355Z     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2497016Z         pwd.getpwnam(RUNNER), pwd.getpwnam(BUILDER), pwd.getpwnam(APP))
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2497683Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2498503Z   File "/home/runner/work/platform/platform/infra/staging/deploy-helper.py", line 459, in deploy
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2499540Z     require(BUILD_ROOT.stat().st_gid == build.pw_gid and BUILD_ROOT.stat().st_mode & 0o007 == 0,
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2500380Z     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2500992Z             'Wrong isolated build root')
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2501478Z             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2502355Z   File "/home/runner/work/platform/platform/infra/staging/deploy-helper.py", line 45, in require
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2503353Z     raise ValueError(message)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2503907Z ValueError: Wrong isolated build root
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2504282Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2504645Z ======================================================================
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2506086Z ERROR: test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release (__main__.ReleaseSimulation.test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2507457Z ----------------------------------------------------------------------
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2508124Z Traceback (most recent call last):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2509346Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 711, in test_reusing_a_changed_configuration_id_blocks_switch_from_prior_sealed_release
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2510460Z     self.candidate()
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2510893Z     ~~~~~~~~~~~~~~^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2511660Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 665, in candidate
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2513217Z     return deploy.deploy_release(legacy, self.profile, self.policy, SHA, run, CONFIG, TOKEN)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2514095Z            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2515066Z   File "/home/runner/work/platform/platform/infra/protected/deploy-helper.py", line 450, in deploy_release
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2516013Z     legacy.deploy(sha, run, bundle['runtime'], profile,
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2516626Z     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2517224Z         pwd.getpwnam(RUNNER), pwd.getpwnam(BUILDER), pwd.getpwnam(APP))
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2517881Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2518673Z   File "/home/runner/work/platform/platform/infra/staging/deploy-helper.py", line 459, in deploy
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2519687Z     require(BUILD_ROOT.stat().st_gid == build.pw_gid and BUILD_ROOT.stat().st_mode & 0o007 == 0,
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2520521Z     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2521106Z             'Wrong isolated build root')
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2521601Z             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2522533Z   File "/home/runner/work/platform/platform/infra/staging/deploy-helper.py", line 45, in require
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2523263Z     raise ValueError(message)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2523791Z ValueError: Wrong isolated build root
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2524172Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2524549Z ======================================================================
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2525993Z FAIL: test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart (__main__.ReleaseSimulation.test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2527371Z ----------------------------------------------------------------------
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2527941Z ValueError: Wrong isolated build root
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2528271Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2528698Z During handling of the above exception, another exception occurred:
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2529164Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2529461Z Traceback (most recent call last):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2530653Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 692, in test_failed_backend_audit_leaves_old_app_and_config_untouched_without_restart
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2532003Z     with self.assertRaisesRegex(ValueError, 'read-only audit failure'):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2533048Z          ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2533935Z AssertionError: "read-only audit failure" does not match "Wrong isolated build root"
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2534545Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2534933Z ======================================================================
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2536520Z FAIL: test_failed_candidate_health_restores_real_previous_app_and_original_config (__main__.ReleaseSimulation.test_failed_candidate_health_restores_real_previous_app_and_original_config)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2537915Z ----------------------------------------------------------------------
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2538627Z ValueError: Wrong isolated build root
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2539012Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2539465Z During handling of the above exception, another exception occurred:
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2539958Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2540256Z Traceback (most recent call last):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2541457Z   File "/home/runner/work/platform/platform/tests/check-protected-deployer.py", line 701, in test_failed_candidate_health_restores_real_previous_app_and_original_config
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2542946Z     with self.assertRaisesRegex(ValueError, 'prior healthy Milo release restored'):
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2543801Z          ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2544781Z AssertionError: "prior healthy Milo release restored" does not match "Wrong isolated build root"
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2545614Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2546046Z ----------------------------------------------------------------------
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2546660Z Ran 29 tests in 0.339s
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2546985Z 
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2547248Z FAILED (failures=2, errors=2)
+verify	Protected deployment and one-time handoff boundaries	2026-11-11T12:57:52.2656287Z ##[error]Process completed with exit code 1.
