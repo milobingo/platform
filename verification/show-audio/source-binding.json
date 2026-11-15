@@ -594,7 +594,7 @@
     "tests/browser/start-rules.spec.mjs": "42ed4cd208f3d849ee54a60f53b8ca3d78430a33032922a641d5dd565bd886d3",
     "tests/check-account-mail.mjs": "9ea4baecc842c4402c1bd4c670d7d9ce663ccc9aa9f4b51a51072307761797a7",
     "tests/check-broadcast-settings-ui.mjs": "98f2386c7e8139c0c845bda095286050ef2438c226e2eb32a3268ae154a223db",
-    "tests/check-broadcast-settings.mjs": "dd73cb6219e523cc5b6080a67bb5b4cbc23033f511ad959933310d936fc6662b",
+    "tests/check-broadcast-settings.mjs": "5196429939a758e62b83a96e8b8f675a66d2ace58d6fa7c74976ff5513de3c42",
     "tests/check-deploy-contract.mjs": "6aea7395c6eaf5989320de511fc091cb47a32264850dc6e0b363ef1d43f04f08",
     "tests/check-deploy-database.mjs": "37561fdd4e18a7e079d29e749ad3256fa75775d09852b8c21f7fb45fdc978fbe",
     "tests/check-family-accessibility.mjs": "d377ca8843facd0fd66ecb8f1b19544a47ded751fc46fb55c41d6ac5468be76f",
@@ -638,5 +638,6 @@
     "tests/check-v70-schema-upgrade.mjs": "415fcfe0eb7faabfc533732995d5478db2d5bd8af5e3566c49a88ad610c526ee",
     "tests/helpers/browser-audio-fixture.mjs": "7b3cfef104e7988577bcf44f1b8713c08d56371259d9bb6b7fc62770bcffab86",
     "tests/helpers/sudoers-toolchain.mjs": "c9f83dbacd70ed709e767edb1e545c91f69c70a00ec5dd4b383c43755442d56c"
-  }
+  },
+  "testOnlyFollowup": "PostgreSQL test now compares the intentionally redacted host response and separately asserts complete private state preservation. Application and built assets unchanged."
 }

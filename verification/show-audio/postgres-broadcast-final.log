@@ -1,0 +1,22 @@
+✔ public video IDs and supported YouTube URLs normalize without any provider request (1.479566ms)
+✔ YouTube autosave accepts {"status":"draft"} independently of rules, timeline and preparation revision (32.226892ms)
+✔ YouTube autosave accepts {"status":"running"} independently of rules, timeline and preparation revision (7.254702ms)
+✔ YouTube autosave accepts {"status":"running","paused":true} independently of rules, timeline and preparation revision (5.540251ms)
+✔ terminal shows reject broadcast changes; role, ownership, origin, JSON and field guards fail closed (13.098812ms)
+✔ two tabs conflict on the broadcast revision; idempotent retries and clearing are explicit (12.199738ms)
+Bingoadministratie: Error
+✔ a storage error preserves the old ID; retrying the same request stores it once (4.417729ms)
+✔ a stale complete preparation PUT preserves a newer broadcast ID, including a lost CAS race (55.020206ms)
+✔ optional speech claims are durable at most once, including retries, two tabs and old operation eviction (77.395086ms)
+✔ optional speech cannot be claimed before an official nine, across an old epoch or while held (38.30138ms)
+✔ optional speech requires the current unexpired control lease and never acquires or extends it (13.680957ms)
+✔ a control handover that wins the CAS prevents the old tab from consuming a cue (71.300919ms)
+✔ PostgreSQL broadcast revisions and durable audio receipts use real CAS and survive reload (238.800455ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 579.611692
