@@ -582,7 +582,7 @@
     "server/standard-show.js": "f83cde008eca4e590034e19d4f48001816be31c031f85508badc163faba223ae",
     "server/voice-cache.js": "5aa81e590e72fc4db89b347a1de55c74351d9745409728b25e46e4f1ca5dc2df",
     "tests/browser/audio-preparation.spec.mjs": "05fb6b9d7e1211fe4b2a3b747286b5599926c9c51fe6889595934aff89426d5b",
-    "tests/browser/broadcast-preparation.spec.mjs": "c286d5fe64d96f0d145adfd93d7eca18df236eff95f2905f1e1c834314cbb269",
+    "tests/browser/broadcast-preparation.spec.mjs": "7dc6e9edb767968a72b9268ea9309ea255682883c7c8da85d4aba7497ef58294",
     "tests/browser/broadcast-settings.spec.mjs": "ceafe7d10ee9805165dcbf763608eecb43303de2e6ecae2a531cea69efb43fb9",
     "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
     "tests/browser/handoff-v6.spec.mjs": "4ceed1bcfda2b97dba51662ddab8881bf779f6d2b87efea8d1a43fca15e5747a",
@@ -639,5 +639,5 @@
     "tests/helpers/browser-audio-fixture.mjs": "7b3cfef104e7988577bcf44f1b8713c08d56371259d9bb6b7fc62770bcffab86",
     "tests/helpers/sudoers-toolchain.mjs": "c9f83dbacd70ed709e767edb1e545c91f69c70a00ec5dd4b383c43755442d56c"
   },
-  "testOnlyFollowup": "PostgreSQL test now compares the intentionally redacted host response and separately asserts complete private state preservation. Application and built assets unchanged. Browser follow-up measures recorded playback on the audio render thread and awaits complete audio before asserting navigation; application and built assets remain unchanged."
+  "testOnlyFollowup": "PostgreSQL test now compares the intentionally redacted host response and separately asserts complete private state preservation. Application and built assets unchanged. Browser follow-up measures recorded playback on the audio render thread and awaits complete audio before asserting navigation; application and built assets remain unchanged. The same acknowledged render-thread meter also measures the programme recording, avoiding the identical timer blind spot there."
 }

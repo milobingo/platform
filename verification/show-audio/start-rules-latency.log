@@ -1,0 +1,30 @@
+
+Running 2 tests using 2 workers
+
+(node:3402178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:3402180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] ../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API
+[2/2] ../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API
+../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API
+Bingoadministratie: Error
+
+../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+../../../../tmp/milo-start-rules-latency/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API
+Bingoadministratie: Error
+
+  2 passed (21.3s)
