@@ -56,7 +56,7 @@ async function fixture(page,testInfo,options={}){
   else {evidence.unexpected.push(url.pathname+url.search);return route.fulfill({status:404,json:{error:{message:'Unexpected isolated regie QA endpoint.'}}});}
   return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
  });
- return {game,state,evidence,read:async()=>(await store.game(game.id)).data,mutate:operation=>store.mutate(game.id,{},operation),close:()=>db.close()};
+ return {game,state,evidence,audio,read:async()=>(await store.game(game.id)).data,mutate:operation=>store.mutate(game.id,{},operation),close:()=>db.close()};
 }
 async function noOverflow(page){await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);}
 async function shot(page,name){await mkdir(output+'/screenshots',{recursive:true});await page.screenshot({path:output+'/screenshots/'+name+'.png',fullPage:false});}
@@ -131,7 +131,13 @@ for(const width of [1366,390]){
    const before=await h.read();await page.goto('/#/live');const workspace=page.locator('.mf-live-workspace');await expect(workspace.locator('.rd-alert-strip')).toContainText('Meldvenster actief');
    // A second actual browser tab restores the same server show under its lease.
    // The emergency cancellation must still work from the inactive first tab.
-   other=await page.context().newPage();await other.goto('/#/live');await other.getByRole('button',{name:'Hervat regie',exact:true}).click();await expect(other.getByText('Regie hersteld.',{exact:false})).toBeVisible();
+   const bank=await h.audio.manifest();other=await page.context().newPage();await other.goto('/#/live');await other.getByRole('button',{name:'Hervat regie',exact:true}).click();
+   // Resume restores every cached byte before its success message. Wait for
+   // that bounded operation explicitly, including on a two-worker CI runner.
+   const loadedClips=()=>h.evidence.audioPreparationRequests.filter(request=>request.path.endsWith('/speech')&&request.completedAt!==null);
+   await expect.poll(()=>loadedClips().length,{timeout:30000,message:'The second regie tab must restore the complete cached audio bank'}).toBe(bank.total);
+   expect(loadedClips().every(request=>request.cacheOnly)).toBe(true);expect(new Set(loadedClips().map(request=>request.key)).size).toBe(bank.total);expect(loadedClips().map(request=>request.key).sort()).toEqual(bank.items.map(item=>item.key).sort());
+   await expect(other.getByText('Regie hersteld.',{exact:false})).toBeVisible();h.evidence.secondTabRestoredAllCachedAudio=true;
    const launch=workspace.getByRole('button',{name:'Show geforceerd annuleren',exact:true});await expect(launch).toBeEnabled();await launch.click();
    const dialog=page.getByRole('dialog',{name:'Show geforceerd annuleren?'}),confirm=dialog.getByRole('button',{name:'Definitief annuleren',exact:true}),title=dialog.getByRole('textbox',{name:'Shownaam ter bevestiging',exact:true}),reason=dialog.getByRole('textbox',{name:'Reden van annuleren',exact:true});
    await expect(dialog).toBeVisible();await expect(confirm).toBeDisabled();await title.fill('Een andere show');await expect(confirm).toBeDisabled();await title.fill(h.game.title);await reason.fill('Oefening: de regie kan niet veilig verder.');await expect(confirm).toBeEnabled();h.state.cancelGate=new Promise(resolve=>{releaseCancellation=resolve;});await confirm.click();

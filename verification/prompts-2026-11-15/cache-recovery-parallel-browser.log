@@ -1,0 +1,24 @@
+
+Running 9 tests using 2 workers
+
+(node:336803) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:336804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1366px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (5.3s)
+  ✓  1 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1920px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (5.5s)
+  ✓  4 tests/browser/regie-refresh.spec.mjs:107:1 › regie refresh preserves the separate Vlampie console and all seven modules (3.0s)
+  ✓  3 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (5.4s)
+  ✓  5 tests/browser/regie-refresh.spec.mjs:126:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 1366px; isolated real Bingo API (11.8s)
+  ✓  6 tests/browser/regie-refresh.spec.mjs:126:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 390px; isolated real Bingo API (11.5s)
+  ✓  7 tests/browser/regie-refresh.spec.mjs:162:1 › presenter inputs preserve ten thousand characters and explain an oversized paste without truncation (2.1s)
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+Bingoadministratie: Error
+  ✓  8 tests/browser/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API (5.2s)
+  ✓  9 tests/browser/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API (5.9s)
+
+  9 passed (29.5s)
