@@ -58,6 +58,13 @@ function closeAttachedSession(socket){
 }
 const words=Array.from({length:76},(_,n)=>[dutchNumber(n).normalize('NFD').replace(/\p{M}/gu,''),String(n)]).sort((a,b)=>b[0].length-a[0].length);
 export function normalizedScript(text){let s=String(text).toLowerCase().normalize('NFD').replace(/\p{M}/gu,'').replace(/[-’']/g,'').replace(/\bhe+[ey]*\b/g,'he').replace(/\bbingo\s+show\b/g,'bingoshow');for(const [word,n] of words)s=s.replace(new RegExp('\\b'+word+'\\b','g'),n);return s.replace(/[^\p{L}\p{N}]+/gu,' ').trim();}
+function scriptPrefix(transcript,text){
+ const actual=normalizedScript(transcript),expected=normalizedScript(text);
+ // A delta can stop halfway through a Dutch number word, while the complete
+ // number has already normalized to digits. Check the spelled form as well.
+ const spelled=value=>value.replace(/\b(?:[0-9]|[1-6][0-9]|7[0-5])\b/g,number=>dutchNumber(Number(number)).normalize('NFD').replace(/\p{M}/gu,''));
+ return expected.startsWith(actual)||spelled(expected).startsWith(spelled(actual));
+}
 export function pcmWave(chunks){
  const size=chunks.reduce((n,c)=>n+c.length,0),out=new Uint8Array(44+size),view=new DataView(out.buffer),ascii=(offset,s)=>{for(let i=0;i<s.length;i++)out[offset+i]=s.charCodeAt(i);};
  ascii(0,'RIFF');view.setUint32(4,36+size,true);ascii(8,'WAVEfmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,24000,true);view.setUint32(28,48000,true);view.setUint16(32,2,true);view.setUint16(34,16,true);ascii(36,'data');view.setUint32(40,size,true);
@@ -89,7 +96,7 @@ export async function synthesizeLiveScript(key,settings,text,request,fetcher=fet
   const abort=()=>fail(request.signal.reason?.name==='TimeoutError'?'De stemvoorbereiding duurde te lang. Opgeslagen fragmenten blijven behouden.':'De stemvoorbereiding is geannuleerd.',request.signal.reason?.name==='TimeoutError'?504:408,request.signal.reason?.name==='TimeoutError'?'timeout':'cancelled');
   request.signal.addEventListener('abort',abort,{once:true});
   if(request.signal.aborted){abort();return;}
-  timer=setTimeout(()=>transcript&&normalizedScript(transcript)!==expected?fail('De uitgesproken tekst wijkt af van het script. Het fragment is niet opgeslagen; controleer deze tekst.',409,'speech_script_mismatch'):fail('GPT-Live rondde dit fragment niet op tijd af. Opgeslagen fragmenten blijven behouden.',504,'timeout'),scriptTimeoutMs);
+  timer=setTimeout(()=>transcript&&!scriptPrefix(transcript,text)?fail('De uitgesproken tekst wijkt af van het script. Het fragment is niet opgeslagen; controleer deze tekst.',409,'speech_script_mismatch'):fail('GPT-Live rondde dit fragment niet op tijd af. Opgeslagen fragmenten blijven behouden.',504,'timeout'),scriptTimeoutMs);
   socket.addEventListener('message',event=>{try{
    const e=JSON.parse(event.data);
    if(e.type==='session.started'){
@@ -99,7 +106,7 @@ export async function synthesizeLiveScript(key,settings,text,request,fetcher=fet
    if(e.type==='session.output_audio.delta'&&!closing){
     const bytes=Uint8Array.from(atob(e.delta),c=>c.charCodeAt(0));if(bytes.length%2)throw Error('pcm');size+=bytes.length;if(size>6*1024*1024)throw Error('size');chunks.push(bytes);
     const pcm=new DataView(bytes.buffer);for(let i=0;i<bytes.length;i+=2){samples++;if(Math.abs(pcm.getInt16(i,true))>200)lastVoiced=samples;}
-    if(lastVoiced&&samples-lastVoiced>21600&&normalizedScript(transcript)===expected){closing=true;clearInterval(feed);send({type:'session.close'});closeTimer=setTimeout(()=>fail('GPT-Live heeft het einde van dit fragment niet op tijd bevestigd.',504,'timeout'),closeTimeoutMs);}
+    if(lastVoiced&&samples-lastVoiced>21600&&normalizedScript(transcript)===expected){closing=true;clearTimeout(timer);clearInterval(feed);send({type:'session.close'});closeTimer=setTimeout(()=>fail('GPT-Live heeft het einde van dit fragment niet op tijd bevestigd.',504,'timeout'),closeTimeoutMs);}
    }
    if(e.type==='session.closed'){if(closing)complete();else fail('De stemvoorbereiding is voortijdig gesloten en kwam niet volledig overeen met het script.',409,'speech_script_mismatch');}
    if(e.type==='error'||e.type==='session.delegation.created')fail('GPT-Live kon dit script niet als een volledige uitspraak voorbereiden.',502,'live_rejected');

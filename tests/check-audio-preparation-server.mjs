@@ -99,6 +99,27 @@ test('timeout phases distinguish handshake, missing transcript, missing audio, m
  }
 });
 
+test('deadline treats a correct incomplete prefix as a timeout while rejecting an actual Dutch or English deviation',async()=>{
+ for(const sample of [
+  {text:'Bernhard vijftien! Vijftien!',transcript:'Bernhard vijftien!',status:504,code:'timeout'},
+  {text:'Bernhard vijftien! Vijftien!',transcript:'Bernhard vij',status:504,code:'timeout'},
+  {text:'Nummer 27. 27!',transcript:'Nummer zevenent',status:504,code:'timeout'},
+  {text:'Bernhard vijftien! Vijftien!',transcript:'Bernhard fifteen!',status:409,code:'speech_script_mismatch'},
+  {text:'Bernhard vijftien! Vijftien!',transcript:'Bernhard zestien!',status:409,code:'speech_script_mismatch'}
+ ])await assert.rejects(synthesizeLiveScript('synthetic-key',CHARACTERS.milo,sample.text,new Request(origin),async()=>fakeLiveSocket({text:sample.transcript}),{scriptTimeoutMs:10}),error=>error.status===sample.status&&error.code===sample.code&&error.phase==='transcript');
+});
+
+test('a verified script finishing near its deadline retains its separate bounded close-confirmation budget',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const text='Bernhard vijftien! Vijftien!',listeners=new Map(),started=deferred();let closeRequests=0;
+ const emit=data=>listeners.get('message')?.({data:JSON.stringify(data)}),socket={webSocket:{accept(){},addEventListener(type,fn){listeners.set(type,fn);},send(raw){const event=JSON.parse(raw);if(event.type==='session.start'){emit({type:'session.started'});started.resolve();}else if(event.type==='session.close')closeRequests++;},close(){}}};
+ const pending=synthesizeLiveScript('synthetic-key',CHARACTERS.milo,text,new Request(origin),async()=>socket,{scriptTimeoutMs:40,closeTimeoutMs:20});await started.promise;
+ t.mock.timers.tick(39);emit({type:'session.output_transcript.delta',delta:text});emit({type:'session.output_audio.delta',delta:Buffer.from(new Int16Array(2400).fill(850).buffer).toString('base64')});emit({type:'session.output_audio.delta',delta:Buffer.from(new Int16Array(24000).buffer).toString('base64')});assert.equal(closeRequests,1);
+ // The old script deadline has passed, but 15 of the separate 20 close units
+ // have elapsed. Success still requires an actual session.closed event.
+ t.mock.timers.tick(15);emit({type:'session.closed'});const audio=await pending;assert.equal(new TextDecoder().decode(audio.slice(0,4)),'RIFF');assert(audio.length>48000);assert.equal(closeRequests,1);
+});
+
 for(const route of ['speech','test'])test(`${route}: only an explicit temporary rate limit permits retries, never quota or credentials`,async t=>{
  const h=await fixture(t),body=route==='speech'?h.speech():{};
  for(const sample of [
