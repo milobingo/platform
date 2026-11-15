@@ -82,6 +82,16 @@ test('starting and resuming never generate fixed audio until the director explic
   e.characterRevision++;e.emit();await assert.rejects(e.preparedAudio.ensure(),/Gewijzigde audio voorbereiden/);assert.equal(manifests,1);
  }finally{e.dispose();}
 });
+test('only a deliberately added unplanned call presenter invalidates preparation; finishing cues preserves the bank',async()=>{
+ const {e,calls}=await rig({live:true});try{
+  const identity=e.audioPreparationContext().identity;assert.equal(e.preparedAudio.state.complete,true);const beforeRequests=calls.length;
+  e.game.callCues=[{id:'winner-milo',characterId:'milo',status:'waiting-announcement'},{id:'cohost-stella',characterId:'stella',status:'planned'}];e.emit();assert.equal(e.audioPreparationContext().identity,identity);assert.equal(e.preparedAudio.state.complete,true);
+  const unused=e.characters.find(character=>character.id!=='vlampie'&&!JSON.stringify(e.game.plan).includes(character.id)).id;
+  e.game.callCues.push({id:'manual-other',characterId:unused,status:'planned'});e.emit();assert.notEqual(e.audioPreparationContext().identity,identity);assert.equal(e.preparedAudio.state.phase,'stale');await assert.rejects(e.preparedAudio.ensure(),/Gewijzigde audio voorbereiden/);assert.equal(calls.length,beforeRequests,'choosing a presenter does not start audio generation');
+  await e.prepareShowAudio();const prepared=e.audioPreparationContext().identity;assert.equal(e.preparedAudio.state.complete,true);
+  e.game.callCues.at(-1).status='completed';e.game.callCues.push({id:'manual-same',characterId:unused,status:'skipped'});e.emit();assert.equal(e.audioPreparationContext().identity,prepared);assert.equal(e.preparedAudio.state.complete,true);
+ }finally{e.dispose();}
+});
 test('a manual speaking card checks fresh server state and uses prepared audio without unpausing or mutating the show',async()=>{
  const {e,server,calls}=await rig({live:true});try{
   const cue={id:'manual-ready',title:'Een gezellige reservetekst',condition:'always',text:'Wat gezellig dat jullie er zijn!',speakerId:'milo'};

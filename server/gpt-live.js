@@ -5,6 +5,9 @@ export const LIVE_MODEL='gpt-live-1';
 export class LiveServiceError extends Error{
  constructor(status,diagnostic){super([502,503,504].includes(status)?'De spraakdienst kan nu geen nieuwe testverbinding openen ('+status+'). Probeer het later opnieuw.':status===429?'OpenAI meldt een gebruikslimiet. Controleer je API-tegoed.':'GPT-Live accepteert de verbinding niet. Controleer de modeltoegang van de centrale sleutel.');this.status=[502,503,504].includes(status)?503:status===429?429:502;this.code=this.status===503?'live_unavailable':'live_rejected';this.diagnostic=diagnostic;}
 }
+export class ScriptSpeechError extends Error{
+ constructor(status,code,message,{retryAfter,phase}={}){super(message);this.status=status;this.code=code;if(Number.isSafeInteger(retryAfter)&&retryAfter>0&&retryAfter<=86400)this.retryAfter=retryAfter;if(['handshake','session_start','transcript','audio','silence','close'].includes(phase))this.phase=phase;}
+}
 export function validLiveSessionId(id){return typeof id==='string'&&id.length>0&&id.length<=512&&!/[\s\p{Cc}]/u.test(id);}
 export function liveSession(settings,{instructions,input=[]}={}){
  return {model:LIVE_MODEL,instructions:instructions||characterLiveInstructions(settings),audio:{output:{voice:liveVoice(settings)}},input,store:false};
@@ -63,10 +66,15 @@ export function pcmWave(chunks){
 // Prepared script clips use the same GPT-Live model and voice ID as live calls.
 // Live's continuous audio has no response.done; finish only after the complete
 // expected transcript and 900 ms of actual PCM silence. Never cache partial speech.
-export async function synthesizeLiveScript(key,settings,text,request,fetcher=fetch){
- const r=await fetcher('https://api.openai.com/v1/live/sessions',{headers:{Upgrade:'websocket',Authorization:'Bearer '+key},signal:AbortSignal.any([request.signal,AbortSignal.timeout(15000)])});
+export async function synthesizeLiveScript(key,settings,text,request,fetcher=fetch,{scriptTimeoutMs=45000,closeTimeoutMs=6000}={}){
+ let r;try{r=await fetcher('https://api.openai.com/v1/live/sessions',{headers:{Upgrade:'websocket',Authorization:'Bearer '+key},signal:AbortSignal.any([request.signal,AbortSignal.timeout(15000)])});}catch(error){const timedOut=error?.name==='TimeoutError'||request.signal.reason?.name==='TimeoutError',cancelled=request.signal.aborted&&!timedOut;throw new ScriptSpeechError(timedOut?504:cancelled?408:503,timedOut?'timeout':cancelled?'cancelled':'connection',timedOut?'GPT-Live opende de stemverbinding niet op tijd.':cancelled?'De stemvoorbereiding is geannuleerd.':'De GPT-Live-stemverbinding is tijdelijk onderbroken.',{phase:'handshake'});}
  const socket=r.webSocket;
- if(!socket){await r.body?.cancel();throw Error('GPT-Live kon de stemvoorbereiding niet openen. Er wordt geen andere stem gebruikt.');}
+ if(!socket){const diagnostic=await liveFailureDiagnostic(r,[key]);
+  if(r.status===401||r.status===403)throw new ScriptSpeechError(502,'key_rejected','OpenAI accepteert de opgeslagen sleutel of deze stemtoegang niet. Controleer de API-instellingen.');
+  if(r.status===429){const limited=['rate_limit_exceeded','rate_limit_error'].includes(diagnostic.errorCode)||!diagnostic.errorCode&&diagnostic.errorType==='rate_limit_error';throw new ScriptSpeechError(429,limited?'openai_rate_limit':'openai_limit',limited?'De spraakdienst is tijdelijk druk. De opgeslagen fragmenten blijven behouden.':'OpenAI meldt een gebruiks- of tegoedlimiet. Controleer je API-tegoed.',limited?{retryAfter:Number.isSafeInteger(diagnostic.retryAfter)?diagnostic.retryAfter:5}:{});}
+  if([400,404,422].includes(r.status))throw new ScriptSpeechError(502,'live_rejected','GPT-Live accepteert deze stemvoorbereiding niet. Controleer het opgeslagen personage en de modeltoegang.');
+  throw new ScriptSpeechError(503,'connection','De spraakdienst kon dit fragment tijdelijk niet voorbereiden.',{retryAfter:diagnostic.retryAfter||3});
+ }
  socket.accept();
  const expected=normalizedScript(text),session=liveSession(settings,{instructions:characterLiveInstructions(settings,{scripted:true}),input:[{type:'message',role:'developer',content:[{type:'input_text',text:'Lees nu exact deze scripttekst eenmaal voor en blijf daarna stil:\n'+text}]}]});
  session.audio.format={type:'audio/pcm',rate:24000};
@@ -75,12 +83,13 @@ export async function synthesizeLiveScript(key,settings,text,request,fetcher=fet
   const chunks=[];
   const send=e=>socket.send(JSON.stringify(e));
   const clean=()=>{clearTimeout(timer);clearTimeout(closeTimer);clearInterval(feed);request.signal.removeEventListener('abort',abort);};
-  const fail=message=>{if(finished)return;finished=true;clean();try{send({type:'session.close'});}catch{}try{socket.close(1000);}catch{}reject(Error(message));};
-  const complete=()=>{if(finished)return;finished=true;clean();try{socket.close(1000);}catch{}if(!size||normalizedScript(transcript)!==expected)return reject(Error('De stemproef kwam niet overeen met het script. Het fragment is niet opgeslagen.'));resolve(pcmWave(chunks));};
-  const abort=()=>fail('De stemvoorbereiding is geannuleerd.');
+  const phase=()=>closing?'close':!started?'session_start':!transcript||normalizedScript(transcript)!==expected?'transcript':!size?'audio':'silence';
+  const fail=(message,status=503,code='connection')=>{if(finished)return;finished=true;clean();try{send({type:'session.close'});}catch{}try{socket.close(1000);}catch{}reject(new ScriptSpeechError(status,code,message,{phase:phase()}));};
+  const complete=()=>{if(finished)return;finished=true;clean();try{socket.close(1000);}catch{}if(!size||normalizedScript(transcript)!==expected)return reject(new ScriptSpeechError(409,'speech_script_mismatch','De stemproef kwam niet overeen met het script. Het fragment is niet opgeslagen.'));resolve(pcmWave(chunks));};
+  const abort=()=>fail(request.signal.reason?.name==='TimeoutError'?'De stemvoorbereiding duurde te lang. Opgeslagen fragmenten blijven behouden.':'De stemvoorbereiding is geannuleerd.',request.signal.reason?.name==='TimeoutError'?504:408,request.signal.reason?.name==='TimeoutError'?'timeout':'cancelled');
   request.signal.addEventListener('abort',abort,{once:true});
   if(request.signal.aborted){abort();return;}
-  timer=setTimeout(()=>fail('GPT-Live rondde het script niet volledig af. Probeer een kortere tekst.'),45000);
+  timer=setTimeout(()=>transcript&&normalizedScript(transcript)!==expected?fail('De uitgesproken tekst wijkt af van het script. Het fragment is niet opgeslagen; controleer deze tekst.',409,'speech_script_mismatch'):fail('GPT-Live rondde dit fragment niet op tijd af. Opgeslagen fragmenten blijven behouden.',504,'timeout'),scriptTimeoutMs);
   socket.addEventListener('message',event=>{try{
    const e=JSON.parse(event.data);
    if(e.type==='session.started'){
@@ -90,11 +99,11 @@ export async function synthesizeLiveScript(key,settings,text,request,fetcher=fet
    if(e.type==='session.output_audio.delta'&&!closing){
     const bytes=Uint8Array.from(atob(e.delta),c=>c.charCodeAt(0));if(bytes.length%2)throw Error('pcm');size+=bytes.length;if(size>6*1024*1024)throw Error('size');chunks.push(bytes);
     const pcm=new DataView(bytes.buffer);for(let i=0;i<bytes.length;i+=2){samples++;if(Math.abs(pcm.getInt16(i,true))>200)lastVoiced=samples;}
-    if(lastVoiced&&samples-lastVoiced>21600&&normalizedScript(transcript)===expected){closing=true;clearInterval(feed);send({type:'session.close'});closeTimer=setTimeout(()=>fail('GPT-Live heeft het einde van de stemvoorbereiding niet bevestigd.'),6000);}
+    if(lastVoiced&&samples-lastVoiced>21600&&normalizedScript(transcript)===expected){closing=true;clearInterval(feed);send({type:'session.close'});closeTimer=setTimeout(()=>fail('GPT-Live heeft het einde van dit fragment niet op tijd bevestigd.',504,'timeout'),closeTimeoutMs);}
    }
-   if(e.type==='session.closed'){if(closing)complete();else fail('De stemvoorbereiding is voortijdig gesloten.');}
-   if(e.type==='error'||e.type==='session.delegation.created')fail('GPT-Live kon dit script niet als een volledige uitspraak voorbereiden.');
-  }catch{fail('Het GPT-Live-stemfragment kon niet worden gecontroleerd.');}});
+   if(e.type==='session.closed'){if(closing)complete();else fail('De stemvoorbereiding is voortijdig gesloten en kwam niet volledig overeen met het script.',409,'speech_script_mismatch');}
+   if(e.type==='error'||e.type==='session.delegation.created')fail('GPT-Live kon dit script niet als een volledige uitspraak voorbereiden.',502,'live_rejected');
+  }catch{fail('Het GPT-Live-stemfragment kon niet worden gecontroleerd.',502,'invalid_audio');}});
   socket.addEventListener('error',()=>fail('De GPT-Live-verbinding is onderbroken.'));
   socket.addEventListener('close',()=>{if(!finished)fail(started?'GPT-Live sloot voordat het script bevestigd was.':'GPT-Live kon niet starten.');});
   try{send({type:'session.start',session});}catch{fail('GPT-Live kon niet starten.');}

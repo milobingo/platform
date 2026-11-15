@@ -11,11 +11,11 @@ async function until(predicate){const deadline=performance.now()+2000;while(!pre
 const item=(number,text='Vast fragment '+number,overrides={})=>({key:number.toString(16).padStart(64,'0'),clip:number.toString(16).padStart(64,'0'),characterId:'milo',speed:1,text,kind:'fixed',durationMs:null,...overrides});
 const responseFor=(entry,{status=200,type='audio/wav',key=entry.key,bytes=new Uint8Array([1,2,3]),duration=1000}={})=>status===200?new Response(bytes,{headers:{'Content-Type':type,'X-Vlampie-Clip':key,'X-Milo-Audio-Duration-Ms':String(duration)}}):Response.json({error:{message:'Tijdelijke voorbereidingsfout'}},{status});
 
-function fixture(t,{items=[item(1),item(2),item(3)],ready=[],delay=10000,minimumGenerationGap=0,beforePrepare,manifest,fetcher}={}){
+function fixture(t,{items=[item(1),item(2),item(3)],ready=[],delay=10000,minimumGenerationGap=0,retryLimit=0,retryDelayMs=1,beforePrepare,manifest,fetcher}={}){
  const state={enabled:true,gameId:'show-a',identity:'show-a/plan-1/profile-1'},serverReady=new Set(ready),requests=[],generations=[],snapshots=[];let flushes=0,manifests=0;
  const h={state,serverReady,requests,generations,snapshots,items,fetcher,manifest,get flushes(){return flushes;},get manifests(){return manifests;}};
  h.reply=entry=>{serverReady.add(entry.key);return responseFor(entry);};
- h.audio=new PreparedShowAudio({read:()=>({...state}),delay,minimumGenerationGap,
+ h.audio=new PreparedShowAudio({read:()=>({...state}),delay,minimumGenerationGap,retryLimit,retryDelayMs,
   beforePrepare:async()=>{flushes++;await beforePrepare?.(h);},
   manifest:async body=>{manifests++;assert.equal(body.gameId,state.gameId);if(h.manifest)return h.manifest(body,h);return {fingerprint:'fingerprint:'+state.identity,items:structuredClone(h.items).map(entry=>({...entry,ready:serverReady.has(entry.key)}))};},
   fetcher:async(path,options)=>{assert.equal(path,'/api/openai/speech');assert.equal(options.method,'POST');assert.equal(options.credentials,'same-origin');assert.equal(options.headers['Content-Type'],'application/json');const body=JSON.parse(options.body),entry=h.items.find(entry=>entry.key===body.expectedKey);assert(entry,'only exact manifest items may be prepared');assert.equal(body.characterId,entry.characterId);assert.equal(body.speed,entry.speed);assert.equal(body.text,entry.text);requests.push({body,signal:options.signal});if(!body.cacheOnly)generations.push(entry.key);if(h.fetcher)return h.fetcher(entry,options,h);return h.reply(entry);},
@@ -37,6 +37,36 @@ test('same keys reuse loaded bytes across shows and plan changes; only changed k
  const h=fixture(t,{items:[item(1),item(2)]});await h.audio.prepare();const first=h.audio.lookup('Vast fragment 1',1,{characterId:'milo'}).bytes;assert.equal(h.requests.length,2);
  h.state.gameId='show-b';h.state.identity='show-b/plan-2/profile-1';h.items=[item(1),item(3)];h.audio.track();await h.audio.prepare();assert.equal(h.requests.length,3);assert.equal(h.requests.at(-1).body.expectedKey,item(3).key);assert.equal(h.requests.at(-1).body.gameId,'show-b');assert.equal(h.audio.lookup('Vast fragment 1',1,{characterId:'milo'}).bytes,first);assert.equal(h.audio.lookup('Vast fragment 2',1,{characterId:'milo'}),null);assert.equal(h.audio.cache.size,2);assert.equal(h.audio.bytes,6);
  await h.audio.ensure();assert.equal(h.requests.length,3,'a ready preparation check does not reload bytes');
+});
+
+test('cached clips load before new generation, without spending a second generation or waiting for slow fresh speech',async t=>{
+ const gate=defer(),entries=[item(1),item(2),item(3),item(4)],h=fixture(t,{items:entries,ready:[item(3).key,item(4).key],fetcher:async(entry,_options,h)=>{if([item(1).key,item(2).key].includes(entry.key))await gate.promise;return h.reply(entry);}});
+ const pending=h.audio.prepare();await until(()=>h.requests.length===4);
+ assert.deepEqual(h.requests.slice(0,2).map(request=>request.body.expectedKey),[item(3).key,item(4).key]);assert.equal(h.audio.state.ready,2);assert.equal(h.audio.state.reusedTotal,2);assert.equal(h.audio.state.newTotal,2);assert.equal(h.generations.length,2);gate.resolve();await pending;assert.equal(h.audio.state.complete,true);
+});
+
+test('a temporary timeout retries only its fragment and retains already prepared audio',async t=>{
+ let attempts=0;const h=fixture(t,{retryLimit:2,items:[item(1),item(2)],fetcher:async(entry,_options,h)=>{if(entry.key===item(2).key&&attempts++===0)return Response.json({error:{code:'speech_timeout',message:'De spraakdienst reageert tijdelijk niet.'}},{status:504});return h.reply(entry);}});
+ await h.audio.prepare();assert.equal(h.audio.state.complete,true);assert.equal(h.requests.filter(request=>request.body.expectedKey===item(1).key).length,1);assert.equal(h.requests.filter(request=>request.body.expectedKey===item(2).key).length,2);assert.equal(h.audio.bytes,6);assert(h.snapshots.some(s=>s.retrying===1));assert.equal(h.audio.state.retrying,0);
+});
+
+test('network failures have a bounded retry count; exhaustion preserves prior bytes for a deliberate retry',async t=>{
+ const h=fixture(t,{retryLimit:2,items:[item(1),item(2)],fetcher:async(entry,_options,h)=>{if(entry.key===item(2).key)throw new TypeError('Failed to fetch');return h.reply(entry);}});
+ await assert.rejects(h.audio.prepare(),/Failed to fetch/);assert.equal(h.requests.filter(request=>request.body.expectedKey===item(2).key).length,3);assert.equal(h.requests.filter(request=>request.body.expectedKey===item(1).key).length,1);assert.equal(h.audio.state.phase,'error');assert.equal(h.audio.state.ready,1);assert.equal(h.audio.state.retrying,0);assert.equal(h.audio.bytes,3);
+ const count=h.requests.length;await assert.rejects(h.audio.ensure());await sleep(10);assert.equal(h.requests.length,count,'readiness does not start another retry cycle');
+});
+
+test('a busy response respects Retry-After and retries the same exact manifest key',async t=>{
+ let first=true;const h=fixture(t,{retryLimit:2,items:[item(1)],fetcher:async(entry,_options,h)=>{if(first){first=false;return Response.json({error:{code:'busy',message:'Even wachten'}},{status:429,headers:{'Retry-After':'1'}});}return h.reply(entry);}}),waits=[],wait=h.audio.wait.bind(h.audio);
+ h.audio.wait=(ms,epoch)=>{waits.push(ms);return wait(Math.min(ms,2),epoch);};await h.audio.prepare();assert(waits.some(ms=>ms>=1000));assert.equal(h.requests.length,2);assert.equal(h.requests[0].body.expectedKey,h.requests[1].body.expectedKey);assert.equal(h.audio.state.complete,true);
+});
+
+for(const failure of [{status:429,code:'openai_limit'},{status:429,code:'busy'},{status:401,code:'sign_in'},{status:502,code:'key_rejected'},{status:502,code:'speech_script_mismatch'},{status:409,code:'speech_profile_changed'}])test(`${failure.code}/${failure.status} is never automatically retried without a safe recovery contract`,async t=>{
+ const h=fixture(t,{retryLimit:2,items:[item(1)],fetcher:async()=>Response.json({error:{code:failure.code,message:'Niet opnieuw genereren'}},{status:failure.status})});await assert.rejects(h.audio.prepare(),/Niet opnieuw genereren/);assert.equal(h.requests.length,1);assert.equal(h.audio.state.complete,false);
+});
+
+test('changing the show cancels a Retry-After wait immediately and never invites an old generation',async t=>{
+ const h=fixture(t,{retryLimit:2,items:[item(1)],fetcher:async()=>Response.json({error:{code:'busy',message:'Even wachten'}},{status:429,headers:{'Retry-After':'60'}})}),pending=h.audio.prepare();await until(()=>h.audio.state.retrying===1);h.state.identity+='/changed';h.audio.track();await assert.rejects(pending,error=>error.name==='AbortError');assert.equal(h.requests.length,1);assert.equal(h.audio.state.phase,'stale');assert.equal(h.audio.state.retrying,0);
 });
 
 test('a changed speaker profile invalidates exact text/speed identities rather than playing the earlier voice',async t=>{

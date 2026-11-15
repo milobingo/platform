@@ -24,7 +24,7 @@ async function fixture(page,testInfo,{running=false}={}){
  const guest=createBlock('guest',game.plan,'milo');Object.assign(guest,{title:'Kapitein Kora komt op bezoek',text:'Milo verwelkomt zijn beste vriend op het Sterrenplein.',guestId:'kora',dialogue:[{speakerId:'kora',text:'Ahoy, mijn lieve vrienden! Wat zijn jullie kaarten mooi!',animation:'wave'},{speakerId:'milo',text:'Welkom, Kora! Kom er gezellig bij.',animation:'welcome'}]});
  game.plan.blocks.splice(3,0,story,guest);prepareAutomaticRules(game);generateBooks(game,1,'qa-audio-book');Object.assign(game.books[0],{accountId:'qa-family',profileId:'qa-child',name:'Sam'});
  if(running){game.status='running';game.startedAt=Date.now()-120000;activateBlock(game,game.plan.blocks.findIndex(block=>block.type==='round'),0);Object.assign(game.state,{paused:true,drawn:[1,2,3,4,5,6,7,8],deck:Array.from({length:75},(_,i)=>i+1),lastCommit:{token:'qa-prior-eight',number:8,index:8,at:Date.now()-20000}});}
- await store.create(game);const path='/api/bingo/games/'+game.id,audio=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data}),state={gateText:null,gate:null,gateSeen:false},proof={origin,gameId:game.id,errors:[],unexpected:[],external:[],forbiddenWrites:[],bingo:[],audio:[],audioPreparationRequests:audio.requests};
+ await store.create(game);const path='/api/bingo/games/'+game.id,audio=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data}),state={gateText:null,gate:null,gateSeen:false,temporaryClip:null,temporaryFailures:0},proof={origin,gameId:game.id,errors:[],unexpected:[],external:[],forbiddenWrites:[],bingo:[],audio:[],audioPreparationRequests:audio.requests,expectedTemporaryErrors:[]};
  await page.addInitScript(()=>{
   localStorage.setItem('mf-production','milo');window.__preparedAudioRendering={decodes:[],starts:[]};const Native=window.AudioContext;
   if(Native)window.AudioContext=class extends Native{
@@ -32,7 +32,7 @@ async function fixture(page,testInfo,{running=false}={}){
    createBufferSource(){const source=super.createBufferSource(),start=source.start.bind(source);source.start=(...args)=>{window.__preparedAudioRendering.starts.push({at:Date.now(),duration:source.buffer?.duration,frames:source.buffer?.length,state:this.state});return start(...args);};return source;}
   };
  });
- page.on('pageerror',error=>proof.errors.push(error.message));page.on('console',message=>{if(message.type()==='error')proof.errors.push({text:message.text(),url:message.location().url});});
+ page.on('pageerror',error=>proof.errors.push(error.message));page.on('console',message=>{if(message.type()!=='error')return;const entry={text:message.text(),url:message.location().url};if(state.temporaryClip&&entry.url===origin+'/api/openai/speech'&&/server responded with a status of 503/.test(entry.text))proof.expectedTemporaryErrors.push(entry);else proof.errors.push(entry);});
  await page.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url()),method=request.method();
   if(url.origin!==origin){proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
@@ -40,6 +40,7 @@ async function fixture(page,testInfo,{running=false}={}){
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
   if(method==='POST'&&['/api/openai/show-audio','/api/openai/speech'].includes(url.pathname)){
    const body=request.postDataJSON(),record={path:url.pathname,at:Date.now(),gameId:body.gameId,text:body.text,characterId:body.characterId,key:body.expectedKey,cacheOnly:body.cacheOnly};proof.audio.push(record);
+   if(url.pathname.endsWith('/speech')&&body.expectedKey===state.temporaryClip&&state.temporaryFailures>0){state.temporaryFailures--;record.simulatedTemporaryFailure=true;return route.fulfill({status:503,headers:{'Retry-After':'2'},json:{error:{code:'connection',message:'Gesimuleerde tijdelijke verbindingsfout'}}});}
    if(url.pathname.endsWith('/speech')&&body.text===state.gateText){state.gateSeen=true;await state.gate.promise;}
    await audio.handle(route);record.completedAt=Date.now();return;
   }
@@ -70,6 +71,18 @@ const speechRequests=proof=>proof.audio.filter(request=>request.path==='/api/ope
 const starts=proof=>proof.bingo.filter(request=>request.path.endsWith('/start'));
 async function ready(page,total){const section=page.locator('section[aria-label="Audio voorbereiden"]');await expect(section).toBeVisible();await expect(section.locator(':scope>p').first()).toHaveText(`Alle ${total} vaste stemfragmenten zijn ingeladen in de regie.`,{timeout:30000});}
 function assertBoundaries(proof){expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.unexpected).toEqual([]);expect(proof.forbiddenWrites).toEqual([]);expect(proof.bingo.every(request=>request.status===200)).toBe(true);}
+
+test('manual audio preparation survives one temporary clip failure and finishes without reloading prepared clips or starting the show; isolated API',async({page},testInfo)=>{
+ const h=await fixture(page,testInfo);
+ try{
+  const manifest=await h.audio.manifest();h.state.temporaryClip=manifest.items[0].key;h.state.temporaryFailures=1;
+  await page.goto('/#/overview');const preparation=page.locator('section[aria-label="Audio voorbereiden"]');await preparation.getByRole('button',{name:'Audio voorbereiden',exact:true}).click();
+  await expect(preparation.getByText(/Tijdelijke onderbreking/)).toBeVisible();await ready(page,manifest.total);
+  const requests=speechRequests(h.proof);expect(requests).toHaveLength(manifest.total+1);expect(requests.filter(request=>request.key===h.state.temporaryClip)).toHaveLength(2);
+  for(const item of manifest.items.slice(1))expect(requests.filter(request=>request.key===item.key)).toHaveLength(1);
+  expect(requests.every(request=>request.cacheOnly)).toBe(true);expect(starts(h.proof)).toHaveLength(0);expect((await h.read()).status).toBe('draft');expect(h.proof.expectedTemporaryErrors).toHaveLength(1);assertBoundaries(h.proof);
+ }finally{await saveProof('temporary-preparation-recovery',h,page);await page.close();await h.close();}
+});
 
 test('saved Milo generates audio only after the explicit button, marks edits stale and starts after the last audio byte; isolated API',async({page},testInfo)=>{
  test.setTimeout(90000);await page.setViewportSize({width:1366,height:900});await page.emulateMedia({reducedMotion:'reduce'});const h=await fixture(page,testInfo);

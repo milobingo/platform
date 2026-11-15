@@ -11,6 +11,17 @@ import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 const problem=(message,status=409,code='show_audio_unavailable')=>Object.assign(new Error(message),{status,code});
 const hash=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)))),byte=>byte.toString(16).padStart(2,'0')).join('');
 export const MAX_SHOW_AUDIO_ITEMS=3000;
+export function showCallPresenters(game){
+ const plan=game.plan,presenters=new Set(),add=id=>{if(CHARACTER_IDS.includes(id))presenters.add(id);};
+ add(plan.leadId||'milo');add(plan.cohostId);
+ for(const block of plan.blocks){add(block.speakerId);for(const turn of block.dialogue||[])add(turn.speakerId);}
+ for(const cue of plan.manualCues||[])add(cue.speakerId);
+ // Keep deliberately chosen presenters for the rest of this show, including
+ // completed/skipped cues: closing a conversation must never invalidate the
+ // prepared bank. Available but unused profiles do not add preparation work.
+ for(const cue of game.callCues||[])add(cue.characterId);
+ return [...presenters];
+}
 export function showAudioScripts(game){
  const plan=game.plan,lead=plan.leadId||(game.brandId==='vlampie'?'vlampie':'milo'),brand=game.brandId==='vlampie'?'vlampie':'milo',scripts=[],roundSpeakers=new Set([lead]);
  const add=(text,characterId=lead,kind='plan',id=null)=>{if(typeof text==='string'&&text.trim())for(const [chunkIndex,chunk] of splitSpeechText(text).entries())scripts.push({text:chunk.trim(),characterId,kind,id,chunkIndex});};
@@ -29,9 +40,10 @@ export function showAudioScripts(game){
  for(const speaker of roundSpeakers){for(const item of fixedSpeechFor(brand))add(item.text,speaker,item.id.startsWith('ball-')?'number':'fixed',item.id);if(brand==='milo'){for(const cue of MILO_BANTER)add(cue.text,speaker,'banter',cue.id);add(NUMBER_NINE_AUDIENCE.text,speaker,'banter',NUMBER_NINE_AUDIENCE.id);}}
  if(brand==='milo'){
   for(const cue of MAGIC_CUES)add(cue.intro,'milo','magic',cue.id);
-  // Every selectable Milo presenter can host the same prepared conversation.
+  // Prepare only this show's chosen cast, including a deliberately scheduled
+  // manual presenter. Other profiles remain available for an explicit change.
   // These scripts never contain a child's name or information from backstage.
-  for(const speaker of CHARACTER_IDS)for(const [key,text] of Object.entries(LIVE_CALL_LINES))add(text,speaker,'live-call',key);
+  for(const speaker of showCallPresenters(game))for(const [key,text] of Object.entries(LIVE_CALL_LINES))add(text,speaker,'live-call',key);
  }
  return scripts;
 }

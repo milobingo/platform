@@ -109,6 +109,27 @@ async function inspectLiveModules(page,main,width,modules){
  }
 }
 
+test('Milo preparation opens the actual pre-show settings and saving availability keeps the show unstarted; simulated transport',async({page},testInfo)=>{
+ const proof=await simulatedTransport(page,testInfo);
+ await page.addInitScript(()=>localStorage.setItem('mf-production-settings-milo',JSON.stringify({lobby:{enabled:false}})));
+ await page.goto('/#/library/lobby');
+ const main=page.locator('main#mf-main'),toggle=main.getByRole('checkbox',{name:/Voorprogramma beschikbaar/});
+ await expect(main.getByRole('heading',{name:'Al gezellig vóór de eerste bal',exact:true})).toBeVisible();await expect(toggle).not.toBeChecked();
+ await main.getByRole('button',{name:'Beweging & magie',exact:true}).click();
+ await expect(toggle).toHaveCount(0);
+ await page.evaluate(()=>{location.hash='/library';});await expect(page.locator('.mf-route-view')).toHaveAttribute('data-route','library');
+ await page.evaluate(()=>{location.hash='/library/lobby';});await expect(toggle).toBeVisible();
+ await page.getByRole('link',{name:'Overzicht',exact:true}).click();
+ const setup=main.getByRole('link',{name:'Voorprogramma instellen',exact:true});await expect(setup).toBeVisible();await setup.click();
+ await expect(page).toHaveURL(/#\/library\/lobby$/);await expect(toggle).not.toBeChecked();
+ await toggle.check();await main.getByRole('button',{name:'Opslaan',exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('mf-production-settings-milo')).lobby.enabled)).toBe(true);
+ await expect(main.getByRole('button',{name:'Voorprogramma live',exact:true})).toBeEnabled();
+ await expect(page.locator('.mf-top-show')).toContainText('Oefenstudio');
+ await page.getByRole('link',{name:'Overzicht',exact:true}).click();await expect(setup).toHaveCount(0);
+ expect(proof.writes).toEqual([]);expect(proof.external).toEqual([]);expect(proof.unexpected).toEqual([]);expect(proof.errors).toEqual([]);
+});
+
 for(const width of [390,1366]){
  test(`handoff v6 actual browser ${width}px: routes, nested tabs and controls; simulated transport`,async({page},testInfo)=>{
   test.setTimeout(180000);

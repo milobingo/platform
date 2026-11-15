@@ -25,8 +25,9 @@ export async function obsFetch(input,init={},options={}){
  const token=obsSourceToken(location);
  if(!token){lost();throw Object.assign(new Error('De OBS-link is ongeldig of onvolledig. Maak een nieuwe link in de regie.'),{status:401});}
  const headers=new Headers(init.headers);headers.set('X-Milo-OBS-Token',token);
- try{
-  const response=await fetcher(path+url.search,{...init,headers,credentials:'omit',cache:'no-store',redirect:'error'});
-  if(!response.ok)lost();return response;
- }catch(error){if(error?.name!=='AbortError')lost();throw error;}
+ const response=await fetcher(path+url.search,{...init,headers,credentials:'omit',cache:'no-store',redirect:'error'});
+ // A failed clip download or a busy relay does not revoke the capability.
+ // Its caller retries that operation; only an authorization failure must
+ // immediately invalidate all programme audio and previously trusted state.
+ if(response.status===401||response.status===403)lost();return response;
 }

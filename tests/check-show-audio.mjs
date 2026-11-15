@@ -9,13 +9,14 @@ import {BingoStore} from '../server/bingo-store.js';
 import {makeGame,forceCancelGame} from '../server/bingo-model.js';
 import {CharacterSettingsStore} from '../server/character-settings.js';
 import {CHARACTERS,characterLiveInstructions} from '../server/characters.js';
-import {buildShowAudioManifest,showAudioScripts} from '../server/show-audio-manifest.js';
+import {buildShowAudioManifest,showAudioScripts,showCallPresenters} from '../server/show-audio-manifest.js';
 import {voicePath,characterVoiceKey,waveDurationMs} from '../server/voice-cache.js';
 import {synthesizeLiveScript,normalizedScript} from '../server/gpt-live.js';
 import {fakeLiveSocket} from '../scripts/gpt-live-fixture.mjs';
 import {splitSpeechText} from '../public/speech-text.js';
 import {bingoNumberText,dutchNumber,SPEECH_POLICY_VERSION,MILO_BANTER,NUMBER_NINE_AUDIENCE,roundSpeech,prizeSpeech} from '../public/bingo-speech.js';
 import {premierePlan} from '../server/premiere-plan.js';
+import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 
 const origin='https://studio.example',noProvider=()=>assert.fail('A read-only/cache-only route contacted a provider');
 async function fixture(t){
@@ -70,6 +71,25 @@ test('all premiere manual speaking cards are prepared but private operator direc
  assert(!scripts.some(item=>item.text.includes(privateNote)||item.text.includes(conditionTitle)));
  assert(!manifest.items.some(item=>item.text.includes(privateNote)||item.text.includes(conditionTitle)));
  assert.equal(new Set(manifest.items.map(item=>item.key)).size,manifest.total);
+});
+
+test('call preparation includes only actual cast and explicitly chosen presenters, retaining them after cue completion',async t=>{
+ const h=await fixture(t),before=await h.manifest(),saved=(await h.store.game(h.game.id)).data;
+ assert.deepEqual(showCallPresenters(saved),['milo']);
+ assert.equal(before.items.filter(item=>item.kind==='live-call').length,Object.keys(LIVE_CALL_LINES).length);
+ assert(!before.items.some(item=>item.kind==='live-call'&&item.characterId==='bruno'));
+ await h.store.mutate(h.game.id,{},game=>{
+  game.plan.cohostId='stella';game.plan.blocks.push({id:'guest-cast',type:'guest',speakerId:'otto',text:'Welkom, Kora!',dialogue:[{speakerId:'kora',text:'Ahoy allemaal!'}]});
+  game.plan.manualCues=[{id:'cue-cast',speakerId:'coco',text:'Wat een gezellige show!'}];
+  game.callCues=[{id:'manual-cast',source:'manual',status:'pending',characterId:'bella'},{id:'closed-cast',source:'manual',status:'completed',characterId:'bruno'},{id:'ignored-cast',source:'manual',status:'pending',characterId:'unknown'}];
+ });
+ const after=await h.manifest(),changed=(await h.store.game(h.game.id)).data;
+ assert.deepEqual(showCallPresenters(changed),['milo','stella','otto','kora','coco','bella','bruno']);
+ for(const characterId of showCallPresenters(changed))for(const text of Object.values(LIVE_CALL_LINES))assert(after.items.some(item=>item.characterId===characterId&&item.text===text));
+ for(const item of before.items.filter(item=>item.kind==='live-call'))assert(after.items.some(next=>next.key===item.key),'adding another presenter retains previously generated clip keys');
+ assert.notEqual(after.fingerprint,before.fingerprint);assert(!after.items.some(item=>item.kind==='live-call'&&item.characterId==='unknown'));
+ await h.store.mutate(h.game.id,{},game=>{game.callCues.find(cue=>cue.id==='manual-cast').status='completed';});
+ assert.equal((await h.manifest()).fingerprint,after.fingerprint,'closing a selected call must retain the same prepared bank');
 });
 
 test('an explanation prepares the individual visible pattern steps instead of repeating the combined block text',async t=>{

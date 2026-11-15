@@ -4,6 +4,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseHTML} from 'linkedom';
 import {OutputBridge} from '../public/output-bridge.js';
+import {handleOutput} from '../server/output.js';
+import {fixture as relayFixture} from './live-calls-fixture.mjs';
+import {verifiedTestEnvironment} from './verified-test-identity.mjs';
 
 const GAME='11111111-1111-4111-8111-111111111111';
 const TOKEN='a'.repeat(43)+'.'+'b'.repeat(43);
@@ -42,13 +45,33 @@ test('a new OBS source waits for verified producer state, then creates audio onc
  h.bridge.consume(h.packet({seq:10}));h.bridge.consume(h.packet({seq:11}));await flush();assert.equal(h.nodes.length,1);assert.equal(h.contexts.length,1);assertOutputOnly(h.requests);
 });
 
-for(const failure of ['409','503','network'])test(`an established OBS source automatically recovers from ${failure} without duplicate outage epochs or manual activation`,async t=>{
+for(const failure of ['409','503','network'])test(`an established OBS source keeps its confirmed picture/cache across ${failure}, mutes before lease expiry and recovers without another jingle`,async t=>{
  const h=fixture(t);await h.bridge.tick();await h.prove();const originalEpoch=h.bridge.accessEpoch,originalReads=h.requests.length;let failed=true;
+ const clip=new ArrayBuffer(8);h.bridge.preloadedClips=new Map([['prepared-clip',clip]]);
  h.respond(()=>{if(failed){if(failure==='network')throw Error('Netwerk tijdelijk weg');return Response.json({error:failure==='409'?'De producer is tijdelijk niet verbonden.':'Relay tijdelijk niet bereikbaar.'},{status:Number(failure)});}return Response.json({state:h.packet({seq:12}),serverTime:Date.now()});});
- await h.bridge.tick();assert.equal(h.bridge.active,false);assert.equal(h.bridge.audioReady,false);assert.equal(h.bridge.accessEpoch,originalEpoch+1);const outage=h.bridge.accessEpoch;
- await h.bridge.tick();await h.bridge.tick();assert.equal(h.bridge.accessEpoch,outage,'one outage must not invalidate the capability again on each failed poll');assert(h.requests.length>originalReads);assert(!/verbinding is gewijzigd|Activeer de bron opnieuw/.test(h.bridge.error||''));
- failed=false;h.advance(11000);await h.bridge.tick();await h.prove();assert.equal(h.bridge.active,true);assert.equal(h.bridge.panel.hidden,true);assert.equal(h.bridge.reconnectNeeded,false);assert.equal(h.contexts.length,1,'an existing audio graph is reused');assert.equal(h.nodes.length,2);assertOutputOnly(h.requests);
+ const snapshots=h.received.filter(event=>event.kind==='snapshot').length;await h.bridge.tick();assert.equal(h.bridge.active,true);assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.accessEpoch,originalEpoch);assert.equal(h.received.filter(event=>event.kind==='snapshot').length,snapshots,'one failed heartbeat never replaces the scene with an empty waiting snapshot');
+ h.advance(5100);await h.bridge.tick();assert.equal(h.bridge.active,false);assert.equal(h.bridge.audioReady,false);assert.equal(h.bridge.accessEpoch,originalEpoch,'a transport outage does not revoke the show capability');assert.equal(h.bridge.preloadedClips.get('prepared-clip'),clip);
+ const frozen=h.received.filter(event=>event.kind==='snapshot').at(-1).payload;assert.equal(frozen.gameId,GAME);assert.deepEqual(frozen.drawn,[7,19,41]);assert.equal(frozen.lastNumber,41);assert.equal(frozen.outputWaiting,true);assert.equal(frozen.paused,true);
+ await h.bridge.tick();await h.bridge.tick();assert.equal(h.bridge.accessEpoch,originalEpoch);assert(h.requests.length>originalReads);
+ failed=false;h.advance(11000);await h.bridge.tick();await until(()=>h.bridge.active);assert.equal(h.bridge.panel.hidden,true);assert.equal(h.bridge.reconnectNeeded,false);assert.equal(h.contexts.length,1,'an existing audio graph is reused');assert.equal(h.nodes.length,1,'reconnecting does not play another test tone');assertOutputOnly(h.requests);
  const restored=h.received.filter(event=>event.kind==='snapshot'&&!event.payload.outputWaiting).at(-1).payload;assert.equal(restored.gameId,GAME);assert.deepEqual(restored.drawn,[7,19,41]);assert.equal(restored.paused,true);assert.equal(restored.bingoPending,true);
+});
+
+test('a single failed heartbeat followed by success keeps the running graph and never clears the board or prepared clips',async t=>{
+ const h=fixture(t);await h.bridge.tick();await h.prove();const clip=new ArrayBuffer(8),snapshots=h.received.length,epoch=h.bridge.accessEpoch;h.bridge.preloadedClips=new Map([['prepared',clip]]);
+ let failed=true;h.respond(()=>failed?Response.json({error:'Relay busy'},{status:503}):Response.json({state:h.packet({seq:10}),serverTime:Date.now()}));
+ await h.bridge.tick();failed=false;h.advance(500);await h.bridge.tick();assert(h.bridge.active);assert(h.bridge.audioReady);assert(h.bridge.panel.hidden);assert.equal(h.bridge.accessEpoch,epoch);assert.equal(h.bridge.preloadedClips.get('prepared'),clip);assert.equal(h.nodes.length,1);assert(h.received.slice(snapshots).every(event=>event.kind!=='snapshot'||!event.payload.outputWaiting));assertOutputOnly(h.requests);
+});
+
+test('a hanging heartbeat is muted by the watchdog before the seven-second audio lease can expire',async t=>{
+ const h=fixture(t);await h.bridge.tick();await h.prove();let release;const pending=new Promise(resolve=>{release=resolve;});h.respond(()=>pending);
+ const polling=h.bridge.tick();await flush();assert(h.bridge.busy);h.advance(5100);await h.bridge.tick();assert.equal(h.bridge.active,false);assert.equal(h.bridge.audioReady,false);const frozen=h.received.filter(event=>event.kind==='snapshot').at(-1).payload;assert.deepEqual(frozen.drawn,[7,19,41]);assert.equal(frozen.outputWaiting,true);
+ release(Response.json({state:h.packet({seq:12}),serverTime:Date.now()}));await polling;h.respond(()=>Response.json({state:h.packet({seq:13}),serverTime:Date.now()}));h.advance(600);await h.bridge.tick();await until(()=>h.bridge.active);assert.equal(h.nodes.length,1);assertOutputOnly(h.requests);
+});
+
+test('revocation after a transport outage still immediately erases cached audio and the previously shown OBS frame',async t=>{
+ const h=fixture(t);await h.bridge.tick();await h.prove();h.bridge.preloadedClips=new Map([['prepared',new ArrayBuffer(8)]]);h.respond(()=>Response.json({error:'Relay busy'},{status:503}));h.advance(5100);await h.bridge.tick();assert.equal(h.bridge.preloadedClips.size,1);const epoch=h.bridge.accessEpoch;
+ h.respond(()=>Response.json({error:'Deze OBS-link is ingetrokken.'},{status:401}));await h.bridge.tick();assert.equal(h.bridge.preloadedClips.size,0);assert.equal(h.bridge.accessEpoch,epoch+1);assert.equal(h.bridge.reuseAudioProof,false);const snapshot=h.received.filter(event=>event.kind==='snapshot').at(-1).payload;assert.equal(snapshot.gameId,undefined);assert.equal(snapshot.drawn,undefined);assert(!h.bridge.audioReady);assertOutputOnly(h.requests);
 });
 
 for(const status of [401,403,409,503])test(`the original ${status} relay error survives the capability-loss event instead of becoming a misleading epoch error`,async t=>{
@@ -90,4 +113,26 @@ test('an OBS source waits silently for another live audio lease and activates au
  const h=fixture(t),until=Date.now()+7000;h.respond(()=>Response.json({state:h.packet({output:{id:'44444444-4444-4444-8444-444444444444',until,audioReady:true,generation:4,seq:9}}),serverTime:Date.now()}));
  await h.bridge.tick();await flush();assert.equal(h.contexts.length,0,'an unclaimed source cannot play its activation tone over the current audio owner');assert.equal(h.nodes.length,0);assert.equal(h.requests.filter(request=>request.body).length,0);
  h.advance(7500);await h.bridge.tick();await h.prove();assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.active,true);assert.equal(h.nodes.length,1);assertOutputOnly(h.requests);
+});
+
+async function producerFixture(t,{otherClient=false,otherInstance=false,brandId='milo'}={}){
+ const h=await relayFixture(t),instanceId=crypto.randomUUID(),actions=[];
+ await h.bingo.mutate(h.game.id,{},game=>{game.state.control={id:h.ids.host,until:Date.now()+60000};game.state.paused=true;game.state.drawHold={callId:'kept-call-hold'};});
+ const state={producer:{id:otherClient?crypto.randomUUID():h.ids.host,instanceId:otherInstance?crypto.randomUUID():instanceId,gameId:h.game.id,generation:4,until:Date.now()-1},generation:4,seq:9,publishedAt:Date.now()-16000,snapshot:{gameId:h.game.id,paused:true,lastNumber:27,drawn:[7,13,27]},show:null,events:[],voice:null,output:null,routing:false,mixer:{voice:100,music:25,effects:50}};
+ await h.env.DB.prepare('UPDATE studio_outputs SET document = ? WHERE owner_id = ?').bind(JSON.stringify(state),'host').run();
+ const bridge=Object.assign(Object.create(OutputBridge.prototype),{id:instanceId,isOutput:false,enabled:true,generation:4,seq:9,claimedGame:h.game.id,getId:()=>h.ids.host,getGame:()=>({...h.game,brandId}),getSnapshot:()=>state.snapshot,getShow:()=>null,events:[],command:null,mixer:state.mixer,routing:false,latest:state,offset:0});
+ bridge.api=async body=>{actions.push(body?.action||'GET');const request=h.req('host',body?{...body,clientId:bridge.clientId}:undefined,{path:'/api/output',headers:{'X-Vlampie-Output':'1'}}),response=await handleOutput(request,verifiedTestEnvironment(request,h.env)),data=await response.json();if(!response.ok)throw Object.assign(Error(data.error),{status:response.status});bridge.latest=data.state;return data.state;};
+ const gameBefore=(await h.bingo.game(h.game.id)).data;
+ return {h,bridge,actions,gameBefore};
+}
+
+test('a throttled Milo producer reclaims only its own expired relay lease using real SQLite CAS, without starting or releasing the game',async t=>{
+ const {h,bridge,actions,gameBefore}=await producerFixture(t);await bridge.publish();
+ assert.deepEqual(actions,['publish','GET','producer-claim','publish']);assert.equal(bridge.generation,5);assert.equal(bridge.seq,1);assert.equal(bridge.latest.producer.id,h.ids.host);assert.equal(bridge.latest.producer.instanceId,bridge.id);assert.equal(bridge.latest.snapshot.gameId,h.game.id);assert.deepEqual(bridge.latest.snapshot.drawn,[7,13,27]);
+ assert.deepEqual((await h.bingo.game(h.game.id)).data,gameBefore,'relay recovery cannot clear pause/call hold, start a round or draw a ball');
+ await bridge.publish();assert.equal(bridge.seq,2);assert.deepEqual(actions.slice(4),['publish'],'healthy subsequent publication does not reclaim repeatedly');
+});
+
+for(const change of [{otherClient:true},{otherInstance:true},{brandId:'vlampie'}])test(`expired relay recovery never claims another tab or alters Vlampie: ${JSON.stringify(change)}`,async t=>{
+ const {h,bridge,actions,gameBefore}=await producerFixture(t,change);await assert.rejects(bridge.publish(),error=>error.status===409);assert(!actions.includes('producer-claim'));assert.equal(bridge.generation,4);assert.deepEqual((await h.bingo.game(h.game.id)).data,gameBefore);
 });

@@ -69,6 +69,18 @@ test('lobby uses only approved opted-in greetings and keeps preview separate fro
  await runtime.scene('lobby');assert.deepEqual(runtime.visual().gameStage.greetings,['Noor']);
 });
 
+test('disabled Milo lobby points to its settings without opening audio, starting the show or changing play state',async()=>{
+ const {engine,calls,runtime}=fixture();engine.game.production={lobby:{enabled:false}};let unlocked=0;engine.audio.unlock=async()=>{unlocked++;};
+ const before=structuredClone(engine.game);
+ await assert.rejects(runtime.scene('lobby'),/Showelementen → Voorprogramma.*Voorprogramma beschikbaar.*Opslaan.*Voorprogramma live/);
+ assert.deepEqual(engine.game,before);assert.equal(runtime.holding,false);assert.equal(unlocked,0);assert.deepEqual(calls,[]);
+ engine.game.status='running';
+ await assert.rejects(runtime.scene('lobby'),/alleen beschikbaar vóór de show.*gestart of afgelopen/);
+ assert.equal(engine.game.status,'running');assert.equal(runtime.holding,false);assert.equal(unlocked,0);assert.deepEqual(calls,[]);
+ engine.production='vlampie';
+ await assert.rejects(runtime.scene('lobby'),error=>error.message==='Schakel het voorprogramma in en gebruik het vóór de show.');
+});
+
 test('story and minigame changes preserve book identities and mark only preparation dirty',()=>{
  const {engine,runtime}=fixture(),before=JSON.stringify(engine.game.books),roundIds=engine.game.plan.blocks.filter(b=>b.type==='round').map(b=>b.id);
  runtime.applyStory('golden-spark');assert.equal(engine.game.plan.blocks.filter(b=>b.type==='story').length,4);assert.deepEqual(engine.game.plan.blocks.filter(b=>b.type==='round').map(b=>b.id),roundIds);assert.equal(JSON.stringify(engine.game.books),before);assert.equal(engine.dirty,true);

@@ -37,11 +37,13 @@ test('ordinary regie/player transport remains unchanged and cannot read an OBS t
  assert.equal(calls[0].path,'/api/output');assert.equal(calls[0].init,options);
 });
 
-test('scoped denial and network loss signal immediate silence; deliberate fetch cancellation does not',async t=>{
+test('only scoped authorization denial revokes OBS state; temporary relay/clip errors and deliberate cancellation remain local',async t=>{
  const original=globalThis.window,window=new EventTarget();globalThis.window=window;t.after(()=>{globalThis.window=original;});let losses=0;window.addEventListener('milo-obs-access-lost',()=>losses++);
  await obsFetch('/api/output',{}, {location,fetcher:async()=>new Response('{}',{status:401})});assert.equal(losses,1);
- await assert.rejects(obsFetch('/api/live-calls',{}, {location,fetcher:async()=>{throw Error('fixture network down');}}),/network down/);assert.equal(losses,2);
- await assert.rejects(obsFetch('/api/output',{}, {location,fetcher:async()=>{throw new DOMException('fixture cancellation','AbortError');}}),{name:'AbortError'});assert.equal(losses,2);
+ for(const status of [409,429,500,503])await obsFetch('/api/openai/clips/'+'a'.repeat(64),{}, {location,fetcher:async()=>new Response('{}',{status})});assert.equal(losses,1);
+ await assert.rejects(obsFetch('/api/live-calls',{}, {location,fetcher:async()=>{throw Error('fixture network down');}}),/network down/);assert.equal(losses,1);
+ await assert.rejects(obsFetch('/api/output',{}, {location,fetcher:async()=>{throw new DOMException('fixture cancellation','AbortError');}}),{name:'AbortError'});assert.equal(losses,1);
+ await obsFetch('/api/output',{}, {location,fetcher:async()=>new Response('{}',{status:403})});assert.equal(losses,2);
 });
 
 test('output live-call polling and pagehide keepalive use the scoped capability transport',async t=>{

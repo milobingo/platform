@@ -151,10 +151,15 @@ for(const failureStatus of [503,409])test(`OBS starts and recovers without inter
   await expect.poll(()=>proof.heartbeats.some(item=>item.audioReady&&item.audioPlayedAt&&item.testAck?.status==='played'),{timeout:20000}).toBe(true);await expect(page.locator('.output-unlock')).toBeHidden();
   expect(await page.evaluate(()=>window.__qaAudioContexts.some(audio=>audio.state==='running'))).toBe(true);
   await expect.poll(()=>page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeGreaterThan(.01);
-  const firstTest=proof.heartbeats.find(item=>item.testAck?.status==='played').testAck.id;outage=true;await expect.poll(()=>proof.outputFailures.filter(item=>item.method==='GET').length).toBeGreaterThan(0);
+  const firstTest=proof.heartbeats.find(item=>item.testAck?.status==='played').testAck.id;
+  await page.evaluate(()=>{window.__qaDeskNumbers={};});outage=true;await expect.poll(()=>proof.outputFailures.filter(item=>item.method==='GET').length,{timeout:15000}).toBeGreaterThan(0);
   const badge=page.locator('.output-unlock--obs');await expect(badge).toBeVisible();await expect(page.getByRole('button',{name:'Opnieuw verbinden',exact:true})).toHaveCount(0);
   proof.outageBadge=await badge.evaluate(node=>{const bounds=node.getBoundingClientRect(),style=getComputedStyle(node);return {width:bounds.width,height:bounds.height,backdropFilter:style.backdropFilter,pointerEvents:style.pointerEvents};});expect(proof.outageBadge.width).toBeLessThan(600);expect(proof.outageBadge.height).toBeLessThan(300);expect(proof.outageBadge.backdropFilter).toBe('none');await screenshot(page,`obs-auto-${failureStatus}-outage`);
-  outage=false;await expect.poll(()=>proof.heartbeats.some(item=>item.audioReady&&item.testAck?.status==='played'&&item.testAck.id!==firstTest),{timeout:20000}).toBe(true);await expect(badge).toBeHidden();
+  await expect(page.locator('.mf-studio__sr')).toHaveText('De trekking blijft gepauzeerd.');
+  await expect.poll(()=>page.evaluate(()=>Object.entries(window.__qaDeskNumbers).filter(([,color])=>['#edfff7','#36213c'].includes(color)).map(([number])=>Number(number)))).toEqual([7,19,41]);
+  const beforeRecovery=proof.heartbeats.length;outage=false;
+  await expect.poll(()=>proof.heartbeats.slice(beforeRecovery).some(item=>item.audioReady&&item.testAck?.status==='played'&&item.testAck.id===firstTest),{timeout:20000}).toBe(true);await expect(badge).toBeHidden();
+  proof.recoveredWithoutAnotherActivationJingle=true;
   const pixels=await page.locator('#stage canvas').evaluate(canvas=>{const reduced=document.createElement('canvas');reduced.width=64;reduced.height=36;const drawing=reduced.getContext('2d');drawing.drawImage(canvas,0,0,64,36);const data=drawing.getImageData(0,0,64,36).data;let low=255,high=0;for(let i=0;i<data.length;i+=4){const v=(data[i]+data[i+1]+data[i+2])/3;low=Math.min(low,v);high=Math.max(high,v);}return high-low;});expect(pixels).toBeGreaterThan(20);
   proof.audio=await page.evaluate(()=>({peak:Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)),states:window.__qaAudioContexts.map(audio=>audio.state),trustedInteractions:window.__qaTrustedInteractions,microphoneRequests:window.__qaMicrophoneRequests}));expect(proof.audio.trustedInteractions).toBe(0);expect(proof.audio.microphoneRequests).toBe(0);
   await expect(page.locator('.mf-studio__sr')).toHaveText('De trekking blijft gepauzeerd.');

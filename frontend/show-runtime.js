@@ -57,7 +57,7 @@ export class ShowRuntime{
   if(this.engine.game.cancelledAt)throw Error('Deze show is geannuleerd. Het uitzendbeeld blijft gestopt.');
   if(id==='host'){if(this.engine.showCues?.active||this.engine.showCues?.holding)throw Error('Rond eerst het bewegings- of showmoment af, of stop het vanuit de regie.');this.returnToShow();this.engine.setCamera?.('host');return;}
   this.assertQuiet({allowDraft:true});if(!SHOW_SCENES.some(x=>x.id===id))throw Error('Kies een beschikbare showscène.');
-  if(id==='lobby'&&(!productionSettings(this.engine.game.production).lobby.enabled||this.engine.game.status!=='draft'))throw Error('Schakel het voorprogramma in en gebruik het vóór de show.');
+  if(id==='lobby'&&(!productionSettings(this.engine.game.production).lobby.enabled||this.engine.game.status!=='draft'))throw Error(this.engine.production==='milo'?(this.engine.game.status!=='draft'?'Het voorprogramma is alleen beschikbaar vóór de show. Deze show is al gestart of afgelopen.':'Het voorprogramma staat uit. Ga naar Showelementen → Voorprogramma, zet Voorprogramma beschikbaar aan en klik op Opslaan. Kies daarna Voorprogramma live.'):'Schakel het voorprogramma in en gebruik het vóór de show.');
   await this.engine.audio.unlock();this.assertQuiet({allowDraft:true});this.generation++;this.setup(id,config);if(id==='audience')this.cue('applause');
  }
  previewScene(id){if(!SHOW_SCENES.some(x=>x.id===id))return;this.preview=this.previewVisual(id);this.engine.previewShow=this.preview;this.engine.previewCamera=SHOW_SCENES.find(x=>x.id===id).camera;this.engine.emit();}

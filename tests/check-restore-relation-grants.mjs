@@ -82,22 +82,38 @@ test('actual PostgreSQL restores a non-owner grantor, refuses drift and persists
     const suffix = randomUUID().replaceAll('-', '').slice(0, 20);
     const sourceName = `milo_acl_source_test_${suffix}`, scratchName = `milo_restore_test_acl_${suffix}`, backupName = `milo_restore_test_backup_${suffix}`;
     const owner = `acl_owner_${suffix}`, grantor = `acl_grantor_${suffix}`, recipient = `acl_recipient_${suffix}`, noOption = `acl_nogrant_${suffix}`;
-    const admin = new Pool({ connectionString: testDatabase }), pools = [];
+    const admin = new Pool({ connectionString: testDatabase }), pools = [], poolFailures = [];
     const directory = await mkdtemp(join(tmpdir(), 'milo-native-acl-backup-'));
     const databases = [], roles = [];
     let sourceClient, scratchClient;
     t.after(async () => {
       sourceClient?.release(); scratchClient?.release();
-      await Promise.all(pools.map(pool => pool.end()));
+      await Promise.all(pools.map(async ({ pool, disconnects }) => {
+        if (!pool.ending) await pool.end();
+        // pg-pool can resolve end() before the sockets emit their final end.
+        // Wait for those acknowledgements before removing a fixture database.
+        let timer;
+        try {
+          await Promise.race([Promise.all(disconnects), new Promise((resolve, reject) => {
+            timer = setTimeout(() => reject(new Error('An ACL fixture PostgreSQL connection did not close.')), 5000);
+          })]);
+        } finally { clearTimeout(timer); }
+      }));
       try {
-        for (const name of databases.reverse()) await admin.query(`DROP DATABASE ${quote(name)} WITH (FORCE)`);
+        for (const name of databases.reverse()) await admin.query(`DROP DATABASE ${quote(name)}`);
         for (const name of roles.reverse()) await admin.query(`DROP ROLE ${quote(name)}`);
       } finally { await admin.end(); await rm(directory, { recursive: true, force: true }); }
+      assert.deepEqual(poolFailures, [], 'no unexpected idle PostgreSQL errors');
     });
     for (const name of [sourceName, scratchName, backupName]) { await admin.query(`CREATE DATABASE ${quote(name)}`); databases.push(name); }
     for (const name of [owner, grantor, recipient, noOption]) { await admin.query(`CREATE ROLE ${quote(name)} NOLOGIN`); roles.push(name); }
     const connection = name => { const url = new URL(adminUrl); url.pathname = '/' + name; return url; };
-    const pool = name => { const next = new Pool({ connectionString: connection(name).toString() }); pools.push(next); return next; };
+    const pool = name => {
+      const next = new Pool({ connectionString: connection(name).toString() }), disconnects = [];
+      next.on('connect', client => disconnects.push(new Promise(resolve => client.once('end', resolve))));
+      next.on('error', error => poolFailures.push(/^[A-Z0-9_]+$/.test(error.code || '') ? error.code : 'unknown_pool_error'));
+      pools.push({ pool: next, disconnects }); return next;
+    };
     sourceClient = await pool(sourceName).connect(); scratchClient = await pool(scratchName).connect();
     for (const client of [sourceClient, scratchClient]) {
       await client.query(`CREATE TABLE public.fixture(id text PRIMARY KEY, document jsonb);
@@ -135,7 +151,8 @@ test('actual PostgreSQL restores a non-owner grantor, refuses drift and persists
       DATABASE_BACKUP_DIRECTORY: directory, RELEASE_SHA: 'a'.repeat(40), BACKUP_ENCRYPTION_KEY: randomBytes(32).toString('hex') };
     const proof = await backupAndRestore({ env, target: { projectRef: 'a'.repeat(20) }, sourceClient,
       sourceVersion: (await sourceClient.query("SELECT current_setting('server_version_num')::int AS version")).rows[0].version,
-      prerequisites: validateApplyPrerequisites(env), spawnTool });
+      prerequisites: validateApplyPrerequisites(env), spawnTool,
+      poolFactory: connectionString => pool(decodeURIComponent(new URL(connectionString).pathname.slice(1))) });
     assert.equal(proof.restoreVerified, true);
     assert.deepEqual(proof.sourceProof, proof.restoredProof);
     assert.deepEqual(proof.sourceSecurity, proof.restoredSecurity, 'the unchanged full security comparison includes the original grantor');

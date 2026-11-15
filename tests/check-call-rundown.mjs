@@ -31,10 +31,10 @@ test('winner switches survive normalization and the server rejects a third rando
  plan.blocks.push(createBlock('random-call',plan,'milo'));assert(planIssues(plan).some(issue=>/twee/.test(issue)));
  const vlampie=game('vlampie');assert.equal(vlampie.plan.blocks.filter(b=>b.type==='random-call').length,0);assert.throws(()=>createBlock('random-call',vlampie.plan,'vlampie'));
 });
-test('all fixed magic-call lines are in the existing explicit preparation manifest for every permitted Milo presenter',()=>{
+test('fixed magic-call lines prepare the actual cast while every Milo presenter remains selectable',()=>{
  const milo=game('milo'),scripts=showAudioScripts(milo),staticCalls=scripts.filter(s=>s.kind==='live-call');
- for(const characterId of CHARACTER_IDS)for(const [key,text]of Object.entries(LIVE_CALL_LINES))assert(staticCalls.some(s=>s.characterId===characterId&&s.id===key&&s.text===text));
- assert.equal(staticCalls.length,CHARACTER_IDS.length*Object.keys(LIVE_CALL_LINES).length);assert(!JSON.stringify(staticCalls).includes('fictional-owner'));
+ assert.equal(staticCalls.length,Object.keys(LIVE_CALL_LINES).length);assert(staticCalls.every(s=>s.characterId==='milo'));assert(!JSON.stringify(staticCalls).includes('fictional-owner'));
+ for(const characterId of CHARACTER_IDS){const chosen=game('milo');chosen.plan.leadId=characterId;const calls=showAudioScripts(chosen).filter(s=>s.kind==='live-call');for(const [key,text]of Object.entries(LIVE_CALL_LINES))assert(calls.some(s=>s.characterId===characterId&&s.id===key&&s.text===text));}
  assert.equal(showAudioScripts(game('vlampie')).filter(s=>s.kind==='live-call').length,0);
  for(const block of milo.plan.blocks.filter(b=>b.type==='random-call'))assert(scripts.some(s=>s.kind==='call-fallback'&&s.id===block.id));
 });

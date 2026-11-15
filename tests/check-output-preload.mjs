@@ -94,6 +94,17 @@ test('partial preload failure reports an error, backs off, and retries only miss
  failed=false;h.advance(5100);await h.load(h.packet(FP,{seq:2}));assert.equal(h.bridge.outputAudioPreparation.ready,2);assert.equal(h.bridge.outputAudioPreparation.error,undefined);assert.equal(h.requests.filter(request=>request.path.endsWith(key(1))).length,1);assert.equal(h.requests.filter(request=>request.path.endsWith(key(2))).length,2);
 });
 
+test('a temporary HTTP503 for one fixed clip never revokes OBS, clears completed clips or replaces the confirmed picture',async t=>{
+ const h=fixture(t);let failed=true;h.respond(async request=>{if(request.path.endsWith('/show-audio'))return Response.json(list());if(request.path.endsWith(key(2))&&failed){await until(()=>h.bridge.preloadedClips?.has(key(1)));return Response.json({error:'Temporarily unavailable'},{status:503});}return audio(Number.parseInt(request.path.slice(-2),16));});
+ await h.load();assert.equal(h.bridge.active,true);assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.accessEpoch,0);assert.equal(h.bridge.preloadedClips.size,1);assert.equal(h.bridge.outputAudioPreparation.ready,1);assert(h.bridge.outputAudioPreparation.error);assert(!h.events.some(event=>event.kind==='snapshot'&&event.payload.outputWaiting));
+ failed=false;h.advance(5100);await h.load(h.packet(FP,{seq:2}));assert.equal(h.bridge.outputAudioPreparation.ready,2);assert.equal(h.requests.filter(request=>request.path.endsWith(key(1))).length,1);assertScoped(h.requests);
+});
+
+test('a failed dynamic voice request reports only that utterance and leaves the confirmed OBS frame and prepared show audio intact',async t=>{
+ const h=fixture(t);await h.load();h.respond(()=>Response.json({error:'Temporary voice error'},{status:503}));const command={id:'dynamic-request-failure',clip:key(90),text:'Een vraag voor het publiek',phase:'prepare',preparedOnly:false};await h.bridge.applyVoice(command);
+ assert.equal(h.bridge.ack.id,command.id);assert.equal(h.bridge.ack.status,'error');assert.equal(h.bridge.active,true);assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.preloadedClips.size,2);assert.equal(h.bridge.accessEpoch,0);assert(!h.events.some(event=>event.kind==='snapshot'&&event.payload.outputWaiting));assertScoped(h.requests);
+});
+
 for(const invalid of ['duplicate','invalid-key','wrong-count'])test(`malformed ${invalid} manifest is rejected before any unscoped or extra clip request`,async t=>{
  const manifest=invalid==='duplicate'?list([key(1),key(1)]):invalid==='invalid-key'?list(['../../private']):{...list(),total:3},h=fixture(t,{manifest});await h.load();assert(h.bridge.outputAudioPreparation.error);assert.equal(h.requests.length,1);assert.equal(h.bridge.outputAudioPreparation.ready,0);assert.equal(h.sources.length,0);assertScoped(h.requests);
 });

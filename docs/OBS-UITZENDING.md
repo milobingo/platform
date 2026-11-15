@@ -10,6 +10,8 @@ Gebruik je **Vensteropname**, open de OBS-link dan in een aparte browsertoepassi
 
 Bij tijdelijk verbindingsverlies herstelt de OBS-browserbron automatisch de gekozen show, het beeld en de officiële spelstand. Ook een tijdelijke fout bij het controleren van de OBS-link wordt automatisch opnieuw geprobeerd. Een regulier browservenster houdt daarnaast **Opnieuw verbinden** beschikbaar. Pauze, BINGO-meldvensters en belblokkades blijven behouden. Controleer bij een verlopen of ingetrokken link het linkbeheer in de regie. Test stem, gastgeluid, mute, noodstop en terugkeer naar de show afzonderlijk tijdens een echte repetitie.
 
+Een tijdelijke `409` of `503`, een mislukte audioload of een korte netwerkhapering trekt de OBS-link niet in. Het laatst bevestigde beeld en de geladen fragmenten blijven behouden. Een korte hapering heeft maximaal vijf seconden herstelruimte binnen de bestaande serverlease; duurt de onderbreking langer, dan stopt de audio totdat de juiste regie weer bevestigd is. Herstel speelt niet telkens opnieuw het activatiegeluid en start geen show of trekking. Een werkelijk afgewezen toegang (`401`/`403`) stopt direct en wist de beperkte toegang en geladen audio. Een verlopen producerlease kan alleen door dezelfde Milo-regie-instantie voor dezelfde show worden hersteld; een andere regie wordt niet overgenomen.
+
 ## Geldigheid en vervangen
 
 Een link is zeven dagen geldig en hoort bij één show. Per regieaccount is één link actief; een link voor een andere show vervangt de vorige. **Nieuwe OBS-link maken** en **OBS-link intrekken** vragen een bevestiging wanneer er al een actieve link is. De server geeft de volledige link alleen direct na het maken terug. Ben je hem kwijt, maak dan een nieuwe.

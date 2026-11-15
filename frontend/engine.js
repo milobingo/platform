@@ -88,7 +88,14 @@ export class StudioEngine{
  assertTimelineAvailable(){if(this.game.cancelledAt)throw Error('Deze show is geannuleerd en kan niet worden hervat.');if(this.showCues?.active)throw Error('Rond eerst het actieve showelement of gebaar af.');if(this.calls?.held||this.game.state.callId)throw Error('Rond eerst het belmoment af.');if(this.showRuntime?.holding)throw Error('Zet eerst de presentator terug live om het draaiboek of een trekking te bedienen.');}
  setMix(key,value){const levels={...this.bridge.mixer,[key]:Number(value)};getShowRuntime(this).mix(levels);this.emit();}
 
- audioPreparationContext(){return {enabled:!this.disposed&&!this.isOutput&&!this.demo&&this.production==='milo'&&this.settingsReady&&!!this.apiStatus?.configured&&!this.game.cancelledAt&&this.game.status!=='finished',gameId:this.game.id,identity:JSON.stringify([this.game.id,this.game.preparationRevision||0,this.game.plan,this.characterRevision,this.characters.map(c=>[c.id,c.revision,c.speed,c.voice,c.customVoiceId])])};}
+ audioPreparationContext(){
+  const plan=this.game.plan,planned=new Set([plan.leadId||'milo',plan.cohostId,...plan.blocks.flatMap(block=>[block.speakerId,...(block.dialogue||[]).map(turn=>turn.speakerId)]),...(plan.manualCues||[]).map(cue=>cue.speakerId)]);
+  // An explicit new manual-call presenter needs their seven fixed lines.
+  // Cue creation for an existing presenter, phase changes and closure do not
+  // invalidate the bank or interrupt an already prepared show.
+  const extraPresenters=this.production==='milo'?[...new Set((this.game.callCues||[]).map(cue=>cue.characterId).filter(id=>id!=='vlampie'&&CHARACTERS[id]&&!planned.has(id)))].sort():[];
+  return {enabled:!this.disposed&&!this.isOutput&&!this.demo&&this.production==='milo'&&this.settingsReady&&!!this.apiStatus?.configured&&!this.game.cancelledAt&&this.game.status!=='finished',gameId:this.game.id,identity:JSON.stringify([this.game.id,this.game.preparationRevision||0,this.game.plan,this.characterRevision,this.characters.map(c=>[c.id,c.revision,c.speed,c.voice,c.customVoiceId]),extraPresenters])};
+ }
  async prepareShowAudio(){const id=this.game.id;await this.flushPreparation();if(this.game.id!==id)throw Error('De gekozen show is gewijzigd. Open de voorbereiding van de juiste show.');const prepared=await this.preparedAudio?.prepare({retry:true});this.error='';this.emit();return prepared;}
  setBackgroundMusic(value){this.backgroundMusic=!!value;localStorage.setItem('mf-background-music',value?'on':'off');this.audio?.enableBackground?.(value&&this.game.status==='running'&&!this.game.cancelledAt);this.emit();this.bridge?.sendLocal();}
  updateBackgroundAudio(now){

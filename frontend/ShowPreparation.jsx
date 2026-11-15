@@ -7,6 +7,7 @@ import {bindingRules,rulesContract} from '../server/game-rules.js';
 import {canLoadStandardMilo,standardMiloDiffers,patternRequirement} from '../server/standard-show.js';
 import {startReadiness} from './start-readiness.js';
 import ShowAudioPreparation from './ShowAudioPreparation.jsx';
+import {productionSettings} from '../server/production-model.js';
 
 export function PreparationStatus({s,operator,run}){
  const [discard,setDiscard]=useState(false),state=s.preparation||{status:s.dirty?'saving':'saved'};
@@ -53,6 +54,7 @@ export default function ShowPreparation({s,operator,run,onEdit,onNew,onOpenOutpu
   {step!==2&&<ShowAudioPreparation s={s} operator={operator} run={run}/>}
   {step===0&&<Panel title="Voorbereiden" subtitle="Rondes, prijsstappen en spelregels staan bij elkaar."><div className="mf-editor-content"><PreparationStatus s={s} operator={operator} run={run}/>{s.demo?<p>Je oefenstudio staat klaar. Kies Nieuwe show om de voorbereiding als echte show te gebruiken.</p>:s.game.status==='running'?<p>{s.serverStatusVerified?'Show bezig — serverstatus gecontroleerd.':'Serverstatus controleren bij hervatten.'}</p>:<p>Pas het draaiboek en de prijzen aan. Wijzigingen worden automatisch opgeslagen.</p>}
    {canLoad&&<Button icon={RefreshCw} disabled={s.working} onClick={()=>run(()=>operator.loadStandardRules())}>Standaardregels laden</Button>}
+   {s.production==='milo'&&s.game.status==='draft'&&!productionSettings(s.game.production,s.game).lobby.enabled&&<p>Het voorprogramma staat uit. <a href="#/library/lobby">Voorprogramma instellen</a> bij Showelementen → Voorprogramma.</p>}
    <ShowRulesPreview game={s.game}/><div className="mf-editor-actions"><Button icon={Clapperboard} onClick={onEdit}>Draaiboek bewerken</Button><Button kind="primary" icon={ArrowRight} onClick={()=>setStep(1)}>Uitzending testen</Button></div></div></Panel>}
   {step===1&&<><BroadcastPreparation s={s} bridge={operator.bridge} onPrepare={prepare} onOpenOutput={onOpenOutput} onTestSound={testSound}/><div className="mf-editor-actions"><Button onClick={()=>setStep(0)}>Terug naar voorbereiden</Button><Button kind="primary" icon={ArrowRight} onClick={()=>setStep(2)}>Naar start show</Button></div></>}
   {step===2&&<PreparationStart s={s} operator={operator} run={run} onStarted={onStarted}/>}
