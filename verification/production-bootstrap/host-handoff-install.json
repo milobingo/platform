@@ -1,0 +1,10 @@
+{
+  "status": "installed",
+  "created": true,
+  "path": "/root/milo-production-bootstrap/credential-handoff.py",
+  "uid": 0,
+  "mode": "0o700",
+  "sha256": "35729714e5167fff5829b816b1132df08f5ab52dbbf3107e36df805cb11cfc37",
+  "supabaseChanged": false,
+  "credentialsPrinted": false
+}

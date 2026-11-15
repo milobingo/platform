@@ -1,0 +1,59 @@
+{
+  "observedAt": "2026-11-15T11:35:29.284109+00:00",
+  "paths": {
+    "/root/milo-production-bootstrap": {
+      "uid": 0,
+      "mode": "0o700",
+      "symlink": false
+    },
+    "/root/milo-production-bootstrap/credential-handoff.py": {
+      "uid": 0,
+      "mode": "0o700",
+      "symlink": false
+    },
+    "/root/milo-production-bootstrap/public-handoff.json": {
+      "uid": 0,
+      "mode": "0o600",
+      "symlink": false
+    },
+    "/root/milo-production-bootstrap/credential-gpg": {
+      "uid": 0,
+      "mode": "0o700",
+      "symlink": false
+    },
+    "/root/milo-production-bootstrap/credential-gpg/private-keys-v1.d": {
+      "uid": 0,
+      "mode": "0o700",
+      "symlink": false
+    },
+    "privateKeyFiles": {
+      "count": 2,
+      "allRootOwned0600": true
+    }
+  },
+  "adminDatabaseCredentialCreated": false,
+  "services": {
+    "milobingo-staging.service": "active",
+    "dartflow-staging.service": "active",
+    "dartflow-production.service": "active",
+    "rondio-staging-dg01.service": "active",
+    "rondio-production-dg01.service": "active",
+    "socialhero-staging-web.service": "active",
+    "socialhero-production-web.service": "active",
+    "caddy.service": "active"
+  },
+  "caddyFragments": {
+    "dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+    "milobingo-staging.caddy": "5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e",
+    "socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159",
+    "dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+    "socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+    "rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+    "rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c"
+  },
+  "privateValuesReadOrPrinted": false,
+  "existingCaddyFragmentsUnchanged": true,
+  "publicManifestContainsNoPrivateKey": true,
+  "databaseMutations": false,
+  "productionActivated": false
+}
