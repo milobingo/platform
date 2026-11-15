@@ -1,4 +1,5 @@
 import {showBrand,brandText} from './show-brands.js';
+import {MAX_SPEECH_REQUEST_CHARACTERS,speechCharacterCount} from '../public/speech-text.js';
 import {FIXED_SPEECH,voiceKey,voicePath} from './voice-cache.js';
 import {readSecret,saveSecret,saveNativeSecret,settingsReady,secretFingerprint,assertProviderSettingsLease} from './secrets.js';
 import {withProviderSettingsLock,assertProviderRotationAllowed,reserveNativePreview,bindNativePreview,closeNativePreview,ownedNativePreview,cancelNativePreview} from './node-provider-settings.js';
@@ -64,10 +65,10 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
   }
   if(route.startsWith('clips/')){try{const clip=await env.SETTINGS?.get(voicePath(user,route.slice(6)));return clip?new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg'}}):fail(404,'clip_missing','Dit stemfragment is niet meer beschikbaar.');}catch{return fail(503,'cache_unavailable','De stemopslag is tijdelijk niet bereikbaar.');}}
   if(route==='speech'||route==='library'){
-   try{preparedBody=await readBody(request);if(route==='speech'&&(typeof preparedBody.text!=='string'||!preparedBody.text.trim()||[...preparedBody.text].length>500))return fail(400,'invalid_text','Gebruik 1 tot 500 tekens voor een uitspraak.');
+   try{preparedBody=await readBody(request);if(route==='speech'&&(typeof preparedBody.text!=='string'||!preparedBody.text.trim()||speechCharacterCount(preparedBody.text)>MAX_SPEECH_REQUEST_CHARACTERS))return fail(400,'invalid_text','Gebruik 1 tot 500 tekens per stemfragment. De regie verdeelt langere teksten automatisch in fragmenten.');
     if(preparedBody.characterId!==undefined){if(!ALL_CHARACTER_IDS.includes(preparedBody.characterId))return fail(400,'invalid_character','Kies een bestaand personage.');try{preparedCharacter=await savedCharacter(env,user,preparedBody.characterId);}catch{return fail(503,'characters_unavailable','De personage-instellingen kunnen niet worden geladen. Er wordt geen stemaanvraag verstuurd.');}}
     const speed=Number(preparedBody.speed??preparedCharacter?.speed??1);if(!Number.isFinite(speed)||speed<.7||speed>1.3)return fail(400,'invalid_speed','Kies een tempo tussen 0,7 en 1,3.');preparedSpeed=speed;
-    preparedContext=preparedBody.gameId||preparedBody.profileId||preparedBody.messageId||preparedBody.brandId?await presentationContext(env,user,preparedBody):null;cacheStyle=preparedContext?speechStyle(preparedContext.profile):voiceInstructions;
+    preparedContext=preparedBody.gameId||preparedBody.profileId||preparedBody.messageId||preparedBody.brandId?await presentationContext(env,user,preparedBody):null;if(preparedContext?.game?.cancelledAt)return fail(409,'show_cancelled','Deze show is geannuleerd. De presentator blijft stil.');cacheStyle=preparedContext?speechStyle(preparedContext.profile):voiceInstructions;
     if(preparedCharacter)cacheStyle=characterSpeechStyle(preparedCharacter)+`\nPersonage ${preparedCharacter.id}; profielversie ${preparedCharacter.revision}.`;
     const voice=preparedCharacter?JSON.stringify(liveVoice(preparedCharacter)):VOICE;
     const model=preparedCharacter?.speechEngine==='gpt-live'?LIVE_MODEL:env.OPENAI_SPEECH_MODEL||'gpt-4o-mini-tts';
@@ -158,7 +159,7 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
     }
     if(route==='present')return await createPresentationReply(request,env,fetcher,user,key,body);
     if(route==='speech'){
-      if(typeof body.text!=='string'||!body.text.trim()||[...body.text].length>500)return fail(400,'invalid_text','Gebruik 1 tot 500 tekens voor een uitspraak.');
+      if(typeof body.text!=='string'||!body.text.trim()||speechCharacterCount(body.text)>MAX_SPEECH_REQUEST_CHARACTERS)return fail(400,'invalid_text','Gebruik 1 tot 500 tekens per stemfragment. De regie verdeelt langere teksten automatisch in fragmenten.');
       const speed=preparedSpeed??Number(body.speed??1);if(!Number.isFinite(speed)||speed<.7||speed>1.3)return fail(400,'invalid_speed','Kies een tempo tussen 0,7 en 1,3.');
       const context=preparedContext;
       if(preparedCharacter?.speechEngine==='gpt-live'){

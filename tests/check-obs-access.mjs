@@ -9,7 +9,7 @@ import {dispatchNodeRequest} from '../server/node-runtime.js';
 import {verifyObsAccess} from '../server/node-obs-access.js';
 import {withProviderSettingsLock} from '../server/node-provider-settings.js';
 import {BingoStore} from '../server/bingo-store.js';
-import {makeGame} from '../server/bingo-model.js';
+import {makeGame,forceCancelGame} from '../server/bingo-model.js';
 import {makeLiveCall} from '../server/live-call-model.js';
 import {CHARACTERS} from '../server/characters.js';
 import {voicePath} from '../server/voice-cache.js';
@@ -51,6 +51,16 @@ async function liveCall(h){
  await h.DB.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) VALUES (?,?,0,?)').bind(h.user.id,h.game.id,JSON.stringify(call)).run();
  return {call,body:extra=>({role:'output',clientId:h.ids.output,gameId:h.game.id,callId:call.id,...extra}),read:async()=>JSON.parse((await h.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(h.user.id).first()).document)};
 }
+
+test('an existing OBS capability reads a cancelled frozen board but cannot load old voice, including cancellation during clip retrieval',async t=>{
+ const h=await fixture(t),created=await h.create();await h.env.SETTINGS.put(voicePath(h.user.id,clipId),new Uint8Array([73,68,51,4]),{httpMetadata:{contentType:'audio/mpeg'}});
+ await h.bingo.mutate(h.game.id,{},g=>{g.status='running';g.state.drawn=[7,19,41];});await h.write(state=>{state.snapshot.drawn=[7,19,41];state.snapshot.lastNumber=41;});
+ const get=h.env.SETTINGS.get.bind(h.env.SETTINGS);let cancelled=false;h.env.SETTINGS.get=async key=>{const clip=await get(key);if(key===voicePath(h.user.id,clipId)&&!cancelled){cancelled=true;await h.bingo.mutate(h.game.id,{},g=>forceCancelGame(g,{by:h.user.id,reason:'PRIVATE-CANCEL-REASON',requestId:'obs-force-cancel',binding:'fixture'},Date.now()));}return clip;};
+ await h.scoped(created.token,'/api/obs/clips/'+clipId,undefined,{status:403});assert(cancelled);
+ const result=await h.scoped(created.token,'/api/obs/output');assert(result.data.state.cancelledAt);assert.equal(result.data.state.cancelledGameId,h.game.id);assert.deepEqual(result.data.state.snapshot.drawn,[7,19,41]);assert.equal(result.data.state.snapshot.lastNumber,41);assert.equal(result.data.state.snapshot.paused,true);assert.equal(result.data.state.voice,null);assert.equal(result.data.state.routing,false);assert(!result.text.includes('PRIVATE-CANCEL-REASON'));
+ const heartbeat=await h.heartbeat(created.token);assert(heartbeat.data.state.cancelledAt);assert.equal(heartbeat.data.state.output,null);
+ await h.scoped(created.token,'/api/obs/clips/'+clipId,undefined,{status:403});
+});
 
 test('organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret',async t=>{
  const h=await fixture(t),empty=(await h.invoke('/api/obs/access?gameId='+h.game.id)).data;assert.equal(empty.configured,false);assert.equal(empty.gameId,h.game.id);assert.equal(empty.currentAccessId,null);
@@ -160,11 +170,11 @@ test('revocation during provider start retains remote session ID and closes it w
 });
 
 test('revocation during ready CAS closes the durably known session and leaves the draw hold',async t=>{
- const h=await fixture(t),created=await h.create();await h.heartbeat(created.token);const c=await liveCall(h);let release,ready;const entered=new Promise(resolve=>ready=resolve),original=h.DB.execute.bind(h.DB);let delayed=false,hangups=0;
- h.DB.execute=async(sql,args)=>{if(!delayed&&/^UPDATE studio_calls SET game_id/.test(sql)&&JSON.parse(args[2]).realtimeStatus==='ready'){delayed=true;ready();await new Promise(resolve=>release=resolve);}return original(sql,args);};
+ const h=await fixture(t),created=await h.create();await h.heartbeat(created.token);const c=await liveCall(h);let release,ready;const entered=new Promise(resolve=>ready=resolve),original=h.DB.batch.bind(h.DB);let delayed=false,hangups=0;
+ h.DB.batch=async statements=>{const readyWrite=statements.find(({sql,args})=>/^UPDATE studio_calls SET game_id/.test(sql)&&JSON.parse(args[2]).realtimeStatus==='ready');if(!delayed&&readyWrite){delayed=true;assert.equal((await c.read()).realtimeId,'live_obs_ready_cas');ready();await new Promise(resolve=>release=resolve);}return original(statements);};
  const providerFetch=async url=>{if(url==='https://api.openai.com/v1/live/sessions')return Response.json({session:{id:'live_obs_ready_cas'},transport:{sdp:'v=0\r\nanswer'}});if(url.endsWith('/hangup')){hangups++;assert.equal((await c.read()).realtimeId,'live_obs_ready_cas');return new Response(null,{status:200});}throw Error('Unexpected provider URL');};
  const pending=h.scoped(created.token,'/api/obs/live-calls/realtime',c.body({sdp:'v=0\r\noffer'}),{status:401,providerFetch});await entered;await h.invoke('/api/obs/access',{action:'revoke',expectedAccessId:created.currentAccessId});release();await pending;
- assert(hangups>=1);const saved=await c.read();assert.equal(saved.realtimeId,'live_obs_ready_cas');assert.equal(saved.realtimeStopped,true);assert.equal(saved.phase,'returning');assert.equal(saved.drawHeld,true);
+ assert(delayed);assert(hangups>=1);const saved=await c.read();assert.equal(saved.realtimeId,'live_obs_ready_cas');assert.equal(saved.realtimeStopped,true);assert.equal(saved.phase,'returning');assert.equal(saved.drawHeld,true);
 });
 
 test('a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO',async t=>{

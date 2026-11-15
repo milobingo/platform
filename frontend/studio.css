@@ -32,3 +32,11 @@
  .mf-shell[data-brand="milo"] .mf-book-cards h3{color:#ffe3a0;margin:0 0 10px;text-align:center;letter-spacing:.6px;text-transform:uppercase;font-size:12px}
  .mf-shell[data-brand="milo"] .mf-book-cards .mf-cardgrid{border-color:#e1b760;box-shadow:inset 0 0 0 1px #fff0bc33}
 }
+
+/* OBS is a passive programme source; recovery must never cover its picture. */
+.output-unlock.output-unlock--obs{inset:auto auto 18px 18px;width:min(440px,calc(100vw - 36px));height:auto;min-height:0;max-height:170px;display:block;padding:14px 18px;border:1px solid rgba(234,199,129,.28);border-radius:12px;background:rgba(20,11,33,.88);backdrop-filter:none;text-align:left;font-size:14px;pointer-events:none;box-shadow:0 4px 20px #0003;z-index:30}
+.output-unlock.output-unlock--obs strong{font-size:16px}.output-unlock.output-unlock--obs p{margin:5px 0;font-size:13px}.output-unlock.output-unlock--obs small{font-size:12px}.output-unlock.output-unlock--obs button{display:none}
+
+.output-unlock.output-unlock--obs[hidden]{display:none}
+
+.output-unlock.output-unlock--obs.output-unlock--needs-gesture [data-output-activate]{display:inline-block;pointer-events:auto;margin:6px 0;padding:8px 14px;font-size:12px}

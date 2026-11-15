@@ -1,0 +1,8 @@
+[
+  {
+    "file": "verification/regie-refresh/combined-build.log",
+    "rawSha256": "7f9f4754cb0f4c15eb00ca5e454a525ef2f226ca0cd8f6edede45bb41a188393",
+    "normalizedSha256": "d38a6733fd665cecbd2f2ad3b40e28980f023aadb4e6438f58ea74daf7648d4e",
+    "change": "LF line endings and trailing whitespace only"
+  }
+]

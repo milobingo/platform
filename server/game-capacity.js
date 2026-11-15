@@ -25,7 +25,7 @@ export function assertStartCapacity(game){
 export function assertWindowCapacity(game){
  const capacity=gameCapacity(game);if(capacity.availableBytes<capacity.windowReserveBytes||(game.events?.length||0)>=GAME_EVENT_LIMIT-GAME_CORE_EVENT_RESERVE)failure('Er is onvoldoende gereserveerde ruimte voor een nieuw meldvenster. De regie moet de showcapaciteit controleren.');return capacity;
 }
-const coreEvents=new Set(['ball-committed','window-closed','result-announced','show-finished','block-activated','call-draw-held','call-draw-released','draw-held','draw-resumed','call-consent-withdrawn','call-draw-resumed','recovery-reviewed','paused']);
+const coreEvents=new Set(['ball-committed','window-closed','result-announced','show-finished','show-force-cancelled','block-activated','call-draw-held','call-draw-released','draw-held','draw-resumed','call-consent-withdrawn','call-draw-resumed','recovery-reviewed','paused']);
 export function assertGameMutationCapacity(before,after){
  const bytes=documentBytes(after);if(bytes>GAME_DOCUMENT_BYTES)failure('Deze wijziging past niet binnen de showcapaciteit. Er is niets opgeslagen; bestaande gegevens blijven behouden.');
  const count=after.events?.length||0,added=(after.events||[]).slice(before.events?.length||0);

@@ -20,7 +20,7 @@ export function orderingAvailable(game,now=Date.now()){
 }
 export function orderShow(game,now=Date.now()){
  const config=orderingConfig(game.ordering);
- return {id:game.id,revision:game.revision,title:game.title,date:game.date,timeZone:game.timeZone||null,status:game.status,brandId:brandId(game),roundCount:game.plan.blocks.filter(b=>b.type==='round').length,ordering:config,config,available:orderingAvailable(game,now)};
+ return {id:game.id,revision:game.revision,title:game.title,date:game.date,timeZone:game.timeZone||null,status:game.status,cancelledAt:game.cancelledAt||null,brandId:brandId(game),roundCount:game.plan.blocks.filter(b=>b.type==='round').length,ordering:config,config,available:orderingAvailable(game,now)};
 }
 export function activeOrders(game){return (game.orders||[]).some(o=>!['cancelled','rejected'].includes(o.status));}
 export function assertOrderBookIntegrity(game,book,{accountId=null,download=false}={}){

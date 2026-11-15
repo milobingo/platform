@@ -1,6 +1,6 @@
 import {createHash,randomBytes,timingSafeEqual} from 'node:crypto';
 import {authOrigin,checkSameOrigin} from './node-auth.js';
-import {handleOutput} from './output.js';
+import {handleOutput,currentOutputState} from './output.js';
 import {handleLiveCalls} from './live-calls.js';
 import {voicePath} from './voice-cache.js';
 import {withProviderSettingsLock} from './node-provider-settings.js';
@@ -84,7 +84,7 @@ export async function verifyObsAccess(request,env){
  return {...access,ownerId:row.owner_id,state};
 }
 
-const visualFields=['production','gameId','gameTitle','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
+const visualFields=['production','gameId','gameTitle','cancelledAt','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
 const showFields=['brandId','scene','liveCall','sceneRevision','transition','transitionMs','rules','rulePage','roundPatterns','goalIndex','patternPage','question','age','duration','flow','paused','preview','title','round','pattern','prize','pauseMinutes','countdown','number','drawnCount','claim','winner','lookAt','audience','reducedMotion','planKind','planTitle','patternCells','patternFreeCenter','patternVariant','prizeImage','prizeDescription','callSeconds','callText','externalHold','drawBlocked','kind','endAfter'];
 const visualCharacter=character=>pick(character,['id','name','color','asset','gestureEnergy','idleMotion','lipSync','defaultAnimation']);
 const patternView=pattern=>pick(pattern,['id','title','cells','freeCenter','variant']);
@@ -102,6 +102,7 @@ export function obsOutputState(state,access){
  const visible={producer:pick(state?.producer,['id','instanceId','generation','gameId','until']),output:pick(state?.output,['id','until','at','audioReady','audioPlayedAt','testAck','generation','seq','meters','voiceAck']),generation:state?.generation||0,seq:state?.seq||0,publishedAt:state?.publishedAt||null,snapshot:null,show:null,events:[],voice:null,mixer:pick(state?.mixer,['voice','music','effects']),routing:false};
  if(visible.output?.testAck)visible.output.testAck=pick(visible.output.testAck,['id','status','at','error']);
  if(!state||state.producer?.gameId!==access.gameId||state.snapshot?.gameId!==access.gameId)return {...visible,producer:null,output:null,seq:0,publishedAt:null};
+ if(state.cancelledAt&&state.cancelledGameId===access.gameId){visible.cancelledAt=state.cancelledAt;visible.cancelledGameId=access.gameId;}
  visible.snapshot=pick(state.snapshot,visualFields);if(state.snapshot.pattern)visible.snapshot.pattern=patternView(state.snapshot.pattern);
  for(const key of ['showCue','movement'])if(state.snapshot[key])visible.snapshot[key]=pick(state.snapshot[key],['id','instanceId','elapsed','duration','paused','source','hostId','returnAt']);
  if(state.snapshot.magic)visible.snapshot.magic=pick(state.snapshot.magic,['id','startedAt','playing','elapsed','duration']);
@@ -128,13 +129,14 @@ export async function handleObsRequest(request,env,{providerFetch=fetch}={}){
    const body=request.method==='POST'?await readBody(request):undefined;
    if(body&&body.action!=='output-heartbeat')throw problem('Een OBS-link kan geen uitzendbeeld of regie publiceren.');
    const response=await handleOutput(rewritten(request,'/api/output',body),native),data=await response.json();
-   access=await verifyObsAccess(request,env);if(data.state)data.state=obsOutputState(data.state,access);return json(data,response.status);
+   access=await verifyObsAccess(request,env);if(data.state)data.state=obsOutputState(await currentOutputState(env,access.ownerId,data.state),access);return json(data,response.status);
   }
   if(/^\/api\/obs\/clips\/[a-f0-9]{64}$/.test(path)&&request.method==='GET'){
-   const clipId=path.split('/').at(-1),state=access.state;
-   if(state.producer?.gameId!==access.gameId||state.snapshot?.gameId!==access.gameId||state.producer.until<=Date.now()||state.voice?.clip!==clipId||!['prepare','play','pause'].includes(state.voice?.phase))throw problem('Dit stemfragment hoort niet bij de actuele uitzending.');
+   const clipId=path.split('/').at(-1);
+   const assertClip=async current=>{const state=await currentOutputState(env,current.ownerId,current.state);if(state?.cancelledAt||state.producer?.gameId!==current.gameId||state.snapshot?.gameId!==current.gameId||state.producer.until<=Date.now()||state.voice?.clip!==clipId||!['prepare','play','pause'].includes(state.voice?.phase))throw problem('Dit stemfragment hoort niet bij de actuele uitzending.');};
+   await assertClip(access);
    const clip=await env.SETTINGS?.get(voicePath(access.ownerId,clipId));if(!clip)throw problem('Het actuele stemfragment is niet beschikbaar.',404,'clip_missing');
-   await verifyObsAccess(request,env);return new Response(clip.body,{headers:{'Cache-Control':'private, no-store','Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
+   await assertClip(await verifyObsAccess(request,env));return new Response(clip.body,{headers:{'Cache-Control':'private, no-store','Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
   }
   if(['/api/obs/live-calls','/api/obs/live-calls/token','/api/obs/live-calls/realtime','/api/obs/live-calls/realtime-stop'].includes(path)){
    const body=request.method==='POST'?await readBody(request):undefined,role=body?.role||url.searchParams.get('role'),gameId=body?.gameId||url.searchParams.get('gameId');

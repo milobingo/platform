@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-11-15T11:53:04.128Z",
+  "actualBrowserRendering": true,
+  "actualSpeechSent": false,
+  "actualProviderRequests": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "9dde23e5-2ebc-462b-b0b8-78fdd95355bb",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [],
+  "expectedFailures": [],
+  "tenThousandAsciiAndUnicodePreserved": true,
+  "oversizedInputPreservedAndBlocked": true
+}

@@ -69,10 +69,10 @@ test('activation cannot heartbeat ready with a suspended context or failed show-
  }
 });
 
-test('a valid producer snapshot retries transient OBS activation while autoplay-blocked audio keeps its explicit fallback',async()=>{
+test('a valid producer snapshot retries transient OBS activation and respects the autoplay retry backoff',async()=>{
  let retries=0;const bridge=Object.assign(Object.create(OutputBridge.prototype),{obs:true,isOutput:true,context:{state:'running'},active:false,audioReady:false,offset:0,seen:new Set(),showAudio:{setLevels(){},setMuted(){}},receive(){},activate:async()=>{retries++;}});
  const state={producer:{id:'qa-producer',generation:1},seq:1,snapshot:{gameId:GAME},publishedAt:Date.now(),events:[],routing:false};bridge.consume(state);await wait(0);assert.equal(retries,1);
- bridge.automaticAudioBlocked=true;bridge.consume({...state,seq:2});await wait(0);assert.equal(retries,1);
+ bridge.automaticAudioBlocked=true;bridge.nextAutomaticAt=Date.now()+10000;bridge.consume({...state,seq:2});await wait(0);assert.equal(retries,1);bridge.nextAutomaticAt=0;bridge.consume({...state,seq:3});await wait(0);assert.equal(retries,2);
 });
 
 const root=fileURLToPath(new URL('..',import.meta.url));

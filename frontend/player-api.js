@@ -23,4 +23,4 @@ async function request(base,path,{method='GET',body,signal}={}){
 export const playerApi=(path,opts)=>request('/api/bingo',path,opts);
 export const authApi=(path,body)=>request('/api/player',path,body===undefined?{}:{method:'POST',body});
 export const dateLabel=value=>{const d=new Date(value);return Number.isFinite(+d)?d.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}):'Datum volgt';};
-export const showStatus=value=>({running:'De show is bezig',draft:'Binnenkort in de studio',finished:'Deze show is afgelopen'}[value]||'Welkom in de show');
+export const showStatus=(value,cancelledAt)=>value==='finished'&&cancelledAt?'Deze show is geannuleerd':({running:'De show is bezig',draft:'Binnenkort in de studio',finished:'Deze show is afgelopen'}[value]||'Welkom in de show');

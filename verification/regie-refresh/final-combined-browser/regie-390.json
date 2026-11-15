@@ -1,0 +1,111 @@
+{
+  "observedAt": "2026-11-15T11:56:55.322Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "actualHandlerScope": [
+    "reads",
+    "heartbeat",
+    "pause"
+  ],
+  "syntheticBingoWindow": true,
+  "actualClaimValidation": false,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "074edcf0-cc25-4b3d-8b7c-98a76995045a",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/074edcf0-cc25-4b3d-8b7c-98a76995045a/heartbeat",
+      "body": {
+        "regieId": "40e01636-4162-4098-b8b9-5a556de7a183",
+        "requestId": "dba163dd-4aff-4bfb-8183-c50406952add"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/074edcf0-cc25-4b3d-8b7c-98a76995045a/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "40e01636-4162-4098-b8b9-5a556de7a183",
+        "requestId": "e97dfd29-2b50-4b07-9403-f3923ba267fd"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/074edcf0-cc25-4b3d-8b7c-98a76995045a/pause",
+      "body": {
+        "paused": true,
+        "regieId": "40e01636-4162-4098-b8b9-5a556de7a183",
+        "requestId": "526c5af8-fa7e-43ea-a62b-ce3da9f70b16"
+      },
+      "status": 200
+    }
+  ],
+  "expectedFailures": [],
+  "mobileProgramGeometry": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "bounds": {
+      "x": 38,
+      "y": 284.296875,
+      "width": 314,
+      "height": 275.5,
+      "top": 284.296875,
+      "right": 352,
+      "bottom": 559.796875,
+      "left": 38
+    }
+  },
+  "monitorRatios": [
+    1.7777777777777777,
+    1.7777777777777777
+  ],
+  "blockedKeysPreserveBingoWindow": true,
+  "layout": {
+    "bounds": {
+      "x": 24,
+      "y": -243.78125,
+      "width": 342,
+      "height": 366.625,
+      "top": -243.78125,
+      "right": 366,
+      "bottom": 122.84375,
+      "left": 24
+    },
+    "labels": [
+      {
+        "text": "Actuele ronde",
+        "size": "12px"
+      },
+      {
+        "text": "Prijsstap 2 / 3",
+        "size": "12px"
+      },
+      {
+        "text": "Laatste officiële bal",
+        "size": "12px"
+      },
+      {
+        "text": "Volgende bal",
+        "size": "12px"
+      }
+    ]
+  },
+  "bingoOrder": [
+    "rd-section rd-claims window-open",
+    "rd-section rd-bingo"
+  ]
+}

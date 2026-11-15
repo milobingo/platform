@@ -1,3 +1,4 @@
+import {splitSpeechText} from './speech-text.js';
 export async function apiJSON(path,body,signal){
   const response=await fetch('/api/openai/'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',headers:body===undefined?{}:{'Content-Type':'application/json',...(path==='settings'?{'X-Vlampie-Settings':'1'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)}),signal});
   let data;try{data=await response.json();}catch{throw new Error('De serverkoppeling is nog niet beschikbaar. Ververs de studio en probeer opnieuw.');}
@@ -5,32 +6,34 @@ export async function apiJSON(path,body,signal){
   return data;
 }
 
-// One audio owner: this controller is created only by the regie window.
-// Decoding the complete short utterance gives exact timing and avoids stream stalls.
+// One audio owner, one bounded clip at a time. The script can be long while
+// decoding, caching and the OBS acknowledgement keep their existing limits.
 export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},onError=()=>{},fetcher=fetch,Context=globalThis.AudioContext||globalThis.webkitAudioContext,getRemote=()=>null,canPlay=()=>true}={}){
   let gain,analyser,volume=1,remote=null;
   let context,source,buffer,controller,generation=0,phase='idle',text='',started=0,pauseRequested=false,remoteStart=null;
+  let chunks=[],chunkIndex=0,completedMs=0,speed=1,presentation={};
   const setPhase=value=>{phase=value;onState(value);};
   const current=token=>token===generation;
   function clearSource(){if(source){source.onended=null;try{source.stop();}catch{}source.disconnect();source=null;}}
-  function stop(){generation++;remote?.stop();remote=null;remoteStart=null;controller?.abort();controller=null;clearSource();buffer=null;pauseRequested=false;setPhase('idle');}
+  function stop(){generation++;remote?.stop();remote=null;remoteStart=null;controller?.abort();controller=null;clearSource();buffer=null;chunks=[];chunkIndex=0;completedMs=0;pauseRequested=false;setPhase('idle');}
+  async function finishChunk(token){
+    if(!current(token))return;
+    completedMs+=(buffer?.duration||0)*1000;clearSource();buffer=null;remote=null;remoteStart=null;chunkIndex++;
+    if(chunkIndex>=chunks.length){pauseRequested=false;setPhase('idle');onEnd();return;}
+    setPhase('loading');await loadChunk(token);
+  }
   function play(token){
     if(!current(token)||!buffer)return;
     if(pauseRequested||!canPlay()||context.state!=='running'){setPhase('ready');return;}
     clearSource();source=context.createBufferSource();source.buffer=buffer;source.connect(gain||context.destination);
-    source.onended=()=>{if(!current(token))return;clearSource();buffer=null;pauseRequested=false;setPhase('idle');onEnd();};
+    source.onended=()=>{if(current(token))void finishChunk(token);};
     started=context.currentTime;source.start();setPhase('playing');onStart(text,buffer.duration*1000);
   }
-  async function speak(input,speed=1,presentation={}){
-    stop();const token=generation;text=input;controller=new AbortController();const signal=controller.signal;
-    setPhase('loading');
+  async function loadChunk(token){
+    if(!current(token))return;
+    text=chunks[chunkIndex];controller=new AbortController();const signal=controller.signal;
     try{
-      if(!Context)throw new Error('Deze browser ondersteunt de OpenAI-audioweergave niet. Kies de browserstem.');
-      context??=new Context();if(!gain&&context.createGain){gain=context.createGain();gain.gain.value=volume;if(context.createAnalyser){analyser=context.createAnalyser();analyser.fftSize=256;gain.connect(analyser);analyser.connect(context.destination);}else gain.connect(context.destination);}
-      context.onstatechange=()=>{if(source&&['playing','paused'].includes(phase))setPhase(context.state==='running'?'playing':'paused');};
-      // Start resume within the user's gesture, before the network request.
-      context.resume().catch(()=>{});
-      const response=await fetcher('/api/openai/speech',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({...presentation,text:input,speed}),signal});
+      const response=await fetcher('/api/openai/speech',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({...presentation,text,speed}),signal});
       if(!current(token))return;
       if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error?.message||'De OpenAI-stem kon niet worden opgehaald.');}
       if(!(response.headers.get('content-type')||'').startsWith('audio/'))throw new Error('Er kwam geen audio terug. Ververs de studio en probeer opnieuw.');
@@ -40,11 +43,22 @@ export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},on
       buffer=decoded;controller=null;remote=getRemote();if(remote){
        const start=async()=>{
         if(!current(token))return;remoteStart=null;
-        try{const playback=remote.play(response.headers.get('x-vlampie-clip'),input,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(input,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token)){remote=null;buffer=null;setPhase('idle');onEnd();}}
+        try{const playback=remote.play(response.headers.get('x-vlampie-clip'),text,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(text,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token))await finishChunk(token);}
         catch(error){if(!current(token))return;stop();if(error.name!=='AbortError')onError(error.message||'De stem kon niet worden afgespeeld.');}
        };
        if(pauseRequested||!canPlay()){remoteStart=start;setPhase('ready');}else await start();
       }else play(token);
+    }catch(error){if(!current(token))return;stop();if(error.name!=='AbortError')onError(error.message||'De stem kon niet worden afgespeeld.');}
+  }
+  async function speak(input,rate=1,selection={}){
+    stop();const token=generation;
+    try{
+      chunks=splitSpeechText(input).filter(part=>part.trim());speed=rate;presentation={...selection};setPhase('loading');
+      if(!Context)throw new Error('Deze browser ondersteunt de OpenAI-audioweergave niet. Kies de browserstem.');
+      context??=new Context();if(!gain&&context.createGain){gain=context.createGain();gain.gain.value=volume;if(context.createAnalyser){analyser=context.createAnalyser();analyser.fftSize=256;gain.connect(analyser);analyser.connect(context.destination);}else gain.connect(context.destination);}
+      context.onstatechange=()=>{if(source&&['playing','paused'].includes(phase))setPhase(context.state==='running'?'playing':'paused');};
+      // Resume within the user gesture, before the first network request.
+      context.resume().catch(()=>{});await loadChunk(token);
     }catch(error){if(!current(token))return;stop();if(error.name!=='AbortError')onError(error.message||'De stem kon niet worden afgespeeld.');}
   }
   async function resume(){
@@ -53,5 +67,5 @@ export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},on
     try{await context.resume();if(current(token)){if(!canPlay()){pauseRequested=true;await context.suspend();setPhase('ready');return;}if(continuing)setPhase(context.state==='running'?'playing':'paused');else play(token);}}catch{if(current(token))onError('Tik opnieuw op Stem afspelen om het geluid toe te staan.');}
   }
   async function pause(){pauseRequested=true;if(remote){remote.pause();setPhase('paused');return;}if(source&&context){try{await context.suspend();if(source)setPhase('paused');}catch{}}}
-  return {speak,stop,resume,pause,setVolume(v){volume=Math.max(0,Math.min(1,v));if(gain)gain.gain.value=volume;},get meter(){if(!analyser)return 0;const a=new Uint8Array(analyser.fftSize);analyser.getByteTimeDomainData(a);return Math.min(1,Math.sqrt(a.reduce((n,v)=>n+((v-128)/128)**2,0)/a.length)*3);},get phase(){return phase;},get elapsed(){if(remote)return remote.getElapsed();return ['playing','paused'].includes(phase)?Math.max(0,(context.currentTime-started)*1000):0;},get running(){return phase==='playing'&&(remote||context.state==='running');}};
+  return {speak,stop,resume,pause,setVolume(v){volume=Math.max(0,Math.min(1,v));if(gain)gain.gain.value=volume;},get meter(){if(!analyser)return 0;const a=new Uint8Array(analyser.fftSize);analyser.getByteTimeDomainData(a);return Math.min(1,Math.sqrt(a.reduce((n,v)=>n+((v-128)/128)**2,0)/a.length)*3);},get phase(){return phase;},get elapsed(){if(remote)return remote.getElapsed();return ['playing','paused'].includes(phase)?Math.max(0,(context.currentTime-started)*1000):0;},get totalElapsed(){return completedMs+(remote?remote.getElapsed():['playing','paused'].includes(phase)?Math.max(0,(context.currentTime-started)*1000):0);},get running(){return phase==='playing'&&(remote||context.state==='running');}};
 }

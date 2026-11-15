@@ -10,11 +10,31 @@ const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control
 const uuid=v=>typeof v==='string'&&/^[a-f0-9-]{36}$/.test(v);
 const parse=r=>r?{...r,data:JSON.parse(r.document)}:null;
 export const unresolvedCallResources=call=>!!call&&(call.resourcesClosed===false||!!(call.realtimeId||call.realtimeStarted)&&!call.realtimeStopped);
+export const terminalCallGame=game=>!game||game.status==='finished'||!!game.cancelledAt;
+export async function assertCallGameActive(db,owner,gameId){const row=await new BingoStore(db).game(gameId);if(!row||row.owner_id!==owner||terminalCallGame(row.data))throw callError('Deze show is beëindigd. Er kan geen belverbinding meer worden geopend.');return row;}
 export class CallStore {
  constructor(db){this.db=db;}
  async get(owner){return parse(await this.db.prepare('SELECT * FROM studio_calls WHERE owner_id = ?').bind(owner).first());}
- async create(owner,gameId,data,{requireConfirmedCleanup=false}={}){await this.db.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) VALUES (?,?,0,?) ON CONFLICT(owner_id) DO NOTHING').bind(owner,gameId,'null').run();return this.mutate(owner,c=>{if(callActive(c)||requireConfirmedCleanup&&unresolvedCallResources(c))throw callError('Rond eerst het huidige belmoment en de bevestigde audio-opruiming af.');return data;});}
- async mutate(owner,fn,{expectedId}={}){for(let i=0;i<8;i++){const row=await this.get(owner);if(!row)throw callError('Geen belmoment gevonden.',404);if(expectedId!==undefined&&row.data?.id!==expectedId)return row.data;const c=await fn(structuredClone(row.data));c.version=(row.data?.version||0)+1;const result=await this.db.prepare('UPDATE studio_calls SET game_id = ?,revision = ?,document = ? WHERE owner_id = ? AND revision = ? RETURNING revision').bind(c.gameId,row.revision+1,JSON.stringify(c),owner,row.revision).first();if(result)return c;}throw callError('De belstatus wordt bijgewerkt. Probeer opnieuw.');}
+ async create(owner,gameId,data,{requireConfirmedCleanup=false}={}){const game=await assertCallGameActive(this.db,owner,gameId);await this.db.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) SELECT ?,?,0,? WHERE EXISTS (SELECT 1 FROM bingo_games WHERE id = ? AND owner_id = ? AND revision = ?) ON CONFLICT(owner_id) DO NOTHING').bind(owner,gameId,'null',gameId,owner,game.revision).run();return this.mutate(owner,c=>{if(callActive(c)||requireConfirmedCleanup&&unresolvedCallResources(c))throw callError('Rond eerst het huidige belmoment en de bevestigde audio-opruiming af.');return data;},{requireActiveGame:true});}
+ async mutate(owner,fn,{expectedId,requireActiveGame=false}={}){
+  for(let i=0;i<8;i++){
+   const row=await this.get(owner);if(!row)throw callError('Geen belmoment gevonden.',404);if(expectedId!==undefined&&row.data?.id!==expectedId)return row.data;
+   const c=await fn(structuredClone(row.data)),guard=typeof requireActiveGame==='function'?requireActiveGame(row.data,c):requireActiveGame,game=guard?await assertCallGameActive(this.db,owner,c.gameId):null;c.version=(row.data?.version||0)+1;
+   const statement=this.db.prepare('UPDATE studio_calls SET game_id = ?,revision = ?,document = ? WHERE owner_id = ? AND revision = ?'+(game?' AND EXISTS (SELECT 1 FROM bingo_games WHERE id = ? AND owner_id = ? AND revision = ?)':'')+' RETURNING revision').bind(c.gameId,row.revision+1,JSON.stringify(c),owner,row.revision,...(game?[c.gameId,owner,game.revision]:[]));
+   let saved;
+   if(game){
+    // Lock the authoritative game row before touching the call. A SELECT-only
+    // EXISTS guard can retain an older PostgreSQL READ COMMITTED statement
+    // snapshot while waiting on a call-row lock after cancellation commits.
+    const result=await this.db.batch([
+     this.db.prepare('UPDATE bingo_games SET revision = revision WHERE id = ? AND owner_id = ? AND revision = ? RETURNING revision').bind(c.gameId,owner,game.revision),
+     statement,
+    ]);saved=result[0]?.results?.length&&result[1]?.results?.length;
+   }else saved=await statement.first();
+   if(saved)return c;
+  }
+  throw callError('De belstatus wordt bijgewerkt. Probeer opnieuw.');
+ }
 }
 async function turnSettings(env){const s=await readPrivateSetting(env,'call-connection');return {...s,value:s.value||{mode:'cloudflare',keyId:'',token:''}};}
 async function turnCredentials(settings,fetcher=fetch){
@@ -42,7 +62,7 @@ export function callInstructions(game,name,presenter=null){
 async function hangup(env,id,fetcher,fingerprint){if(!id)return true;try{const {key}=await readSecret(env);if(key){if(fingerprint&&await secretFingerprint(key)!==fingerprint)return false;const r=await (env.PROVIDER_CLEANUP_FETCH||fetcher)(`https://api.openai.com/v1/realtime/calls/${encodeURIComponent(id)}/hangup`,{method:'POST',headers:{Authorization:`Bearer ${key}`},signal:AbortSignal.timeout(5000)});await r.body?.cancel();return r.ok||r.status===404;}}catch{}return false;}
 async function finishResources(env,store,bingo,owner,c,fetcher){
  if(callActive(c))return;
- if(env.NATIVE_PROVIDER_SETTINGS&&!c.realtimeStopped&&(c.realtimeId||c.realtimeStarted)){
+ if((env.NATIVE_PROVIDER_SETTINGS||c.showCancelledAt)&&!c.realtimeStopped&&(c.realtimeId||c.realtimeStarted)){
   // An attempted hangup is not closure proof. Preserve the hold and original
   // credential fingerprint until this exact session is confirmed closed.
   if(!c.realtimeId)return;
@@ -55,8 +75,16 @@ async function finishResources(env,store,bingo,owner,c,fetcher){
  }
  // Clearing a hold is safe to repeat and leaves the authoritative game paused.
  const g=await bingo.game(c.gameId);
+ if(terminalCallGame(g?.data))return;
  if(g?.data.state.callId===c.id||g?.data.participation?.some(e=>e.id===c.entryId&&e.callId===c.id&&!['done','withdrawn','declined'].includes(e.callStatus))){await bingo.mutate(c.gameId,{},game=>{if(game.state.callId===c.id){game.state.callId=null;game.state.paused=true;}const e=game.participation?.find(e=>e.id===c.entryId);if(e&&e.callId===c.id&&!['withdrawn','declined','done'].includes(e.callStatus)){e.callStatus='done';e.updatedAt=Date.now();game.events.push({type:'call-ended',name:c.name,reason:c.reason,at:Date.now()});}});}
  if(!env.NATIVE_PROVIDER_SETTINGS&&c.realtimeId&&!c.hangupAttempted){const token=crypto.randomUUID(),latest=await store.mutate(owner,current=>{if(current.id===c.id&&!current.hangupAttempted)current.hangupAttempted=token;return current;});if(latest.hangupAttempted===token)await hangup(env,c.realtimeId,fetcher);}
+}
+export async function cancelLegacyGameCallResources(env,owner,gameId,{fetcher=fetch}={}){
+ const bingo=new BingoStore(env.DB),game=await bingo.game(gameId);if(!game||game.owner_id!==owner||!terminalCallGame(game.data))throw callError('Beëindig eerst de juiste show.');
+ const store=new CallStore(env.DB),existing=(await store.get(owner))?.data;if(!existing||existing.gameId!==gameId||existing.transport==='livekit')return {pending:false,callId:null};
+ const call=await store.mutate(owner,current=>{if(!current.showCancelledAt)current.stopVoice=(current.stopVoice||0)+1;current.showCancelledAt=game.data.cancelledAt||game.data.finishedAt||Date.now();current.phase='ended';current.endedAt||=Date.now();current.reason='De show is door de regie beëindigd.';current.muted=true;current.aiMuted=true;current.voiceLevel=0;if(!current.realtimeId&&!current.realtimeStarted)current.resourcesClosed=true;return current;},{expectedId:existing.id});
+ if(call?.id!==existing.id)return {pending:false,callId:null};
+ await finishResources(env,store,bingo,owner,call,fetcher);const latest=(await store.get(owner))?.data;return latest?.id===existing.id?{pending:unresolvedCallResources(latest),callId:latest.id,transport:'legacy',resourcesClosed:latest.resourcesClosed===true}:{pending:false,callId:null};
 }
 export async function handleCalls(request,env,fetcher=fetch){
  const {user,email,admin}=await playerIdentity(request,env),url=new URL(request.url),write=request.method==='POST';
@@ -96,6 +124,8 @@ export async function handleCalls(request,env,fetcher=fetch){
   }
   if(c&&!callActive(c))await finishResources(env,store,bingo,owner,c,fetcher);
   if(!write)return json({call:c&&(!gameId||c.gameId===gameId||role==='host')?publicCall(c,role):null,serverTime:Date.now()});
+  const recoveryAction=['stop','decline','heartbeat'].includes(action);
+  if(!recoveryAction)await assertCallGameActive(env.DB,owner,action==='prepare'?gameRow?.data.id:c?.gameId||gameId);
   if(action==='prepare'){
    if(role!=='host'||!gameRow||gameRow.owner_id!==user)throw callError('Kies eerst jouw spel.',403);
    if(!output?.routing||!output.output?.audioReady||output.output.until<=now||output.producer?.id!==clientId||output.producer.until<=now)throw callError('Open het uitzendvenster, activeer geluid en kies Geluid via uitzendvenster.');
@@ -110,17 +140,18 @@ export async function handleCalls(request,env,fetcher=fetch){
     try{const profile=await savedCharacter(env,owner,selected);presenter=Object.fromEntries(['id','name','voice','speed','style','persona','pronunciation','revision'].map(k=>[k,profile[k]]));}catch{throw callError('De personage-instellingen kunnen niet worden geladen. Er is geen oproep gestart.',503);}
    }
    const character=presenter?{presenter,characterId:presenter.id,characterName:presenter.name,characterRevision:presenter.revision,realtimeVoice:realtimeCharacterVoice(presenter.voice)}:{};
-   c=await store.create(owner,g.id,{id:crypto.randomUUID(),gameId:g.id,brandId:brandId(g),...character,entryId:e.id,accountId:e.accountId,profileId:e.profileId,name:e.name,hostId:clientId,outputId:output.output.id,phase:'checking',createdAt:now,updatedAt:now,maxSeconds,muted:false,stopVoice:0,ops:[]},{requireConfirmedCleanup:!!env.NATIVE_PROVIDER_SETTINGS});await bingo.mutate(g.id,{},game=>{const entry=game.participation?.find(x=>x.id===e.id);if(!entry||['withdrawn','declined'].includes(entry.callStatus))throw callError('De speler heeft zich afgemeld.');entry.callId=c.id;});return json({call:publicCall(c,role),serverTime:now});
+   c=await store.create(owner,g.id,{id:crypto.randomUUID(),gameId:g.id,brandId:brandId(g),...character,entryId:e.id,accountId:e.accountId,profileId:e.profileId,name:e.name,hostId:clientId,outputId:output.output.id,phase:'checking',createdAt:now,updatedAt:now,maxSeconds,muted:false,stopVoice:0,ops:[]},{requireConfirmedCleanup:!!env.NATIVE_PROVIDER_SETTINGS});await bingo.mutate(g.id,{},game=>{if(terminalCallGame(game))throw callError('Deze show is beëindigd.');const entry=game.participation?.find(x=>x.id===e.id);if(!entry||['withdrawn','declined'].includes(entry.callStatus))throw callError('De speler heeft zich afgemeld.');entry.callId=c.id;});await assertCallGameActive(env.DB,owner,g.id);return json({call:publicCall(c,role),serverTime:now});
   }
   if(!c||body.callId!==c.id)throw callError('Deze actie hoort bij een eerdere oproep.');
+  if(gameId&&gameId!==c.gameId)throw callError('Open de show die bij dit belmoment hoort.');
   if(role==='host'&&c.hostId!==clientId&&action!=='stop')throw callError('Een ander regievenster bestuurt dit gesprek.');
   if(role==='output'&&c.outputId!==clientId)throw callError('Een ander venster verzorgt dit gesprek.');
   if(role==='player'&&!['connect','stop','decline'].includes(action)&&c.playerClientId!==clientId)throw callError('Open het gesprek op het apparaat waarmee je de verbinding hebt getest.');
-  const mutate=async (fn,dedupe=false)=>{c=await store.mutate(owner,current=>{if(current.id!==body.callId)throw callError('Deze oproep is vervangen.');if(dedupe&&body.requestId&&current.ops?.includes(body.requestId))return current;fn(current);if(dedupe&&body.requestId)current.ops=[...(current.ops||[]),body.requestId].slice(-40);return current;});};
+  const mutate=async (fn,dedupe=false,allowFinished=false)=>{c=await store.mutate(owner,current=>{if(current.id!==body.callId)throw callError('Deze oproep is vervangen.');if(dedupe&&body.requestId&&current.ops?.includes(body.requestId))return current;fn(current);if(dedupe&&body.requestId)current.ops=[...(current.ops||[]),body.requestId].slice(-40);return current;},{requireActiveGame:!allowFinished&&!recoveryAction});};
   if(action==='ice'){
    if(!callActive(c)||!['player','output'].includes(role))throw callError('Deze belverbinding is gesloten.');
    await mutate(current=>{const k=role+'Ice';if(current[k]?.at>now-5000||current[k]?.count>=4)throw callError('Wacht even voordat je de verbinding opnieuw probeert.',429);current[k]={at:now,count:(current[k]?.count||0)+1};});
-   return json({...await turnCredentials((await turnSettings(env)).value,fetcher),serverTime:now});
+   const credentials=await turnCredentials((await turnSettings(env)).value,async(...args)=>{await assertCallGameActive(env.DB,owner,c.gameId);return fetcher(...args);});await assertCallGameActive(env.DB,owner,c.gameId);return json({...credentials,serverTime:now});
   }
   if(action==='signal'){
    if(c.phase!=='checking'||!['player','output'].includes(role))throw callError('De verbindingscontrole is gesloten.');
@@ -134,10 +165,10 @@ export async function handleCalls(request,env,fetcher=fetch){
    const nativeKey=env.NATIVE_PROVIDER_SETTINGS?(await readSecret(env)).key:null;if(env.NATIVE_PROVIDER_SETTINGS&&!nativeKey)throw callError('Stel eerst de centrale OpenAI-sleutel in.',503);
    const nativeFingerprint=nativeKey?await secretFingerprint(nativeKey):null;
    await mutate(current=>{if(current.phase!=='announcing'||current.realtimeStarted)throw callError('Het gesprek is al gestart.');current.realtimeStarted=true;if(env.NATIVE_PROVIDER_SETTINGS){current.resourcesClosed=false;current.realtimeCredentialFingerprint=nativeFingerprint;}});
-   let realtimeId,definiteRejection=false;
-   try{const {key}=await readSecret(env);if(!key)throw callError('De globale OpenAI-koppeling is niet meer ingesteld. Voeg de sleutel toe voordat je opnieuw belt.',503);const fd=new FormData();fd.set('sdp',body.sdp);fd.set('session',JSON.stringify({type:'realtime',model:env.OPENAI_REALTIME_MODEL||'gpt-realtime',instructions:callInstructions(callGameRow.data,c.name,c.presenter||null),output_modalities:['audio'],max_output_tokens:220,tools:[],audio:{input:{noise_reduction:{type:'near_field'},turn_detection:{type:'server_vad',threshold:.5,prefix_padding_ms:300,silence_duration_ms:650,create_response:false,interrupt_response:false}},output:{voice:c.presenter?realtimeCharacterVoice(c.presenter.voice):'ballad',speed:c.presenter?.speed??1}}}));const r=await fetcher('https://api.openai.com/v1/realtime/calls',{method:'POST',headers:{Authorization:`Bearer ${key}`},body:fd,signal:AbortSignal.timeout(25000)});if(!r.ok){if(env.NATIVE_PROVIDER_SETTINGS&&[400,401,403,404,422,429].includes(r.status))definiteRejection=true;await r.body?.cancel();throw callError(r.status===429?'OpenAI meldt een gebruikslimiet. Controleer je API-tegoed.':'OpenAI kon het gesprek niet starten. Controleer toegang tot Realtime bij je API-project.',502);}const sdp=await r.text();realtimeId=r.headers.get('location')?.split('/').pop();if(!realtimeId||!/^[a-zA-Z0-9_-]{5,160}$/.test(realtimeId))throw callError('De stemverbinding kon niet worden bevestigd.',502);
-    await mutate(current=>{current.realtimeId=realtimeId;});if(!callActive(c)){await finishResources(env,store,bingo,owner,c,fetcher);throw callError('Deze oproep is intussen gestopt.');}return json({sdp,serverTime:Date.now()});
-   }catch(e){await hangup(env,realtimeId,fetcher);await mutate(current=>{current.phase='failed';current.reason='De host kon de stemverbinding niet openen.';current.endedAt=Date.now();if(realtimeId)current.realtimeId=realtimeId;if(env.NATIVE_PROVIDER_SETTINGS&&!realtimeId&&definiteRejection){current.resourcesClosed=true;current.realtimeStopped=true;}}).catch(()=>{});await finishResources(env,store,bingo,owner,c,fetcher);throw e;}
+   let realtimeId,definiteRejection=false,dispatched=false;
+   try{const {key}=await readSecret(env);if(!key)throw callError('De globale OpenAI-koppeling is niet meer ingesteld. Voeg de sleutel toe voordat je opnieuw belt.',503);const fd=new FormData();fd.set('sdp',body.sdp);fd.set('session',JSON.stringify({type:'realtime',model:env.OPENAI_REALTIME_MODEL||'gpt-realtime',instructions:callInstructions(callGameRow.data,c.name,c.presenter||null),output_modalities:['audio'],max_output_tokens:220,tools:[],audio:{input:{noise_reduction:{type:'near_field'},turn_detection:{type:'server_vad',threshold:.5,prefix_padding_ms:300,silence_duration_ms:650,create_response:false,interrupt_response:false}},output:{voice:c.presenter?realtimeCharacterVoice(c.presenter.voice):'ballad',speed:c.presenter?.speed??1}}}));await assertCallGameActive(env.DB,owner,c.gameId);dispatched=true;const r=await fetcher('https://api.openai.com/v1/realtime/calls',{method:'POST',headers:{Authorization:`Bearer ${key}`},body:fd,signal:AbortSignal.timeout(25000)});if(!r.ok){if(env.NATIVE_PROVIDER_SETTINGS&&[400,401,403,404,422,429].includes(r.status))definiteRejection=true;await r.body?.cancel();throw callError(r.status===429?'OpenAI meldt een gebruikslimiet. Controleer je API-tegoed.':'OpenAI kon het gesprek niet starten. Controleer toegang tot Realtime bij je API-project.',502);}const sdp=await r.text();realtimeId=r.headers.get('location')?.split('/').pop();if(!realtimeId||!/^[a-zA-Z0-9_-]{5,160}$/.test(realtimeId))throw callError('De stemverbinding kon niet worden bevestigd.',502);
+    await mutate(current=>{current.realtimeId=realtimeId;},false,true);await assertCallGameActive(env.DB,owner,c.gameId);if(!callActive(c)){await finishResources(env,store,bingo,owner,c,fetcher);throw callError('Deze oproep is intussen gestopt.');}return json({sdp,serverTime:Date.now()});
+   }catch(e){await hangup(env,realtimeId,fetcher,nativeFingerprint);await mutate(current=>{current.phase='failed';current.reason='De host kon de stemverbinding niet openen.';current.endedAt=Date.now();if(realtimeId)current.realtimeId=realtimeId;if(!realtimeId&&(!dispatched||env.NATIVE_PROVIDER_SETTINGS&&definiteRejection)){current.resourcesClosed=true;current.realtimeStopped=true;}} ,false,true).catch(()=>{});await finishResources(env,store,bingo,owner,c,fetcher);throw e;}
   }else{
    if(action==='ring'){
     if(role!=='host'||c.phase!=='ready')throw callError('Rond eerst de geluidscheck af.');

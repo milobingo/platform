@@ -1,0 +1,251 @@
+✔ audio activation waits for a completed non-silent programme source before claiming ready or hiding the overlay (667.730932ms)
+✔ a running audio context without a measured signal keeps the activation overlay and never acknowledges ready (662.264787ms)
+✔ an ended callback without audio-clock progress is not proof of playback (660.89987ms)
+✔ disconnect during the test silences its source and cannot acknowledge a late successful activation (50.581958ms)
+✔ reconnect restores the exact paused show, pending bingo and official history using only read and output heartbeat (663.546288ms)
+✔ reconnect refuses a different show and a stale producer without opening audio or releasing the game (0.757897ms)
+✔ test request plays once through output, acknowledges only its own event and never resumes a paused show (722.212741ms)
+✔ regie test awaits the matching playback acknowledgement, not a routed or connected status alone (31.8902ms)
+✔ audio and reconnect never connect a microphone or backstage stream, and active calls prevent a test sound (0.613868ms)
+✔ a live call arriving during a programme test stops the test and keeps its acknowledgement unsuccessful (31.032926ms)
+✔ relay stores a bounded public playback acknowledgement while preserving producer, game and paused state (40.407734ms)
+✔ preparation separates connection, audio activation and unconfirmed OBS checks; opening stays on the user gesture (101.167791ms)
+✔ preparation reports a real playback failure without claiming sound or OBS acceptance (87.409153ms)
+✔ audio proof for a previous show never becomes a successful preparation status after switching shows (139.843852ms)
+✔ force cancellation closes only its issued LiveKit rooms and known AI session while retaining the terminal game checkpoint (115.052803ms)
+✔ an unknown in-flight AI start remains unresolved after forced cancellation instead of fabricating closure (28.454913ms)
+✔ confirmed cleanup completes the cancelled call and permits preparation for a different show without altering old history (40.646695ms)
+✔ failed provider cleanup remains pending and an explicit retry confirms closure without releasing the hold (33.992096ms)
+✔ cancelling an older show never rewrites or contacts provider resources of a newer call belonging to the same owner (14.65026ms)
+✔ a LiveKit prepare waiting before its atomic insert cannot install a call after cancellation (20.152116ms)
+✔ legacy call admission batch rejects cancellation committed after the fresh game check and before the game row lock (24.933875ms)
+✔ LiveKit atomic preparation loses to cancellation before its game-and-call batch (42.363747ms)
+✔ a LiveKit token request paused after room reservation returns no token once the show is cancelled (45.641158ms)
+✔ a Live AI response arriving after force cancellation is recorded and hung up without returning SDP or releasing the draw hold (43.876278ms)
+✔ a legacy AI response arriving after cancellation remains recoverable, closes the known session and retains the terminal call hold (22.298563ms)
+✔ a whisper attach delayed until after cancellation never sends a director instruction (71.524257ms)
+✔ fresh relay GET and heartbeat silence a cancelled game even when persistent relay cleanup has not run (42.265933ms)
+✔ publication loses an atomic game CAS when cancellation commits before its transaction (SQLite) (6.221049ms)
+﹣ publication loses an atomic game CAS when cancellation commits before its transaction (PostgreSQL) (0.589745ms) # SKIP
+✔ a publication that wins first is removed by cancellation without losing the last board (4.60954ms)
+✔ cleanup of an older cancelled show leaves a newer show relay byte for byte intact (3.936822ms)
+✔ an existing output stops all audio and ignores delayed local packets after cancellation, without reconnecting or resuming (1.96713ms)
+✔ atomic hold/call batch stays invisible before commit; an earlier ball wins CAS and joins checkpoint (61.126094ms)
+✔ failure between the two writes rolls back both hold and call and never opens media (15.161017ms)
+✔ atomic call preparation preserves the shared game history capacity reserve (79.997578ms)
+✔ late provider creation after cancellation is hung up and never returns SDP or resumes drawing (51.343099ms)
+✔ expired unknown orphan stays explicitly uncertain; closing an unrelated session cannot release the hold (51.15497ms)
+✔ provider timeout remains uncertain and rotated credentials cannot falsely close the orphan (68.1417ms)
+gpt_live_close_unconfirmed {
+  restStatus: 502,
+  attachStatus: 502,
+  reason: 'attach_rejected',
+  rest: {
+    status: 502,
+    responseType: 'application/json',
+    requestId: null,
+    errorCode: 'fixture_unavailable',
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 502,
+    responseType: 'application/json',
+    requestId: null,
+    errorCode: 'fixture_unavailable',
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+✔ known provider hangup failure remains held and a later verified cleanup can finish it (59.552627ms)
+✔ LiveKit deployment credential rotation cannot issue new tokens or falsely close the original rooms (27.29678ms)
+✔ second tab stays passive and cannot cancel, but parent consent withdrawal always closes media and keeps hold (30.455519ms)
+✔ unpublished results never enter live context and active-call key replacement performs no provider probe (33.285901ms)
+✔ 120s playback at a 240s live edge and plain audible playback cannot prove return; a current cue can (47.28451ms)
+✔ fresh output generation restarts sequence safely and rejects delayed old producer; output acknowledges actual rendered generation (24.685543ms)
+✓ Live-call runtime: actual nine-step demo, confirmed context, all failure holds, explicit return, no provider calls, protected prepare/cancel races, refreshed snapshots, all presenter identities, other-show recovery and nonblocking output
+✔ scripts/check-live-call-runtime.mjs (125.349948ms)
+✔ a new OBS source waits for verified producer state, then creates audio once and activates without a click only after measured test playback (81.122383ms)
+✔ an established OBS source automatically recovers from 409 without duplicate outage epochs or manual activation (72.472735ms)
+✔ an established OBS source automatically recovers from 503 without duplicate outage epochs or manual activation (65.468064ms)
+✔ an established OBS source automatically recovers from network without duplicate outage epochs or manual activation (68.412095ms)
+✔ the original 401 relay error survives the capability-loss event instead of becoming a misleading epoch error (3.692013ms)
+✔ the original 403 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.343718ms)
+✔ the original 409 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.861744ms)
+✔ the original 503 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.690597ms)
+✔ a browser that actually blocks autoplay never acknowledges audio, hides the status or starts a tone, and retries stay bounded (7.337883ms)
+✔ a running audio context without a measured audible signal keeps the status visible and never reports a successful heartbeat (49.519159ms)
+✔ mismatched-show never automatically opens audio or releases the paused show (4.178175ms)
+✔ expired-producer never automatically opens audio or releases the paused show (10.54796ms)
+✔ stale-publication never automatically opens audio or releases the paused show (1.342205ms)
+✔ inconsistent-show never automatically opens audio or releases the paused show (17.00079ms)
+✔ stale-generation never automatically opens audio or releases the paused show (1.43993ms)
+✔ a cancelled show invalidates an already queued activation and old running snapshots cannot reactivate its audio (7.737045ms)
+✔ a capability loss between state consumption and its activation microtask cancels that queued attempt (1.597869ms)
+✔ revoked OBS access never opens audio and cannot silently switch into another show (2.579125ms)
+✔ regular browser output retains explicit manual activation while valid programme state still restores immediately (29.66882ms)
+✔ an OBS source waits silently for another live audio lease and activates automatically once that lease expires (36.119907ms)
+✔ OBS capability is fragment-only and attaches only to the dedicated same-origin output API scope (27.978905ms)
+✔ ordinary regie/player transport remains unchanged and cannot read an OBS token from another route (0.444054ms)
+✔ scoped denial and network loss signal immediate silence; deliberate fetch cancellation does not (1.38125ms)
+✔ output live-call polling and pagehide keepalive use the scoped capability transport (7.174367ms)
+✔ OBS output never opens the unprojected BroadcastChannel and fails closed before audio activation (2.511402ms)
+✔ activation cannot heartbeat ready with a suspended context or failed show-audio unlock (1.096465ms)
+✔ a valid producer snapshot retries transient OBS activation and respects the autoplay retry backoff (7.840787ms)
+✔ starting the show-bound producer is explicit, opens no popup and is unavailable for unsaved edits (194.186809ms)
+✔ OBS management is lazy; initial create and revoke are explicit, scoped and keep the raw link out of status/storage (302.726639ms)
+✔ an existing link for another show requires explicit replacement and a stale status error never auto-retries the mutation (243.161064ms)
+✔ show changes discard a delayed capability and reset lazy management; rehearsal cannot create one (260.192505ms)
+✔ an empty JA closes at deadline once, stays separate from false penalties, and a claimed multi-book announcement is complete (21.165126ms)
+✔ book lifecycle preserves numbers/codes, rejects revoked registration/readmission, and verifies assignment profile ownership (66.491018ms)
+✔ participation needs consent, child permission and invitation; withdrawals are durable and identical requests do not grow audit events (41.905255ms)
+✔ recovery holds the exact reserved ball, committed draw and closed window; another active controller cannot take over (29.482912ms)
+✔ reports and memory data never expose deck, QR token, prompt or another account’s personal memory (12.842571ms)
+✔ voice cache survives removed key, checks identity, and invalidates by text and speed (12.036428ms)
+✔ authenticated output relay requires producer generation and rejects stale publication without a false ACK (3.947526ms)
+✔ a fresh clip resumes an output audio context that was previously paused (0.487554ms)
+✔ expired output heartbeat immediately mutes the orphaned output (0.348623ms)
+✔ remote pause cancels wall-clock timeout and changing audio routing mid-speech is refused (20.653689ms)
+✔ remote voice defers a clip paused while loading and waits for actual output completion after explicit resume (1.303201ms)
+✔ recovery review reconstructs a missed commit, invalidates old runner work and preserves the committed draw (96.424043ms)
+✔ story templates remain valid timeline blocks and render all production tabs without losing game inputs (53.716801ms)
+✓ Integrated actual engine + modular regie: compact monitor/control structure, independent preview, scene/camera TAKE, hold guards, pause/resume, return, persistent audience/chat/call runtimes; drawn state unchanged
+✔ scripts/check-regie-workspace.mjs (3536.557718ms)
+✔ stage restores cohost and all saved settings, mouth follows the active audio owner, magic uses renderer milliseconds (83.503374ms)
+✔ starting a real draft requires configured AI and never silently falls back to a browser voice (42.561151ms)
+✔ an explicit successful retry clears the failed-start error while preserving input and never starts the show (66.749305ms)
+▶ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly
+  ✔ bingo-window (70.468436ms)
+  ✔ call-hold (29.439022ms)
+✔ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly (102.048989ms)
+✔ live recovery restores the current goal and keeps the server and local director paused until explicit resume (37.928798ms)
+✔ real reserve and commit stay authoritative; pausing the spin cannot commit or duplicate a number (19.036594ms)
+▶ a delayed official reveal rechecks cancellation and every local hold before sending a commit
+  ✔ pause (48.444984ms)
+  ✔ cancel (42.305678ms)
+  ✔ minigame (41.32361ms)
+  ✔ show-cue (46.7498ms)
+  ✔ window (40.926251ms)
+✔ a delayed official reveal rechecks cancellation and every local hold before sending a commit (221.135077ms)
+✔ acknowledging a claim cancels the interrupted draw and advances only after winner speech ends (14.876734ms)
+✔ a failed browser phrase is retried on resume and stale callbacks cannot end its replacement (18.297732ms)
+✔ cast cue timing pauses, ends cleanly, preserves cohost, and Vlampie keeps native cameras (12.323545ms)
+✔ an old polling response cannot rewind a newer commit (10.335195ms)
+▶ a confirmed forced cancellation defeats late start and recovery acknowledgements
+  ✔ start (17.519866ms)
+  ✔ heartbeat (11.631899ms)
+✔ a confirmed forced cancellation defeats late start and recovery acknowledgements (29.82045ms)
+✔ call responses preserve unsaved preparation while accepting cancellation and rejecting stale state (11.539561ms)
+✔ forced cancellation binds the authoritative shown title while retaining an unsaved local title (18.474897ms)
+✔ cancellation during audio activation cannot reopen a manual show scene (10.874861ms)
+▶ a cancelled show preserves unsaved preparation and allows another or a new show without a terminal PUT
+  ✔ select (14.831302ms)
+  ✔ create (24.56012ms)
+✔ a cancelled show preserves unsaved preparation and allows another or a new show without a terminal PUT (40.009664ms)
+✔ stop waits for pending activation before pausing the server and never leaves the old block running (12.619514ms)
+✔ output snapshots retain the authoritative director scene through the bridge show channel (10.076599ms)
+✔ saved rehearsal survives reload and production switches, then becomes a real show with edited plan/settings and no demo players (53.539387ms)
+✔ stop during a pending result acknowledgement cannot start late winner speech or progression (10.911312ms)
+✔ the local call demonstration is explicitly reachable without replacing real books or bypassing an active hold (18.557722ms)
+✔ manual show cue holds automatic drawing, publishes the same clock, and restores without unpausing an idle show (13.265246ms)
+✔ rundown show cue can feature another friend, clears previews, and stopping it does not draw (13.053913ms)
+✔ manual speech animates the presenter above a paused rundown without releasing game state (23.198787ms)
+✔ slow voice design survives the normal settings deadline and saves the returned profile once (11.738035ms)
+✔ voice design timeout gives a recovery message and never automatically creates another voice (10.201842ms)
+✔ overview snapshot always exposes the active presenter identity (10.052626ms)
+✔ invalid character settings and voice-design calls cannot emit undefined API routes (9.743548ms)
+✔ force cancellation requires verified host ownership, same-origin headers and explicit confirmation without any mutation (107.19332ms)
+✔ forced cancellation overrides an active control lease, pending draw, open claims and a call hold without settling or changing history (54.800399ms)
+✔ unpublished results remain unpublished and all stale regie mutation routes are refused after cancellation (57.20306ms)
+Bingoadministratie: Error
+✔ double clicks, independent tabs and durable retries produce exactly one cancellation event (101.822235ms)
+✔ force cancellation refuses a draft show without changing it (4.770844ms)
+✔ force cancellation refuses a finished show without changing it (3.865162ms)
+✔ a failed durable cancellation write keeps the entire running show and a retry can succeed (6.071ms)
+✔ a draw waiting on a stale CAS cannot commit after cancellation wins the database race (67.54167ms)
+✔ cancellation retries a lost CAS against the latest officially committed draw rather than replacing it (48.381907ms)
+✔ the shared store refuses terminal game resurrection even when an internal writer bypasses API guards (12.510592ms)
+✔ players see cancellation without private operator, reason or pending draw details and cannot add claims (12.187676ms)
+✔ force cancelling Milo leaves the separate Vlampie show unchanged (5.113159ms)
+✔ 10,000 Unicode characters split without losing, duplicating or breaking text and oversize input remains untouched (8.570577ms)
+✔ a full 10,000-character local script fetches one bounded clip at a time and ends exactly once after every word (64.787374ms)
+✔ pausing between clips retains the current queue and decoded audio; resume does not request or repeat the first clip (1.54089ms)
+✔ stop aborts an in-flight later clip, clears the remaining script and ignores its late response (15.622055ms)
+✔ a failed later clip reports failure without an early completion or generating the rest of the script (5.068266ms)
+✔ 10,000 characters use the same OBS clip route in sequence; no local source plays and only the final acknowledgement completes the script (23.462592ms)
+✔ stop during a remote clip cancels its playback and never starts the next queued clip (6.782645ms)
+✔ the real speech API, saved GPT-Live character and clip cache prepare every part and reuse all cached parts without credentials (335.894356ms)
+✔ the fragment endpoint rejects an overlong direct request honestly and cancelled shows cannot generate or read script audio (6.476963ms)
+✔ the engine preserves a 10,001-character field and rejects before stop, provider access or truncation (0.643539ms)
+✔ the browser rehearsal also speaks the complete script in bounded parts and stopping cancels future parts (1.197125ms)
+✔ an existing OBS capability reads a cancelled frozen board but cannot load old voice, including cancellation during clip retrieval (92.022641ms)
+✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (25.726842ms)
+✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (42.332264ms)
+✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (58.918601ms)
+✔ output projection contains programme visuals only; another show produces waiting state and no voice access (35.460677ms)
+✔ OBS can retrieve only the current published voice clip and never create a paid voice request (31.025816ms)
+✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (42.32238ms)
+✔ malformed durable access metadata fails closed without provider or Auth contact (27.140776ms)
+✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (24.746126ms)
+✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (48.05135ms)
+✔ queued realtime rechecks revoked capability and aborted request before any provider start (118.852025ms)
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (133.489078ms)
+✔ revocation during ready CAS closes the durably known session and leaves the draw hold (34.244174ms)
+✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (59.304495ms)
+﹣ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (0.195971ms) # SKIP
+ℹ tests 167
+ℹ suites 0
+ℹ pass 165
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 2
+ℹ todo 0
+ℹ duration_ms 4158.975785

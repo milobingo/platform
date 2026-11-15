@@ -1,7 +1,9 @@
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {webcrypto} from 'node:crypto';
-import {makeGame,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook} from '../server/bingo-model.js';
+import {makeGame,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook,forceCancelGame} from '../server/bingo-model.js';
+import {LiveCallRuntime} from '../frontend/live-call-runtime.js';
+import {getShowRuntime} from '../frontend/show-runtime.js';
 import {handleBingo} from '../server/bingo.js';
 import {BingoStore} from '../server/bingo-store.js';
 import {createSqliteDatabase} from '../server/node-storage.js';
@@ -11,6 +13,7 @@ globalThis.crypto??=webcrypto;
 globalThis.setInterval=()=>0;globalThis.clearInterval=()=>{};
 globalThis.location={origin:'https://studio.example',pathname:'/'};
 const storage=new Map();globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
+const session=new Map();globalThis.sessionStorage={getItem:k=>session.get(k)||null,setItem:(k,v)=>session.set(k,v),removeItem:k=>session.delete(k)};
 globalThis.document={body:{dataset:{brand:'milo'},classList:{contains:()=>false}}};
 globalThis.BroadcastChannel=class{postMessage(){}close(){}};
 const utterances=[];
@@ -161,6 +164,75 @@ test('an old polling response cannot rewind a newer commit',async()=>{
  const old=hostCopy(server);let resolve;router=()=>new Promise(r=>resolve=r);const poll=e.refresh();await flush();server.revision+=2;server.state.drawn=[33];e.acceptGame(hostCopy(server));resolve(Response.json({game:old}));await poll;
  assert.deepEqual(e.game.state.drawn,[33]);assert.equal(e.game.revision,server.revision);
  }finally{e.dispose();}
+});
+test('a confirmed forced cancellation defeats late start and recovery acknowledgements',async t=>{
+ for(const action of ['start','heartbeat'])await t.test(action,async()=>{
+  const {e,server}=await rig({live:true});let release;
+  try{
+   if(action==='start'){server.status='draft';e.acceptGame(hostCopy(server),true);}
+   let entered;const arrived=new Promise(resolve=>entered=resolve),gate=new Promise(resolve=>release=resolve),normal=router;
+   router=async(url,options)=>{
+    if(url.endsWith('/force-cancel')){
+     const body=JSON.parse(options.body);assert.equal(body.confirm,true);assert.equal(body.expectedTitle,server.title);
+     forceCancelGame(server,{by:'test',reason:'Regression check',requestId:body.requestId,binding:'engine-test'},Date.now());server.revision++;
+     return Response.json({game:hostCopy(server),applied:true,cleanup:{pending:false}});
+    }
+    const response=await normal(url,options);
+    if(url.endsWith('/'+action)){const acknowledged=action==='heartbeat'?Response.json({game:hostCopy(server)}):response;entered();await gate;return acknowledged;}
+    return response;
+   };
+   const pending=assert.rejects(action==='start'?e.start():e.resumeRegie(),/geannuleerd/);await arrived;
+   // A poll can observe the committed start before its original response arrives.
+   if(action==='start')e.acceptGame(hostCopy(server));
+   await e.forceCancel({expectedTitle:server.title,requestId:crypto.randomUUID()});
+   assert(e.game.cancelledAt);assert.equal(e.runner.active,false);assert.equal(e.director.flow,null);
+   release();await pending;await flush();e.tick();
+   assert.equal(e.game.status,'finished');assert.equal(e.runner.active,false);assert.equal(e.director.flow,null);assert.equal(e.director.paused,true);assert.equal(e.voicePhase,'idle');assert.deepEqual(e.game.state.drawn,server.state.drawn);
+  }finally{release?.();e.dispose();}
+ });
+});
+test('call responses preserve unsaved preparation while accepting cancellation and rejecting stale state',async()=>{
+ const {e,server}=await rig({live:true});let runtime;
+ try{
+  runtime=new LiveCallRuntime(e,{timers:false});e.liveCalls=runtime;
+  e.dirty=true;e.game.plan.blocks[0].text='Mijn onopgeslagen invoer';const input=structuredClone(e.game.plan),stale=hostCopy(server);
+  forceCancelGame(server,{by:'test',reason:'Regression check',requestId:crypto.randomUUID(),binding:'engine-test'},Date.now());server.revision++;
+  runtime.acceptResponse({game:hostCopy(server)});
+  assert.equal(e.game.status,'finished');assert(e.game.cancelledAt);assert.deepEqual(e.game.plan,input);assert.equal(e.dirty,true);assert.equal(e.runner.active,false);
+  runtime.acceptResponse({game:stale});assert.equal(e.game.status,'finished');assert(e.game.cancelledAt);assert.deepEqual(e.game.plan,input);
+ }finally{runtime?.dispose();e.liveCalls=null;e.dispose();}
+});
+test('forced cancellation binds the authoritative shown title while retaining an unsaved local title',async()=>{
+ const {e,server}=await rig({live:true});
+ try{
+  e.dirty=true;e.game.title='Mijn onopgeslagen concepttitel';e.acceptGame(hostCopy(server));assert.equal(e.game.title,'Mijn onopgeslagen concepttitel');assert.equal(e.snapshot().serverGameTitle,server.title);
+  router=async(url,options)=>{assert(url.endsWith('/force-cancel'));const body=JSON.parse(options.body);assert.equal(body.expectedTitle,server.title);forceCancelGame(server,{by:'test',reason:'Regression check',requestId:body.requestId,binding:'engine-test'},Date.now());server.revision++;return Response.json({game:hostCopy(server),applied:true,cleanup:{pending:false}});};
+  await e.forceCancel({expectedTitle:e.snapshot().serverGameTitle,requestId:crypto.randomUUID()});assert(e.game.cancelledAt);assert.equal(e.game.title,'Mijn onopgeslagen concepttitel');assert.equal(e.snapshot().serverGameTitle,server.title);
+ }finally{e.dispose();}
+});
+test('cancellation during audio activation cannot reopen a manual show scene',async()=>{
+ const {e,server}=await rig({live:true});let release;
+ try{
+  const runtime=getShowRuntime(e);let entered;const arrived=new Promise(resolve=>entered=resolve);
+  e.audio={...noAudio,unlock:()=>{entered();return new Promise(resolve=>release=resolve);}};
+  const pending=assert.rejects(runtime.scene('pause'),/geannuleerd/);await arrived;
+  forceCancelGame(server,{by:'test',reason:'Regression check',requestId:crypto.randomUUID(),binding:'engine-test'},Date.now());server.revision++;
+  e.acceptGame(hostCopy(server));release();await pending;assert.equal(runtime.manual,null);assert.equal(e.runner.active,false);assert.equal(e.director.paused,true);
+ }finally{release?.();e.dispose();}
+});
+test('a cancelled show preserves unsaved preparation and allows another or a new show without a terminal PUT',async t=>{
+ for(const operation of ['select','create'])await t.test(operation,async()=>{
+  const {e,server}=await rig({live:true}),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),requests=[];
+  try{
+   const other=makeGame({brandId:'milo',title:'Volgende show',date:'2027-01-01T18:00:00Z'},'test',location.origin);await store.create(other);await store.create(server);e.acceptGame(hostCopy(server),true);
+   e.dirty=true;e.game.plan.blocks[0].text='Bewaarde lokale welkomsttekst';e.preparationAutosave.mark({schedule:false});const input=structuredClone(e.game.plan),key=e.preparationBackupKey();
+   const cancelled=(await store.mutate(server.id,{},game=>forceCancelGame(game,{by:'test',reason:'Regression check',requestId:crypto.randomUUID(),binding:'engine-test'},Date.now()))).game;e.acceptGame(hostCopy(cancelled));
+   assert.equal(e.dirty,true);assert.deepEqual(e.game.plan,input);assert.equal(e.preparationAutosave.timer,null);assert.deepEqual(JSON.parse(session.get(key)).plan,input);
+   router=async(url,options)=>{requests.push({url,method:options.method||'GET'});return handleBingo(new Request(location.origin+url,{...options,headers:{...options.headers,Origin:location.origin}}),{DB:db,AUTH_IDENTITY:{user:'test',email:'host@example.test',admin:true}});};
+   if(operation==='select')await e.selectGame(other.id);else await e.createShow('Nog een nieuwe show','2027-02-01T18:00:00Z','milo');
+   assert.equal(e.game.status,'draft');assert.notEqual(e.game.id,server.id);assert.equal(e.runner.active,false);assert.equal(requests.some(request=>request.method==='PUT'||request.url.startsWith('/api/bingo/games/'+server.id)),false);assert.deepEqual(JSON.parse(session.get(key)).plan,input);assert.equal((await store.game(server.id)).data.cancelledAt,cancelled.cancelledAt);
+  }finally{e.dispose();await db.close();}
+ });
 });
 test('stop waits for pending activation before pausing the server and never leaves the old block running',async()=>{
  const {e,server,round}=await rig({live:true});try{

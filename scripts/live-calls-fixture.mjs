@@ -9,10 +9,19 @@ import {productionDefaults} from '../server/production-model.js';
 import {writePrivateSetting} from '../server/secrets.js';
 import {handleLiveCalls as verifiedhandleLiveCalls} from '../server/live-calls.js';
 import {handleLiveKit as verifiedhandleLiveKit} from '../server/livekit.js';
-export async function fixture(t){
+import {Pool} from 'pg';
+import {createPostgresDatabase} from '../server/node-storage.js';
+export async function fixture(t,{postgres=false}={}){
  const db=new DatabaseSync(':memory:');t.after(()=>db.close());for(const f of readdirSync(new URL('../drizzle/',import.meta.url)).filter(x=>x.endsWith('.sql')).sort())db.exec(readFileSync(new URL('../drizzle/'+f,import.meta.url),'utf8'));
  const stmt=(sql,args=[])=>({sql,args,bind:(...a)=>stmt(sql,a),first:async()=>db.prepare(sql).get(...args)||null,all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({meta:db.prepare(sql).run(...args)})});let rev=0;const files=new Map();
  const env={VLAMPIE_ADMIN_EMAIL:'host@example.test',VLAMPIE_SETTINGS_KEY:'01'.repeat(32),OPENAI_API_KEY:'test-key-no-network',DB:{prepare:sql=>stmt(sql),batch:async statements=>{db.exec('BEGIN');try{const results=statements.map(s=>/RETURNING|^SELECT/i.test(s.sql)?{results:db.prepare(s.sql).all(...s.args)}:{results:[],meta:db.prepare(s.sql).run(...s.args)});db.exec('COMMIT');return results;}catch(error){db.exec('ROLLBACK');throw error;}}},SETTINGS:{get:async k=>{const v=files.get(k);return v?{etag:v.etag,json:async()=>JSON.parse(v.data)}:null;},put:async(k,data,opts)=>{const old=files.get(k);if(opts?.onlyIf?.etagMatches&&opts.onlyIf.etagMatches!==old?.etag||opts?.onlyIf?.etagDoesNotMatch==='*'&&old)return null;const v={etag:'e'+(++rev),data};files.set(k,v);return {etag:v.etag};}}};
+ if(postgres){
+  const source=new URL(process.env.MILO_TEST_DATABASE_URL);assert(['localhost','127.0.0.1','[::1]'].includes(source.hostname)&&/test/i.test(source.pathname),'Call integration requires an explicitly local test database');
+  const admin=new Pool({connectionString:source.toString()}),schema='milo_cancel_calls_'+crypto.randomUUID().replaceAll('-','');await admin.query('CREATE SCHEMA '+schema);
+  t.after(async()=>{await env.DB.close?.();await admin.query('DROP SCHEMA '+schema+' CASCADE');await admin.end();});
+  const client=await admin.connect();try{await client.query('SET search_path TO '+schema);for(const name of readdirSync(new URL('../supabase/migrations/',import.meta.url)).filter(name=>name.endsWith('.sql')).sort())await client.query(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8').replaceAll('public.',schema+'.').replaceAll('SCHEMA public','SCHEMA '+schema));}finally{client.release();}
+  source.searchParams.set('options','-c search_path='+schema);env.DB=await createPostgresDatabase(source.toString(),{allowLoopback:true});
+ }
  const bingo=new BingoStore(env.DB),calls=new CallStore(env.DB),ids={host:crypto.randomUUID(),player:crypto.randomUUID(),output:crypto.randomUUID()},entryId=crypto.randomUUID();
  const game=makeGame({brandId:'milo',title:'Milo belrepetitie',date:'2026-11-01T14:00',timeZone:'Europe/Amsterdam'},'host','https://studio.example');generateBooks(game,2,'original-books');game.books.forEach((b,i)=>Object.assign(b,{accountId:'family',profileId:i?'sam':'sophie',name:i?'Sam':'Sophie'}));game.status='running';game.production=productionDefaults();game.production.calls.enabled=true;game.state.drawn=[7,13,27];game.state.lastCommit={number:27};game.participation=[{id:entryId,accountId:'family',profileId:'sophie',name:'Sophie',child:true,parentConsent:true,callConsentAt:Date.now(),callStatus:'accepted',micChecked:true,headphones:true,connectionChecked:true}];await bingo.create(game);
  await bingo.editFamily('family','parent@example.test',f=>{f.ownerName='Parent';f.profiles=[{id:'sophie',name:'Sophie',age:7,dateOfBirth:'2019-04-03'},{id:'sam',name:'Sam',age:9,dateOfBirth:'2017-04-03'}];});

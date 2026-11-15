@@ -1,0 +1,240 @@
+{
+  "observedAt": "2026-11-15T11:53:11.271Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "actualBrowserRendering": true,
+  "simulatedAuthAndProviderStatus": true,
+  "actualBingoHandlers": true,
+  "actualSQLiteCAS": true,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "3557bde7-aedf-4523-8461-737e3e1c96af",
+  "gets": {
+    "/api/auth/session": 1,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 1,
+    "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af": 2,
+    "/api/live-calls": 2,
+    "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af/chat": 1,
+    "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af/chat/stream": 12
+  },
+  "bingoRequests": [
+    {
+      "path": "/api/bingo/games",
+      "method": "GET",
+      "at": 1794743587843,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743587844
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "GET",
+      "at": 1794743587878,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743587879
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589273,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589274
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589741,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589742
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589930,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589931
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743590093,
+      "regieHeader": true,
+      "requestId": "60924a23-ca90-4e7b-a9c8-e802c26c04cd",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 200,
+      "completedAt": 1794743590095
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743590203,
+      "regieHeader": true,
+      "requestId": "bb725f0d-107f-4c81-b87d-f1e8c2e64a47",
+      "preparationRevision": 1,
+      "cueTitle": "Laatste wijziging vóór start 1366",
+      "status": 200,
+      "completedAt": 1794743590205
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "GET",
+      "at": 1794743590210,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743590211
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af/start",
+      "method": "POST",
+      "at": 1794743590223,
+      "regieHeader": true,
+      "requestId": "3ca6cf86-cb4d-4979-a861-b195223d8df4",
+      "preparationRevision": 2,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743590226
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af/activate",
+      "method": "POST",
+      "at": 1794743590232,
+      "regieHeader": true,
+      "requestId": "a886febf-a992-4258-b996-96bdd33605d7",
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743590234
+    }
+  ],
+  "puts": [
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589273,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589274
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589741,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589742
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743589930,
+      "regieHeader": true,
+      "requestId": "01312acb-9e56-4f0b-b2b2-c73173c665b3",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794743589931
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743590093,
+      "regieHeader": true,
+      "requestId": "60924a23-ca90-4e7b-a9c8-e802c26c04cd",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 200,
+      "completedAt": 1794743590095
+    },
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af",
+      "method": "PUT",
+      "at": 1794743590203,
+      "regieHeader": true,
+      "requestId": "bb725f0d-107f-4c81-b87d-f1e8c2e64a47",
+      "preparationRevision": 1,
+      "cueTitle": "Laatste wijziging vóór start 1366",
+      "status": 200,
+      "completedAt": 1794743590205
+    }
+  ],
+  "starts": [
+    {
+      "path": "/api/bingo/games/3557bde7-aedf-4523-8461-737e3e1c96af/start",
+      "method": "POST",
+      "at": 1794743590223,
+      "regieHeader": true,
+      "requestId": "3ca6cf86-cb4d-4979-a861-b195223d8df4",
+      "preparationRevision": 2,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794743590226
+    }
+  ],
+  "publishCalls": [],
+  "blockedWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedStorageConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "liveWorkspace": {
+    "routeRendered": true,
+    "transitionSettled": true,
+    "round": "Showmoment",
+    "priceStep": null,
+    "lastOfficialBall": null,
+    "timer": "Wacht",
+    "pauseControlEnabled": true,
+    "bingoControlsVisible": true,
+    "scope": "The started show is in its opening countdown; no bingo round or draw has been activated by this test."
+  },
+  "final": {
+    "status": "running",
+    "preparationRevision": 2,
+    "firstCueTitle": "Laatste wijziging vóór start 1366",
+    "rulesVersion": 1,
+    "rulesFinalizedAt": 1794743590224,
+    "rulesCurrent": true,
+    "showStartedEvents": 1,
+    "goalCount": 10
+  }
+}

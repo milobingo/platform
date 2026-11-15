@@ -1,0 +1,143 @@
+{
+  "observedAt": "2026-11-15T11:56:41.376Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "actualWebAudio": true,
+  "remainingOBSCheck": "Controleer de bronmeter en een proefopname met beeld en testgeluid op een echte OBS-installatie.",
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "qa-obs-automatic-409",
+  "autoplayPolicy": "no-user-gesture-required",
+  "sessionStatuses": [
+    200
+  ],
+  "outputFailures": [
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    }
+  ],
+  "heartbeats": [
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743797305,
+      "testAck": {
+        "id": "36f78fcc-9758-4d50-a6d5-908bc1a13c9d",
+        "status": "played",
+        "at": 1794743797305,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743797305,
+      "testAck": {
+        "id": "36f78fcc-9758-4d50-a6d5-908bc1a13c9d",
+        "status": "played",
+        "at": 1794743797305,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743800289,
+      "testAck": {
+        "id": "fe8dd40a-c676-46a8-b2a7-b761e1b9370a",
+        "status": "played",
+        "at": 1794743800289,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 9
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743800289,
+      "testAck": {
+        "id": "fe8dd40a-c676-46a8-b2a7-b761e1b9370a",
+        "status": "played",
+        "at": 1794743800289,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 9
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743800289,
+      "testAck": {
+        "id": "fe8dd40a-c676-46a8-b2a7-b761e1b9370a",
+        "status": "played",
+        "at": 1794743800289,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 11
+    }
+  ],
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedNetworkErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    }
+  ],
+  "outageBadge": {
+    "width": 440,
+    "height": 113.078125,
+    "backdropFilter": "none",
+    "pointerEvents": "none"
+  },
+  "audio": {
+    "peak": 0.1156474323678708,
+    "states": [
+      "running",
+      "running"
+    ],
+    "trustedInteractions": 0,
+    "microphoneRequests": 0
+  },
+  "observedDesk": {
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "lastNumber": 41,
+    "caption": "De trekking blijft gepauzeerd."
+  },
+  "actualCanvasPixelRange": 250.66666666666666
+}

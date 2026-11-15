@@ -1,0 +1,50 @@
+{
+  "observedAt": "2026-11-15T11:52:57.516Z",
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "isolatedInMemoryDatabase": true,
+  "actualShowMutation": false,
+  "actualProviderRequests": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "600251bd-550d-4a2b-aa70-d567aeb41fa1",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/600251bd-550d-4a2b-aa70-d567aeb41fa1/heartbeat",
+      "body": {
+        "regieId": "7e1d6f6f-5f1b-40df-a85f-9df1afe1a53b",
+        "requestId": "059d0adb-0bad-4289-bb1f-a57fca2f7495"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/600251bd-550d-4a2b-aa70-d567aeb41fa1/force-cancel",
+      "body": {
+        "requestId": "9e636150-518b-45a4-9b77-fa84cd056b15",
+        "confirm": true,
+        "expectedTitle": "QA regie · Magie op het Sterrenplein",
+        "reason": "Oefening: de regie kan niet veilig verder.",
+        "regieId": "33842001-0105-4a38-a9c6-1a571182e930"
+      },
+      "status": 503
+    },
+    {
+      "path": "/api/bingo/games/600251bd-550d-4a2b-aa70-d567aeb41fa1/force-cancel",
+      "body": {
+        "requestId": "9e636150-518b-45a4-9b77-fa84cd056b15",
+        "confirm": true,
+        "expectedTitle": "QA regie · Magie op het Sterrenplein",
+        "reason": "Oefening: de regie kan niet veilig verder.",
+        "regieId": "33842001-0105-4a38-a9c6-1a571182e930"
+      },
+      "status": 200
+    }
+  ],
+  "expectedFailures": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "remoteTabObservedTerminalCancellation": true
+}

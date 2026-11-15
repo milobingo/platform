@@ -1,6 +1,6 @@
 # Modulaire regiekamer
 
-De regie houdt PROGRAM, PREVIEW, TAKE, spreken, stopstem, vier gebaren, Milo’s twee goocheltrucs en het showtransport direct in beeld. Op desktops vanaf 1100 px breed en 620 px hoog blijft de console binnen het scherm; de werkpanelen scrollen afzonderlijk. Kleinere schermen gebruiken een normale scrollbare indeling.
+De Milo-regie zet de actuele ronde, prijsstap, laatste officiële bal, afteller, Pauze/Hervat en BINGO-controle voorop. PROGRAM, PREVIEW, TAKE en de presentator staan onder **Beeld & presentatie**; de overige modules onder **Overige regiepanelen**. De indeling schaalt mee met desktop en mobiel. Vlampie houdt zijn eigen console en werkpanelen.
 
 ## De werkplek indelen
 
@@ -27,4 +27,4 @@ Beide knoppen ‘Volgende bal’ volgen dezelfde beschikbaarheidscontrole. De sp
 
 `node scripts/check-regie-workspace.mjs` gebruikt de echte App en StudioEngine voor PREVIEW/TAKE, bediening, trekkingblokkade, meldvenster en behoud van belregie-invoer en chatcontroller. Canvas, audio en providerverkeer zijn in die test gemockt.
 
-De lokale `npm run dev` is uitsluitend een UI-preview met de bestaande oefenstudio. Server- en providerverzoeken geven expliciet een foutmelding; dit is geen test van een echte OpenAI- of LiveKit-verbinding. De productiebuild blijft de bestaande Worker en opgeslagen serverconfiguratie gebruiken.
+De lokale `npm run dev` is uitsluitend een UI-preview met de bestaande oefenstudio. Server- en providerverzoeken geven expliciet een foutmelding; dit is geen test van een echte OpenAI- of LiveKit-verbinding. De native productiebuild gebruikt Next.js en de beschermde serverconfiguratie. De lokale browsercontroles gebruiken geïsoleerde account-, audio- en providerfixtures en gelden niet als een echte OBS- of providerrepetitie.

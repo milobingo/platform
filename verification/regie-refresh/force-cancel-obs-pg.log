@@ -1,0 +1,95 @@
+Isolated disposable local PostgreSQL test; no production accounts, data or providers.
+PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+Image: sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+Loopback ephemeral binding: 127.0.0.1:32777
+
+✔ force cancellation closes only its issued LiveKit rooms and known AI session while retaining the terminal game checkpoint (410.640053ms)
+✔ an unknown in-flight AI start remains unresolved after forced cancellation instead of fabricating closure (216.412571ms)
+✔ confirmed cleanup completes the cancelled call and permits preparation for a different show without altering old history (259.87624ms)
+✔ failed provider cleanup remains pending and an explicit retry confirms closure without releasing the hold (321.154045ms)
+✔ cancelling an older show never rewrites or contacts provider resources of a newer call belonging to the same owner (172.730037ms)
+✔ a LiveKit prepare waiting before its atomic insert cannot install a call after cancellation (187.19333ms)
+✔ legacy call admission batch rejects cancellation committed after the fresh game check and before the game row lock (151.618554ms)
+✔ LiveKit atomic preparation loses to cancellation before its game-and-call batch (153.939162ms)
+✔ a LiveKit token request paused after room reservation returns no token once the show is cancelled (179.822289ms)
+✔ a Live AI response arriving after force cancellation is recorded and hung up without returning SDP or releasing the draw hold (210.130576ms)
+✔ a legacy AI response arriving after cancellation remains recoverable, closes the known session and retains the terminal call hold (166.006924ms)
+✔ a whisper attach delayed until after cancellation never sends a director instruction (207.647653ms)
+✔ fresh relay GET and heartbeat silence a cancelled game even when persistent relay cleanup has not run (34.294775ms)
+✔ publication loses an atomic game CAS when cancellation commits before its transaction (SQLite) (4.81033ms)
+✔ publication loses an atomic game CAS when cancellation commits before its transaction (PostgreSQL) (234.38291ms)
+✔ a publication that wins first is removed by cancellation without losing the last board (4.460216ms)
+✔ cleanup of an older cancelled show leaves a newer show relay byte for byte intact (3.136665ms)
+✔ an existing output stops all audio and ignores delayed local packets after cancellation, without reconnecting or resuming (2.269658ms)
+✔ an existing OBS capability reads a cancelled frozen board but cannot load old voice, including cancellation during clip retrieval (68.73303ms)
+✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (32.037426ms)
+✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (27.166293ms)
+✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (34.862811ms)
+✔ output projection contains programme visuals only; another show produces waiting state and no voice access (37.826779ms)
+✔ OBS can retrieve only the current published voice clip and never create a paid voice request (31.816258ms)
+✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (37.254087ms)
+✔ malformed durable access metadata fails closed without provider or Auth contact (30.184645ms)
+✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (23.01893ms)
+✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (40.037704ms)
+✔ queued realtime rechecks revoked capability and aborted request before any provider start (108.042698ms)
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+gpt_live_close_unconfirmed {
+  restStatus: 500,
+  attachStatus: 500,
+  reason: 'attach_rejected',
+  rest: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 500,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (68.663274ms)
+✔ revocation during ready CAS closes the durably known session and leaves the draw hold (31.391953ms)
+✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (34.023031ms)
+✔ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (302.763714ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2743.67372
+
+Exit status: 0
+Unique disposable container cleanup exit status: 0

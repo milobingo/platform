@@ -1,6 +1,6 @@
 import {playerIdentity} from './player-identity.js';
 import {BingoStore} from './bingo-store.js';
-import {CallStore,realtimeCharacterVoice,unresolvedCallResources} from './calls.js';
+import {CallStore,realtimeCharacterVoice,unresolvedCallResources,terminalCallGame,assertCallGameActive,cancelLegacyGameCallResources} from './calls.js';
 import {callActive} from './calls-model.js';
 import {savedCharacter} from './character-settings.js';
 import {createLivePeer,liveSession,hangupLive} from './gpt-live.js';
@@ -19,11 +19,14 @@ const keyFingerprint=async key=>Array.from(new Uint8Array(await crypto.subtle.di
 class LiveCallStore extends CallStore{
  constructor(db,{requireConfirmedCleanup=false}={}){super(db);this.requireConfirmedCleanup=requireConfirmedCleanup;}
  async prepare(owner,gameId,bingo,build){
-  await this.db.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) VALUES (?,?,0,?) ON CONFLICT(owner_id) DO NOTHING').bind(owner,gameId,'null').run();
+  const initial=await assertCallGameActive(this.db,owner,gameId);
+  await this.db.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) SELECT ?,?,0,? WHERE EXISTS (SELECT 1 FROM bingo_games WHERE id = ? AND owner_id = ? AND revision = ?) ON CONFLICT(owner_id) DO NOTHING').bind(owner,gameId,'null',gameId,owner,initial.revision).run();
   for(let attempt=0;attempt<8;attempt++){
-   const callRow=await this.get(owner),gameRow=await bingo.game(gameId),previous=callRow.data;
+   const callRow=await this.get(owner),gameRow=await bingo.game(gameId),previous=callRow?.data;
    if(previous&&((previous.transport==='livekit'?liveCallActive(previous):callActive(previous))||this.requireConfirmedCleanup&&unresolvedCallResources(previous)))throw livekitError('Rond eerst het bestaande belmoment, de bevestigde audio-opruiming en de terugkeer naar YouTube af.');
    if(!gameRow||gameRow.owner_id!==owner)throw livekitError('Deze show is niet beschikbaar.',404);
+   if(terminalCallGame(gameRow.data))throw livekitError('Deze show is beëindigd. Er kan geen belmoment meer worden voorbereid.');
+   if(!callRow)throw livekitError('De show is intussen gewijzigd. Herlaad de actuele stand voordat je een belmoment voorbereidt.');
    const game=structuredClone(gameRow.data),call=build(game),marker=crypto.randomUUID();call.version=(previous?.version||0)+1;call.holdConfirmed=true;
    game.revision=gameRow.revision+1;game.lastOp=marker;game.ops=[...(game.ops||[]),marker].slice(-250);
    assertGameMutationCapacity(gameRow.data,game);
@@ -47,13 +50,24 @@ export function liveCallInstructions(call,game){
 }
 async function cleanup(env,store,owner,c,fetcher,{force=false}={}){
  fetcher=env.PROVIDER_CLEANUP_FETCH||fetcher;
- if(!c||c.transport!=='livekit'||!['returning','returned','completed'].includes(c.phase)||c.resourcesClosed)return c;
+ if(!c||c.transport!=='livekit'||!['returning','returned','completed'].includes(c.phase))return c;
+ if(c.resourcesClosed)return c.showCancelledAt&&c.phase!=='completed'?store.mutate(owner,current=>{if(current.id===c.id&&current.showCancelledAt&&current.resourcesClosed){current.phase='completed';current.completedAt??=Date.now();}return current;},{expectedId:c.id}):c;
  const now=Date.now();if(!force&&c.cleanupAttemptAt>now-5000)return c;
- const id=c.id;await store.mutate(owner,current=>{if(current.id===id)current.cleanupAttemptAt=now;return current;});
+ const id=c.id;await store.mutate(owner,current=>{if(current.id===id)current.cleanupAttemptAt=now;return current;},{expectedId:id});
  let error='';
  try{if(c.issuedRooms?.length){const settings=await boundLivekitSettings(env,c);for(const target of new Set(c.issuedRooms))await closeLivekitRoom(settings,c,target,fetcher,now);}if(['starting','uncertain'].includes(c.realtimeStatus)&&!c.realtimeId)throw new Error('realtime-pending');if(c.realtimeId&&!c.realtimeStopped&&!await hangup(env,c.realtimeId,fetcher,c.speechEngine||'realtime',c.realtimeStart?.credentialFingerprint))throw new Error('realtime');}
  catch{error='De geluidsverbinding kon nog niet volledig worden afgesloten. Probeer opnieuw; de trekking blijft geblokkeerd.';}
- return store.mutate(owner,current=>{if(current.id===id){current.resourcesClosed=!error;current.cleanupError=error;if(!error){current.activeContext=null;current.realtimeStopped=true;}}return current;});
+ return store.mutate(owner,current=>{if(current.id===id){current.resourcesClosed=!error;current.cleanupError=error;if(!error){current.activeContext=null;current.realtimeStopped=true;if(current.showCancelledAt){current.phase='completed';current.completedAt??=Date.now();}}}return current;},{expectedId:id});
+}
+export async function cancelGameCallResources(env,owner,gameId,{fetcher=fetch}={}){
+ const game=await new BingoStore(env.DB).game(gameId);if(!game||game.owner_id!==owner||!terminalCallGame(game.data))throw livekitError('Beëindig eerst de juiste show.');
+ const store=new LiveCallStore(env.DB),existing=(await store.get(owner))?.data;
+ if(!existing||existing.gameId!==gameId)return {pending:false,callId:null};
+ if(existing.transport!=='livekit')return cancelLegacyGameCallResources(env,owner,gameId,{fetcher});
+ let call=await store.mutate(owner,current=>{current.showCancelledAt=game.data.cancelledAt||game.data.finishedAt||Date.now();current.muted=true;current.aiMuted=true;current.voiceLevel=0;if(!['returning','returned','completed'].includes(current.phase))returnLiveCall(current,'cancelled','De show is door de regie beëindigd.');return current;},{expectedId:existing.id});
+ if(call?.id!==existing.id)return {pending:false,callId:null};
+ call=await cleanup(env,store,owner,call,fetcher,{force:true});
+ return call?.id===existing.id?{pending:call.resourcesClosed!==true,callId:call.id,transport:'livekit',resourcesClosed:call.resourcesClosed===true}:{pending:false,callId:null};
 }
 function safe(call,role,clientId){const out=publicLiveCall(call,role);if(out){out.switchingLive=!!call.switchingLive;out.holdConfirmed=call.holdConfirmed!==false;out.canControl=role!=='player'||!call.playerClientId||call.playerClientId===clientId;out.resourcesClosed=!!call.resourcesClosed;out.cleanupError=call.cleanupError||'';out.recoverySessionKnown=!!call.realtimeId;out.recoveryStatus=call.realtimeStatus==='uncertain'?'manual-reconciliation':call.resourcesClosed?'closed':call.realtimeStatus==='starting'?'pending':'unclosed';if(role==='host'&&call.realtimeStart)out.startReservation={id:call.realtimeStart.id,expiresAt:call.realtimeStart.expiresAt};out.simulated=false;}return out;}
 function needsOutput(output,clientId,role,now){if(!output?.routing||!output.output?.audioReady||output.output.until<=now||output.producer?.until<=now||output.producer?.generation&&(output.output.generation!==output.producer.generation||!output.output.seq)||role==='host'&&output.producer?.id!==clientId||role==='output'&&output.output.id!==clientId)throw livekitError('Open het juiste uitzendvenster, bevestig het getekende beeld, activeer het geluid en kies geluid via uitzendvenster.');}
@@ -90,6 +104,10 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
   }
   if(c&&['returning','returned'].includes(c.phase))c=await cleanup(env,store,owner,c,fetcher);
   if(!write)return json({call:c&&!(role==='player'&&c.holdConfirmed===false)?safe(c,role,clientId):null,serverTime:Date.now()});
+  const recoveryAction=url.pathname==='/api/live-calls/realtime-stop'||url.pathname==='/api/live-calls'&&['cancel','fail','finish','decline','withdraw-consent','reconcile','heartbeat','confirm-return','player-returned','return-cue-published'].includes(action);
+  const activeGame=()=>assertCallGameActive(env.DB,owner,gameId);
+  const activeFetch=async(...args)=>{await activeGame();return fetcher(...args);};
+  if(!recoveryAction)await activeGame();
   if(url.pathname==='/api/live-calls'&&action==='prepare'){
    if(role!=='host')throw livekitError('Alleen de regie kan een belmoment voorbereiden.',403);
    needsOutput(output,clientId,role,now);
@@ -111,16 +129,17 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
     const call=structuredClone(next);call.checkpoint={id:call.checkpoint.id,epoch:game.state.epoch,drawnCount:game.state.drawn.length,lastNumber:game.state.drawn.at(-1)??null,drawn:[...game.state.drawn]};
     game.state.drawHold={id:call.id,callId:call.id,reason:'Belmoment: '+call.context.callName,checkpoint:structuredClone(call.checkpoint),createdAt:Date.now()};entry.callId=call.id;game.events.push({type:'call-prepared',name:call.context.callName,profileId:e.profileId,at:Date.now()});return call;
    });
-   return json({call:safe(c,role,clientId),serverTime:Date.now()});
+   await activeGame();return json({call:safe(c,role,clientId),serverTime:Date.now()});
   }
   if(!c||body.callId!==c.id)throw livekitError('Deze actie hoort bij een eerdere oproep.');if(gameId!==c.gameId)throw livekitError('Open de show die bij dit belmoment hoort.');if(role==='host'&&c.hostId!==clientId){if(!['confirm-return','resume-draw'].includes(action)||!['returning','returned'].includes(c.phase)||now-(c.seen.host||c.createdAt)<=20000)throw livekitError('Gebruik de regie die dit belmoment heeft voorbereid.',403);c=await store.mutate(owner,current=>{if(current.id!==body.callId||!['returning','returned'].includes(current.phase)||current.hostId!==clientId&&now-(current.seen.host||current.createdAt)<=20000)throw livekitError('De oorspronkelijke regie is nog actief.',403);current.hostId=clientId;current.seen.host=now;return current;});}
   if(role==='player'&&c.playerClientId&&c.playerClientId!==clientId&&action!=='withdraw-consent')throw livekitError('Gebruik het apparaat waarmee deze oproep is opgenomen.');
   if(!['cancel','fail','withdraw-consent','reconcile','confirm-return','resume-draw','heartbeat'].includes(action)&&url.pathname!=='/api/live-calls/realtime-stop'&&(c.holdConfirmed===false||!matchingHold(row.data,c)))throw livekitError('De server heeft de trekkingblokkade nog niet bevestigd. Er kan geen belverbinding worden geopend.');
   if(role==='output'){if(c.outputId!==clientId)throw livekitError('Een ander uitzendvenster verzorgt dit belmoment.',403);if(url.pathname!=='/api/live-calls/realtime-stop')needsOutput(output,clientId,role,now);}
-  const change=async fn=>{c=await store.mutate(owner,current=>{if(current.id!==body.callId)throw livekitError('Deze oproep is vervangen.');return fn(current)||current;});return c;};
+  const change=async(fn,{allowFinished=false}={})=>{c=await store.mutate(owner,current=>{if(current.id!==body.callId)throw livekitError('Deze oproep is vervangen.');return fn(current)||current;},{requireActiveGame:!allowFinished&&!recoveryAction});return c;};
   if(url.pathname==='/api/live-calls/whisper'){
    if(role!=='host')throw livekitError('Alleen de regie kan de live presentator een privéaanwijzing geven.',403);
-   return json(await liveDirectorWhisper({store,owner,call:c,clientId,gameId,body,request,env,fetcher}));
+   const whisperStore={get:async who=>{await activeGame();const latest=await store.get(who);await activeGame();return latest;},mutate:(who,fn,options={})=>store.mutate(who,fn,{...options,requireActiveGame:(before,after)=>(after.directorWhispers||[]).some(receipt=>receipt.status==='sending'&&!(before.directorWhispers||[]).some(old=>old.requestId===receipt.requestId))})};
+   return json(await liveDirectorWhisper({store:whisperStore,owner,call:c,clientId,gameId,body,request,env,fetcher:activeFetch}));
   }
   if(url.pathname==='/api/live-calls/token'){
    if(!['backstage','live'].includes(body.target))throw livekitError('Kies de juiste geluidsruimte.',400);
@@ -129,7 +148,7 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
    if(role==='player'&&c.playerClientId!==clientId)throw livekitError('Neem de oproep eerst op.',403);
    const settings=await boundLivekitSettings(env,c);
    await change(current=>{if(body.target==='backstage'&&(!['backstage','staged'].includes(current.phase)||current.switchingLive)||body.target==='live'&&current.phase!=='live')throw livekitError('De gespreksfase is gewijzigd.');current.issuedRooms=[...new Set([...(current.issuedRooms||[]),body.target])];});
-   return json(await callRoomToken(settings,c,role,body.target));
+   const token=await callRoomToken(settings,c,role,body.target);await activeGame();const latest=(await store.get(owner))?.data;if(latest?.id!==c.id||latest.showCancelledAt||body.target==='live'&&latest.phase!=='live'||body.target==='backstage'&&!['backstage','staged'].includes(latest.phase))throw livekitError('Het belmoment is intussen beëindigd.');return json(token);
   }
   if(url.pathname==='/api/live-calls/realtime-stop'){
    if(role!=='output')throw livekitError('Alleen het uitzendvenster sluit deze stemverbinding.',403);
@@ -145,17 +164,19 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
    let realtimeId,dispatched=false;
    try{
     const session=liveSession(c.presenter,{instructions:liveCallInstructions(c,row.data),input:[{type:'message',role:'developer',content:[{type:'input_text',text:'Het live belmoment is nu gestart. Begroet de gecontroleerde roepnaam en stel één vriendelijke, eenvoudige vraag. Luister daarna naar het kind.'}]}]});
-    dispatched=true;const result=await createLivePeer(key,body.sdp,session,fetcher,{requestId:start.id});const sdp=result.sdp;realtimeId=result.realtimeId;
+    await activeGame();const result=await createLivePeer(key,body.sdp,session,async(...args)=>{await activeGame();dispatched=true;return fetcher(...args);},{requestId:start.id});const sdp=result.sdp;realtimeId=result.realtimeId;
+    await change(current=>{if(current.realtimeStart?.id!==start.id)throw livekitError('De AI-startreservering is vervangen.');current.realtimeId=realtimeId;current.realtimeStatus='uncertain';current.resourcesClosed=false;},{allowFinished:true});
+    await activeGame();
     if(env.OBS_REVALIDATE){
      // Retain the provider ID before rechecking a revoked/aborted capability, so
      // failed hangup remains recoverable by the authenticated organizer.
-     await change(current=>{if(current.realtimeStart?.id!==start.id)throw livekitError('De AI-startreservering is vervangen.');current.realtimeId=realtimeId;current.realtimeStatus='uncertain';current.resourcesClosed=false;});
+     await change(current=>{if(current.realtimeStart?.id!==start.id)throw livekitError('De AI-startreservering is vervangen.');current.realtimeId=realtimeId;current.realtimeStatus='uncertain';current.resourcesClosed=false;},{allowFinished:true});
      await env.OBS_REVALIDATE();
     }
     await change(current=>{if(current.realtimeStart?.id!==start.id)throw livekitError('De AI-startreservering is vervangen.');current.realtimeId=realtimeId;if(current.phase==='live'&&Date.now()<start.expiresAt&&!current.realtimeStopped)current.realtimeStatus='ready';else current.realtimeStatus='uncertain';current.resourcesClosed=false;});if(c.phase!=='live'||c.realtimeStopped||c.realtimeStatus!=='ready')throw livekitError('Het belmoment of de AI-startreservering is intussen beëindigd.');
-    if(env.OBS_REVALIDATE)await env.OBS_REVALIDATE();
+    if(env.OBS_REVALIDATE)await env.OBS_REVALIDATE();await activeGame();
     return json({sdp,realtimeId,speechEngine:'gpt-live',model:'gpt-live-1',serverTime:Date.now()});
-   }catch(error){const stopped=realtimeId?await hangup(env,realtimeId,env.PROVIDER_CLEANUP_FETCH||fetcher,'gpt-live',start.credentialFingerprint):!dispatched;await change(current=>{if(current.realtimeStart?.id!==start.id)return current;if(realtimeId){current.realtimeId=realtimeId;current.realtimeStatus=stopped?'closed':'uncertain';current.realtimeStopped=stopped;current.resourcesClosed=false;}else current.realtimeStatus=dispatched?'uncertain':'failed';if(current.phase==='live')returnLiveCall(current,'failed','De presentator kon de live stemverbinding niet starten. De trekking blijft geblokkeerd.');}).catch(()=>{});if(c?.id===body.callId)await cleanup(env,store,owner,c,env.PROVIDER_CLEANUP_FETCH||fetcher,{force:true});throw error;}
+   }catch(error){const stopped=realtimeId?await hangup(env,realtimeId,env.PROVIDER_CLEANUP_FETCH||fetcher,'gpt-live',start.credentialFingerprint):!dispatched;await change(current=>{if(current.realtimeStart?.id!==start.id)return current;if(realtimeId){current.realtimeId=realtimeId;current.realtimeStatus=stopped?'closed':'uncertain';current.realtimeStopped=stopped;current.resourcesClosed=false;}else current.realtimeStatus=dispatched?'uncertain':'failed';if(current.phase==='live')returnLiveCall(current,'failed','De presentator kon de live stemverbinding niet starten. De trekking blijft geblokkeerd.');},{allowFinished:true}).catch(()=>{});if(c?.id===body.callId)await cleanup(env,store,owner,c,env.PROVIDER_CLEANUP_FETCH||fetcher,{force:true});throw error;}
   }
   if(url.pathname!=='/api/live-calls')throw livekitError('Onbekende belroute.',404);
   if(action==='withdraw-consent'){
@@ -179,15 +200,15 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
    if(role!=='host')throw livekitError('Alleen de regie kan het gesprek live zetten.',403);needsOutput(output,clientId,role,now);
    const transitionId=crypto.randomUUID();await change(current=>{if(current.switchingLive)throw livekitError('Het gesprek schakelt al over.');transitionLiveCall(structuredClone(current),action,role,body);current.switchingLive=transitionId;});
    try{await closeLivekitRoom(await boundLivekitSettings(env,c),c,'backstage',fetcher);await change(current=>{if(current.switchingLive!==transitionId||current.phase!=='staged')throw livekitError('Het belmoment is tijdens het omschakelen gestopt.');current.media.host.connected=true;current.media.player.connected=true;transitionLiveCall(current,action,role,body);delete current.switchingLive;});}
-   catch(error){await change(current=>{if(current.switchingLive===transitionId){delete current.switchingLive;returnLiveCall(current,'failed','De privéruimte kon niet veilig worden afgesloten. Er is niets live gezet.');}}).catch(()=>{});await cleanup(env,store,owner,c,fetcher,{force:true});throw error;}
+   catch(error){await change(current=>{if(current.switchingLive===transitionId){delete current.switchingLive;returnLiveCall(current,'failed','De privéruimte kon niet veilig worden afgesloten. Er is niets live gezet.');}},{allowFinished:true}).catch(()=>{});await cleanup(env,store,owner,c,fetcher,{force:true});throw error;}
   }else if(action==='mute'){
    if(role!=='host'||c.phase!=='live')throw livekitError('Dempen kan alleen tijdens het live gesprek.');
    if(body.muted===true)await change(current=>{current.muted=true;});
-   try{await roomService(await boundLivekitSettings(env,c),'UpdateParticipant',{room:callRooms(c).live,identity:callIdentities(c).participantIdentity,permission:{canPublish:body.muted!==true,canSubscribe:true,canPublishData:false,canPublishSources:body.muted===true?[]:[2]}},fetcher);await change(current=>{if(current.phase==='live'){current.muted=body.muted===true;current.muteEnforcedAt=Date.now();}});}
+   try{await roomService(await boundLivekitSettings(env,c),'UpdateParticipant',{room:callRooms(c).live,identity:callIdentities(c).participantIdentity,permission:{canPublish:body.muted!==true,canSubscribe:true,canPublishData:false,canPublishSources:body.muted===true?[]:[2]}},activeFetch);await change(current=>{if(current.phase==='live'){current.muted=body.muted===true;current.muteEnforcedAt=Date.now();}});}
    catch(error){await change(current=>{if(current.phase==='live')returnLiveCall(current,'failed','Het geluid kon niet veilig worden gedempt. Het gesprek is gestopt.');});await cleanup(env,store,owner,c,fetcher,{force:true});throw error;}
   }else if(action==='resume-draw'){
    if(role!=='host'||c.phase!=='returned'||!c.returnState.hostConfirmedAt||!c.resourcesClosed)throw livekitError('Bevestig eerst de terugkeer en sluit alle gespreksverbindingen af.');
-   await bingo.mutate(c.gameId,{},game=>{if(game.state.drawHold?!matchingHold(game,c):game.state.lastCallRelease?.callId!==c.id)throw livekitError('De trekkingblokkade hoort bij een ander belmoment.');if(game.state.pending||game.state.window?.status==='open'||game.state.phase==='result'||game.state.resultId)throw livekitError('Rond eerst de bingocontrole af.');if(!game.state.drawHold)return;game.state.drawHold=null;resetDrawClock(game,Date.now());game.state.lastCallRelease={callId:c.id,at:Date.now()};const entry=game.participation?.find(e=>e.id===c.entryId);if(entry&&entry.callStatus!=='withdrawn')entry.callStatus='done';game.events.push({type:'call-draw-resumed',name:c.context.callName,at:Date.now()});});
+   await bingo.mutate(c.gameId,{},game=>{if(terminalCallGame(game))throw livekitError('Deze show is beëindigd; de trekking blijft gestopt.');if(game.state.drawHold?!matchingHold(game,c):game.state.lastCallRelease?.callId!==c.id)throw livekitError('De trekkingblokkade hoort bij een ander belmoment.');if(game.state.pending||game.state.window?.status==='open'||game.state.phase==='result'||game.state.resultId)throw livekitError('Rond eerst de bingocontrole af.');if(!game.state.drawHold)return;game.state.drawHold=null;resetDrawClock(game,Date.now());game.state.lastCallRelease={callId:c.id,at:Date.now()};const entry=game.participation?.find(e=>e.id===c.entryId);if(entry&&entry.callStatus!=='withdrawn')entry.callStatus='done';game.events.push({type:'call-draw-resumed',name:c.context.callName,at:Date.now()});});
    await change(current=>transitionLiveCall(current,action,role,body));
   }else{
    if(body.requestId&&c.ops?.includes(body.requestId))return json({call:safe(c,role,clientId),serverTime:Date.now()});

@@ -31,6 +31,7 @@ export class ShowRuntime{
  hydrateDemo(){if(!this.engine.demo)return;try{const raw=localStorage.getItem('mf-production-settings-'+this.engine.production);if(raw)this.engine.game.production=normalizeProduction(JSON.parse(raw));}catch{}}
  assertQuiet({result=false,allowDraft=false}={}){
   const e=this.engine,d=e.director,g=e.game;
+  if(g.cancelledAt)throw Error('Deze show is geannuleerd. Het uitzendbeeld blijft gestopt.');
   if(d.callHold||g.state.callId)throw Error('Rond eerst het belmoment af.');
   if(e.showCues?.active||e.showCues?.holding)throw Error('Rond eerst het bewegings- of showmoment af, of stop het vanuit de regie.');
   if(g.state.window?.status==='open')throw Error('Laat het meldvenster eerst sluiten.');
@@ -41,6 +42,7 @@ export class ShowRuntime{
  }
  setup(scene,config={},options={}){
   const e=this.engine;
+  if(e.game.cancelledAt)throw Error('Deze show is geannuleerd. Het uitzendbeeld blijft gestopt.');
   if(!this.manual)this.restore={gameId:e.game.id,camera:e.camera,motion:e.motion};
   this.manual={scene,age:0,paused:false,...config,...options};
   e.camera=options.camera||SHOW_SCENES.find(x=>x.id===scene)?.camera||'wide';e.motion=options.motion||'idle';this.emit();
@@ -52,6 +54,7 @@ export class ShowRuntime{
   return {...base,...this.baseConfig(),...this.manual,gameStage:stage,age:this.manual.age,sceneRevision:(base.sceneRevision||0)+this.generation*1000,paused:!!this.manual.paused,externalHold:false};
  }
  async scene(id,config={}){
+  if(this.engine.game.cancelledAt)throw Error('Deze show is geannuleerd. Het uitzendbeeld blijft gestopt.');
   if(id==='host'){if(this.engine.showCues?.active||this.engine.showCues?.holding)throw Error('Rond eerst het bewegings- of showmoment af, of stop het vanuit de regie.');this.returnToShow();this.engine.setCamera?.('host');return;}
   this.assertQuiet({allowDraft:true});if(!SHOW_SCENES.some(x=>x.id===id))throw Error('Kies een beschikbare showscène.');
   if(id==='lobby'&&(!productionSettings(this.engine.game.production).lobby.enabled||this.engine.game.status!=='draft'))throw Error('Schakel het voorprogramma in en gebruik het vóór de show.');

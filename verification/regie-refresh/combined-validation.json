@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-11-15T11:57:56.696327+00:00",
+  "scope": [
+    "Milo regie layout",
+    "forced server cancellation and durable history",
+    "10000 Unicode characters in presenter scripts",
+    "automatic scoped OBS activation and recovery"
+  ],
+  "validation": {
+    "build": "passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "focusedNodeChecks": {
+      "passed": 165,
+      "failed": 0,
+      "skipped": 2,
+      "postgresSkippedChecksCoveredBySeparateActualPg17Run": true
+    },
+    "postgres17": {
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalBrowser": {
+      "startTime": "2026-11-15T11:56:00.085Z",
+      "duration": 78324.165,
+      "expected": 17,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "browserEvidenceUsesRealChromium": true,
+  "isolatedSyntheticAccountsAndProviderTransport": true,
+  "actualLiveShowsChangedForTesting": false,
+  "actualOBSInstalled": false,
+  "remainingOBSCheck": "Refresh the OBS browser source once after deployment. On the actual OBS installation check the source mixer and record and replay a short clip with picture and test sound. Chromium programme recording is not an OBS acceptance.",
+  "stagingDeployment": "Awaiting exact-commit CI and protected deployment workflow."
+}

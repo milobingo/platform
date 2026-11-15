@@ -1,0 +1,173 @@
+{
+  "observedAt": "2026-11-15T11:52:28.453Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "actualWebAudio": true,
+  "remainingOBSCheck": "Controleer de bronmeter en een proefopname met beeld en testgeluid op een echte OBS-installatie.",
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "qa-obs-automatic-503",
+  "autoplayPolicy": "no-user-gesture-required",
+  "sessionStatuses": [
+    503,
+    200
+  ],
+  "outputFailures": [
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "status": 503
+    }
+  ],
+  "heartbeats": [
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743543201,
+      "testAck": {
+        "id": "72820be9-bc3b-40ef-8423-3cdacff7229a",
+        "status": "played",
+        "at": 1794743543201,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743543201,
+      "testAck": {
+        "id": "72820be9-bc3b-40ef-8423-3cdacff7229a",
+        "status": "played",
+        "at": 1794743543201,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743543201,
+      "testAck": {
+        "id": "72820be9-bc3b-40ef-8423-3cdacff7229a",
+        "status": "played",
+        "at": 1794743543201,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 7
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743546682,
+      "testAck": {
+        "id": "5ce0e0b7-3401-4acd-8ba9-655ba4ddf276",
+        "status": "played",
+        "at": 1794743546682,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 10
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743546682,
+      "testAck": {
+        "id": "5ce0e0b7-3401-4acd-8ba9-655ba4ddf276",
+        "status": "played",
+        "at": 1794743546682,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 10
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743546682,
+      "testAck": {
+        "id": "5ce0e0b7-3401-4acd-8ba9-655ba4ddf276",
+        "status": "played",
+        "at": 1794743546682,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 12
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794743546682,
+      "testAck": {
+        "id": "5ce0e0b7-3401-4acd-8ba9-655ba4ddf276",
+        "status": "played",
+        "at": 1794743546682,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 13
+    }
+  ],
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedNetworkErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/obs/session"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/obs/output"
+    }
+  ],
+  "outageBadge": {
+    "width": 440,
+    "height": 113.078125,
+    "backdropFilter": "none",
+    "pointerEvents": "none"
+  },
+  "audio": {
+    "peak": 0.115478257547941,
+    "states": [
+      "running",
+      "running"
+    ],
+    "trustedInteractions": 0,
+    "microphoneRequests": 0
+  },
+  "restoredReadOnlyBoard": {
+    "lastNumber": 41,
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "paused": true,
+    "mutatingGameRequests": 0
+  },
+  "actualCanvasPixelRange": 250.66666666666666
+}

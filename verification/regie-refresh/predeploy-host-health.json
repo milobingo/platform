@@ -1,0 +1,369 @@
+{
+  "observedAt": "2026-11-15T11:50:27.188052+00:00",
+  "host": "dg-nxttrack-01",
+  "sshReachable": true,
+  "sudoReadOnlyInspection": true,
+  "services": {
+    "milobingo-staging.service": {
+      "exitCode": 0,
+      "value": "MainPID=414269\nUser=app-mil-stg\nGroup=app-mil-stg\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/milobingo-staging.service"
+    },
+    "dartflow-staging.service": {
+      "exitCode": 0,
+      "value": "MainPID=414244\nUser=app-dart-stg\nGroup=app-dart-stg\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/dartflow-staging.service"
+    },
+    "dartflow-production.service": {
+      "exitCode": 0,
+      "value": "MainPID=414243\nUser=app-dart-prd\nGroup=app-dart-prd\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/dartflow-production.service"
+    },
+    "rondio-staging-dg01.service": {
+      "exitCode": 0,
+      "value": "MainPID=414273\nUser=app-rond-stg\nGroup=app-rond-stg\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/rondio-staging-dg01.service"
+    },
+    "rondio-production-dg01.service": {
+      "exitCode": 0,
+      "value": "MainPID=414270\nUser=app-rond-prd\nGroup=app-rond-prd\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/rondio-production-dg01.service"
+    },
+    "socialhero-staging-web.service": {
+      "exitCode": 0,
+      "value": "MainPID=414357\nUser=app-sh-stg\nGroup=app-sh-stg\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/socialhero-staging-web.service"
+    },
+    "socialhero-production-web.service": {
+      "exitCode": 0,
+      "value": "MainPID=414339\nUser=app-sh-prd\nGroup=app-sh-prd\nActiveState=active\nSubState=running\nFragmentPath=/etc/systemd/system/socialhero-production-web.service"
+    },
+    "caddy.service": {
+      "exitCode": 0,
+      "value": "MainPID=3243\nUser=caddy\nGroup=caddy\nActiveState=active\nSubState=running\nFragmentPath=/usr/lib/systemd/system/caddy.service"
+    }
+  },
+  "caddyFragments": {
+    "dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+    "dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+    "milobingo-staging.caddy": "5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e",
+    "rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c",
+    "rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+    "socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+    "socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159"
+  },
+  "caddyFile": {
+    "path": "/etc/caddy/Caddyfile",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0644",
+    "symlink": false,
+    "regularFile": true,
+    "sha256": "28478c57f4b6f5d851ef5bc9950e774909556b3b822586c9cd577009a236cdcd"
+  },
+  "currentReleasePath": "/srv/sites/milobingo-staging/releases/f1550dd028ef-43026808427-1",
+  "releaseMetadata": {
+    "version": 1,
+    "sha": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+    "id": "43026808427-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "port": 4173,
+    "artifactSha256": "905898839797f322dbcf1035127be4ed7a4a76dcb7cc5263744b6da556dbbc02",
+    "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+    "toolchain": {
+      "node": "24.18.0",
+      "pnpm": "11.25.0",
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+    }
+  },
+  "policy": {
+    "path": "/etc/dg-sites/milobingo-staging/protected-deploy.json",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0600",
+    "symlink": false,
+    "regularFile": true,
+    "sha256": "6ec63283fcbca09489061393cd1c3b80c5459557c53790932af320d3a53a7dad",
+    "allowedConfigIds": [
+      "staging-2026-11-11-v2"
+    ],
+    "accounts": {
+      "run-mil-stg": {
+        "uid": 1001,
+        "gid": 1002
+      },
+      "build-mil-stg": {
+        "uid": 990,
+        "gid": 983
+      },
+      "app-mil-stg": {
+        "uid": 996,
+        "gid": 987
+      }
+    }
+  },
+  "codeFiles": {
+    "/usr/local/libexec/dg-milobingo-deploy-helper": {
+      "path": "/usr/local/libexec/dg-milobingo-deploy-helper",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0755",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "matchesPolicyPin": true
+    },
+    "/usr/local/libexec/milo-protected-release-gate.mjs": {
+      "path": "/usr/local/libexec/milo-protected-release-gate.mjs",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0644",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "537ed06a96d51c06ae25b99f4d0a62e67b3b117f49c3c3eed8ccfc7bcfccaf2e",
+      "matchesPolicyPin": true
+    },
+    "/usr/local/libexec/milo-protected-extract-source.py": {
+      "path": "/usr/local/libexec/milo-protected-extract-source.py",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0755",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "f3c014830bd6134cbbd2561a79163267509a270cab42f916f55a9b5373532e72",
+      "matchesPolicyPin": true
+    },
+    "/usr/local/libexec/milo-protected-lock-guardian.py": {
+      "path": "/usr/local/libexec/milo-protected-lock-guardian.py",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0755",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "5d5bbdc90bbb9ab6ea57514bcfd313de7f478323a6e36cd85a1f403730077c36",
+      "matchesPolicyPin": true
+    }
+  },
+  "files": {
+    "/usr/local/bin/dg-milo-deploy": {
+      "path": "/usr/local/bin/dg-milo-deploy",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0755",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "486ae60897be3192ad2c19a8cc75f9e52a3c9d89dcaf10baf454f357a8511e34"
+    },
+    "/usr/local/libexec/dg-milo-deploy-helper": {
+      "path": "/usr/local/libexec/dg-milo-deploy-helper",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0755",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "4afcc454f95efb00e44991b587fbccbf539dcc63385e741f4e9adce5fabaac48"
+    },
+    "/etc/sudoers.d/milobingo-protected-deploy": {
+      "path": "/etc/sudoers.d/milobingo-protected-deploy",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0440",
+      "symlink": false,
+      "regularFile": true,
+      "sha256": "4c6bd6a257c1b41ebc742b9b9981b08735a8ec01f4f33960d313794a84c38503"
+    },
+    "/run/lock/dg-build.lock": {
+      "path": "/run/lock/dg-build.lock",
+      "uid": 0,
+      "gid": 1001,
+      "mode": "0660",
+      "symlink": false,
+      "regularFile": true
+    },
+    "/etc/dg-sites/milobingo-staging/configs/staging-2026-11-11-v2": {
+      "path": "/etc/dg-sites/milobingo-staging/configs/staging-2026-11-11-v2",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0700",
+      "symlink": false,
+      "regularFile": false
+    },
+    "/etc/dg-sites/milobingo-staging/configs/staging-2026-11-11-v2/runtime.json": {
+      "path": "/etc/dg-sites/milobingo-staging/configs/staging-2026-11-11-v2/runtime.json",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0600",
+      "symlink": false,
+      "regularFile": true
+    }
+  },
+  "entryHelperPinMatches": true,
+  "runnerIdentity": {
+    "run-mil-stg": {
+      "uid": 1001,
+      "gid": 1002
+    },
+    "build-mil-stg": {
+      "uid": 990,
+      "gid": 983
+    },
+    "app-mil-stg": {
+      "uid": 996,
+      "gid": 987
+    }
+  },
+  "sudoPolicyChecks": {
+    "protected": {
+      "allowed": true
+    },
+    "legacy": {
+      "allowed": false
+    },
+    "shell": {
+      "allowed": false
+    },
+    "systemctl": {
+      "allowed": false
+    }
+  },
+  "filesystem": {
+    "exitCode": 0,
+    "value": "Mounted on       Avail   IFree\n/          88556380160 8426981\n/          88556380160 8426981"
+  },
+  "applicationHealth": {
+    "milo-staging": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+        "releaseId": "43026808427-1",
+        "configVersion": "staging-2026-11-11-v2"
+      }
+    },
+    "dartflow-staging": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "sha": "b7648e62a5cd03f73e0590327ff93b4da963bc3a",
+        "releaseId": "43533172175-1",
+        "configId": "staging-2026-11-12-v19-pin-1"
+      }
+    },
+    "dartflow-production": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "sha": "b7648e62a5cd03f73e0590327ff93b4da963bc3a",
+        "releaseId": "43533760901-1",
+        "configId": "production-2026-11-12-v19-pin-1"
+      }
+    },
+    "rondio-staging": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "releaseId": "1496e04a13dd-43262076787-1"
+      }
+    },
+    "rondio-production": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "releaseId": "1496e04a13dd-43262700690-1"
+      }
+    },
+    "socialhero-staging": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "service": "SocialHero",
+        "releaseId": "2a800550ef3d5359cf73c6e37cc1f2eeb5b5b0c5-43458667644-1",
+        "environment": "staging"
+      }
+    },
+    "socialhero-production": {
+      "httpStatus": 200,
+      "health": {
+        "status": "ok",
+        "service": "SocialHero",
+        "releaseId": "2a800550ef3d5359cf73c6e37cc1f2eeb5b5b0c5-43460049432-1",
+        "environment": "production"
+      }
+    }
+  },
+  "hostMutationsPerformed": false,
+  "deployOrWrapperInvoked": false,
+  "privateRuntimeValuesReadOrPrinted": false,
+  "applicationListeners": {
+    "ports": [
+      4173,
+      4174,
+      4175,
+      4176,
+      4177,
+      4180,
+      4181
+    ],
+    "allObservedApplicationListenersLoopback": true,
+    "miloPort": 4173,
+    "proposedProductionPort4178Listening": false,
+    "unchangedFromReadOnlyInventory": true
+  },
+  "comparison": {
+    "baseline": "verification/production-bootstrap/read-only-inventory-2026-11-15.json",
+    "caddyFileUnchanged": true,
+    "allSevenCaddyFragmentsUnchanged": true,
+    "miloAndDartflowReleaseHealthUnchanged": true
+  },
+  "github": {
+    "inspectedAt": "2026-11-15T11:50:27.188052+00:00",
+    "repository": "milobingo/platform",
+    "branch": "main",
+    "headSha": "a544f7418ba4281d2269fba41556b28c828db435",
+    "latestHeadCI": {
+      "id": 43709242090,
+      "url": "https://github.com/milobingo/platform/actions/runs/43709242090",
+      "status": "completed",
+      "conclusion": "success",
+      "verifyJobConclusion": "success"
+    },
+    "runner": {
+      "name": "dg-nxttrack-01-nxttrack-staging",
+      "status": "online",
+      "busy": false,
+      "labels": [
+        "self-hosted",
+        "Linux",
+        "X64",
+        "dg-milobingo-01",
+        "dg-nxttrack-01",
+        "milobingo",
+        "staging"
+      ]
+    },
+    "uncommittedCandidateRequiresOwnNewExactShaCI": true
+  },
+  "deploymentReview": {
+    "workflow": ".github/workflows/deploy-staging.yml",
+    "manualDispatch": true,
+    "ref": "main",
+    "requiredInputs": [
+      "release_sha",
+      "config_id"
+    ],
+    "approvedExistingConfigId": "staging-2026-11-11-v2",
+    "jobs": [
+      "release-gate",
+      "deploy",
+      "verify-public"
+    ],
+    "exactMainShaSuccessfulCIRequired": true,
+    "runnerReadsNoAppOrRuntimeSecrets": true,
+    "brokerRevalidatesCIAndDownloadsExactSource": true,
+    "appRuntimeReadOnlyAuditBeforeActivation": true,
+    "sharedBuildLock": "/run/lock/dg-build.lock",
+    "noDatabaseMigrationInOrdinaryDeploy": true,
+    "persistentGitHubSecretsRequired": 0,
+    "token": "Only ephemeral built-in GITHUB_TOKEN with contents:read and actions:read",
+    "allInstalledCodePolicyPinsMatch": true,
+    "entryPinsInstalledBroker": true,
+    "noHostSetupChangesRequiredForNextStagingAppRelease": true,
+    "dispatchNotPerformed": true
+  },
+  "format": "milo-regie-refresh-read-only-predeploy-host-v1"
+}

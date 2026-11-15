@@ -19,7 +19,8 @@ export class LiveCallRuntime{
  get call(){return this.demo?this.demoCall||null:this.connection.call;}
  get active(){return liveCallActive(this.call);}
  get matchesGame(){return !this.call||this.call.gameId===this.gameId||this.demo;}
- get onAir(){return this.matchesGame&&this.call?.phase==='live';}
+ get showCancelled(){return !!(this.engine.isOutput?this.engine.remoteStage?.cancelledAt:this.engine.game?.cancelledAt);}
+ get onAir(){return !this.showCancelled&&this.matchesGame&&this.call?.phase==='live';}
  get held(){return this.onAir;}
  get drawHeld(){return !!this.engine.game?.state.drawHold||!!this.call?.drawHeld;}
  subscribe=fn=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
@@ -27,8 +28,15 @@ export class LiveCallRuntime{
  state(){return {call:this.call,queue:this.queue(),busy:this.busy,error:this.error,settings:this.settings,media:this.mediaState,output:this.output?.state?.()||null,mode:this.demo?'demo':'real',mismatchedGame:!this.matchesGame,drawHeld:this.drawHeld,held:this.onAir,now:Date.now()};}
  queue(){if(!this.demo)return currentEntries(this.engine.game);return (this.engine.game.books||[]).filter(b=>b.profileId).filter((b,i,a)=>a.findIndex(x=>x.profileId===b.profileId)===i).map(b=>({id:'demo-entry-'+b.profileId,profileId:b.profileId,accountId:b.accountId,name:b.name,familyName:b.accountId==='demo-0'?'Oefengezin 1':'Oefengezin 2',child:true,parentConsent:true,callConsentAt:1,micChecked:true,connectionChecked:true,headphones:true,callStatus:'accepted'}));}
  emit(){if(this.disposed)return;this._snapshot=this.state();for(const fn of this.listeners)fn();this.engine.emit();if(!this.engine.isOutput)this.engine.bridge?.sendLocal();}
- acceptResponse(data){if(data?.game&&!this.engine.isOutput){const g=data.game;if(this.engine.dirty){this.engine.game={...this.engine.game,state:g.state,participation:g.participation,production:g.production,revision:g.revision};}else this.engine.acceptGame(g);this.engine.syncGame();}this.emit();return data;}
- async perform(fn){if(this.busy)throw Error('Wacht tot de huidige belstap is bevestigd.');this.busy=true;this.error='';this.emit();try{return await fn();}catch(e){this.error=e.message;this.engine.fail(e.message);throw e;}finally{this.busy=false;this.emit();}}
+ acceptResponse(data){if(data?.game&&!this.engine.isOutput&&this.engine.acceptGame(data.game))this.engine.syncGame();this.emit();return data;}
+ async perform(fn){if(this.showCancelled)throw Error('Deze show is geannuleerd. Er wordt geen belverbinding meer geopend.');if(this.busy)throw Error('Wacht tot de huidige belstap is bevestigd.');this.busy=true;this.error='';this.emit();try{return await fn();}catch(e){this.error=e.message;this.engine.fail(e.message);throw e;}finally{this.busy=false;this.emit();}}
+ haltCancelled(){
+  const key=this.gameId+':'+(this.engine.isOutput?this.engine.remoteStage?.cancelledAt:this.engine.game?.cancelledAt);if(!this.showCancelled||this.cancelledKey===key)return;this.cancelledKey=key;
+  this.generation++;this.connection.epoch++;this.connection.commands++;this.connection.call=null;this.previousPhase=null;this.previousCall=null;this.restore=null;this.connectingLive=null;
+  void Promise.resolve(this.media?.disconnect()).catch(()=>{});void Promise.resolve(this.output?.stop()).catch(()=>{});
+  if(!this.engine.isOutput){this.engine.director.callHold=false;this.engine.director.paused=true;this.engine.director.drawBlocked=true;}
+  this._snapshot=this.state();for(const listener of this.listeners)listener();
+ }
  ensureMedia(){if(this.media)return this.media;this.media=new this.Media({role:this.engine.isOutput?'output':'host',api:this.connection,getCall:()=>this.call,getGameId:()=>this.gameId,onState:s=>{this.mediaState=s;this.emit();},onFailure:e=>this.mediaFailed(e)});return this.media;}
  async mediaFailed(error){if(this.disposed||!this.active||['returning','returned'].includes(this.call.phase))return;
   // Backend room revocation can arrive just before the staged -> live poll.
@@ -36,6 +44,7 @@ export class LiveCallRuntime{
   this.error=error.message;this.emit();if(!this.demo)try{this.acceptResponse(await this.connection.action('fail',{reason:error.message}));}catch{this.engine.fail('De belverbinding is weggevallen. De trekking blijft geblokkeerd.');}
  }
  async tick(){if(this.disposed||this.ticking)return;this.ticking=true;try{
+  if(this.showCancelled){this.haltCancelled();return;}
   const gameKey=this.demo?'demo:'+this.engine.game.id:this.gameId;
   if(gameKey!==this.lastGame){this.lastGame=gameKey;this.generation++;await this.media?.disconnect();if(!this.demo&&this.connection.call?.gameId!==this.gameId){this.connection.epoch++;this.connection.call=null;}this.restore=null;}
   if(!this.demo&&this.gameId){await this.connection.poll();if(this.active&&this.matchesGame&&Date.now()-(this.lastHeartbeat||0)>4500){this.lastHeartbeat=Date.now();const s=this.media?.getState?.()||{};this.acceptResponse(await this.connection.heartbeat({connected:!!s.connected,micReady:!!s.micReady,audioReady:this.engine.isOutput?!!this.engine.bridge.audioReady&&!!s.audioReady:!!s.audioReady,target:s.target||null,voiceLevel:this.output?.meter?.()||0}));}}
@@ -44,7 +53,7 @@ export class LiveCallRuntime{
   this.emit();
  }catch(e){this.error=e.message;if(this.onAir&&Date.now()-this.connection.lastOK>6500){void this.output?.stop();await this.media?.disconnect();this.engine.director.drawBlocked=true;}this.emit();}finally{this.ticking=false;}}
  capture(){const e=this.engine;if(this.restore||e.showCues?.active||e.showCues?.holding)return;const d=e.director;this.restore={gameId:e.game.id,epoch:e.game.state.epoch,scene:d.scene,sceneAge:d.sceneAge,camera:e.camera,speakerId:e.speakerId,paused:d.paused};}
- onCall(c){if(this.disposed)return;const e=this.engine,previous=this.previousPhase,id=c?.id;
+ onCall(c){if(this.disposed)return;if(this.showCancelled){this.haltCancelled();return;}const e=this.engine,previous=this.previousPhase,id=c?.id;
   if(!e.isOutput&&!this.matchesGame){e.director.drawBlocked=true;this.error='Er staat nog een belmoment open in een andere show. Open die show om de terugkeer af te ronden.';this.emit();return;}
   if(!e.isOutput){e.director.drawBlocked=this.drawHeld;if(c?.phase==='live'&&(previous!=='live'||this.previousCall!==id)){if(e.showCues?.active||e.showCues?.holding){e.showCues.reset?.();e.audio.stop?.();}this.capture();e.stopSpeech();e.magic=null;e.director.callHold=true;e.director.configure({liveCall:true});e.director.setScene('call',undefined,true);e.camera='host';e.speakerId=c.characterId||e.hostId;}
    else if(previous==='live'&&c?.phase!=='live'){e.director.callHold=false;e.director.configure({liveCall:false});const old=this.restore;if(old?.gameId===e.game.id&&old.epoch===e.game.state.epoch){e.director.setScene(old.scene,undefined,true);e.director.sceneAge=old.sceneAge;e.camera=old.camera;e.speakerId=old.speakerId;e.director.paused=old.paused;}else e.director.pause();this.restore=null;}
@@ -87,7 +96,7 @@ export class LiveCallRuntime{
  }
  async openActiveShow(){const id=this.call?.gameId;if(this.demo||!this.active||!id||this.engine.isOutput)throw Error('Er staat geen andere actieve belshow klaar.');return this.perform(async()=>{await this.engine.recoverCallGame(id);this.lastGame=id;this.error='';this.onCall(this.call);});}
  async refreshGame(){if(this.demo||this.engine.isOutput)return;const id=this.gameId,data=await this.engine.fetchLiveCallGame?.(id);if(data)this.acceptResponse(data);else{const {bingoApi}=await import('../public/bingo-api.js');this.acceptResponse(await bingoApi('/games/'+id));}}
- async connectLiveMonitor(){if(!this.matchesGame)throw Error('Open eerst de show die bij dit belmoment hoort.');if(this.connectingLive)return this.connectingLive;this.connectingLive=(async()=>{await this.media?.disconnect();await this.ensureMedia().connect('live');})().finally(()=>{this.connectingLive=null;});return this.connectingLive;}
+ async connectLiveMonitor(){if(this.showCancelled)throw Error('Deze show is geannuleerd.');if(!this.matchesGame)throw Error('Open eerst de show die bij dit belmoment hoort.');if(this.connectingLive)return this.connectingLive;const generation=this.generation;this.connectingLive=(async()=>{await this.media?.disconnect();if(this.showCancelled||generation!==this.generation)return;await this.ensureMedia().connect('live');if(this.showCancelled||generation!==this.generation)await this.media?.disconnect();})().finally(()=>{this.connectingLive=null;});return this.connectingLive;}
  async startAudio(){if(!this.matchesGame)throw Error('Open eerst de show die bij dit belmoment hoort.');await this.ensureMedia().startAudio();}
  async publishReturnCue(){const cue=this.call?.returnState?.cue;if(!this.matchesGame||!cue||!['returning','returned'].includes(this.call?.phase)||!this.call.resourcesClosed)throw Error('Sluit eerst de gespreksaudio af.');if(this.demo)throw Error('Een simulatie levert geen publicatiebewijs.');await this.engine.speak(cue.text,this.engine.hostId);const voiceId=this.engine.bridge.command?.id;if(!voiceId)throw Error('Kies eerst de echte uitzendroute.');return this.action('return-cue-published',{cueId:cue.id,voiceId});}
  async connectPrivate(){if(!this.matchesGame)throw Error('Open eerst de show die bij dit belmoment hoort.');return this.perform(async()=>{if(this.demo){this.mediaState={phase:'simulated',target:'backstage',connected:true,micReady:true,simulated:true};if(this.call)this.call.media.host={connected:true,micReady:true};this.emit();return;}await this.ensureMedia().connect('backstage');await this.media.setPrivateMic(true);});}

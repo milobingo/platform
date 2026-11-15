@@ -11,23 +11,29 @@ import {defaultPresentation} from '../../server/presentation-model.js';
 // Production UI and real Bingo handlers/SQLite CAS. Every API request is
 // intercepted; no real show, account, provider or production data is changed.
 const output=process.env.REGIE_REFRESH_EVIDENCE_ROOT||'verification/regie-refresh/browser';
-async function fixture(page,testInfo){
+async function fixture(page,testInfo,options={}){
  const origin=new URL(testInfo.project.use.baseURL).origin,owner='qa-regie-refresh',db=createSqliteDatabase(':memory:'),store=new BingoStore(db);
  const game=makeGame({brandId:'milo',title:'QA regie · Magie op het Sterrenplein',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam'},owner,origin);
  prepareAutomaticRules(game);game.status='running';game.startedAt=Date.now()-120000;
  activateBlock(game,game.plan.blocks.map((block,index)=>({block,index})).filter(item=>item.block.type==='round')[1].index,1);
  Object.assign(game.state,{paused:true,drawn:[7,13,19,24,31,41],lastCommit:{number:41,at:Date.now()-20000}});await store.create(game);
- const path='/api/bingo/games/'+game.id,evidence={origin,gameId:game.id,errors:[],external:[],unexpected:[],forbiddenWrites:[],mutations:[]};
+ const path='/api/bingo/games/'+game.id,evidence={origin,gameId:game.id,errors:[],external:[],unexpected:[],forbiddenWrites:[],mutations:[],expectedFailures:[]},state={cancelFailures:0,cancelDelayMs:0,...options};
  page.on('pageerror',error=>evidence.errors.push(error.message));
- page.on('console',message=>{if(message.type()==='error')evidence.errors.push(message.text());});
- await page.route('**/*',async route=>{
+ page.on('console',message=>{if(message.type()!=='error')return;if(message.location().url===origin+path+'/force-cancel'&&/status of 503/.test(message.text()))evidence.expectedFailures.push(message.text());else evidence.errors.push(message.text());});
+ await page.context().route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url()),method=request.method();
   if(url.origin!==origin){evidence.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
-  const read=method==='GET'&&['/api/bingo/games',path,'/api/bingo/families'].includes(url.pathname),write=method==='POST'&&['heartbeat','pause'].some(action=>url.pathname===path+'/'+action);
+  const read=method==='GET'&&['/api/bingo/games',path,'/api/bingo/families'].includes(url.pathname),write=method==='POST'&&['heartbeat','pause',...(state.allowForceCancel?['force-cancel']:[])].some(action=>url.pathname===path+'/'+action);
   if(read||write){
-   const body=write?request.postDataJSON():undefined,response=await handleBingo(new Request(request.url(),{method,headers:request.headers(),...(body?{body:JSON.stringify(body)}:{})}),{DB:db,AUTH_IDENTITY:{user:owner,email:'regie@example.test',admin:true}});
+   const body=write?request.postDataJSON():undefined;
+   if(url.pathname===path+'/force-cancel'){
+    if(state.cancelGate)await state.cancelGate;
+    if(state.cancelDelayMs)await new Promise(resolve=>setTimeout(resolve,state.cancelDelayMs));
+    if(state.cancelFailures-->0){evidence.mutations.push({path:url.pathname,body,status:503});return route.fulfill({status:503,json:{error:{message:'De opslag is tijdelijk niet bereikbaar. Probeer opnieuw.',code:'synthetic_storage_outage'}}});}
+   }
+   const response=await handleBingo(new Request(request.url(),{method,headers:request.headers(),...(body?{body:JSON.stringify(body)}:{})}),{DB:db,AUTH_IDENTITY:{user:owner,email:'regie@example.test',admin:true}});
    if(write)evidence.mutations.push({path:url.pathname,body,status:response.status});
    return route.fulfill({status:response.status,headers:Object.fromEntries(response.headers),body:await response.text()});
   }
@@ -47,7 +53,7 @@ async function fixture(page,testInfo){
   else {evidence.unexpected.push(url.pathname+url.search);return route.fulfill({status:404,json:{error:{message:'Unexpected isolated regie QA endpoint.'}}});}
   return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
  });
- return {game,evidence,read:async()=>(await store.game(game.id)).data,mutate:operation=>store.mutate(game.id,{},operation),close:()=>db.close()};
+ return {game,state,evidence,read:async()=>(await store.game(game.id)).data,mutate:operation=>store.mutate(game.id,{},operation),close:()=>db.close()};
 }
 async function noOverflow(page){await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);}
 async function shot(page,name){await mkdir(output+'/screenshots',{recursive:true});await page.screenshot({path:output+'/screenshots/'+name+'.png',fullPage:false});}
@@ -110,4 +116,48 @@ test('regie refresh preserves the separate Vlampie console and all seven modules
  }finally{
   await mkdir(output,{recursive:true});await writeFile(output+'/vlampie-1366.json',JSON.stringify({observedAt:new Date().toISOString(),viewport:page.viewportSize(),actualBrowserRendering:true,actualAccountWrites:false,actualProviderRequests:false,...h.evidence},null,2)+'\n');await page.close();await h.close();
  }
+});
+
+for(const width of [1366,390]){
+ test(`force cancellation keeps failed confirmation, submits once, stops another tab and preserves history ${width}px; isolated real Bingo API`,async({page},testInfo)=>{
+  test.setTimeout(90000);await page.setViewportSize({width,height:width===390?844:900});await page.emulateMedia({reducedMotion:'reduce'});
+  const h=await fixture(page,testInfo,{allowForceCancel:true,cancelFailures:1});let other,releaseCancellation;
+  try{
+   await h.mutate(game=>{game.state.phase='window';game.state.window={id:'qa-cancel-window',status:'open',startedAt:Date.now(),endsAt:Date.now()+600000,frozenAt:game.state.drawn.length,announcements:[],claims:[{id:'qa-cancel-claim',name:'Noor',ticket:'0041',status:'valid'}]};});
+   const before=await h.read();await page.goto('/#/live');const workspace=page.locator('.mf-live-workspace');await expect(workspace.locator('.rd-alert-strip')).toContainText('Meldvenster actief');
+   // A second actual browser tab restores the same server show under its lease.
+   // The emergency cancellation must still work from the inactive first tab.
+   other=await page.context().newPage();await other.goto('/#/live');await other.getByRole('button',{name:'Hervat regie',exact:true}).click();await expect(other.getByText('Regie hersteld.',{exact:false})).toBeVisible();
+   const launch=workspace.getByRole('button',{name:'Show geforceerd annuleren',exact:true});await expect(launch).toBeEnabled();await launch.click();
+   const dialog=page.getByRole('dialog',{name:'Show geforceerd annuleren?'}),confirm=dialog.getByRole('button',{name:'Definitief annuleren',exact:true}),title=dialog.getByRole('textbox',{name:'Shownaam ter bevestiging',exact:true}),reason=dialog.getByRole('textbox',{name:'Reden van annuleren',exact:true});
+   await expect(dialog).toBeVisible();await expect(confirm).toBeDisabled();await title.fill('Een andere show');await expect(confirm).toBeDisabled();await title.fill(h.game.title);await reason.fill('Oefening: de regie kan niet veilig verder.');await expect(confirm).toBeEnabled();h.state.cancelGate=new Promise(resolve=>{releaseCancellation=resolve;});await confirm.click();
+   await expect(dialog.getByRole('status')).toContainText('Annulering wordt door de server bevestigd');await page.keyboard.press('Escape');await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();await expect(dialog).toBeVisible();
+   releaseCancellation();await expect(dialog.getByRole('alert')).toContainText('Annulering niet bevestigd');await expect(title).toHaveValue(h.game.title);await expect(reason).toHaveValue('Oefening: de regie kan niet veilig verder.');expect((await h.read()).status).toBe('running');await page.waitForTimeout(250);
+   const cancellationWrites=()=>h.evidence.mutations.filter(item=>item.path.endsWith('/force-cancel'));expect(cancellationWrites()).toHaveLength(1);expect(cancellationWrites()[0].status).toBe(503);
+   // Two synchronous form submissions exercise the ref guard before rerender.
+   h.state.cancelGate=new Promise(resolve=>{releaseCancellation=resolve;});await dialog.locator('form').evaluate(form=>{form.requestSubmit();form.requestSubmit();});await expect(dialog.getByRole('status')).toBeVisible();await page.keyboard.press('Escape');await expect(dialog).toBeVisible();releaseCancellation();
+   await expect(workspace.getByRole('heading',{name:'Geannuleerd',exact:true})).toBeVisible();await expect(dialog).toHaveCount(0);await expect(workspace.locator('.rd-transport')).toHaveCount(0);await expect(launch).toHaveCount(0);await expect(page.locator('.mf-top-show')).toContainText('Geannuleerd');await noOverflow(page);await shot(page,`regie-${width}-cancelled`);
+   expect(cancellationWrites()).toHaveLength(2);expect(cancellationWrites()[1].status).toBe(200);expect(cancellationWrites()[0].body.requestId).toBe(cancellationWrites()[1].body.requestId);expect(cancellationWrites()[1].body.confirm).toBe(true);expect(cancellationWrites()[1].body.expectedTitle).toBe(h.game.title);
+   await expect(other.getByRole('heading',{name:'Geannuleerd',exact:true})).toBeVisible();await expect(other.locator('.rd-transport')).toHaveCount(0);
+   const saved=await h.read();expect(saved.status).toBe('finished');expect(saved.cancelledAt).toBeTruthy();expect(saved.cancellation.reason).toBe('Oefening: de regie kan niet veilig verder.');expect(saved.state.drawn).toEqual(before.state.drawn);expect(saved.state.lastCommit).toEqual(before.state.lastCommit);expect(saved.state.window.status).toBe('cancelled');expect(saved.state.window.claims).toEqual(before.state.window.claims);expect(saved.books).toEqual(before.books);expect(saved.plan).toEqual(before.plan);
+   const count=h.evidence.mutations.length;await page.locator('main#mf-main').focus();await page.keyboard.press('Space');await page.keyboard.press('n');await page.waitForTimeout(200);expect(h.evidence.mutations).toHaveLength(count);
+   await page.reload();await expect(page.getByRole('heading',{name:'Geannuleerd',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Hervat regie',exact:true})).toHaveCount(0);await page.goto('/#/overview');await expect(page.getByRole('heading',{name:'Geannuleerd',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Start show',exact:true})).toHaveCount(0);
+   expect(cancellationWrites()).toHaveLength(2);expect(h.evidence.errors).toEqual([]);expect(h.evidence.external).toEqual([]);expect(h.evidence.unexpected).toEqual([]);expect(h.evidence.forbiddenWrites).toEqual([]);h.evidence.remoteTabObservedTerminalCancellation=true;
+  }finally{
+   releaseCancellation?.();await mkdir(output,{recursive:true});await writeFile(output+`/force-cancel-${width}.json`,JSON.stringify({observedAt:new Date().toISOString(),actualBrowserRendering:true,realBingoHandlers:true,isolatedInMemoryDatabase:true,actualShowMutation:false,actualProviderRequests:false,...h.evidence},null,2)+'\n');await other?.close();await page.close();await h.close();
+  }
+ });
+}
+
+test('presenter inputs preserve ten thousand characters and explain an oversized paste without truncation',async({page},testInfo)=>{
+ await page.setViewportSize({width:1366,height:900});const h=await fixture(page,testInfo);
+ try{
+  await page.goto('/#/live');const workspace=page.locator('.mf-live-workspace');await workspace.locator('.mf-live-advanced-monitors>summary').click();
+  const quick=workspace.getByRole('textbox',{name:'Directe presentatortekst',exact:true}),text='Milo vertelt een nieuw verhaal. '.repeat(400).slice(0,10000);expect(text).toHaveLength(10000);
+  await quick.fill(text);await expect(quick).toHaveValue(text);await expect(workspace.locator('#rd-quick-speech-limit')).toHaveText('10.000 / 10.000 tekens');await expect(workspace.locator('.rd-quick-host').getByRole('button',{name:'Laat spreken',exact:true})).toBeEnabled();
+  const oversized=text+'!';await quick.fill(oversized);await expect(quick).toHaveValue(oversized);await expect(workspace.locator('.rd-quick-host').getByRole('alert')).toContainText('je volledige invoer blijft bewaard');await expect(workspace.locator('.rd-quick-host').getByRole('button',{name:'Laat spreken',exact:true})).toBeDisabled();await quick.fill(text);
+  const advanced=workspace.locator('.mf-live-advanced-panels');await advanced.locator(':scope>summary').click();await advanced.locator('[data-module-id="presentation"]').click();const full=advanced.getByRole('textbox',{name:'Tekst om uit te spreken',exact:true});await expect(full).toHaveValue(text);await expect(advanced.locator('.rd-inline-actions .rd-speech-count')).toHaveText('10.000 / 10.000');
+  const unicode='🎉'.repeat(10000);await full.fill(unicode);await expect(full).toHaveValue(unicode);await expect(advanced.locator('.rd-inline-actions .rd-speech-count')).toHaveText('10.000 / 10.000');await expect(quick).toHaveValue(unicode);await noOverflow(page);await shot(page,'regie-1366-presenter-10000');
+  expect(h.evidence.errors).toEqual([]);expect(h.evidence.forbiddenWrites).toEqual([]);expect(h.evidence.external).toEqual([]);expect(h.evidence.unexpected).toEqual([]);h.evidence.tenThousandAsciiAndUnicodePreserved=true;h.evidence.oversizedInputPreservedAndBlocked=true;
+ }finally{await mkdir(output,{recursive:true});await writeFile(output+'/presenter-10000.json',JSON.stringify({observedAt:new Date().toISOString(),actualBrowserRendering:true,actualSpeechSent:false,actualProviderRequests:false,...h.evidence},null,2)+'\n');await page.close();await h.close();}
 });

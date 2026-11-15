@@ -3,7 +3,9 @@ import {playerIdentity,birthAge,refreshAges} from './player-identity.js';
 import {productionAction} from './production.js';
 import {productionEvent,productionSettings} from './production-model.js';
 import {BingoStore} from './bingo-store.js';
-import {BingoError,minigamesForBrand,enabledMinigameIds,assertDrawAvailable,normalizeBingoPlan,assertClaimContext,assertOwnedBook,assertBookAccountLimit,assertBookAccountsReady,makeGame,gameSettings,integer,cleanText,bingoPrintMode,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook,settleWindow,playerGame,randomIndex,checkAccount} from './bingo-model.js';
+import {cancelGameCallResources} from './live-calls.js';
+import {cancelGameOutput} from './output.js';
+import {BingoError,minigamesForBrand,enabledMinigameIds,assertDrawAvailable,assertShowNotCancelled,forceCancelGame,normalizeBingoPlan,assertClaimContext,assertOwnedBook,assertBookAccountLimit,assertBookAccountsReady,makeGame,gameSettings,integer,cleanText,bingoPrintMode,generateBooks,activateBlock,reserveBall,commitBall,beginBingo,claimBook,settleWindow,playerGame,randomIndex,checkAccount} from './bingo-model.js';
 import {normalizeShowTime} from './show-time.js';
 import {publishGameRules,assertRulesCurrent,prepareAutomaticRules,finalizeGameRules} from './game-rules.js';
 import {automaticRules,isStandardMiloGame,STANDARD_MILO_PROFILE,loadStandardMiloPlan,resetDrawClock} from './standard-show.js';
@@ -17,6 +19,15 @@ import {activeOrders,orderShow,assertOrderStartReady,assertOrderBookIntegrity} f
 const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>Response.json(data,{status,headers});
 const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);copy.capacity=gameCapacity(game);copy.preparationRevision=game.preparationRevision||0;copy.serverTime=Date.now();delete copy.state.deck;delete copy.chat;return copy;};
+async function hostGameWithCleanup(game,env){
+ const copy=hostGame(game);if(!copy.cancellation)return copy;
+ let pending=!!(game.state.callId||game.state.drawHold);
+ try{const row=await env.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(game.ownerId).first(),call=row?JSON.parse(row.document):null;if(call?.gameId===game.id)pending=call.resourcesClosed!==true&&(call.transport==='livekit'||!!(call.realtimeId||call.realtimeStarted)||!['ended','declined','missed','failed'].includes(call.phase));}
+ catch{pending=true;}
+ // Derived host-only metadata: closure proof stays in the call journal, never
+ // in the immutable cancellation record or the public family projection.
+ copy.cancellation.cleanupPending=pending;return copy;
+}
 function presentationValue(fn){try{return fn();}catch(error){throw new BingoError(error.message,400,'presentation_choice');}}
 async function operationDigest(value){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),byte=>byte.toString(16).padStart(2,'0')).join('');}
 const publicClaim=claim=>{if(!claim)return claim;const copy={...claim};delete copy.operation;return copy;};
@@ -64,12 +75,12 @@ export async function handleBingo(request,env={}){
   const match=path.match(/^\/games\/([a-f0-9-]{36})(?:\/(.*))?$/);
   if(match){
    const id=match[1],action=match[2]||'',row=await store.game(id);if(!row)throw new BingoError('Dit spel bestaat niet.',404);if(admin&&row.owner_id!==user)throw new BingoError('Dit spel hoort bij een andere host.',403);
-   const scopedId=`${user}:${request.method}:${path}:${requestId}`,options={requestId:scopedId},ownOptions={requestId:scopedId,accountId:user,email};
+   const scopedId=`${user}:${request.method}:${path}:${requestId}`,options={requestId:scopedId,authorize:assertShowNotCancelled},ownOptions={requestId:scopedId,accountId:user,email};
    const preparationCheck=game=>{if(body.expectedPreparationRevision!==undefined&&(!Number.isSafeInteger(body.expectedPreparationRevision)||body.expectedPreparationRevision!==(game.preparationRevision||0)))throw new BingoError('Het draaiboek is in een ander venster gewijzigd. Jouw invoer is bewaard. Vergelijk de actuele voorbereiding voordat je opnieuw opslaat.',409,'preparation_conflict');};
-   const control=(game,now)=>{const client=cleanText(body.regieId,100,'regievenster');if(game.state.control&&game.state.control.id!==client&&game.state.control.until>now)throw new BingoError('Dit spel wordt al vanuit een ander regievenster bestuurd. Sluit dat venster of wacht 15 seconden.',409,'control_busy');game.state.control={id:client,until:now+15000};};
+   const control=(game,now)=>{assertShowNotCancelled(game);if(game.status==='finished')throw new BingoError('Deze show is afgelopen. Maak een nieuwe show.',409,'show_finished');const client=cleanText(body.regieId,100,'regievenster');if(game.state.control&&game.state.control.id!==client&&game.state.control.until>now)throw new BingoError('Dit spel wordt al vanuit een ander regievenster bestuurd. Sluit dat venster of wacht 15 seconden.',409,'control_busy');game.state.control={id:client,until:now+15000};};
    if(!action&&request.method==='GET'){
-    let game=row.data;if(game.state.window?.status==='open'&&Date.now()>=game.state.window.endsAt)game=(await store.mutate(id,{},(g,_family,now)=>settleWindow(g,now))).game;
-    return json({game:admin&&url.searchParams.get('player')!=='1'?hostGame(game):playerGame(game,user),serverTime:Date.now()});
+    let game=row.data;if(game.status!=='finished'&&game.state.window?.status==='open'&&Date.now()>=game.state.window.endsAt)game=(await store.mutate(id,{},(g,_family,now)=>settleWindow(g,now))).game;
+    return json({game:admin&&url.searchParams.get('player')!=='1'?await hostGameWithCleanup(game,env):playerGame(game,user),serverTime:Date.now()});
    }
    if(action==='brand'&&request.method==='POST'){
     requireHost();const next=validBrand(body.brandId);const result=await store.mutate(id,options,(g,_family,now)=>{control(g,now);assertDrawAvailable(g);if((g.status!=='draft'||g.rulesPublication)&&brandId(g)!==next)throw new BingoError('De showwereld staat vast zodra de regels gepubliceerd zijn of de show gestart is.',409,'brand_locked');if(activeOrders(g)&&brandId(g)!==next)throw new BingoError('De showwereld staat vast zolang er bestellingen voor deze show bestaan.',409);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af voordat je de showhost wisselt.',409,'call_active');if(g.status==='finished')throw new BingoError('Deze show is afgelopen. De opgeslagen showidentiteit blijft bewaard.',409);const previous=showBrand(g);g.plan=switchPlanBrand(g.plan,previous,next);g.brandId=next;g.settings={...g.settings,minigames:enabledMinigameIds(g)};if(g.title===previous.title)g.title=showBrand(g).title;if(g.presentationSnapshot){g.presentationSnapshot.profile=brandProfile(g.presentationSnapshot.profile,g);g.presentationSnapshot.frozenAt=now;} });return json({game:hostGame(result.game)});
@@ -114,7 +125,7 @@ export async function handleBingo(request,env={}){
      const windows=[g.state.window,...g.events.filter(event=>event.type==='window-closed')];
      for(const window of windows){const records=action==='claim'?window?.claims:window?.announcements;for(const record of records||[])if(record.operation?.key===operationKey){if(record.accountId!==user||record.operation.binding!==bindingHash)throw new BingoError('Dit verzoek is met andere invoer gebruikt. Bevestig opnieuw.',409,'request_conflict');return {result:record};}}return null;
     };
-    const authorize=g=>{if(action==='claim')assertOwnedBook(g,user,body.bookId);else if(!g.books.some(book=>book.accountId===user&&book.admitted&&!book.revokedAt))throw new BingoError('Koppel eerst een boekje voor deze show.',403,'book_forbidden');};
+    const authorize=g=>{assertShowNotCancelled(g);if(action==='claim')assertOwnedBook(g,user,body.bookId);else if(!g.books.some(book=>book.accountId===user&&book.admitted&&!book.revokedAt))throw new BingoError('Koppel eerst een boekje voor deze show.',403,'book_forbidden');};
     const result=await store.mutate(id,{...ownOptions,serializeLocal:true,binding,authorize,durableReplay},(g,f,now)=>{
      assertClaimContext(g,context,{claim:action==='claim'});
      const record=action==='claim'?claimBook(g,f,user,body.bookId,now):beginBingo(g,f,user,requestId,now);
@@ -124,6 +135,16 @@ export async function handleBingo(request,env={}){
    }
 
    requireHost();
+   if(action==='force-cancel'&&request.method==='POST'){
+    if(typeof body.requestId!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(body.requestId)||body.confirm!==true||typeof body.expectedTitle!=='string')throw new BingoError('Bevestig expliciet welke draaiende show je definitief wilt annuleren.',400,'cancel_confirmation');
+    if(body.reason!==undefined&&(typeof body.reason!=='string'||body.reason.length>300))throw new BingoError('Gebruik maximaal 300 tekens voor de reden.',400,'cancel_reason');
+    const reason=body.reason?.trim()||'Handmatig geannuleerd door de regie',binding=JSON.stringify([body.expectedTitle,reason]);
+    const result=await store.mutate(id,{requestId:scopedId,binding,authorize:g=>{if(g.ownerId!==user)throw new BingoError('Deze show hoort bij een andere host.',403);if(body.expectedTitle!==g.title)throw new BingoError('De shownaam is gewijzigd. Controleer de actuele show voordat je annuleert.',409,'cancel_confirmation');},durableReplay:g=>{if(!g.cancellation)return null;if(g.cancellation.requestId===requestId&&g.cancellation.binding!==binding)throw new BingoError('Dit annuleringsverzoek is met andere invoer gebruikt. Controleer de show en bevestig opnieuw.',409,'request_conflict');return {result:{applied:false}};}},(g,_family,at)=>forceCancelGame(g,{by:user,reason,requestId,binding},at));
+    let outputCleanup;try{outputCleanup=await cancelGameOutput(env,user,id);}catch{outputCleanup={pending:true};}
+    let cleanup;try{cleanup=await cancelGameCallResources(env,user,id);}catch{cleanup={pending:true,error:'De show is geannuleerd. Het afsluiten van gespreksaudio is nog niet bevestigd; controleer de belregie.'};}
+    if(outputCleanup.pending)cleanup={...cleanup,pending:true,error:'De show is geannuleerd. Controleer of het uitzendvenster en de gespreksaudio zijn gestopt.'};
+    const current=await store.game(id);return json({game:await hostGameWithCleanup(current?.data||result.game,env),applied:!result.replayed&&result.result?.applied===true,cleanup});
+   }
    if(row.data.state.callId&&['activate','reserve','commit','raffle','finish'].includes(action))throw new BingoError('Rond eerst het belmoment af.',409,'call_active');
    if(row.data.state.callId&&action==='pause'&&body.paused!==true)throw new BingoError('Rond eerst het belmoment af voordat je de show hervat.',409,'call_active');
    if(action==='heartbeat'&&request.method==='POST'){const result=await store.mutate(id,options,(g,_family,now)=>control(g,now));return json({ok:true});}

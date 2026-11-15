@@ -1,0 +1,1508 @@
+{
+  "observedAt": "2026-11-15T11:52:09.744Z",
+  "actualBrowserRendering": true,
+  "actualWebAudio": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "remainingOBSCheck": "Controleer op een echte OBS-installatie de Browserbronmixer en luister een korte proefopname met beeld en testgeluid terug.",
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+  "outputOnly": false,
+  "requests": [
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/characters",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/openai/status",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/heartbeat",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/session",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/heartbeat",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/heartbeat",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/obs/live-calls",
+      "method": "GET",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/live-calls",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/obs/output",
+      "method": "POST",
+      "scoped": true
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57/chat/stream",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    },
+    {
+      "path": "/api/bingo/games/1e1485a8-5257-4d83-b65c-3e1de6e02d57",
+      "method": "GET",
+      "scoped": false
+    },
+    {
+      "path": "/api/output",
+      "method": "POST",
+      "scoped": false
+    }
+  ],
+  "producerActions": [
+    "producer-claim",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish",
+    "publish"
+  ],
+  "heartbeats": [
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743517767,
+      "testAck": {
+        "id": "bac74ef1-7b07-4645-b94b-94897a88a9cf",
+        "status": "played",
+        "at": 1794743517767,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 4
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743517767,
+      "testAck": {
+        "id": "bac74ef1-7b07-4645-b94b-94897a88a9cf",
+        "status": "played",
+        "at": 1794743517767,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 4
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743517767,
+      "testAck": {
+        "id": "bac74ef1-7b07-4645-b94b-94897a88a9cf",
+        "status": "played",
+        "at": 1794743517767,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743517767,
+      "testAck": {
+        "id": "bac74ef1-7b07-4645-b94b-94897a88a9cf",
+        "status": "played",
+        "at": 1794743517767,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 11
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 12
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 12
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 15
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 16
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 17
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 18
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 19
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 21
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 22
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 24
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 25
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 27
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 28
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 30
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743519308,
+      "testAck": {
+        "id": "522ceb61-19a4-4fab-9f72-0df38c86f585",
+        "status": "played",
+        "at": 1794743519308,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 31
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743528716,
+      "testAck": {
+        "id": "f9ee40dc-7b6a-473c-beb8-c0dfbaeb4942",
+        "status": "played",
+        "at": 1794743528716,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 38
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743528716,
+      "testAck": {
+        "id": "f9ee40dc-7b6a-473c-beb8-c0dfbaeb4942",
+        "status": "played",
+        "at": 1794743528716,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 38
+    },
+    {
+      "action": "output-heartbeat",
+      "audioReady": true,
+      "audioPlayedAt": 1794743528716,
+      "testAck": {
+        "id": "f9ee40dc-7b6a-473c-beb8-c0dfbaeb4942",
+        "status": "played",
+        "at": 1794743528716,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 40
+    }
+  ],
+  "leaseHeartbeats": [
+    {
+      "action": "heartbeat",
+      "regieId": "f6772c96-1746-41eb-8179-a64110918012"
+    },
+    {
+      "action": "heartbeat",
+      "regieId": "f6772c96-1746-41eb-8179-a64110918012"
+    },
+    {
+      "action": "heartbeat",
+      "regieId": "f6772c96-1746-41eb-8179-a64110918012"
+    }
+  ],
+  "forbiddenWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedNetworkErrors": [
+    "Failed to load resource: net::ERR_FAILED"
+  ],
+  "initialGameState": {
+    "phase": "running",
+    "blockIndex": 3,
+    "roundIndex": 0,
+    "goalIndex": 0,
+    "goalOpenedAt": 0,
+    "epoch": "7dbebb96-c03d-4123-bbf5-43614a901780",
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "history": [],
+    "deck": [
+      6,
+      54,
+      71,
+      66,
+      68,
+      10,
+      67,
+      24,
+      47,
+      4,
+      13,
+      27,
+      51,
+      50,
+      22,
+      25,
+      58,
+      72,
+      8,
+      37,
+      53,
+      41,
+      11,
+      36,
+      3,
+      48,
+      21,
+      34,
+      12,
+      46,
+      30,
+      23,
+      1,
+      75,
+      59,
+      29,
+      65,
+      19,
+      73,
+      56,
+      57,
+      69,
+      31,
+      74,
+      55,
+      17,
+      52,
+      35,
+      16,
+      33,
+      44,
+      39,
+      18,
+      20,
+      64,
+      9,
+      49,
+      45,
+      43,
+      70,
+      26,
+      38,
+      2,
+      28,
+      5,
+      60,
+      40,
+      63,
+      61,
+      15,
+      62,
+      32,
+      14,
+      42,
+      7
+    ],
+    "pending": null,
+    "window": {
+      "id": "qa-open-bingo",
+      "status": "open",
+      "startedAt": 1794743514299,
+      "endsAt": 1794744115299,
+      "announcements": [],
+      "claims": []
+    },
+    "windowSequence": 0,
+    "resultId": null,
+    "goalWon": false,
+    "paused": true,
+    "lastCommit": {
+      "number": 41,
+      "committedAt": 1794743495299
+    },
+    "drawClock": {
+      "intervalMs": 15000,
+      "nextAt": 1794743530298
+    }
+  },
+  "recording": {
+    "width": 1920,
+    "height": 1080,
+    "mime": "video/webm;codecs=vp8,opus",
+    "videoWidth": 1920,
+    "videoHeight": 1080,
+    "decodedAudioChannels": 2,
+    "decodedAudioFrames": 71442,
+    "decodedAudioDuration": 1.62,
+    "decodedPeakRms": 0.11422803972804217,
+    "recordedPlaybackRms": 0.11570411243828732,
+    "recordedPlaybackEnded": true,
+    "recordedVideoPixelRange": 200.66666666666666,
+    "recordedPlaybackTime": 3.272,
+    "bytes": 383642,
+    "peak": 0.11490286000064631,
+    "microphoneRequests": 0,
+    "actualOBSRecording": false
+  },
+  "finalGameState": {
+    "phase": "running",
+    "blockIndex": 3,
+    "roundIndex": 0,
+    "goalIndex": 0,
+    "goalOpenedAt": 0,
+    "epoch": "7dbebb96-c03d-4123-bbf5-43614a901780",
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "history": [],
+    "deck": [
+      6,
+      54,
+      71,
+      66,
+      68,
+      10,
+      67,
+      24,
+      47,
+      4,
+      13,
+      27,
+      51,
+      50,
+      22,
+      25,
+      58,
+      72,
+      8,
+      37,
+      53,
+      41,
+      11,
+      36,
+      3,
+      48,
+      21,
+      34,
+      12,
+      46,
+      30,
+      23,
+      1,
+      75,
+      59,
+      29,
+      65,
+      19,
+      73,
+      56,
+      57,
+      69,
+      31,
+      74,
+      55,
+      17,
+      52,
+      35,
+      16,
+      33,
+      44,
+      39,
+      18,
+      20,
+      64,
+      9,
+      49,
+      45,
+      43,
+      70,
+      26,
+      38,
+      2,
+      28,
+      5,
+      60,
+      40,
+      63,
+      61,
+      15,
+      62,
+      32,
+      14,
+      42,
+      7
+    ],
+    "pending": null,
+    "window": {
+      "id": "qa-open-bingo",
+      "status": "open",
+      "startedAt": 1794743514299,
+      "endsAt": 1794744115299,
+      "announcements": [],
+      "claims": []
+    },
+    "windowSequence": 0,
+    "resultId": null,
+    "goalWon": false,
+    "paused": true,
+    "lastCommit": {
+      "number": 41,
+      "committedAt": 1794743495299
+    },
+    "drawClock": {
+      "intervalMs": 15000,
+      "nextAt": 1794743530298
+    },
+    "control": {
+      "id": "f6772c96-1746-41eb-8179-a64110918012",
+      "until": 1794743540481
+    }
+  }
+}
