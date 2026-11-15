@@ -17,3 +17,10 @@ De browserproeven gebruiken volledig onderschept transport, geïsoleerde echte B
 Een eerste test ontdekte een ontbrekende narratieblokkade bij winnaars; de oorspronkelijke uitvoer staat in `initial-node-tests.log`. Een echte browsertest ontdekte daarna de native `fetch`-binding; voorfixbewijs staat in `browser-preparation/native-fetch-binding-before-fix/`. Beide appfouten zijn hersteld en de definitieve controles hierboven zijn groen. Aanvullende screenshots en tijdelijke Playwright-traces zijn buiten de repository bewaard; de relevante nieuwe screenshots staan bij dit verslag.
 
 CI-run 43719503972 vond daarnaast een fout in de nieuwe PostgreSQL-test: de verwachte hostresponse bevatte het geheime trekdek, dat de server correct weglaat. De test vergelijkt nu de volledige toegestane response, eist expliciet dat het dek ontbreekt en controleert afzonderlijk dat de volledige private serverstaat ongewijzigd blijft. Dit is uitsluitend een testcorrectie; de app en de hierboven geteste build zijn gelijk gebleven. De eerste CI-uitvoer is bewaard in `ci-43719503972-failure.log`; de echte lokale PostgreSQL-herhaling is groen.
+
+CI-run 43720190912 slaagde voor alle contract-, PostgreSQL-, deploy- en buildcontroles en voor 42 van 44 browsertests. Twee browsercontroles zijn vervolgens nauwkeuriger gemaakt, zonder appwijziging:
+
+- De startcontrole wacht op de ene succesvolle serverstart en eist dat alle 118 actuele audiokeys daarvoor volledig zijn geleverd. De gewone navigatielimiet van vijf seconden was te kort voor het vooraf laden van de hele bank op de CI-runner.
+- Het terugspelen van de opgenomen WebM wordt nu op de echte audiothread gemeten met een AudioWorklet. Een gecontroleerde blokkade van 1,2 seconde reproduceerde de oude onjuiste nulmeting, terwijl de audiothread RMS 0,11765 en de gedecodeerde opname RMS 0,11423 maten. De geluidsdrempel van 0,01 is behouden. Zie `broadcast-ci-meter/` voor opname en metingen; dit is een echte Chromium-opname, geen OBS-opname.
+
+De eerste uitvoer staat in `ci-43720190912-browser-failure.log`. Beide aangepaste startcontroles en beide uitzendcontroles zijn lokaal opnieuw geslaagd.

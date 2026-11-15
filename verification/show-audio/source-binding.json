@@ -582,7 +582,7 @@
     "server/standard-show.js": "f83cde008eca4e590034e19d4f48001816be31c031f85508badc163faba223ae",
     "server/voice-cache.js": "5aa81e590e72fc4db89b347a1de55c74351d9745409728b25e46e4f1ca5dc2df",
     "tests/browser/audio-preparation.spec.mjs": "05fb6b9d7e1211fe4b2a3b747286b5599926c9c51fe6889595934aff89426d5b",
-    "tests/browser/broadcast-preparation.spec.mjs": "b5e8fa770b5d9476cf72cc142450c7da97434fc1137c524bc3e2e15c120ed66a",
+    "tests/browser/broadcast-preparation.spec.mjs": "c286d5fe64d96f0d145adfd93d7eca18df236eff95f2905f1e1c834314cbb269",
     "tests/browser/broadcast-settings.spec.mjs": "ceafe7d10ee9805165dcbf763608eecb43303de2e6ecae2a531cea69efb43fb9",
     "tests/browser/family.spec.mjs": "2f177a51d3b98853ea09002e27e9cd427685ac1cfc45a501ceb00a3ca6e18d75",
     "tests/browser/handoff-v6.spec.mjs": "4ceed1bcfda2b97dba51662ddab8881bf779f6d2b87efea8d1a43fca15e5747a",
@@ -591,7 +591,7 @@
     "tests/browser/regie-refresh.spec.mjs": "eb34de1666e94b37a2ce0ceec9ccfd4bdc7742b4b820bc74e20234f87214930d",
     "tests/browser/regie-settings.spec.mjs": "ce576209fcd15a9833aa114d29548289ffed21c4676b05003343969c39fed5d3",
     "tests/browser/show-audio.spec.mjs": "c2c7cd825e9118c2fea3747b3ea4a57de028b6d976af3c4be874a37958cca38f",
-    "tests/browser/start-rules.spec.mjs": "42ed4cd208f3d849ee54a60f53b8ca3d78430a33032922a641d5dd565bd886d3",
+    "tests/browser/start-rules.spec.mjs": "5cc2c295ff353ab336a566ca13b492831222e981841415bbd2c77b3a9f5069f1",
     "tests/check-account-mail.mjs": "9ea4baecc842c4402c1bd4c670d7d9ce663ccc9aa9f4b51a51072307761797a7",
     "tests/check-broadcast-settings-ui.mjs": "98f2386c7e8139c0c845bda095286050ef2438c226e2eb32a3268ae154a223db",
     "tests/check-broadcast-settings.mjs": "5196429939a758e62b83a96e8b8f675a66d2ace58d6fa7c74976ff5513de3c42",
@@ -639,5 +639,5 @@
     "tests/helpers/browser-audio-fixture.mjs": "7b3cfef104e7988577bcf44f1b8713c08d56371259d9bb6b7fc62770bcffab86",
     "tests/helpers/sudoers-toolchain.mjs": "c9f83dbacd70ed709e767edb1e545c91f69c70a00ec5dd4b383c43755442d56c"
   },
-  "testOnlyFollowup": "PostgreSQL test now compares the intentionally redacted host response and separately asserts complete private state preservation. Application and built assets unchanged."
+  "testOnlyFollowup": "PostgreSQL test now compares the intentionally redacted host response and separately asserts complete private state preservation. Application and built assets unchanged. Browser follow-up measures recorded playback on the audio render thread and awaits complete audio before asserting navigation; application and built assets remain unchanged."
 }

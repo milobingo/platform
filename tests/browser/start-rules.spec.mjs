@@ -19,7 +19,7 @@ async function savedShow(page,testInfo){
  const game=makeGame({brandId:'milo',title:'QA eenvoudig voorbereiden en starten',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam'},owner,origin);
  prepareAutomaticRules(game);generateBooks(game,1,'qa-preparation-book');Object.assign(game.books[0],{accountId:'qa-family',profileId:'qa-child',name:'Sam'});await store.create(game);
  const gamePath='/api/bingo/games/'+game.id,initial=JSON.stringify((await store.game(game.id)).data);
- const evidence={origin,gameId:game.id,gets:{},bingoRequests:[],puts:[],starts:[],publishCalls:[],blockedWrites:[],external:[],unexpected:[],errors:[],expectedStorageConsoleErrors:[]},state={failSaves:true};
+ const evidence={origin,gameId:game.id,gets:{},bingoRequests:[],puts:[],starts:[],publishCalls:[],blockedWrites:[],external:[],unexpected:[],errors:[],expectedStorageConsoleErrors:[],audioTransport:[]},state={failSaves:true};
  const audioFixture=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data});evidence.audioPreparationRequests=audioFixture.requests;
  const failedStorage={kind:db.kind,prepare(sql){
   const query=db.prepare(sql);if(!/^UPDATE bingo_games SET revision/.test(sql))return query;
@@ -38,7 +38,10 @@ async function savedShow(page,testInfo){
   if(url.origin!==origin){evidence.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
-  if(await audioFixture.handle(route))return;
+  if(method==='POST'&&['/api/openai/show-audio','/api/openai/speech'].includes(url.pathname)){
+   const body=request.postDataJSON(),record={path:url.pathname,key:body.expectedKey||null,at:Date.now(),completedAt:null};evidence.audioTransport.push(record);
+   await audioFixture.handle(route);record.completedAt=Date.now();return;
+  }
   if(method==='GET')evidence.gets[url.pathname]=(evidence.gets[url.pathname]||0)+1;
   const bingoRead=method==='GET'&&['/api/bingo/games',gamePath,'/api/bingo/families'].includes(url.pathname);
   const bingoWrite=method==='PUT'&&url.pathname===gamePath||method==='POST'&&['start','activate','heartbeat','pause'].some(action=>url.pathname===gamePath+'/'+action);
@@ -68,7 +71,7 @@ async function savedShow(page,testInfo){
   else {evidence.unexpected.push(url.pathname+url.search);return route.fulfill({status:404,json:{error:{message:'Unknown isolated preparation QA endpoint.'}}});}
   return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
  });
- return {game,state,evidence,initial,read:async()=>(await store.game(game.id)).data,close:()=>db.close()};
+ return {game,state,evidence,initial,audio:audioFixture,read:async()=>(await store.game(game.id)).data,close:()=>db.close()};
 }
 
 async function noOverflow(page){await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);}
@@ -96,7 +99,14 @@ for(const width of [390,1366]){
    h.state.failSaves=false;await main.getByRole('button',{name:'Opnieuw proberen',exact:true}).click();await expect(main.locator('[data-save-status="saved"]')).toContainText('Opgeslagen');await expect(title).toHaveValue(edited);expect((await h.read()).plan.blocks[0].title).toBe(edited);
    const finalTitle='Laatste wijziging vóór start '+width;await title.fill(finalTitle);await main.getByRole('tab',{name:'Startcheck',exact:true}).click();
    const start=main.getByRole('button',{name:'Start show',exact:true});await expect(start).toBeEnabled();await expect(main.locator('[data-rules-state="readonly"]')).toBeVisible();
-   await start.dblclick({force:true});await expect(page).toHaveURL(/#\/live/);await expect.poll(async()=>(await h.read()).status).toBe('running');
+   await start.dblclick({force:true});
+   // Start waits for the whole cold-tab audio bank. Its 118 cache responses
+   // can exceed the ordinary 5s navigation budget on the two-core CI runner.
+   await expect.poll(()=>evidence.starts.map(request=>request.status),{timeout:30000,message:'The one server start must wait for all prepared audio and the latest save'}).toEqual([200]);
+   const manifest=await h.audio.manifest(),completedClips=new Set(evidence.audioTransport.filter(request=>request.path.endsWith('/speech')&&request.completedAt!==null&&request.completedAt<=evidence.starts[0].at).map(request=>request.key));
+   expect(manifest.items.length).toBeGreaterThanOrEqual(118);expect(manifest.items.every(item=>completedClips.has(item.key))).toBe(true);
+   evidence.startAudio={fingerprint:manifest.fingerprint,total:manifest.total,allCurrentClipsDeliveredBeforeStart:true,completedCurrentClips:manifest.items.filter(item=>completedClips.has(item.key)).length,startedAt:evidence.starts[0].at};
+   await expect(page).toHaveURL(/#\/live/);await expect.poll(async()=>(await h.read()).status).toBe('running');
    const liveRoute=main.locator('.mf-route-view[data-route="live"]'),workspace=liveRoute.locator('.rd-workspace'),essentials=workspace.locator('.mf-live-essentials'),bingo=workspace.locator('.mf-live-bingo');
    await expect(workspace).toBeVisible();await expect(main.locator('.mf-route-view[data-route="script"]')).toHaveCount(0);
    await expect.poll(()=>liveRoute.evaluate(element=>Number(getComputedStyle(element).opacity))).toBe(1);
