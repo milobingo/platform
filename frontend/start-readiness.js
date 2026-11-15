@@ -4,6 +4,7 @@ import {assertOrderStartReady} from '../server/bingo-order-model.js';
 import {gameCapacity} from '../server/game-capacity.js';
 import {normalizeShowTime} from '../server/show-time.js';
 import {automaticRules} from '../server/standard-show.js';
+import {callRundownSummary} from '../server/call-rundown.js';
 
 const mib=bytes=>Number.isFinite(bytes)?(bytes/1048576).toLocaleString('nl-NL',{maximumFractionDigits:2})+' MiB':'onbekend';
 const checked=(id,label,check,detail)=>{try{check();return {id,label,status:'ready',detail};}catch(error){return {id,label,status:'blocked',code:error.code||id,detail:error.message};}};
@@ -17,6 +18,7 @@ export function startReadiness(s,live={}){
  add('saved','Draaiboek',s.dirty?'warning':'ready',saveError?'Niet opgeslagen — Opnieuw proberen. Je invoer blijft bewaard; Start show probeert eerst opnieuw op te slaan.':s.dirty?'Opslaan… Start show bewaart eerst je laatste wijzigingen.':'Opgeslagen.');
  if(native&&game.status==='finished')add('finished','Showstatus','blocked','Deze show is afgelopen. Maak een nieuwe show.');
  if(draft){
+  if((game.brandId||s.production)==='milo'){const summary=callRundownSummary(game.plan);add('call-plan','Geplande belmomenten',summary.randomCount>2||native&&game.production?.calls?.enabled&&!summary.randomReady?'blocked':summary.randomReady?'ready':'warning',`${summary.randomCount} van 2 willekeurige belmomenten gepland. Winnaaroproepen: ${summary.winnerRounds.filter(round=>round.enabled).map(round=>round.title).join(', ')||'uit voor alle rondes'}. ${summary.randomReady?'Een lege wachtlijst of weigering wordt een voorbereide brug.':'Zet de twee magische belletjes bewust klaar in het draaiboek.'}`);}
   rows.push(checked('plan','Rondes, patronen en prijzen',()=>normalizeBingoPlan(game.plan),'Het draaiboek bevat geldige rondes, patronen en prijzen.'));
   if(native){
    const rules=automatic?{id:'rules',label:'Spelregels',status:'ready',detail:game.rulesPublication?.finalizedAt?'De spelregels liggen vast voor deze show.':game.rulesPublication?`Versie ${game.rulesPublication.version} is vóór deelname beschikbaar. Bij Start show legt de server de regels automatisch vast.`:'De spelers zien de regels vóór deelname. Bij Start show legt de server de regels automatisch vast.'}:checked('rules','Bindende spelregels',()=>assertRulesCurrent(game),'');

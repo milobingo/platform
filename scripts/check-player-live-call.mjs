@@ -6,7 +6,7 @@ import {PlayerLiveCallController,playerCallActive} from '../frontend/player-live
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const checkpoint={id:'checkpoint-1',epoch:7,drawnCount:3,lastNumber:42,drawn:[2,18,42]};
 function fixture(options={}){
- const events=[],actions=[];let server=null;
+ const events=[],actions=[],requests=[];let server=null;const game=options.game||{id:'game-1'};let visible=true,clock=100000;
  const video={info:{framePresent:true,ready:true,playing:true,muted:false,volume:80,state:1,currentTime:300,duration:8000},
   async suspend(){events.push('youtube:suspend');this.info={...this.info,playing:false,muted:true};return {silenced:options.silenced!==false,method:'fixture'};},
   async restore(){events.push('youtube:restore');this.info={...this.info,framePresent:true};},
@@ -28,9 +28,9 @@ function fixture(options={}){
   getState(){return this.state;}async dispose(){await this.disconnect();events.push('media:dispose');}
  }
  const preflight=async args=>{events.push('media:preflight:'+args.profileId);return {microphone:true,connection:true,micChecked:true,connectionChecked:true,simulated:false};};
- const controller=new PlayerLiveCallController({getGame:()=>({id:'game-1'}),accountId:'parent',broadcast:video,Connection,Media,preflight,timers:false});
+ const controller=new PlayerLiveCallController({getGame:()=>game,accountId:'parent',broadcast:video,Connection,Media,preflight,timers:false,requestGame:async(path,request)=>{requests.push({path,...request});return {game};},isVisible:()=>visible,...(options.game?{now:()=>clock}:{})});
  const call=(phase,extra={})=>({id:'call-1',gameId:'game-1',phase,profileId:'sophie',name:'Sophie',context:{callName:'Sophie'},checkpoint,endedAt:Date.now()-1000,returnState:{cue:{id:'cue-fixture',publishedAt:Date.now(),lastNumber:42}},drawHeld:true,version:1,...extra});
- return {controller,events,actions,video,call,async set(phase,extra={}){controller.connection.emit(call(phase,extra));await flush();},setServer(phase,extra={}){server=call(phase,extra);},clear(){events.length=0;actions.length=0;}};
+ return {controller,events,actions,requests,game,video,call,setVisible(value){visible=value;},advance(ms){clock+=ms;},async set(phase,extra={}){controller.connection.emit(call(phase,extra));await flush();},setServer(phase,extra={}){server=call(phase,extra);},clear(){events.length=0;actions.length=0;}};
 }
 
 test('ordinary viewers and ringing calls open no room; heard checkpoint and updated cards are required',async()=>{
@@ -67,3 +67,39 @@ test('preflight is opt-in for the selected child and disposal closes media witho
  const f=fixture();try{await f.set('preparing');assert.equal(f.events.some(e=>e.startsWith('media:preflight')),false);const proof=await f.controller.checkConnection('sophie');assert(proof.microphone&&proof.connection);assert(f.events.includes('media:preflight:sophie'));assert.equal(playerCallActive(f.controller.call),true);await f.controller.dispose();assert(f.events.includes('server:leave'));assert(f.events.includes('media:dispose'));assert.equal(f.actions.some(a=>a.action==='resume-draw'),false);}finally{await f.controller.dispose();}
 });
 test('a passive second call tab opens no microphone and cannot cancel; parent withdrawal remains a separate action',async()=>{const f=fixture();try{await f.set('live',{canControl:false});assert.equal(f.events.some(e=>e.startsWith('media:connect')),false);await assert.rejects(f.controller.stop(),/ander apparaat/);assert.equal(f.actions.length,0);await f.controller.withdrawConsent();assert.equal(f.actions.at(-1).action,'withdraw-consent');assert.equal(f.actions.some(a=>a.action==='resume-draw'),false);}finally{await f.controller.dispose();}});
+
+
+test('Milo presence is per consenting child and current show, deduplicates books and never renews technical checks',async()=>{
+ const game={id:'game-1',brandId:'milo',status:'running',books:[{profileId:'sophie',admitted:true,accountId:'parent'},{profileId:'sophie',admitted:true,accountId:'parent'},{profileId:'brother',admitted:true,accountId:'parent'},{profileId:'foreign',admitted:true,accountId:'another-parent'},{profileId:'revoked',admitted:true,revokedAt:1}],production:{participation:[{profileId:'sophie',callConsentEnabled:true,callStatus:'done',technicalReadyAt:90000},{profileId:'brother',callConsentEnabled:false},{profileId:'foreign',callConsentEnabled:true},{profileId:'revoked',callConsentEnabled:true}]}};
+ const f=fixture({game});try{
+  await f.controller.heartbeatPresence();assert.equal(f.requests.length,1);assert.deepEqual(f.requests[0].body,{kind:'presence',profileId:'sophie',visible:true});assert.equal(f.requests[0].path,'/games/game-1/participation');assert.equal(f.events.some(event=>event.startsWith('media:')),false);
+  await f.controller.heartbeatPresence();assert.equal(f.requests.length,1);f.advance(15000);await f.controller.heartbeatPresence();assert.equal(f.requests.length,2);
+  f.setVisible(false);await f.controller.heartbeatPresence({force:true});assert.deepEqual(f.requests.at(-1).body,{kind:'presence',profileId:'sophie',visible:false});f.advance(15000);await f.controller.heartbeatPresence();assert.equal(f.requests.length,3,'A hidden app sends one offline update, never a recurring presence heartbeat');
+  game.production.participation[0].callConsentEnabled=false;f.advance(15000);await f.controller.heartbeatPresence();assert.equal(f.requests.length,3,'Withdrawn child sends no eligible heartbeat');
+  game.id='game-2';game.production.participation=[{profileId:'brother',callConsentEnabled:true}];f.setVisible(true);await f.controller.heartbeatPresence();assert.equal(f.requests.at(-1).path,'/games/game-2/participation');assert.equal(f.requests.at(-1).body.profileId,'brother');
+ }finally{await f.controller.dispose();}
+ const legacy=fixture({game:{id:'game-1',brandId:'vlampie',books:[{profileId:'sophie',admitted:true}],production:{participation:[{profileId:'sophie',callConsentEnabled:true}]}}});try{await legacy.controller.heartbeatPresence();assert.equal(legacy.requests.length,0);}finally{await legacy.controller.dispose();}
+});
+test('Milo keeps YouTube audible until explicit heard checkpoint and rejects an already muted video before handoff',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('ringing');f.clear();f.video.info.muted=true;await assert.rejects(f.controller.answer({heard:true,cardsUpdated:true}),/geluid/);assert.equal(f.actions.length,0);assert.equal(f.events.includes('youtube:suspend'),false);
+  f.video.info.muted=false;await f.controller.answer({heard:true,cardsUpdated:true});await flush();assert(f.events.indexOf('youtube:suspend')<f.events.indexOf('server:answer'));assert.equal(f.controller.call.phase,'backstage');assert.equal(f.events.includes('media:connect:live'),false);
+ }finally{await f.controller.dispose();}
+});
+test('Milo live agreement requires explicit family permission and an actual private media check',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('ringing');await assert.rejects(f.controller.agreeLive({agreed:true}),/privécontrole/);await f.set('backstage');f.clear();await assert.rejects(f.controller.agreeLive(),/ouder/);f.controller.status.media={...f.controller.status.media,audioReady:false};await assert.rejects(f.controller.agreeLive({agreed:true}),/elkaar hoort/);assert.equal(f.actions.length,0);f.controller.status.media={...f.controller.status.media,audioReady:true};await f.controller.agreeLive({agreed:true});assert.deepEqual(f.actions.at(-1),{action:'agree-live',agreed:true});assert.equal(f.controller.call.phase,'backstage');assert.equal(f.actions.some(action=>action.action==='go-live'||action.action==='resume-draw'),false);
+ }finally{await f.controller.dispose();}
+});
+test('Milo magic waits for actual greeting readiness and reuses the choice request on retry',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('live',{mode:'prepared'});await assert.rejects(f.controller.chooseMagic('stars'),/presentator/);await f.set('live',{mode:'prepared',magicReadyAt:1000});f.clear();const original=f.controller.connection.action.bind(f.controller.connection);let failed=true;f.controller.connection.action=async(action,body)=>{if(action==='magic-choice'&&failed){failed=false;f.actions.push({action,...body});throw Error('Fixture connection failure');}return original(action,body);};await assert.rejects(f.controller.chooseMagic('stars'),/Fixture/);const requestId=f.actions[0].requestId;await f.controller.chooseMagic('stars');assert.equal(f.actions.at(-1).requestId,requestId);assert.equal(f.actions.at(-1).choice,'stars');await f.set('live',{mode:'prepared',magicReadyAt:1000,magic:{choice:'stars',effectId:'one-effect'}});f.clear();await f.controller.chooseMagic('stars');assert.equal(f.actions.length,0);await assert.rejects(f.controller.chooseMagic('bubbles'),/al vast/);assert.equal(f.actions.length,0);
+ }finally{await f.controller.dispose();}
+});
+test('Milo emergency withdrawal starts immediately during another action and does not wait for slow room cleanup',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('live');f.clear();let release;const slow=new Promise(resolve=>release=resolve),disconnect=f.controller.media.disconnect.bind(f.controller.media);f.controller.media.disconnect=()=>{void disconnect();return slow;};f.controller.status.busy=true;const operation=f.controller.withdrawConsent();await flush();assert.equal(f.actions[0]?.action,'withdraw-consent');assert.equal(f.controller.status.media.micPublished,false);assert.equal(f.controller.blockedCallId,'call-1');await f.set('live',{mode:'prepared'});assert.equal(f.events.filter(event=>event==='media:connect:live').length,0,'A stale live projection cannot reopen a withdrawn microphone');release();await operation;assert.equal(f.actions.some(action=>action.action==='resume-draw'),false);f.controller.status.busy=false;
+ }finally{await f.controller.dispose();}
+});
+test('Milo never-left return is separate, audible, explicit and unavailable after answering or reloading an answered call',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('returning',{outcome:'declined'});await assert.rejects(f.controller.confirmNeverLeft({heardLastNumber:false,cardsUpdated:true}),/Bevestig/);f.video.info.muted=true;await assert.rejects(f.controller.confirmNeverLeft({heardLastNumber:true,cardsUpdated:true}),/geluid/);f.video.info.muted=false;await f.controller.confirmNeverLeft({heardLastNumber:true,cardsUpdated:true});const proof=f.actions.at(-1);assert.equal(proof.action,'player-returned');assert.equal(proof.neverLeftViewing,true);assert.equal(proof.playbackInfo.source,'never-left-viewing-and-parent-confirmation');assert.equal(proof.playbackInfo.heardLastNumber,42);assert.equal(f.controller.call.drawHeld,true);assert.equal(f.actions.some(action=>action.action==='resume-draw'),false);
+  await f.set('returning',{heardCheckpointAt:1000});await assert.rejects(f.controller.confirmNeverLeft({heardLastNumber:true,cardsUpdated:true}),/gewone terugkeercontrole/);
+  await f.set('ringing');f.video.info={...f.video.info,muted:false,playing:true};await f.controller.answer({heard:true,cardsUpdated:true});await f.set('returning');f.video.info={...f.video.info,muted:false,playing:true};await assert.rejects(f.controller.confirmNeverLeft({heardLastNumber:true,cardsUpdated:true}),/gewone terugkeercontrole/);
+ }finally{await f.controller.dispose();}
+});

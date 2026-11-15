@@ -14,7 +14,7 @@ export async function requestLiveCall(path,body,{fetcher=globalThis.fetch,signal
 export class LiveCallConnection{
  constructor({role,getGame,getGameId,getClientId,onChange=()=>{},onError=()=>{},request=requestLiveCall,now=()=>Date.now()}={}){
   if(!['host','player','output'].includes(role))throw new Error('Kies een geldige rol voor de belverbinding.');
-  Object.assign(this,{role,getGame,getGameId,getClientId,onChange,onError,requester:request,clock:now});this.call=null;this.lastOK=0;this.offset=0;this.listeners=new Set();this.disposed=false;this.epoch=0;this.commands=0;this.inFlightPoll=null;
+  Object.assign(this,{role,getGame,getGameId,getClientId,onChange,onError,requester:request,clock:now});this.call=null;this.cues=[];this.lastOK=0;this.offset=0;this.listeners=new Set();this.disposed=false;this.epoch=0;this.commands=0;this.inFlightPoll=null;
  }
  get clientId(){return this.getClientId?.();}
  get gameId(){return this.getGameId?.()||this.getGame?.()?.id||this.getGame?.()||this.call?.gameId||'';}
@@ -24,6 +24,7 @@ export class LiveCallConnection{
  emit(){if(this.disposed)return;this.onChange(this.call);for(const listener of this.listeners)listener(this.call);}
  accept(data){
   if(this.disposed)return data;this.lastOK=this.clock();this.offset=(data.serverTime||this.lastOK)-this.lastOK;
+  if(Array.isArray(data.cues))this.cues=data.cues;
   if(data.call!==undefined){
    const next=data.call,current=this.call;
    if(current&&next&&current.id===next.id&&(next.version||0)<(current.version||0))return data;

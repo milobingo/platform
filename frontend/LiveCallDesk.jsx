@@ -1,12 +1,11 @@
-import React,{useEffect,useMemo,useState,useSyncExternalStore} from 'react';
+import React,{useEffect,useMemo,useState} from 'react';
 import {ArrowRight,Check,CheckCircle2,ChevronRight,Clock,Cloud,Headphones,Info,Mic,MicOff,Phone,PhoneCall,PhoneOff,Play,Radio,RefreshCw,ShieldCheck,Sparkles,Users,Video,Volume2,VolumeX} from 'lucide-react';
 import {Button,Badge,Field} from './components.jsx';
 import {bingoApi} from '../public/bingo-api.js';
 import './live-call-desk.css';
-
-const empty=Object.freeze({call:null,queue:[],busy:false,error:'',media:null,settings:null,mode:'real',drawHeld:false});
-const noSubscribe=()=>()=>{},getEmpty=()=>empty;
-export function useLiveCallState(engine){const runtime=engine?.liveCalls;return [runtime,useSyncExternalStore(runtime?.subscribe||noSubscribe,runtime?.getSnapshot||getEmpty)];}
+import {useLiveCallState} from './live-call-state.js';
+import MiloCallCard from './MiloCallCard.jsx';
+export {useLiveCallState} from './live-call-state.js';
 const phaseLabels={preparing:'Belmoment voorbereid',ringing:'De Bingoshow belt',backstage:'Privé bij de regie',staged:'Klaar voor de presentator',live:'Live gezet',returning:'Terug naar YouTube',returned:'Terugkeer gecontroleerd',completed:'Belmoment afgerond'};
 const outcomeLabels={declined:'De oproep is geweigerd.',missed:'Er is niet opgenomen.',failed:'De verbinding is onderbroken.',cancelled:'Het belmoment is geannuleerd.',ended:'Het gesprek is afgerond.','mic-denied':'Er is geen microfoontoestemming.','disconnected':'De verbinding is onderbroken.'};
 const availabilityLabels={requested:'Beschikbaar',available:'Beschikbaar',invited:'Uitgenodigd',accepted:'Apparaat gecontroleerd',checked:'Apparaat gecontroleerd',released:'Beschikbaar'};
@@ -22,7 +21,8 @@ function Facts({facts}){const rows=(Array.isArray(facts)?facts:typeof facts==='s
 const flow=[['1','Kies het kindje'],['2','Bereid het belmoment voor'],['3','Bel het gezin'],['4','Spreek privé met de regie'],['5','Zet klaar voor de presentator'],['6','Ga samen live'],['7','Beëindig het gesprek'],['8','Controleer terugkeer'],['9','Hervat de trekking']];
 const stepFor=phase=>({preparing:2,ringing:3,backstage:4,staged:5,live:6,returning:7,returned:8,completed:9}[phase]||1);
 
-export default function LiveCallDesk({s,engine,run,compact=false}){
+export default function LiveCallDesk(props){return props.s.production==='milo'?<MiloCallCard {...props}/>:<LegacyLiveCallDesk {...props}/>;}
+function LegacyLiveCallDesk({s,engine,run,compact=false}){
  const [runtime,state]=useLiveCallState(engine),call=state.call,busy=!!state.busy,simulation=state.mode==='demo'||s.demo;
  const [selected,setSelected]=useState(''),[characterId,setCharacterId]=useState(s.hostId||s.game.plan.leadId||'milo'),[maxSeconds,setMaxSeconds]=useState(90),[context,setContext]=useState(()=>blankContext('')),[soundChecked,setSoundChecked]=useState(false),[explained,setExplained]=useState(false),[contextConfirmed,setContextConfirmed]=useState(false),[manualReturn,setManualReturn]=useState(false),[returnChecked,setReturnChecked]=useState(false),[returnNote,setReturnNote]=useState(''),[families,setFamilies]=useState([]),[localError,setLocalError]=useState('');
  const queue=state.queue||[],hasCall=active(call),held=!!(state.drawHeld||state.held||call?.drawHeld||s.game.state.drawHold),familyMap=useMemo(()=>new Map(families.map(f=>[f.accountId,f])),[families]);

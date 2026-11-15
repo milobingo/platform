@@ -14,11 +14,12 @@ export class ShowRunner{
  notify(){this.onChange(this.visual());}
  stop(){this.syncToken=(this.syncToken||0)+1;this.heldTarget=null;this.active=false;this.voiceFailed=false;this.phase='idle';this.clearCastCue();this.director.configure({planKind:'',planTitle:'',patternCells:null,prizeImage:'',prizeDescription:''});this.notify();}
  clearCastCue(){if(this.showCue){this.director.event('show-cue',{action:'end',...this.showCue});this.showCue=null;}if(this.castCue){const returnSpeakerId=this.plan?.leadId||this.castCue.speakerId;this.director.event('cast-cue',{action:'end',...this.castCue,returnSpeakerId});this.director.configure({magicId:null,guestId:null,speakerId:returnSpeakerId});this.castCue=null;}}
- next(){if(this.director.callHold)return false;if(!this.active||this.director.scene==='checking')return false;return this.enter(this.heldTarget?.index??this.index+1)!==false;}
+ next(){if(this.director.callHold||this.director.callCueHold)return false;if(!this.active||this.director.scene==='checking')return false;return this.enter(this.heldTarget?.index??this.index+1)!==false;}
  holdRound(index,kind='block'){
   this.syncToken=(this.syncToken||0)+1;this.heldTarget={kind,index};this.phase='draw-held';this.notify();return false;
  }
  enter(index){
+  if(this.beforeAdvance?.(index)===false){this.syncToken=(this.syncToken||0)+1;this.heldTarget={kind:'block',index};this.phase='call-held';this.notify();return false;}
   if(this.director.drawBlocked&&this.plan?.blocks[index]?.type==='round')return this.holdRound(index);
   this.heldTarget=null;
   if(this.beforeBlock){this.phase='sync';this.syncTarget={kind:'block',index};const token=this.syncToken=(this.syncToken||0)+1;this.notify();this.syncRequest=Promise.resolve().then(()=>{if(!this.active||this.syncToken!==token)return;if(this.director.drawBlocked&&this.plan?.blocks[index]?.type==='round'){this.holdRound(index);return;}return this.beforeBlock(index,this.initialGoal??0);}).then(()=>{if(this.active&&this.syncToken===token)this.enterReady(index);}).catch(error=>{if(!this.active||this.syncToken!==token)return;if(this.director.drawBlocked&&this.plan?.blocks[index]?.type==='round'){this.holdRound(index);return;}this.phase='sync-error';this.onNotice(error.message);this.notify();});return true;}
@@ -34,6 +35,7 @@ export class ShowRunner{
    this.afterRound?.();
    this.announceGoal();return;
   }
+  if(b.type==='random-call'){d.cancel(false);d.setScene('host','desk',true);this.phase='call-cue';this.notify();return;}
   const timed=['countdown','pause','call'].includes(b.type),scene=b.type==='countdown'?'opening':b.type==='pause'?'pause':b.type==='call'?'call':b.type==='finale'?'finale':'host';
   if(b.type==='countdown')d.configure({countdown:b.seconds});
   if(b.type==='pause')d.configure({pauseMinutes:b.seconds/60});
@@ -76,11 +78,12 @@ export class ShowRunner{
   if(this.director.drawBlocked||!this.active||this.block?.type!=='round'||this.phase!=='drawing')return false;
   this.age=0;return this.director.draw();
  }
- tick(delta){if(this.director.callHold)return;
+ tick(delta){if(this.director.callHold||this.director.callCueHold)return;
   const d=this.director;if(!this.active||d.paused||d.externalHold||d.narrationHold||d.scene==='checking'||!Number.isFinite(delta)||delta<=0)return;
   // Hold only bingo progression. Stories, magic and other entertainment keep
   // their normal timing; the next round waits without resetting the board.
   if(d.drawBlocked&&(this.block?.type==='round'||this.phase==='draw-held'))return;
+  if(this.phase==='call-held'){const target=this.heldTarget;if(target)this.enter(target.index);return;}
   if(this.phase==='draw-held'){const target=this.heldTarget;this.heldTarget=null;if(target?.kind==='goal')this.announceGoal();else if(target)this.enter(target.index);return;}
   if(['sync','sync-error'].includes(this.phase)||!this.block)return;
   if(this.phase==='waiting'){

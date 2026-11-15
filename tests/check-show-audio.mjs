@@ -128,7 +128,7 @@ for(const change of ['revoke','profile','cancel'])test(`manifest metadata enumer
 
 test('OBS preloads only the bound current manifest with no private scripts, arbitrary owner clips or provider authority',async t=>{
  const h=await fixture(t),token=await h.access(),manifest=await h.manifest(),item=manifest.items.find(item=>item.kind==='number');await h.seed(item);
- const scoped=await h.invoke('/api/obs/show-audio',undefined,{token,providerUser:null});assert.equal(scoped.data.fingerprint,manifest.fingerprint);assert(scoped.data.items.every(value=>!('text' in value)&&!('characterId' in value)));assert.equal(scoped.data.ready,1);
+ const scoped=await h.invoke('/api/obs/show-audio',undefined,{token,providerUser:null});assert.equal(scoped.data.fingerprint,manifest.fingerprint);assert(scoped.data.items.every(value=>!('text' in value)&&(!('characterId' in value)||value.callKey&&value.characterId!=='vlampie')));assert.equal(scoped.data.ready,1);
  await h.invoke('/api/obs/clips/'+item.key,undefined,{token,providerUser:null});await h.env.SETTINGS.put(voicePath(h.user.id,'a'.repeat(64)),new Uint8Array([1]));await h.invoke('/api/obs/clips/'+'a'.repeat(64),undefined,{token,providerUser:null,status:403});
  await h.invoke('/api/obs/show-audio',{gameId:h.game.id},{token,providerUser:null,status:403});await h.invoke('/api/openai/show-audio',{gameId:h.game.id},{token,providerUser:null,status:401});
 });

@@ -1,5 +1,6 @@
 import {brandId,brandDefaults} from './show-brands.js';
 import {defaultPlan,newId} from './plan-model.js';
+import {addMissingRandomCalls} from './call-rundown.js';
 
 // This marker opts a newly created (or explicitly converted) show into the
 // official 15-second clock. Reading a historical show never adds the marker.
@@ -25,7 +26,7 @@ export function standardMiloPlan(){
   if(!final)rounds.push({id:newId('pauze'),type:'pause',title:'Magische pauze',seconds:60,unit:'seconds'});
  }
  plan.blocks=[...plan.blocks.slice(0,3),...rounds,plan.blocks.at(-1)];
- return brandDefaults(plan,'milo');
+ const branded=brandDefaults(plan,'milo');addMissingRandomCalls(branded);return branded;
 }
 // An explicit conversion changes the bingo profile, retaining presentation
 // cues and prizes wherever a corresponding round already exists.

@@ -2,7 +2,7 @@ import {copyFile, readFile, writeFile, mkdir} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 const vendor=spawnSync(process.execPath,['scripts/vendor-three.mjs'],{stdio:'inherit'});
 if(vendor.status!==0)process.exit(vendor.status||1);
-for(const name of ['plan-model','manual-cues','presentation-model','bingo-model','standard-show','production-model','show-brands','characters','show-cues','magic-cues','game-capacity','game-rules','show-time']) {
+for(const name of ['plan-model','call-rundown','manual-cues','presentation-model','bingo-model','standard-show','production-model','show-brands','characters','show-cues','magic-cues','game-capacity','game-rules','show-time']) {
   await copyFile(`server/${name}.js`,`public/${name}.js`);
 }
 // Keep the source Site identity as historical evidence, never as target hosting configuration.

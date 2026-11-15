@@ -1,0 +1,74 @@
+// Queue/timeline adapter tests use the actual ShowCallCues and ShowRunner. The
+// output acknowledgements and HTTP boundary are explicit fixtures; no provider,
+// participant, microphone or broadcast is contacted.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {ShowCallCues} from '../frontend/show-call-cues.js';
+import {ShowRunner} from '../public/show-runner.js';
+import {winnerAnnouncementText} from '../server/call-cues.js';
+import {LIVE_CALL_LINES} from '../public/live-call-script.js';
+
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
+function fixture({demo=false,brand='milo',cues=[],block=1}={}){
+ const events=[],speech=[],errors=[],notices=[],game={id:'fixture-game',brandId:brand,status:'running',state:{blockIndex:block,paused:false,drawn:[7,13,27],window:null,resultId:null,pending:null,epoch:'fixture-round'},plan:{blocks:[{id:'round-one',type:'round',title:'Ronde 1'},{id:'bridge',type:'transition',title:'Een voorbereid verhaal'},{id:'random-one',type:'random-call',title:'Willekeurig 1 van 2'},{id:'round-two',type:'round',title:'Ronde 2'},{id:'ending',type:'finale',title:'Tot de volgende keer'}]},results:[{id:'result-one',roundId:'round-one',acknowledged:true,winner:{name:'Noor'},prize:{title:'Sterrenpakket'}}],callCues:structuredClone(cues)};
+ const director={pending:null,flow:null,paused:false,config:{},approvals:0,drawn:[7,13,27],scene:'host',configure(value){Object.assign(this.config,value);events.push(['configure',value]);},cancel(){this.flow=null;events.push(['cancel']);},setScene(scene){this.scene=scene;events.push(['scene',scene]);},pause(){this.paused=true;events.push(['director-pause']);}};
+ const engine={game,demo,isOutput:false,disposed:false,hostId:'milo',voiceMode:demo?'browser':'ai',voicePhase:'idle',magic:null,showCues:{holding:false},showRuntime:{holding:false},director,bridge:{routing:true,connected:true,command:null,latest:{output:{voiceAck:null}}},runner:{active:true,index:block,block:game.plan.blocks[block],phase:'flow',autoDraw:true,age:20,enter(index){events.push(['enter',index]);this.block=game.plan.blocks[index];this.phase='flow';}},audio:{cue:name=>events.push(['audio',name])},fail:message=>errors.push(message),notify:message=>notices.push(message),emit:()=>events.push(['emit']),syncGame:()=>events.push(['sync']),async pause(value){events.push(['pause',value]);this.game.state.paused=value;return true;},speak(text,...args){speech.push([text,...args]);this.voicePhase='playing';this.bridge.command={id:'voice-'+speech.length,text};}};
+ engine.liveCalls={call:null,drawHeld:false,onAir:false,connection:{async action(action,body){events.push(['action',action,body]);const cue=game.callCues.find(item=>item.resultId===body.resultId);if(action==='cue-result-announced'&&cue){cue.status='pending';cue.announcement={voiceId:body.voiceId,announcedAt:Date.now()};}return {cues:game.callCues};}},acceptResponse:()=>events.push(['accept-response']),refreshGame:async()=>events.push(['refresh']),async schedule({blockId}){events.push(['schedule',blockId]);const cue={id:'random:'+blockId,source:'random',status:'pending',sourceBlockId:blockId};game.callCues.push(cue);return cue;},async inviteCue(id,options){events.push(['invite',id,options]);const cue=game.callCues.find(item=>item.id===id);cue.callId='call:'+id;cue.status='invited';this.call={id:cue.callId,phase:'ringing',cueId:id};game.state.drawHold={callId:cue.callId};}};
+ const adapter=new ShowCallCues(engine);engine.showCallCues=adapter;
+ return {engine,adapter,game,director,events,speech,errors,notices,invites:()=>events.filter(event=>event[0]==='invite'),actions:()=>events.filter(event=>event[0]==='action')};
+}
+const winner=(status='waiting-announcement',extra={})=>({id:'winner:result-one',source:'winner',status,resultId:'result-one',resumeTarget:'next-round',...extra});
+const random=(status='pending',extra={})=>({id:'random:random-one',source:'random',status,sourceBlockId:'random-one',...extra});
+
+test('official winner is displayed and spoken once, and only matching ended output acknowledgement permits invitation',async()=>{
+ const f=fixture({cues:[winner()]});await f.adapter.process();assert.equal(f.invites().length,0);assert.equal(f.speech.length,1);assert.equal(f.speech[0][0],winnerAnnouncementText());assert.deepEqual(f.speech[0].slice(1),['milo','ai',false,{preparedOnly:true}]);assert.equal(f.director.scene,'winner');assert.equal(f.director.lastWinner,'Noor');assert(f.events.some(event=>event[0]==='audio'&&event[1]==='win'));
+ await f.adapter.process();assert.equal(f.speech.length,1);f.engine.voicePhase='idle';for(const ack of [null,{id:'other-output-voice',status:'ended'},{id:'voice-1',status:'started'},{id:'voice-1',status:'error'}]){f.engine.bridge.latest.output.voiceAck=ack;await f.adapter.process();assert.equal(f.actions().length,0);assert.equal(f.invites().length,0);}
+ f.engine.bridge.latest.output.voiceAck={id:'voice-1',status:'ended'};await f.adapter.process();assert.equal(f.actions().length,1);assert.deepEqual(f.actions()[0],['action','cue-result-announced',{resultId:'result-one',voiceId:'voice-1'}]);assert.equal(f.invites().length,0,'Durable announcement acknowledgement finishes before any invite');await f.adapter.process();assert.equal(f.invites().length,1);assert.equal(f.invites()[0][1],'winner:result-one');assert.equal(f.invites()[0][2].mode,'prepared');assert.equal(f.game.callCues[0].callId,'call:winner:result-one');await f.adapter.process();assert.equal(f.invites().length,1);
+ // Reconstruct the adapter as if the director tab had reloaded. The persisted
+ // cue/call reference is enough to prevent another invitation or announcement.
+ f.engine.liveCalls.call=null;const recovered=new ShowCallCues(f.engine);await recovered.process();assert.equal(f.invites().length,1);assert.equal(f.speech.length,1);assert.equal(recovered.held,true);
+});
+
+test('all drawing, claim, result, speech, show and output holds prevent automatic calls',async()=>{
+ const changes=[f=>{f.game.state.pending={number:28};},f=>{f.director.pending={number:28};},f=>{f.director.flow={kind:'draw'};},f=>{f.game.state.window={status:'open'};},f=>{f.game.state.resultId='still-being-decided';},f=>{f.engine.voicePhase='playing';},f=>{f.engine.magic={id:'a-trick'};},f=>{f.engine.showCues.holding=true;},f=>{f.engine.showRuntime.holding=true;},f=>{f.game.status='finished';},f=>{f.game.cancelledAt=1;},f=>{f.engine.bridge.routing=false;},f=>{f.engine.bridge.connected=false;},f=>{f.engine.runner.active=false;},f=>{f.engine.isOutput=true;}];
+ for(const change of changes){const f=fixture({cues:[winner('pending')]});change(f);await f.adapter.process();assert.equal(f.invites().length,0);assert.equal(f.actions().length,0);assert.equal(f.speech.length,0);assert.equal(f.errors.length,0);}
+ const vlampie=fixture({brand:'vlampie',cues:[winner('pending')]});await vlampie.adapter.process();assert.equal(vlampie.invites().length,0);assert.equal(vlampie.adapter.held,false);assert.equal(vlampie.adapter.beforeBlock(3),true);
+});
+
+test('only one in-flight automatic invite runs and call failures never unblock or restart the timeline',async()=>{
+ const f=fixture({cues:[random()],block:2}),gate=deferred();let invitations=0;f.engine.liveCalls.inviteCue=async()=>{invitations++;await gate.promise;};const pending=f.adapter.process();await tick();await f.adapter.process();assert.equal(invitations,1);gate.resolve();await pending;assert.equal(f.adapter.processing,false);
+ f.engine.liveCalls.call={id:'call-one',phase:'returning',resourcesClosed:true,outcome:'declined',cueId:'random:random-one'};f.game.state.drawHold={callId:'call-one'};f.engine.liveCalls.drawHeld=true;await f.adapter.process();assert.equal(f.speech.at(-1)[0],LIVE_CALL_LINES.fallback);assert.equal(f.game.state.drawHold.callId,'call-one');assert.equal(f.engine.runner.autoDraw,true,'Adapter never silently changes a host-controlled draw flag on a failure');assert.equal(f.events.some(event=>event[0]==='enter'||event[0]==='pause'),false);f.engine.voicePhase='idle';await f.adapter.process();assert.equal(f.speech.filter(event=>event[0]===LIVE_CALL_LINES.fallback).length,1,'Repeated polls do not repeat the prepared bridge in the same session');
+});
+
+test('winner has priority and a deferred random cue runs only in an existing planned safe pause',async()=>{
+ const f=fixture({cues:[random('deferred'),winner('pending')]});await f.adapter.process();assert.equal(f.invites().length,1);assert.equal(f.invites()[0][1],'winner:result-one');
+ const deferredRandom=fixture({cues:[random('deferred')],block:0});assert.equal(deferredRandom.adapter.held,false);assert.equal(deferredRandom.adapter.beforeBlock(1),true);await deferredRandom.adapter.process();assert.equal(deferredRandom.invites().length,0);deferredRandom.engine.runner.block=deferredRandom.game.plan.blocks[2];await deferredRandom.adapter.process();assert.equal(deferredRandom.invites().length,0,'The same original random block is not a later pause');const plannedPause={id:'existing-pause',type:'pause'};deferredRandom.game.plan.blocks.splice(4,0,plannedPause);deferredRandom.engine.runner.block=plannedPause;await deferredRandom.adapter.process();assert.equal(deferredRandom.invites().length,1);
+ const pending=fixture({cues:[random()]});assert.equal(pending.adapter.beforeBlock(3),false);pending.game.callCues[0].status='skipped';assert.equal(pending.adapter.beforeBlock(3),true);
+});
+
+test('random block schedules one durable opportunity and continues after an uninvited skip or explicit completed return',async()=>{
+ const f=fixture({block:2});await f.adapter.process();assert.deepEqual(f.events.find(event=>event[0]==='schedule'),['schedule','random-one']);await f.adapter.process();assert.equal(f.events.filter(event=>event[0]==='schedule').length,1);assert.equal(f.invites().length,1);
+ f.game.callCues[0].status='completed';f.game.state.drawHold=null;f.engine.liveCalls.call={phase:'completed'};f.engine.liveCalls.drawHeld=false;f.engine.runner.phase='call-cue';await f.adapter.process();assert.deepEqual(f.events.filter(event=>event[0]==='enter'),[['enter',3]]);
+ const skipped=fixture({block:2,cues:[random('skipped')]});await skipped.adapter.process();assert.equal(skipped.invites().length,0);assert.deepEqual(skipped.events.filter(event=>event[0]==='enter'),[['enter',3]]);const paused=fixture({block:2,cues:[random('skipped')]});paused.game.state.paused=true;await paused.adapter.process();assert.equal(paused.engine.runner.phase,'waiting');assert.equal(paused.events.some(event=>event[0]==='enter'),false);
+});
+
+test('explicit draw continuation clears old cadence without generating a ball or advancing a planned random block',async()=>{
+ const call={id:'call-one',source:'random',cueId:'random:random-one',resumeTarget:'draw'},f=fixture({cues:[random('completed')],block:2});f.game.state.paused=true;f.engine.autoDrawBlocked=false;f.engine.localDrawNextAt=123;await f.adapter.resume('draw',call);assert.equal(f.engine.runner.autoDraw,false);assert.equal(f.engine.runner.age,0);assert.equal(f.engine.autoDrawBlocked,true);assert.equal(f.engine.localDrawNextAt,0);assert.equal(f.engine.runner.phase,'waiting');assert.equal(f.game.state.paused,false);assert.deepEqual(f.game.state.drawn,[7,13,27]);assert.deepEqual(f.events.filter(event=>event[0]==='enter'),[]);assert.deepEqual(f.events.filter(event=>event[0]==='pause'),[['pause',false]]);
+ for(const obstruction of ['server-hold','server-call','runtime-hold','incomplete','wrong-target']){const g=fixture({cues:[random('completed')],block:2});if(obstruction==='server-hold')g.game.state.drawHold={callId:'call-one'};if(obstruction==='server-call')g.game.state.callId='another-call';if(obstruction==='runtime-hold')g.engine.liveCalls.drawHeld=true;if(obstruction==='incomplete')g.game.callCues[0].status='invited';await assert.rejects(g.adapter.resume(obstruction==='wrong-target'?'next-round':'draw',call));assert.equal(g.events.some(event=>event[0]==='enter'||event[0]==='pause'),false,obstruction);}
+});
+
+test('winner continuation retains intervening prepared moments and finale can only continue to ending, never another draw',async()=>{
+ const first=fixture({cues:[winner('completed')],block:0}),call={source:'winner',cueId:'winner:result-one',resumeTarget:'next-round'};await first.adapter.resume('next-round',call);assert.deepEqual(first.events.filter(event=>event[0]==='enter'),[['enter',1]],'The prepared bridge before the next round remains part of the show');assert.equal(first.engine.runner.autoDraw,false);
+ const finale=fixture({cues:[winner('completed',{resumeTarget:'ending'})],block:3});await assert.rejects(finale.adapter.resume('draw',{...call,resumeTarget:'ending'}),/vervolg/);await finale.adapter.resume('ending',{...call,resumeTarget:'ending'});assert.deepEqual(finale.events.filter(event=>event[0]==='enter'),[['enter',4]]);assert.equal(finale.engine.runner.autoDraw,false);assert.deepEqual(finale.game.state.drawn,[7,13,27]);
+ const paused=fixture({cues:[winner('completed')],block:0});paused.game.state.paused=true;paused.engine.pause=async()=>false;assert.equal(await paused.adapter.resume('next-round',call),false);assert.equal(paused.events.some(event=>event[0]==='enter'),false,'A failed server unpause cannot advance the rundown');
+});
+
+test('actual ShowRunner respects durable call-cue hold on automatic and manual progression without resetting a board',()=>{
+ const f=fixture({cues:[winner('pending')],block:0}),d=f.director,runner=new ShowRunner(d);runner.active=true;runner.plan=f.game.plan;runner.index=0;runner.phase='winner';runner.goal=0;runner.plan.blocks[0].goals=[{}];runner.beforeAdvance=index=>f.adapter.beforeBlock(index);d.callCueHold=f.adapter.held;const before=[...d.drawn];assert.equal(runner.next(),false);runner.tick(30);assert.equal(runner.index,0);assert.deepEqual(d.drawn,before);f.game.callCues[0].status='completed';d.callCueHold=f.adapter.held;d.paused=true;runner.tick(30);assert.equal(runner.index,0,'A pre-existing director pause is respected even after the call cue completes');
+});
+
+
+test('a pre-existing manual pause survives explicit call cleanup without a hidden unpause or next-round activation',async()=>{
+ for(const [source,target] of [['random','draw'],['winner','next-round'],['winner','ending']]){const cue=source==='random'?random('completed'):winner('completed',{resumeTarget:target}),f=fixture({cues:[cue],block:source==='random'?2:0});f.game.state.paused=true;await f.adapter.resume(target,{source,cueId:cue.id,resumeTarget:target,checkpoint:{paused:true}});assert.equal(f.game.state.paused,true);assert.equal(f.director.paused,true);assert.equal(f.engine.runner.autoDraw,false);assert.equal(f.events.some(event=>event[0]==='enter'||event[0]==='pause'),false);assert.deepEqual(f.game.state.drawn,[7,13,27]);}
+});

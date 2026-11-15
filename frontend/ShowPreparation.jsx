@@ -1,3 +1,4 @@
+import CallPreparation from './CallPreparation.jsx';
 import React,{useEffect,useState} from 'react';
 import {ArrowRight,CheckCircle2,Clapperboard,Play,RefreshCw} from 'lucide-react';
 import {Button,Panel,Pattern} from './components.jsx';
@@ -26,7 +27,7 @@ export function PreparationStart({s,operator,run,onStarted}){
  const blockers=readiness.blockers.filter(row=>!running||!['calls','result','voice'].includes(row.id));
  const resume=()=>run(async()=>{await operator.resumeRegie();onStarted?.();});
  return <Panel title={running?'Hervat regie':'Start show'} subtitle={running?'De serverstand blijft behouden. Pauze, meldingen en belblokkades worden niet vrijgegeven.':'Laatste wijzigingen worden eerst opgeslagen. De server legt daarna de actuele spelregels vast.'}>
-  <div className="mf-editor-content mf-preparation-start"><PreparationStatus s={s} operator={operator} run={run}/><ShowAudioPreparation s={s} operator={operator} run={run}/>
+  <div className="mf-editor-content mf-preparation-start"><PreparationStatus s={s} operator={operator} run={run}/><ShowAudioPreparation s={s} operator={operator} run={run}/><CallPreparation s={s} operator={operator} run={run}/>
    <p className="mf-rules-readonly" data-rules-state="readonly"><CheckCircle2 size={17}/>{s.game.rulesPublication?.finalizedAt?'Spelregels bij de start vastgelegd.':s.game.rulesPublication&&(s.game.orders?.length||s.game.books.some(book=>book.accountId))?'Deelnemers spelen met deze gepubliceerde regels.':'De spelregels staan klaar en worden bij de start automatisch vastgelegd.'}</p>
    {finished?<p>Deze show is afgelopen. Maak een nieuwe show om opnieuw te spelen.</p>:<>
     {!verified&&running&&<p>Controleer de actuele serverstand door de regie te hervatten.</p>}

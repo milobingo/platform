@@ -108,3 +108,46 @@
  .family-app .fam-youtube-feedback{font-size:12px;padding:9px 11px;left:9px;right:9px;bottom:9px}
 }
 @media(prefers-reduced-motion:reduce){.family-app .fam-call-backdrop{backdrop-filter:none}}
+
+/* Milo's family call stays one readable panel; private and public phases share
+   the existing call state and use distinct, explicit labels. */
+.family-app .fam-milo-call{width:min(620px,100%);padding:24px 26px}
+.family-app .fam-milo-call>header{margin-bottom:17px;position:sticky;top:0;z-index:4;padding:8px 0 12px;background:#fffbf7;box-shadow:0 9px 14px #fffbf7d9}
+.family-app .fam-milo-call h2{font-size:27px}
+.family-app .fam-milo-call h3{display:flex;align-items:center;gap:9px;font-size:18px;line-height:1.4;color:#4d3263;margin:0 0 10px}
+.family-app .fam-milo-call .fam-call-person{padding:12px 15px;margin-bottom:15px}
+.family-app .fam-milo-call .fam-call-person strong{font-size:21px}
+.family-app .fam-milo-call .fam-call-hold{padding:12px 14px;margin-bottom:16px}
+.family-app .fam-milo-call .fam-call-checkpoint{padding:15px;margin:17px 0}
+.family-app .fam-milo-call .fam-call-checkpoint>strong{font-size:54px}
+.family-app .fam-call-numbers,.family-app .fam-call-return-details{border:1px solid #dbcbe7;border-radius:16px;background:#fff9;padding:13px 15px;margin:15px 0;font-size:13px;line-height:1.7}
+.family-app .fam-call-numbers summary,.family-app .fam-call-return-details summary{cursor:pointer;font-weight:750;color:#65417f;min-height:30px}
+.family-app .fam-call-number-grid{display:flex;flex-wrap:wrap;gap:7px;margin:13px 0}
+.family-app .fam-call-number-grid>span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#ede2f5;border:1px solid #d7c2e6;color:#5e347d;font-weight:800}
+.family-app .fam-call-numbers .fam-button{margin:6px 6px 0 0;font-size:13px;white-space:normal;min-height:44px}
+.family-app .fam-call-backstage-panel,.family-app .fam-call-never-left{background:#edf7f3;border:1px solid #bfddd1;border-radius:19px;padding:18px;margin:17px 0}
+.family-app .fam-call-backstage-panel>p,.family-app .fam-call-never-left>p{font-size:14px;line-height:1.7;color:#577b72;margin:8px 0 15px}
+.family-app .fam-call-private-checks{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
+.family-app .fam-call-private-checks>span{font-size:11px;font-weight:750;padding:5px 8px;border:1px solid #c5dcd3;background:#fff9;border-radius:8px;color:#51796e}
+.family-app .fam-call-backstage-panel>.fam-button,.family-app .fam-call-never-left>.fam-button{min-height:48px;white-space:normal}
+.family-app .fam-call-magic{padding:21px;border:1px solid #e6c98f;border-radius:21px;background:radial-gradient(ellipse at top right,#eaddff,#fff5dc);margin:18px 0}
+.family-app .fam-call-magic>p{font-size:14px;line-height:1.7;color:#785880;margin:10px 0}
+.family-app .fam-call-magic-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 8px}
+.family-app .fam-call-magic-choices>button{min-height:82px;border:1px solid #b394cb;border-radius:17px;background:#fff9;color:#643582;font-family:inherit;font-size:22px;font-weight:850;cursor:pointer;box-shadow:0 4px 10px #64417a10}
+.family-app .fam-call-magic-choices>button[aria-pressed=true]{background:#6c4094;color:#fff4cf;border-color:#6c4094}
+.family-app .fam-call-magic-choices>button:disabled{cursor:default;opacity:.58}
+.family-app .fam-call-magic-choices>button[aria-pressed=true]:disabled{opacity:1}
+.family-app .fam-milo-call .fam-call-header-stop{display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:9px 11px;border-radius:13px;background:#fff0f2;border:1px solid #dc9caf;color:#9d3451;font-size:13px;font-weight:800;flex-shrink:0}
+.family-app .fam-milo-call>.fam-call-withdraw{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;width:100%;white-space:normal;font-size:12px;margin-top:10px}
+.family-app .fam-call-permission>.fam-button{margin:10px 0;min-height:48px;white-space:normal}
+.family-app .fam-call-permission>.fam-extra-state{margin:18px 0}
+.family-app .fam-call-permission .fam-invitation>.fam-button{margin:8px 0;min-height:46px;white-space:normal}
+@media(max-width:720px){
+ .family-app .fam-milo-call{padding:21px 17px;padding-bottom:max(21px,env(safe-area-inset-bottom));border-radius:24px 24px 16px 16px}
+ .family-app .fam-milo-call h2{font-size:24px}
+ .family-app .fam-milo-call .fam-call-hold p{font-size:12px}
+ .family-app .fam-call-backstage-panel,.family-app .fam-call-never-left,.family-app .fam-call-magic{padding:15px}
+ .family-app .fam-call-magic-choices{gap:9px}
+ .family-app .fam-call-magic-choices>button{font-size:20px;min-height:76px}
+ .family-app .fam-call-numbers,.family-app .fam-call-return-details{padding:12px}
+}

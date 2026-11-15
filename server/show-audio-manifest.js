@@ -5,6 +5,8 @@ import {splitSpeechText} from '../public/speech-text.js';
 import {SPEECH_POLICY_VERSION,roundSpeech,prizeSpeech,MILO_BANTER,NUMBER_NINE_AUDIENCE} from '../public/bingo-speech.js';
 import {showBrand} from './show-brands.js';
 import {MAGIC_CUES} from './magic-cues.js';
+import {CHARACTER_IDS} from './characters.js';
+import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 
 const problem=(message,status=409,code='show_audio_unavailable')=>Object.assign(new Error(message),{status,code});
 const hash=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)))),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -20,11 +22,17 @@ export function showAudioScripts(game){
    for(const goal of block.goals){const pattern=plan.patterns.find(item=>item.id===goal.patternId),prize=plan.prizes.find(item=>item.id===goal.prizeId);if(pattern)add(roundSpeech(block.title,pattern.title),speaker,'round',goal.id);if(prize)add(prizeSpeech(prize.title),speaker,'prize',goal.id);}
   }else if(block.type==='explanation'&&block.explanationSteps?.length){for(const [index,step]of block.explanationSteps.entries())add(step.text,speaker,'explanation',block.id+'-'+index);}
   else if(block.type!=='show')add(block.text,speaker,'plan',block.id);
+  if(block.type==='random-call')add(block.fallbackText,speaker,'call-fallback',block.id);
   if(block.type==='guest')for(const [index,turn] of (block.dialogue||[]).entries())add(turn.text,turn.speakerId||speaker,'dialogue',block.id+'-'+index);
  }
  for(const cue of plan.manualCues||[])add(cue.text,cue.speakerId||lead,'manual',cue.id);
  for(const speaker of roundSpeakers){for(const item of fixedSpeechFor(brand))add(item.text,speaker,item.id.startsWith('ball-')?'number':'fixed',item.id);if(brand==='milo'){for(const cue of MILO_BANTER)add(cue.text,speaker,'banter',cue.id);add(NUMBER_NINE_AUDIENCE.text,speaker,'banter',NUMBER_NINE_AUDIENCE.id);}}
- if(brand==='milo')for(const cue of MAGIC_CUES)add(cue.intro,'milo','magic',cue.id);
+ if(brand==='milo'){
+  for(const cue of MAGIC_CUES)add(cue.intro,'milo','magic',cue.id);
+  // Every selectable Milo presenter can host the same prepared conversation.
+  // These scripts never contain a child's name or information from backstage.
+  for(const speaker of CHARACTER_IDS)for(const [key,text] of Object.entries(LIVE_CALL_LINES))add(text,speaker,'live-call',key);
+ }
  return scripts;
 }
 export async function buildShowAudioManifest(env,owner,gameId,{includeReadiness=true}={}){
@@ -46,4 +54,4 @@ export async function buildShowAudioManifest(env,owner,gameId,{includeReadiness=
  const ready=items.filter(item=>item.ready).length;
  return {version:1,gameId:game.id,policyVersion:SPEECH_POLICY_VERSION,fingerprint,items,total:items.length,ready,complete:includeReadiness&&ready===items.length};
 }
-export function scopedShowAudioManifest(manifest){return {version:manifest.version,gameId:manifest.gameId,policyVersion:manifest.policyVersion,fingerprint:manifest.fingerprint,total:manifest.total,ready:manifest.ready,complete:manifest.complete,items:manifest.items.map(({key,clip,durationMs,ready})=>({key,clip,durationMs,ready}))};}
+export function scopedShowAudioManifest(manifest){return {version:manifest.version,gameId:manifest.gameId,policyVersion:manifest.policyVersion,fingerprint:manifest.fingerprint,total:manifest.total,ready:manifest.ready,complete:manifest.complete,items:manifest.items.map(({key,clip,durationMs,ready,characterId,sources})=>{const call=sources.find(source=>source.kind==='live-call');return {key,clip,durationMs,ready,...(call?{callKey:call.id,characterId}: {})};})};}

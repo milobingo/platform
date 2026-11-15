@@ -73,7 +73,7 @@ for(const width of [1920,1366,390]){
    await expect(timer).toContainText('Wacht');await expect(timer).toContainText('Gepauzeerd');await expect(advanced).toHaveCount(2);await expect(workspace.locator('.mf-live-advanced[open]')).toHaveCount(0);await noOverflow(page);await shot(page,`regie-${width}-saved-round`);
    const labelSizes=await essentials.locator(':scope>div>span').evaluateAll(labels=>labels.map(label=>parseFloat(getComputedStyle(label).fontSize)));expect(labelSizes.every(size=>size>=12)).toBe(true);
    expect(await workspace.evaluate(node=>Boolean(node.querySelector('.rd-transport').compareDocumentPosition(node.querySelector('.mf-live-advanced'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
-   if(width>=1366){await expect(essentials).toBeInViewport({ratio:1});await expect(workspace.locator('.mf-live-bingo>.rd-section').first()).toBeInViewport({ratio:1});await expect(workspace.locator('.mf-live-bingo>.rd-section').last()).toBeInViewport({ratio:1});}
+   if(width>=1366){await expect(essentials).toBeInViewport({ratio:1});await expect(workspace.getByRole('region',{name:'Belkaart'})).toBeInViewport({ratio:1});await expect(workspace.getByRole('region',{name:'Programmonitor'})).toBeInViewport({ratio:1});await expect(workspace.getByRole('region',{name:'Previewmonitor'})).toBeInViewport({ratio:1});}
    const resume=workspace.getByRole('button',{name:'Hervat regie',exact:true});await expect(resume).toBeEnabled();await resume.click();await expect(main.getByText('Regie hersteld. Spelstand en blokkades zijn behouden. Kies bewust Hervat om de trekking vrij te geven.',{exact:true})).toBeVisible();await main.getByRole('button',{name:'Melding sluiten',exact:true}).click();
    const play=essentials.getByRole('button',{name:'Hervat',exact:true});await expect(play).toBeEnabled();await play.click();await expect(essentials.getByRole('button',{name:'Pauze',exact:true})).toBeEnabled();
    await expect.poll(async()=>(await h.read()).state.paused).toBe(false);await expect(timer).toContainText(/1[345] s/);
@@ -82,7 +82,7 @@ for(const width of [1920,1366,390]){
    await top(page);await noOverflow(page);await shot(page,`regie-${width}-paused`);
    const board=workspace.locator('.rd-board');await board.locator('summary').focus();await page.keyboard.press('Enter');await expect(board).toHaveAttribute('open','');await expect(board.locator('.rd-number-grid>span')).toHaveCount(75);await expect(board.locator('.rd-number-grid>span.drawn')).toHaveCount(6);await board.locator('summary').focus();await page.keyboard.press('Enter');await expect(board).not.toHaveAttribute('open','');
    const first=advanced.first();await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).toHaveAttribute('open','');const program=workspace.getByRole('region',{name:'Programmonitor'});await expect(program).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();await noOverflow(page);
-   await first.locator('.rd-monitor-wall').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));await shot(page,`regie-${width}-advanced`);
+   await first.locator('.rd-quick-host').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));await shot(page,`regie-${width}-advanced`);
    if(width===390){
     // CDP's minimal scroll left 1.08px above the viewport in this nested main.
     // Centre the actual content below the fixed header before visual review.

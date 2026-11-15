@@ -1,5 +1,6 @@
 import script from './premiere-script.json' with {type:'json'};
 import {defaultPlan,createBlock,newId,normalizePlan} from './plan-model.js';
+import {addMissingRandomCalls} from './call-rundown.js';
 
 export const PREMIERE_TITLE=script.title;
 export const PREMIERE_DATE=script.date;
@@ -32,5 +33,5 @@ export function premierePlan(){
  plan.manualCues=script.manualCues.map(cue=>({id:newId('spreekkaart'),title:cue.code+' · '+cue.title,text:cue.text,speakerId:'milo',condition:cue.code.startsWith('A')?'round-transition':conditions[cue.code],notes:cue.notes,...(cue.code.startsWith('A')?{roundIndex:Math.floor((Number(cue.code.slice(1))-1)/2),goalIndex:Number(cue.code.slice(1))%2?1:2}:{})}));
  const confirmed=plan.manualCues.find(cue=>cue.title.startsWith('B4 ·'));
  plan.manualCues.push({...confirmed,id:newId('spreekkaart'),title:'B4 · Bevestigde volle kaart, ronde afgelopen',condition:'round-complete',text:'Ja hoor, de bingo is bevestigd! Gefeliciteerd met deze prijs. Geef thuis maar een applausje. Leg deze kaart even opzij. Ik vertel zo welke kaart we hierna pakken.',notes:'Alleen na de bevestigde volle kaart van ronde 1, 2 of 3. Voor de finale gebruik je B7.'});
- return normalizePlan(plan);
+ addMissingRandomCalls(plan);return normalizePlan(plan);
 }

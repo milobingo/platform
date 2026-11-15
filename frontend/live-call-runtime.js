@@ -3,9 +3,10 @@ import {LiveKitMedia} from './livekit-media.js';
 import {LiveCallOutput} from './live-call-output.js';
 import {makeLiveCall,transitionLiveCall,returnLiveCall,callContext} from '../server/live-call-model.js';
 import {CHARACTERS} from '../server/characters.js';
+import {scheduleCallCue,reserveCallCue,skipCallCue,completeCallCue} from '../server/call-cues.js';
 
 const noop=()=>{};
-const currentEntries=game=>(game?.participation||[]).filter(e=>e.callConsentAt&&!['none','withdrawn','declined','done'].includes(e.callStatus));
+const currentEntries=game=>(game?.participation||[]).filter(e=>game?.brandId==='milo'?e.child===true&&e.callConsentEnabled===true&&e.callConsentAt:e.callConsentAt&&!['none','withdrawn','declined','done'].includes(e.callStatus));
 /** Persistent operator/output controller. Media exists only for selected calls. */
 export class LiveCallRuntime{
  constructor(engine,{Connection=LiveCallConnection,Media=LiveKitMedia,Output=LiveCallOutput,request=requestLiveCall,timers=true}={}){
@@ -25,8 +26,8 @@ export class LiveCallRuntime{
  get drawHeld(){return !!this.engine.game?.state.drawHold||!!this.call?.drawHeld;}
  subscribe=fn=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
  getSnapshot=()=>this._snapshot;
- state(){return {call:this.call,queue:this.queue(),busy:this.busy,error:this.error,settings:this.settings,media:this.mediaState,output:this.output?.state?.()||null,mode:this.demo?'demo':'real',mismatchedGame:!this.matchesGame,drawHeld:this.drawHeld,held:this.onAir,now:Date.now()};}
- queue(){if(!this.demo)return currentEntries(this.engine.game);return (this.engine.game.books||[]).filter(b=>b.profileId).filter((b,i,a)=>a.findIndex(x=>x.profileId===b.profileId)===i).map(b=>({id:'demo-entry-'+b.profileId,profileId:b.profileId,accountId:b.accountId,name:b.name,familyName:b.accountId==='demo-0'?'Oefengezin 1':'Oefengezin 2',child:true,parentConsent:true,callConsentAt:1,micChecked:true,connectionChecked:true,headphones:true,callStatus:'accepted'}));}
+ state(){return {call:this.call,cues:this.demo?this.engine.game.callCues||[]:this.connection.cues||this.engine.game.callCues||[],queue:this.queue(),busy:this.busy,error:this.error,settings:this.settings,media:this.mediaState,output:this.output?.state?.()||null,mode:this.demo?'demo':'real',mismatchedGame:!this.matchesGame,drawHeld:this.drawHeld,held:this.onAir,now:Date.now()};}
+ queue(){if(!this.demo)return currentEntries(this.engine.game);return (this.engine.game.books||[]).filter(b=>b.profileId).filter((b,i,a)=>a.findIndex(x=>x.profileId===b.profileId)===i).map(b=>({id:'demo-entry-'+b.profileId,profileId:b.profileId,accountId:b.accountId,name:b.name,familyName:b.accountId==='demo-0'?'Oefengezin 1':'Oefengezin 2',child:true,parentConsent:true,callConsentEnabled:true,callConsentAt:1,callPresenceAt:Date.now(),technicalReadyAt:Date.now(),micChecked:true,connectionChecked:true,headphones:true,callStatus:'accepted'}));}
  emit(){if(this.disposed)return;this._snapshot=this.state();for(const fn of this.listeners)fn();this.engine.emit();if(!this.engine.isOutput)this.engine.bridge?.sendLocal();}
  acceptResponse(data){if(data?.game&&!this.engine.isOutput&&this.engine.acceptGame(data.game))this.engine.syncGame();this.emit();return data;}
  async perform(fn){if(this.showCancelled)throw Error('Deze show is geannuleerd. Er wordt geen belverbinding meer geopend.');if(this.busy)throw Error('Wacht tot de huidige belstap is bevestigd.');this.busy=true;this.error='';this.emit();try{return await fn();}catch(e){this.error=e.message;this.engine.fail(e.message);throw e;}finally{this.busy=false;this.emit();}}
@@ -64,6 +65,16 @@ export class LiveCallRuntime{
   this.emit();
  }
  async invite(entryId){if(this.demo)return;return this.perform(async()=>{await this.engine.post('call-status',{entryId,status:'invited'});this.emit();});}
+ async schedule(body={}){return this.perform(async()=>{if(this.engine.game.brandId!=='milo')throw Error('Deze belkaart hoort bij Milo.');if(this.demo){const game=this.engine.game;game.participation=this.queue();const cue=scheduleCallCue(game,{...body,requestId:body.requestId||crypto.randomUUID()});this.emit();return cue;}const response=await this.connection.action('cue-schedule',body);this.acceptResponse(response);await this.refreshGame();return response.cue;});}
+ async updateCue(cueId,body={}){return this.perform(async()=>{if(this.demo){const cue=this.engine.game.callCues?.find(c=>c.id===cueId);if(!cue||cue.source!=='manual'||cue.callId||['completed','skipped'].includes(cue.status))throw Error('Deze controlekaart kan niet meer worden aangepast.');const entry=this.queue().find(e=>e.id===cue.entryId);cue.context=callContext(body.context,entry,this.engine.game);if(body.characterId)cue.characterId=body.characterId;if(body.mode)cue.mode=body.mode;this.emit();return cue;}const response=await this.connection.action('cue-context',{cueId,...body});this.acceptResponse(response);await this.refreshGame();return response.cue;});}
+ async skipCue(cueId,reason){return this.perform(async()=>{if(this.demo){const cue=skipCallCue(this.engine.game,cueId,reason);this.emit();return cue;}const response=await this.connection.action('cue-skip',{cueId,reason});this.acceptResponse(response);await this.refreshGame();return response.cue;});}
+ async inviteCue(cueId,{mode='prepared',characterId=this.engine.hostId}={}){const generation=this.generation,gameId=this.gameId;return this.perform(async()=>{
+  if(this.drawHeld||this.active)throw Error('Rond eerst het bestaande belmoment en de terugkeer af.');
+  const e=this.engine;if(e.game.state.pending||e.director.pending||e.director.flow?.kind==='draw'||e.game.state.window?.status==='open'||e.game.state.resultId||e.voicePhase!=='idle'||e.magic||e.showCues?.active||e.showCues?.holding)throw Error('Wacht tot de trekking, bingocontrole en het actieve showmoment zijn afgerond.');
+  if(this.demo){e.game.participation=this.queue();const {cue,entry}=reserveCallCue({...e.game,production:{...e.game.production,calls:{...e.game.production?.calls,enabled:true}}},cueId);if(!entry){this.emit();return cue;}const character=CHARACTERS[characterId]||CHARACTERS.milo;this.capture();this.demoCall={...makeLiveCall(e.game,entry,{clientId:e.clientId,outputId:'demo-output',character:{...character,realtimeVoice:character.voice},presenter:character,context:cue.context||{callName:entry.name},maxSeconds:mode==='prepared'?45:90}),simulated:true,source:cue.source,cueId:cue.id,resumeTarget:cue.resumeTarget,mode};cue.callId=this.demoCall.id;cue.status='invited';cue.invitedAt=Date.now();e.game.state.drawHold={id:this.demoCall.id,callId:this.demoCall.id,checkpoint:this.demoCall.checkpoint,reason:'Simulatie belmoment'};e.runner.autoDraw=false;e.runner.age=0;transitionLiveCall(this.demoCall,'ring','host',{});this.onCall(this.demoCall);return;}
+  await e.bridge.connect();if(generation!==this.generation||gameId!==this.gameId)throw Error('De belvoorbereiding is geannuleerd.');if(!e.bridge.connected||!e.bridge.routing)throw Error('Open het uitzendvenster en activeer beeld en geluid.');
+  this.capture();const response=await this.connection.action('cue-invite',{cueId,mode,characterId});this.acceptResponse(response);if(generation!==this.generation||gameId!==this.gameId){if(gameId===this.gameId&&this.active)this.acceptResponse(await this.connection.action('cancel'));throw Error('Het belmoment is geannuleerd. De trekking blijft geblokkeerd tot de terugkeer is gecontroleerd.');}await this.refreshGame();if(this.active){e.runner.autoDraw=false;e.runner.age=0;}return response;
+ });}
  async prepare(entryId,context={},maxSeconds=90,characterId=this.engine.hostId){const generation=this.generation;return this.perform(async()=>{
   const e=this.engine;if(this.drawHeld||this.active)throw Error('Rond eerst het bestaande belmoment en de terugkeer af.');if(e.game.state.pending||e.director.pending||e.director.flow?.kind==='draw'||e.game.state.window?.status==='open'||e.game.state.resultId)throw Error('Rond eerst de lopende trekking, het meldvenster en de uitslag af.');
   this.capture();e.runner.autoDraw=false;e.runner.age=0;
@@ -72,26 +83,30 @@ export class LiveCallRuntime{
   this.acceptResponse(await this.connection.action('prepare',{entryId,context,maxSeconds:Number(maxSeconds),characterId}));if(generation!==this.generation){if(this.active)this.acceptResponse(await this.connection.action('cancel'));throw Error('De belvoorbereiding is geannuleerd. De trekking blijft geblokkeerd tot de terugkeer is gecontroleerd.');}await this.refreshGame();
  });}
  async action(action,extra={}){return this.perform(async()=>{
+  const currentCall=this.call;
   if(!this.matchesGame)throw Error('Open eerst de show die bij dit belmoment hoort.');if(!this.active)throw Error('Bereid eerst een belmoment voor.');
   if(action==='go-live'){
    if(this.engine.voicePhase!=='idle'||this.engine.magic||this.engine.showCues?.active||this.engine.showCues?.holding)throw Error('Laat het entertainmentmoment eerst afronden, of stop de huidige uitspraak of cue voordat je live gaat.');
    if(this.engine.showRuntime?.manual)this.engine.showRuntime.returnToShow();
   }
-  if(this.demo){this.demoAction(action,extra);return;}
+  if(this.demo){this.demoAction(action,extra);if(action==='resume-draw'&&this.engine.resumeAfterCall)await this.engine.resumeAfterCall(currentCall?.resumeTarget||'draw',currentCall);return;}
   this.acceptResponse(await this.connection.action(action,extra));
   if(action==='go-live')await this.connectLiveMonitor();
-  if(action==='resume-draw'){await this.refreshGame();this.engine.runner.autoDraw=false;this.engine.runner.age=0;if(this.engine.game.state.paused)await this.engine.pause(false);this.engine.notify('Terugkeer bevestigd. De trekking is vrijgegeven; kies de volgende bal of zet automatisch trekken bewust aan.');}
+  if(action==='resume-draw'){await this.refreshGame();this.engine.runner.autoDraw=false;this.engine.runner.age=0;if(this.engine.resumeAfterCall)await this.engine.resumeAfterCall(currentCall?.resumeTarget||'draw',currentCall);else{if(this.engine.game.state.paused)await this.engine.pause(false);this.engine.notify('Terugkeer bevestigd. De trekking is vrijgegeven; kies de volgende bal of zet automatisch trekken bewust aan.');}}
  });}
  demoAction(action,extra){const c=this.demoCall;if(!c)throw Error('Bereid eerst een oefenbelmoment voor.');const now=Date.now();
   if(action==='simulate'){
    const outcome=extra.outcome;
    if(outcome==='answer'){transitionLiveCall(c,'answer','player',{clientId:'demo-player',checkpointId:c.checkpoint.id,heardLastNumber:c.checkpoint.lastNumber,cardsUpdated:true,youtubeMuted:true},now);c.media.host={connected:true,micReady:true};c.media.player={connected:true,micReady:true};this.mediaState={phase:'simulated',target:'backstage',connected:true,micReady:true,simulated:true};}
-   else if(outcome==='returned'){c.returnState.cue.publishedAt=now;transitionLiveCall(c,'player-returned','player',{checkpointId:c.checkpoint.id,confirmed:true,playbackInfo:{ready:true,audible:true,source:'current-cue-and-parent-confirmation',normalShowConfirmed:true,heardCurrentCue:true,cueId:c.returnState.cue.id,cueLastNumber:c.returnState.cue.lastNumber}},now);}
+   else if(outcome==='agree-live'){transitionLiveCall(c,'agree-live','player',{agreed:true},now);}
+   else if(outcome==='returned'){c.resourcesClosed=true;c.returnState.cue.publishedAt=now;transitionLiveCall(c,'player-returned','player',{checkpointId:c.checkpoint.id,confirmed:true,playbackInfo:{ready:true,audible:true,source:'current-cue-and-parent-confirmation',normalShowConfirmed:true,heardCurrentCue:true,cueId:c.returnState.cue.id,cueLastNumber:c.returnState.cue.lastNumber}},now);}
    else returnLiveCall(c,['declined','missed'].includes(outcome)?outcome:'failed',outcome==='mic-denied'?'Simulatie: microfoontoestemming ontbreekt.':'Simulatie: '+outcome,now);
   }else if(action==='context'){if(!['preparing','ringing','backstage','staged'].includes(c.phase))throw Error('De gastkaart staat vast zodra het live gesprek begint.');const entry=this.queue().find(e=>e.id===c.entryId);c.context=callContext(extra.context,entry,this.engine.game);if(c.phase==='staged')c.phase='backstage';c.checks.soundChecked=false;c.checks.explanationGiven=false;}
+  else if(action==='thank')returnLiveCall(c,'ended','Simulatie: voorbereid bedankje en terugkeer.',now);
   else transitionLiveCall(c,action,'host',extra,now);
+  if(this.demo&&c.mode==='prepared'&&c.phase==='live'&&!c.magicReadyAt)c.magicReadyAt=now;
   c.version=(c.version||0)+1;
-  if(c.phase==='completed'){if(this.engine.game.state.drawHold?.callId===c.id)this.engine.game.state.drawHold=null;this.engine.runner.autoDraw=false;this.engine.runner.age=0;this.engine.director.drawBlocked=false;}
+  if(c.phase==='completed'){if(this.engine.game.state.drawHold?.callId===c.id)this.engine.game.state.drawHold=null;completeCallCue(this.engine.game,c,now);this.engine.runner.autoDraw=false;this.engine.runner.age=0;this.engine.director.drawBlocked=false;}
   this.onCall(c);
  }
  async openActiveShow(){const id=this.call?.gameId;if(this.demo||!this.active||!id||this.engine.isOutput)throw Error('Er staat geen andere actieve belshow klaar.');return this.perform(async()=>{await this.engine.recoverCallGame(id);this.lastGame=id;this.error='';this.onCall(this.call);});}
@@ -105,7 +120,7 @@ export class LiveCallRuntime{
  cancel(){return this.stop();}
  async loadSettings(){this.settings=await this.request('/api/livekit/settings');this.emit();return this.settings;}
  mountOutput(root){if(!this.engine.isOutput)return noop;this.outputRoot=root;if(!this.output)this.output=new this.Output({engine:this.engine,media:this.ensureMedia(),api:this.connection,onChange:()=>this.emit()});this.output.mount(root);void this.output.sync(this.call);return()=>{};}
- stagePatch(base){if(!this.onAir)return base;const liveBase={...base,showCue:null,movement:null,magic:null};if(this.output)return this.output.stagePatch(liveBase);const c=this.call,level=this.demo?0:Math.max(0,Math.min(1,Number(c.voiceLevel)||0)),speaking=level>.035;return {...liveBase,hostId:c.characterId,speakerId:c.characterId,camera:'host',speaking,mouth:Math.min(.95,level*1.25),motion:speaking?'speak':'listen',paused:false,caption:this.demo?'SIMULATIE · Hoi '+c.context.callName+'!':'',liveCall:{name:c.context.callName,phase:c.phase,simulated:this.demo},show:{...base.show,scene:'call',liveCall:true,paused:false}};}
+ stagePatch(base){if(!this.onAir)return base;const liveBase={...base,showCue:null,movement:null,magic:null};if(this.output)return this.output.stagePatch(liveBase);const c=this.call,level=this.demo?0:Math.max(0,Math.min(1,Number(c.voiceLevel)||0)),speaking=level>.035;return {...liveBase,hostId:c.characterId,speakerId:c.characterId,camera:'host',speaking,mouth:Math.min(.95,level*1.25),motion:speaking?'speak':'listen',paused:false,caption:this.demo?'SIMULATIE · Hoi '+c.context.callName+'!':'',liveCall:{id:c.id,gameId:c.gameId,name:c.context.callName,phase:c.phase,mode:c.mode,characterId:c.characterId,simulated:this.demo},show:{...base.show,scene:'call',liveCall:true,paused:false}};}
  dispose(){if(this.disposed)return;this.disposed=true;clearInterval(this.timer);globalThis.window?.removeEventListener?.('pagehide',this.pagehide);this.connection.dispose();this.media?.dispose();this.output?.dispose();this.listeners.clear();}
 }
 export const createLiveCallRuntime=(engine,options)=>new LiveCallRuntime(engine,options);

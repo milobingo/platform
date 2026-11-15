@@ -38,6 +38,11 @@ test('entertainment during hold retains the last active round and a delayed view
  beginBingo(h.game,h.family,'family','late-youtube-announcement',2000);const window=structuredClone(h.game.state.window);const claim=claimBook(h.game,h.family,'family',h.book.id,2100);assert.equal(claim.status,'valid');assert.equal(settleWindow(h.game,window.endsAt-1),null);assert.equal(h.game.state.window.status,'open');assert.equal(h.game.state.window.endsAt,window.endsAt);assert(h.game.state.drawHold);
 });
 
+test('Milo entertainment during a call cannot erase a pre-existing manual server pause',()=>{
+ const h=gameFixture();h.game.state.paused=true;h.hold();h.game.plan.blocks.push({id:'paused-story',type:'story',title:'Een voorbereid verhaal',text:'Even samen kijken.',hold:0});
+ activateBlock(h.game,h.game.plan.blocks.length-1,0,1000);assert.equal(h.game.state.paused,true);assert(h.game.state.drawHold);assert.equal(h.game.state.roundIndex,0);
+});
+
 test('a hold never shortens or closes an existing claim window, including failed round changes and draw attempts',()=>{
  const h=gameFixture();h.game.state.drawn=[1,2,3];beginBingo(h.game,h.family,'family','announcement',1000);h.hold();const window=structuredClone(h.game.state.window);
  heldError(()=>reserveBall(h.game));heldError(()=>commitBall(h.game,'old-pending'));assert.throws(()=>activateBlock(h.game,h.round),/meldvenster/);

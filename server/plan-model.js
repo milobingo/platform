@@ -14,6 +14,7 @@ export const BLOCK_TYPES=Object.freeze({
  round:{name:'Bingoronde',short:'Bingoronde',icon:'i-grid',description:'Koppel patronen en prijzen; ballen volgen vanzelf.'},
  pause:{name:'Pauze',short:'Pauze',icon:'i-rest',description:'Een pauzescherm met een instelbare timer.'},
  call:{name:'Belronde',short:'Belronde',icon:'i-volume',description:'Reserveer een moment voor een gesprek met de presentator.'},
+ 'random-call':{name:'Willekeurig belmoment',short:'Magisch belletje',icon:'i-volume',description:'Eén gelijke lotingskans voor een beschikbaar kind. Twee geplande kansen per Milo-show.'},
  show:{name:'Showelement',short:'Show',icon:'i-star',description:'Een getimed gebaar met licht, effect en jingle op het Sterrenplein.'},
  magic:{name:'Magiemoment',short:'Magie',icon:'i-star',description:'Een geprogrammeerde goocheltruc van Milo, los van de officiële trekking.'},
  guest:{name:'Gastbezoek',short:'Gast',icon:'i-wave',description:'Laat een vriend volgens het draaiboek binnenkomen, spreken en vertrekken.'},
@@ -30,6 +31,7 @@ export function createBlock(type,document={blocks:[]},identity){
  if(['welcome','explanation','story','finale'].includes(type))Object.assign(b,{text:type==='welcome'?`Hallo allemaal! Welkom bij ${brand.title}. Pak je kaart erbij, we maken er een gezellige show van!`:type==='finale'?'Bedankt voor het meespelen! Een groot applaus voor iedereen. Tot de volgende keer!':'',hold:2});
  if(type==='round'){const number=document.blocks.filter(x=>x.type==='round').length+1;b.title=`Ronde ${number}`;Object.assign(b,{goals:[{id:newId('doel'),patternId:document.patterns?.[0]?.id||'',prizeId:document.prizes?.[0]?.id||''}],interval:4,newBoard:true});}
  if(type==='call')Object.assign(b,{seconds:120,unit:'minutes',text:`Tijd voor een gezellig moment met ${presenter.short||presenter.name}!`,advance:'manual'});
+ if(type==='random-call'){if(brand.id==='vlampie')throw new Error('Willekeurige belmomenten horen bij Milo & Friends.');Object.assign(b,{seconds:45,unit:'seconds',text:'Wie wordt onze toverassistent? Er komt een magisch belletje aan!',fallbackText:'Dit keer doe ik de truc zelf. Tover allemaal gezellig mee!',advance:'manual'});}
  if(type==='show')Object.assign(b,{showCueId:'welcome-wave',duration:6,hold:0});
  if(type==='magic')Object.assign(b,{speakerId:'milo',magicId:'star-hat',text:'Mijn hoed heeft een kleine verrassing. Kijk maar mee!',duration:14,hold:2,camera:'magic',animation:'magic'});
  if(type==='guest')Object.assign(b,{speakerId:'milo',guestId:'kora',text:'Wat gezellig! Er komt iemand op bezoek op het Sterrenplein.',duration:18,hold:2,camera:'entrance',animation:'wave',dialogue:[{speakerId:'kora',text:'Ahoy vrienden! Wat fijn om jullie te zien.',animation:'wave'},{speakerId:'milo',text:'Welkom op het Sterrenplein, kapitein Kora!',animation:'welcome'}]});
@@ -77,8 +79,9 @@ export function normalizePlan(input){
   if(b.speakerId!==undefined){if(!ALL_CHARACTER_IDS.includes(b.speakerId))throw new Error('Kies een bestaand sprekend personage.');out.speakerId=b.speakerId;}
   if(b.camera!==undefined){if(!CAMERA_IDS.includes(b.camera))throw new Error('Kies een beschikbare camera.');out.camera=b.camera;}
   if(b.animation!==undefined){if(!ANIMATIONS.includes(b.animation))throw new Error('Kies een beschikbare beweging.');out.animation=b.animation;}
-  if(['countdown','pause','call'].includes(b.type)){out.seconds=number(b.seconds,1,86400,'de timer');out.unit=b.unit==='minutes'?'minutes':'seconds';}
-  if(['welcome','explanation','story','finale','call','magic','guest'].includes(b.type))out.text=speechText(b.text,'Presentatietekst');
+  if(['countdown','pause','call','random-call'].includes(b.type)){out.seconds=number(b.seconds,1,86400,'de timer');out.unit=b.unit==='minutes'?'minutes':'seconds';}
+  if(['welcome','explanation','story','finale','call','random-call','magic','guest'].includes(b.type))out.text=speechText(b.text,'Presentatietekst');
+  if(b.type==='random-call'){if(input.leadId==='vlampie'||input.studioId&&input.studioId!=='sterrenplein'&&input.studioId!=='magico')throw new Error('Willekeurige belmomenten horen bij Milo & Friends.');out.fallbackText=speechText(b.fallbackText??'Dit keer doe ik de truc zelf. Tover allemaal gezellig mee!','Brug bij een overgeslagen belletje');out.advance='manual';}
   if(b.type==='explanation'&&b.explanationSteps!==undefined)out.explanationSteps=list(b.explanationSteps,10,'Uitlegstappen').map(step=>{
    if(!step||typeof step.patternId!=='string'||step.patternId.length>80)throw new Error('Kies voor elke uitlegstap een geldig patroon.');
    return {patternId:step.patternId,text:speechText(step.text,'Tekst uitlegstap')};
@@ -93,6 +96,7 @@ export function normalizePlan(input){
   }
   if(b.type==='call')out.advance=b.advance==='auto'?'auto':'manual';
   if(b.type==='round'){
+   if(b.callFullCardWinner!==undefined){if(typeof b.callFullCardWinner!=='boolean')throw new Error('Kies of de vollekaartwinnaar gebeld mag worden.');out.callFullCardWinner=b.callFullCardWinner;}
    if(typeof b.newBoard!=='boolean')throw new Error('Kies of de ronde een nieuw bingobord krijgt.');
    out.newBoard=b.newBoard;out.interval=number(b.interval,0,60,'de tijd tussen trekkingen');
    out.goals=list(b.goals,10,'Winnende combinaties').map(g=>{if(!g||!id(g.id)||typeof g.patternId!=='string'||typeof g.prizeId!=='string'||g.patternId.length>80||g.prizeId.length>80)throw new Error('De winnende combinatie is ongeldig.');return {id:g.id,patternId:g.patternId,prizeId:g.prizeId};});unique(out.goals,'Winnende combinaties');
@@ -109,7 +113,7 @@ export function normalizePlan(input){
    return row;
   });unique(out.manualCues,'Microfoonteksten');
  }
- const scripts=blocks.flatMap(block=>[...(block.explanationSteps?.length?block.explanationSteps.map(step=>step.text):[block.text]),...(block.dialogue||[]).map(turn=>turn.text)]).concat((out.manualCues||[]).map(cue=>cue.text));
+ const scripts=blocks.flatMap(block=>[...(block.explanationSteps?.length?block.explanationSteps.map(step=>step.text):[block.text]),block.fallbackText,...(block.dialogue||[]).map(turn=>turn.text)]).concat((out.manualCues||[]).map(cue=>cue.text));
  if(scripts.reduce((count,value)=>count+(value?.trim()?splitSpeechText(value).length:0),0)>MAX_PLAN_SPEECH_CHUNKS)throw new Error('Het draaiboek bevat te veel stemfragmenten. Verdeel de teksten over meerdere shows.');
  if(input.leadId!==undefined){if(!ALL_CHARACTER_IDS.includes(input.leadId))throw new Error('Kies een bestaande hoofdhost.');out.leadId=input.leadId;}
  out.cohostId=input.cohostId??null;
@@ -121,6 +125,7 @@ export function normalizePlan(input){
 function speechText(value,label){if(typeof value!=='string'||speechCharacterCount(value)>MAX_SPEECH_CHARACTERS)throw new Error(`${label}: gebruik maximaal 10.000 tekens.`);return value.trim();}
 export function planIssues(document){
  const issues=[];if(!document.title.trim())issues.push('Geef de show een titel.');if(!document.blocks.length)issues.push('Voeg een showblok toe.');
+ if(document.blocks.filter(block=>block.type==='random-call').length>2)issues.push('Een Milo-show heeft maximaal twee willekeurige belmomenten. Verwijder het derde moment.');
  for(const b of document.blocks){
   const name=b.title||BLOCK_TYPES[b.type].name;
   if(!b.title.trim())issues.push('Geef elk showblok een titel.');
@@ -153,5 +158,6 @@ export function blockSummary(block,document){
  if(block.type==='round')return block.goals.map(g=>`${document.patterns.find(p=>p.id===g.patternId)?.title||'Kies een patroon'} · ${document.prizes.find(p=>p.id===g.prizeId)?.title||'Kies een prijs'}`).join(' / ');
  if(block.type==='show'){const cue=getShowCue(block.showCueId);return cue?`${cue.title} · ${formatDuration(cue.duration)}`:'Kies een showelement';}
  if(block.type==='call')return `${formatDuration(block.seconds)} · ${block.advance==='auto'?'automatisch verder':'regie gaat verder'}`;
+ if(block.type==='random-call')return 'Eén beschikbaar kind · serverloting · maximaal twee kansen per show';
  return block.text||'Vul een tekst in voor de presentator';
 }

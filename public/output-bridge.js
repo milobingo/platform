@@ -1,4 +1,5 @@
 import {isObsSource,obsFetch} from './obs-access.js';
+import {LIVE_CALL_LINES} from './live-call-script.js';
 // Authenticated network relay plus a low-latency local channel. One audio output.
 export class OutputBridge{
  constructor({isOutput=false,getId,getGame=()=>null,getSnapshot=()=>null,getShow=()=>null,receive=()=>{},showAudio,onLost=()=>{},onNotice=()=>{}}){Object.assign(this,{isOutput,getId,getGame,getSnapshot,getShow,receive,showAudio,onLost,onNotice});this.offset=0;this.id=crypto.randomUUID();this.generation=null;this.seq=0;this.events=[];this.seen=new Set();this.enabled=isOutput;this.routing=false;this.mixer={voice:100,music:25,effects:50};this.command=null;this.ack=null;this.latest=null;this.lastPoll=0;this.lastPublish=0;this.obs=isOutput&&isObsSource();this.accessEpoch=0;this.targetGameId=isOutput?new URLSearchParams(globalThis.location?.search||'').get('show')||null:null;try{this.channel=this.obs?null:new BroadcastChannel('vlampie-output-v1');}catch{this.channel=null;}if(this.channel)this.channel.onmessage=({data})=>{if(data.kind==='packet'&&isOutput&&this.latest?.producer?.id===data.clientId&&data.state?.producer?.generation===this.latest.producer.generation&&data.state?.producer?.instanceId===this.latest.producer.instanceId)this.consume(data.state);if(data.kind==='ack'&&!isOutput&&this.latest?.output?.id===data.clientId)this.acceptAck(data.ack);};if(isOutput)this.mount();this.timer=setInterval(()=>this.tick(),500);}
@@ -18,10 +19,15 @@ export class OutputBridge{
   }
   throw Error('De vaste audio in het uitzendvenster is nog niet volledig ingeladen. Houd dit venster open en probeer opnieuw.');
  }
- cancelPreparedAudio(){this.preloadAbort?.abort();this.preloadToken=Symbol();this.preloadPending=null;this.preloadFingerprint=null;this.preloadKeys=null;this.preloadRetryAt=0;this.preloadedClips?.clear();this.outputAudioPreparation=null;}
+ cancelPreparedAudio(){this.preloadAbort?.abort();this.preloadToken=Symbol();this.preloadPending=null;this.preloadFingerprint=null;this.preloadKeys=null;this.preloadRetryAt=0;this.preloadedClips?.clear();this.preparedCallClips?.clear();this.outputAudioPreparation=null;}
  preparedVoiceAvailable(command){
   const fingerprint=command?.preparedFingerprint,current=this.lastSnapshot?.audioPreparation,prepared=this.outputAudioPreparation;
   return !!fingerprint&&current?.complete&&current.fingerprint===fingerprint&&prepared?.fingerprint===fingerprint&&!prepared.error&&prepared.total>0&&prepared.ready===prepared.total&&this.preloadKeys?.has(command.clip)&&this.preloadedClips?.has(command.clip);
+ }
+ preparedCallClip(key,characterId,callId){
+  const call=this.getLiveCall?.(),item=this.preparedCallClips?.get(characterId+':'+key),fingerprint=this.lastSnapshot?.audioPreparation?.fingerprint;
+  if(!this.isOutput||!callId||call?.id!==callId||call.phase!=='live'||call.mode!=='prepared'||call.characterId!==characterId||this.isCancelled()||!this.active||!this.audioReady||!item||!this.preparedVoiceAvailable({clip:item.clip,preparedFingerprint:fingerprint}))throw Error('De voorbereide belaudio is nog niet beschikbaar voor dit gesprek.');
+  return {bytes:this.preloadedClips.get(item.clip).slice(0),text:LIVE_CALL_LINES[key],fingerprint,clip:item.clip};
  }
  preloadOutputAudio(state){
   const preparation=state.snapshot?.audioPreparation;
@@ -40,6 +46,7 @@ export class OutputBridge{
     const manifest=await response.json();if(!valid())return;
     if(!response.ok||manifest.fingerprint!==fingerprint||!Array.isArray(manifest.items)||manifest.items.length>3000||manifest.items.length!==preparation.total||manifest.total!==manifest.items.length||manifest.ready!==manifest.total||!manifest.complete||manifest.items.some(item=>!/^[a-f0-9]{64}$/.test(item.clip||item.key||'')||item.ready!==true))throw Error('De vaste uitzendaudio is nog niet volledig beschikbaar.');
     const keys=new Set(manifest.items.map(item=>item.clip||item.key));if(keys.size!==manifest.items.length)throw Error('De lijst met uitzendfragmenten is ongeldig.');this.preloadKeys=keys;
+    this.preparedCallClips=new Map(manifest.items.filter(item=>Object.hasOwn(LIVE_CALL_LINES,item.callKey)&&typeof item.characterId==='string').map(item=>[item.characterId+':'+item.callKey,{clip:item.clip||item.key}]));
     for(const key of this.preloadedClips.keys())if(!keys.has(key))this.preloadedClips.delete(key);
     this.outputAudioPreparation={fingerprint,total:manifest.items.length,ready:this.preloadedClips.size};let index=0,bytes=[...this.preloadedClips.values()].reduce((total,b)=>total+b.byteLength,0);
     const worker=async()=>{while(index<manifest.items.length&&valid()){

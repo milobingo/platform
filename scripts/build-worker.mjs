@@ -8,11 +8,12 @@ await cp('server/show-brands.js','public/show-brands.js');
 await cp('server/characters.js','public/characters.js');
 await cp('server/production-model.js','public/production-model.js');
 await cp('server/plan-model.js','public/plan-model.js');
+await cp('server/call-rundown.js','public/call-rundown.js');
 await cp('server/manual-cues.js','public/manual-cues.js');
 await cp('server/presentation-model.js','public/presentation-model.js');
 await cp('server/bingo-model.js','public/bingo-model.js');
 await cp('server/standard-show.js','public/standard-show.js');
-for(const name of ['plan-model','presentation-model','bingo-model','standard-show','production-model','show-brands','characters','show-cues']){const path=`public/${name}.js`;await writeFile(path,(await readFile(path,'utf8')).replace(/from (['"])(\.\/[a-z-]+\.js)\1/g,"from '$2?v=36'"));}
+for(const name of ['plan-model','call-rundown','presentation-model','bingo-model','standard-show','production-model','show-brands','characters','show-cues']){const path=`public/${name}.js`;await writeFile(path,(await readFile(path,'utf8')).replace(/from (['"])(\.\/[a-z-]+\.js)\1/g,"from '$2?v=36'"));}
 await rm('dist',{recursive:true,force:true});
 await mkdir('dist/server',{recursive:true});
 await mkdir('dist/.openai',{recursive:true});

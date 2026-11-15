@@ -1,4 +1,5 @@
 import {LiveCallAudio} from './live-call-audio.js';
+import {liveCallLine} from '../public/live-call-script.js';
 
 const benignErrors=new Set(['response_cancel_not_active','input_audio_buffer_commit_empty','conversation_already_has_active_response']);
 const noop=()=>{};
@@ -11,6 +12,7 @@ export class LiveCallOutput {
  constructor({engine,media,api,onChange=noop,Audio=LiveCallAudio,Peer=globalThis.RTCPeerConnection,Stream=globalThis.MediaStream,now=()=>Date.now()}={}){
   if(!engine||!media||!api)throw Error('De live-uitvoer mist de studioverbinding.');
   Object.assign(this,{engine,media,api,onChange,Audio,Peer,Stream,now});this.call=null;this.sessionCall=null;this.epoch=0;this.level=0;this.status='inactive';this.error='';this.transcript='';this.disposed=false;this.playing=false;this.generating=false;
+  if(engine.bridge){this.oldGetLiveCall=engine.bridge.getLiveCall;this.getLiveCall=()=>this.call;engine.bridge.getLiveCall=this.getLiveCall;}
   const oldTrack=media.onRemoteTrack,oldState=media.onState,oldFailure=media.onFailure;
   this.trackHandler=(track,meta)=>{oldTrack?.(track,meta);this.remoteTrack(track,meta);};
   this.stateHandler=state=>{oldState?.(state);if(this.sessionCall&&!state.connected&&['failed','disconnected','reconnecting'].includes(state.phase))void this.fail(Error('De live-verbinding is onderbroken. De nummertrekking blijft geblokkeerd.'));this.emit();};
@@ -56,7 +58,7 @@ export class LiveCallOutput {
    if(this.sessionCall)void this.fail(Error('Het uitzendgeluid is niet meer actief. De trekking blijft geblokkeerd.'));
    else{this.status='waiting-audio';this.render();this.emit();}return Promise.resolve();
   }
-  if(this.sessionCall?.id===call.id){this.audio?.setSession(call,{enabled:true,voice:(this.engine.bridge.mixer?.voice??100)/100});this.setVAD(!call.aiMuted);this.checkGuestReady();this.render();return this.starting||Promise.resolve();}
+  if(this.sessionCall?.id===call.id){this.audio?.setSession(call,{enabled:true,voice:(this.engine.bridge.mixer?.voice??100)/100});this.setVAD(call.mode!=='prepared'&&!call.aiMuted);this.checkGuestReady();this.maybePrepared();this.render();return this.starting||Promise.resolve();}
   if(this.starting)return this.starting;
   const token=++this.epoch;this.sessionCall={...call,context:call.context?{...call.context}:null};this.status='connecting';this.error='';this.transcript='';this.level=0;
   const promise=this.start(call,token).catch(error=>{if(this.current(call.id,token))return this.fail(error);}).finally(()=>{if(this.starting===promise)this.starting=null;});
@@ -77,6 +79,9 @@ export class LiveCallOutput {
   // the player's confirmed LiveKit playback readiness before billing an AI call.
   await this.waitForGuest(call,token);if(!this.current(call.id,token))return;
   if(!this.guestReady())throw Error('De deelnemer is nog niet hoorbaar verbonden. Controleer de verbinding; de trekking blijft geblokkeerd.');
+  if(call.mode==='prepared'){
+   this.sessionReady=true;this.status='live';this.render();this.emit();this.maybePrepared();return;
+  }
   if(!this.Peer)throw Error('Deze browser ondersteunt de benodigde stemverbinding niet.');
   const peer=this.peer=new this.Peer();peer.addTrack(audio.aiInputStream.getAudioTracks()[0],audio.aiInputStream);
   peer.ontrack=event=>{if(!this.current(call.id,token)||this.peer!==peer)return;audio.attachPresenter(event.track);this.emit();};
@@ -105,6 +110,38 @@ export class LiveCallOutput {
   throw Error('De beveiligde bel-API is niet beschikbaar.');
  }
  stopRemote(call){return this.request('/api/live-calls/realtime-stop',{},call);}
+ callAction(action,body={},call=this.call){return this.api.action?this.api.action(action,body):this.request('/api/live-calls',{action,...body},call);}
+ async playPreparedLine(key,call,token){
+  if(!this.current(call.id,token))return;
+  while(this.current(call.id,token)&&this.call.aiMuted)await new Promise(resolve=>setTimeout(resolve,100));
+  if(!this.current(call.id,token))return;
+  const clip=await this.engine.bridge.preparedCallClip?.(key,call.characterId,call.id);
+  if(!this.current(call.id,token))return;
+  if(!clip?.bytes||clip.text!==liveCallLine(key))throw Error('Het vaste belletje is nog niet vooraf geladen. Sluit het gesprek veilig af en laad de showaudio bij de voorbereiding.');
+  this.transcript=clip.text;this.emit();
+  await this.audio.playPrepared(clip.bytes,{isCurrent:()=>this.current(call.id,token),onStart:()=>{this.playing=true;this.emit();}});
+  if(this.current(call.id,token)){this.playing=false;this.emit();}
+ }
+ maybePrepared(){
+  const call=this.call;if(call?.mode!=='prepared'||!this.sessionReady||!this.sessionCall||this.preparedTask||!live(call)||call.aiMuted)return;
+  const token=this.epoch,id=call.id;
+  const task=(async()=>{
+   if(!call.magicReadyAt&&!this.preparedGreetingDone){await this.playPreparedLine('greeting',call,token);await this.playPreparedLine('choice',call,token);if(!this.current(id,token))return;await this.callAction('magic-ready',{},call);this.preparedGreetingDone=true;}
+   if(!this.current(id,token))return;
+   const latest=this.call;
+   if(latest.outroRequestedAt&&!this.preparedOutroDone){await this.playPreparedLine('thank',latest,token);if(!this.current(id,token))return;this.preparedOutroDone=true;await this.callAction('finish',{},latest);return;}
+   const magic=latest.magic;
+   if(magic&&!magic.playedAt&&this.preparedMagicId!==magic.id){
+    this.preparedMagicId=magic.id;
+    await this.playPreparedLine(magic.choice,latest,token);await this.playPreparedLine('countdown',latest,token);if(!this.current(id,token))return;
+    const receipt=await this.callAction('magic-claim',{magicId:magic.id,effectId:magic.effectId},latest);if(!this.current(id,token)||receipt?.effectGranted!==true)return;
+    let playedReceipt;const sound=this.audio.playMagicEffect(magic.choice,{isCurrent:()=>this.current(id,token),onStart:()=>{this.effect={id:magic.choice==='stars'?'star-shower':'wonder',instanceId:magic.id,startedAt:this.now(),duration:magic.choice==='stars'?9:6};this.emit();playedReceipt=this.callAction('magic-played',{magicId:magic.id,effectId:magic.effectId},latest);void playedReceipt.catch(noop);}});
+    await sound;if(playedReceipt)await playedReceipt;
+    if(this.current(id,token))this.transcript='Wat een mooie '+(magic.choice==='stars'?'sterren':'bubbels')+'!';
+   }
+  })().catch(error=>{if(this.current(id,token))return this.fail(error);}).finally(()=>{if(this.preparedTask===task)this.preparedTask=null;});
+  this.preparedTask=task;
+ }
  guestReady(){return !!this.audio?.guestTrack&&this.call?.media?.player?.connected===true&&this.call?.media?.player?.audioReady===true;}
  waitForGuest(call,token){
   if(this.guestReady())return Promise.resolve();
@@ -118,7 +155,7 @@ export class LiveCallOutput {
  send(event){if(this.channel?.readyState==='open')this.channel.send(JSON.stringify(event));}
  setVAD(enabled){
   this.audio?.setListening(enabled);
-  if(this.sessionReady)this.send({type:enabled?'session.input_audio.unmute':'session.input_audio.mute'});
+  if(this.sessionReady&&this.call?.mode!=='prepared')this.send({type:enabled?'session.input_audio.unmute':'session.input_audio.mute'});
  }
  greet(){
   if(this.greetingStarted||!this.sessionReady||!live(this.call)||!this.guestReady())return;
@@ -155,8 +192,8 @@ export class LiveCallOutput {
   if(!live(this.call)||!this.sessionCall||this.error)return base;
   // Read the local analyser for every rendered studio snapshot. Server polling
   // and heartbeats are deliberately slower and must not determine mouth motion.
-  this.level=this.meter();const speaking=this.speaking,name=this.call.context?.callName||this.call.name||'Deelnemer';
-  return {...base,hostId:this.call.characterId||base.hostId,speakerId:this.call.characterId||base.speakerId,camera:'host',speaking,mouth:Math.min(.95,this.level*1.25),motion:speaking?'speak':'listen',paused:false,caption:this.transcript,roundTitle:'In gesprek met '+name,pattern:null,liveCall:{name,phase:this.call.phase},show:{...base.show,scene:'call',liveCall:true,paused:false}};
+  this.level=this.meter();const speaking=this.speaking&&!this.call.aiMuted,name=this.call.context?.callName||this.call.name||'Deelnemer',effect=this.effect,elapsed=effect?(this.now()-effect.startedAt)/1000:0,showCue=effect&&elapsed<effect.duration?{...effect,elapsed,hostId:this.call.characterId,source:'live-call',paused:!!this.call.aiMuted}:null;
+  return {...base,hostId:this.call.characterId||base.hostId,speakerId:this.call.characterId||base.speakerId,camera:showCue?.id==='star-shower'?'wide':'host',speaking,mouth:speaking?Math.min(.95,this.level*1.25):0,motion:speaking?'speak':'listen',paused:false,caption:this.transcript,roundTitle:'In gesprek met '+name,pattern:null,showCue,liveCall:{id:this.call.id,gameId:this.call.gameId,name,phase:this.call.phase,mode:this.call.mode,characterId:this.call.characterId},show:{...base.show,scene:'call',liveCall:true,paused:false}};
  }
  async fail(error){
   if(this.failing||!this.sessionCall)return;this.failing=true;const call=this.sessionCall;this.error=error?.message||'De live-verbinding is onderbroken.';this.status='failed';
@@ -166,13 +203,14 @@ export class LiveCallOutput {
  async stop({block=true}={}){
   const call=this.sessionCall;this.epoch++;if(block&&call)this.blockedId=call.id;
   clearTimeout(this.guestWaitTimer);const wait=this.guestWait;this.guestWait=null;wait?.resolve();
-  this.audio?.stopSession();this.sessionCall=null;this.level=0;this.playing=false;this.generating=false;this.greetingStarted=false;this.greetingPending=false;this.greetingGenerated=false;this.greetingPlaybackEnded=false;this.transcript='';this.realtimeId=null;this.sessionReady=false;
+  const hadRealtime=!!this.realtimeId||!!this.peer;
+  this.audio?.stopSession();this.sessionCall=null;this.level=0;this.playing=false;this.generating=false;this.greetingStarted=false;this.greetingPending=false;this.greetingGenerated=false;this.greetingPlaybackEnded=false;this.transcript='';this.realtimeId=null;this.sessionReady=false;this.preparedTask=null;this.preparedGreetingDone=false;this.preparedOutroDone=false;this.preparedMagicId=null;this.effect=null;
   const peer=this.peer,channel=this.channel;this.peer=null;this.channel=null;
   if(channel){try{if(channel.readyState==='open')channel.send(JSON.stringify({type:'session.close'}));}catch{}channel.onmessage=null;channel.onopen=null;channel.onclose=null;try{channel.close();}catch{}}
   if(peer){peer.ontrack=null;peer.onconnectionstatechange=null;try{peer.close();}catch{}}
   const bridge=this.engine.bridge;if(bridge){if(bridge.setLiveCallActive)bridge.setLiveCallActive(false);else bridge.liveCallActive=false;bridge.stopSource?.();bridge.showAudio?.setMuted?.(!(bridge.audioReady&&(bridge.latest?.routing??bridge.routing)));}
   if(this.overlay)this.overlay.hidden=true;if(this.status!=='failed')this.status='inactive';this.emit();
-  const closing=Promise.allSettled([this.media.disconnect(),...(call?[this.stopRemote(call)]:[])]);this.stopping=closing;
+  const closing=Promise.allSettled([this.media.disconnect(),...(call&&hadRealtime?[this.stopRemote(call)]:[])]);this.stopping=closing;
   await closing;if(this.stopping===closing)this.stopping=null;
  }
  async dispose(){
@@ -181,6 +219,7 @@ export class LiveCallOutput {
   if(this.media.onRemoteTrack===this.trackHandler)this.media.onRemoteTrack=oldTrack;
   if(this.media.onState===this.stateHandler)this.media.onState=oldState;
   if(this.media.onFailure===this.failureHandler)this.media.onFailure=oldFailure;
+  if(this.engine.bridge?.getLiveCall===this.getLiveCall)this.engine.bridge.getLiveCall=this.oldGetLiveCall;
   for(const track of this.programMediaStream?.getTracks?.()||[])track.stop();this.programMediaStream=null;
   await this.audio?.dispose();this.overlay?.remove();this.overlay=null;
  }

@@ -16,6 +16,14 @@ Open de demonstratie via **Shows → Oefenstudio openen** of **Belregie → Open
 - Open het uitzendvenster en activeer daar beeld en geluid. Gebruik dit specifieke venster als beeld- en geïsoleerde audiobron in OBS. Schakel algemene desktop-/systeemaudio en de losse regiemicrofoon in de uitzending uit, zodat het privégesprek niet alsnog via OBS wordt meegestuurd. Controleer de echte OBS-meters en een privé-meekijkapparaat; een softwarelabel bewijst deze isolatie niet.
 - Gebruik voor regie en testgezin een headset, twee afzonderlijke apparaten en bij voorkeur verschillende internetverbindingen. Een ouderaccount kan meerdere kinderen hebben: meld het juiste profiel aan, geef oudertoestemming en doorloop de microfoon- en verbindingscontrole. De app moet open blijven om te kunnen opnemen.
 
+## Milo voorbereiden
+
+Nieuwe Milo-shows en de première hebben twee verplaatsbare **Willekeurig belmoment**-blokken, normaal na ronde 1 en 3. Voor bestaande concepten kies je bewust **Twee magische belletjes klaarzetten**. Gepubliceerde of lopende draaiboeken worden niet omgebouwd. Zet per gewenste ronde **Bel de winnaar van de volle kaart** aan; standaard staat dit uit, ook in de finale. De startcheck noemt alle rondes en controleert de twee kansen als bellen ingeschakeld is.
+
+Klik na je laatste draaiboek- of stemwijziging op **Audio voorbereiden**. De vaste belteksten worden samen met de overige showaudio voor alle Milo-presentatoren voorbereid. Standaard speelt het belletje met deze voorbereide teksten; een kindnaam wordt op beeld en op de controlekaart getoond. Kies alleen voor een spontaan AI-gesprek als dat bewust gewenst is. Voorbereide belletjes maken geen live AI-sessie aan.
+
+Gebruik de centrale OpenAI-koppeling en de bestaande LiveKit Cloud-instellingen in Milo's beheeromgeving. Er zijn geen nieuwe GitHub-secrets, databaseprojecten of Supabase-migraties nodig voor deze uitbreiding. LiveKit moet zijn opgeslagen en echt getest. Voor de praktijkrepetitie blijven de eigen provideraccounts, een toegankelijke ingesloten YouTube-uitzending, een regieapparaat, een testgezin op een tweede apparaat met headset en een echte OBS-installatie nodig. Gebruik volwassenen en fictieve kindprofielen.
+
 ## De echte route in negen stappen
 
 1. **Deelnemer selecteren.** Meld twee kinderen onder één ouderaccount aan. Controleer in de regie dat het gekozen kind, de roepnaam en eventuele uitspraakhulp kloppen. Gebruik nooit de ouderaccountnaam als kindnaam.
@@ -27,6 +35,12 @@ Open de demonstratie via **Shows → Oefenstudio openen** of **Belregie → Open
 7. **Gesprek beëindigen.** Controleer dat de live-microfoon, Cloud-verbindingen en AI-sessie stoppen. De trekking blijft geblokkeerd. Bij een afsluitfout moet de fout zichtbaar blijven en afsluiten opnieuw geprobeerd kunnen worden.
 8. **Terugkeer bevestigen.** Het gezin herstelt de normale YouTube-weergave en bevestigt dat beeld en geluid weer werken. Controleer dit met afspeelinformatie waar betrouwbaar en een expliciete ouder- of regiebevestiging. Bij handmatige regiecontrole is een concrete notitie verplicht. De getrokken nummers blijven zichtbaar.
 9. **Nummertrekking hervatten.** Alleen de bewuste regieactie geeft de blokkade vrij, nadat terugkeer en afsluiten zijn gecontroleerd. Er wordt niet vanzelf een nummer getrokken. Bel daarna een ander kind en controleer dat de vorige naam/context nergens meer wordt gebruikt; herhaal desgewenst met een andere presentator.
+
+Bij Milo staan deze stappen in één vaste **Belkaart** naast Program/Preview. **Plan belmoment** bewaart direct de handmatige controlekaart; de uitnodiging wacht op een veilige pauze. Na **Klaar voor live** bevestigt het gezin apart dat het live mee wil doen, en daarna kiest regie bewust **Live met [presentator]**. In het voorbereide belletje kiest het kind sterren of bubbels; bij een gesproken antwoord tikt regie dezelfde keuze. Controleer dat een dubbele tik en verversen het effect niet herhalen. **Bedank & sluit af** speelt eerst het vaste bedankje; **Stop gesprek** grijpt direct in.
+
+Controleer bij weigeren of niet opnemen de aparte route **bleef kijken**: actuele YouTube-weergave moet echt beeld en hoorbaar geluid leveren en de ouder bevestigt het laatst relevante nummer. Een uitgeschakelde of gesloten app krijgt geen verzonnen afspeelbevestiging. Bij herstel via regie leg je de concrete controle en reden vast. Na de finale is de vervolgactie **Verder naar afsluiting**. Een reeds bestaande handmatige pauze blijft na het sluiten staan.
+
+Bij een winnaaroproep moeten eerst de officiële uitslag en felicitatie hoorbaar en zichtbaar zijn afgerond. Een gelijktijdig willekeurig moment wijkt naar een volgende geplande veilige pauze; zonder zo'n pauze wordt het met reden overgeslagen. Twee geplande kansen garanderen geen twee gesprekken. Een onbereikbare winnaar behoudt gewoon winst, prijs en levering.
 
 ## Foutgevallen tijdens dezelfde repetitie
 

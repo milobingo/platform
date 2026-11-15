@@ -9,14 +9,14 @@ import {showAudioScripts} from '../server/show-audio-manifest.js';
 
 test('attachment becomes an independent usable four-card programme with ten official prize steps',()=>{
  const plan=premierePlan(),second=premierePlan(),rounds=plan.blocks.filter(b=>b.type==='round');
- assert.deepEqual(planIssues(plan),[]);assert.equal(plan.blocks.length,26);assert.equal(plan.leadId,'milo');assert.equal(plan.studioId,'sterrenplein');
+ assert.deepEqual(planIssues(plan),[]);assert.equal(plan.blocks.length,28);assert.equal(plan.leadId,'milo');assert.equal(plan.studioId,'sterrenplein');
  assert.deepEqual(rounds.map(b=>b.goals.length),[3,3,3,1]);assert.ok(rounds.every(b=>b.newBoard&&b.interval===15));
  assert.ok(plan.blocks.every(b=>!second.blocks.some(other=>other.id===b.id)));
- assert.equal(plan.blocks[0].seconds,60);assert.equal(plan.blocks[16].seconds,90);
- assert.equal(plan.blocks[17].guestId,'piko');assert.deepEqual(plan.blocks[17].dialogue.map(t=>t.speakerId),['piko','milo','piko','milo','piko']);
- assert.equal(plan.blocks[10].magicId,'star-hat');assert.equal(plan.blocks[21].magicId,'silk-stars');
+ assert.equal(plan.blocks[0].seconds,60);assert.equal(plan.blocks[17].seconds,90);
+ assert.equal(plan.blocks[18].guestId,'piko');assert.deepEqual(plan.blocks[18].dialogue.map(t=>t.speakerId),['piko','milo','piko','milo','piko']);
+ assert.equal(plan.blocks[10].magicId,'star-hat');assert.equal(plan.blocks[23].magicId,'silk-stars');
  assert.deepEqual(plan.blocks.filter(b=>b.type==='magic').map(b=>b.duration),[14,15]);
- assert.equal(plan.blocks[24].type,'finale');assert.equal(plan.blocks[25].showCueId,'curtain-call');assert.equal(plan.blocks[25].duration,10);
+ assert.equal(plan.blocks[26].type,'finale');assert.equal(plan.blocks[27].showCueId,'curtain-call');assert.equal(plan.blocks[27].duration,10);
  assert.deepEqual(plan.blocks[5].explanationSteps.map(step=>step.patternId),['patroon-hoeken','patroon-boven-onder','patroon-vol']);
  assert.equal(plan.blocks[5].explanationSteps.map(step=>step.text).join(' '),plan.blocks[5].text);
  for(const [index,round]of rounds.entries())assert.deepEqual(round.goals.map(g=>g.patternId),index===3?['patroon-vol']:['patroon-hoeken','patroon-boven-onder','patroon-vol']);

@@ -5,6 +5,7 @@ import {assertWindowCapacity} from './game-capacity.js';
 import {normalizeShowTime} from './show-time.js';
 import {projectedGameRules} from './game-rules.js';
 import {STANDARD_MILO_PROFILE,STANDARD_DRAW_RESERVATION_MS,standardMiloPlan,isStandardMiloGame,resetDrawClock,drawDueAt} from './standard-show.js';
+import {addMissingRandomCalls} from './call-rundown.js';
 
 export const MINIGAMES=Object.freeze([
  {id:'wheel',name:'Vlampie’s Vuurrad',kind:'wheel',description:'Het rad versnelt, de lampen jagen rond en de laatste tik beslist.'},
@@ -63,6 +64,7 @@ export function normalizeBingoPlan(input){
 }
 export function makeGame(input,ownerId,origin,now=Date.now()){
  const count=integer(input.roundCount??4,1,8,'Aantal rondes'),standard=brandId(input.brandId)==='milo'&&count===4&&!input.plan,plan=normalizeBingoPlan(input.plan?repairLegacyPlanBrand(input.plan,input.brandId):standard?standardMiloPlan():brandDefaults(defaultGamePlan(count),input.brandId));
+ if(!input.plan&&brandId(input.brandId)==='milo')addMissingRandomCalls(plan);
  const schedule=normalizeShowTime(input.date,{timeZone:input.timeZone});
  if(plan.blocks.filter(b=>b.type==='round').length!==count)throw new BingoError('Het aantal rondes in de voorbereiding moet overeenkomen met het spel.');
  return {id:crypto.randomUUID(),brandId:validBrand(input.brandId||'vlampie'),ownerId,title:cleanText(input.title||plan.title,60,'spelnaam'),...schedule,origin,createdAt:now,status:'draft',preparationRevision:0,settings:gameSettings(standard?{...input.settings,mode:'auto',rulesProfile:STANDARD_MILO_PROFILE}:input.settings,input.brandId),plan,books:[],batches:[],results:[],events:[],ops:[],state:{phase:'lobby',blockIndex:-1,roundIndex:-1,goalIndex:0,goalOpenedAt:0,epoch:'',drawn:[],history:[],deck:[],pending:null,window:null,windowSequence:0,resultId:null,goalWon:false,paused:false}};
@@ -107,7 +109,7 @@ export function activateBlock(game,index,goalIndex=0,now=Date.now()){
   if(savedGoalResult(game,roundIndex,goalIndex))throw new BingoError('Deze prijsstap is definitief afgerond en kan niet opnieuw worden geopend.',409,'goal_final');
  }
  const changed=game.state.blockIndex!==index||game.state.goalIndex!==goalIndex;
- game.state.blockIndex=index;game.state.paused=false;if(changed)productionEvent(game,'block-activated',{blockId:b.id,title:b.title,blockIndex:index,roundIndex:b.type==='round'?roundIndex:game.state.roundIndex,goalIndex},now);
+ game.state.blockIndex=index;game.state.paused=game.brandId==='milo'&&!!game.state.drawHold&&game.state.paused===true;if(changed)productionEvent(game,'block-activated',{blockId:b.id,title:b.title,blockIndex:index,roundIndex:b.type==='round'?roundIndex:game.state.roundIndex,goalIndex},now);
  if(b.type!=='round'){if(!game.state.drawHold){game.state.phase='interlude';game.state.pending=null;}return b;}
  if(roundIndex!==game.state.roundIndex){if(game.state.roundIndex>=0)game.state.history.push({roundIndex:game.state.roundIndex,drawn:[...game.state.drawn],closedAt:now});game.state.drawn=[];game.state.lastCommit=null;game.state.deck=shuffle(Array.from({length:75},(_,i)=>i+1));game.state.pending=null;}
  if(roundIndex!==game.state.roundIndex||goalIndex!==game.state.goalIndex||!game.state.epoch){game.state.epoch=crypto.randomUUID();if(game.state.pending)game.state.pending={number:game.state.pending.number,token:crypto.randomUUID(),epoch:game.state.epoch};game.state.goalOpenedAt=game.state.drawn.length;game.state.window=null;game.state.windowSequence=0;game.state.resultId=null;game.state.goalWon=false;}

@@ -19,7 +19,7 @@ function fixture({demo=true,Connection=SilentConnection,Media,Output}={}){
  generateBooks(game,2,'runtime-books');
  for(const [i,book] of game.books.entries())Object.assign(book,{accountId:'parent-family',profileId:i?'child-daan':'child-sophie',name:i?'Daan':'Sophie'});
  game.state.drawn=[3,7,42];game.state.epoch='epoch-one';
- game.participation=game.books.map(book=>({id:'entry-'+book.profileId,accountId:book.accountId,profileId:book.profileId,name:book.name,callConsentAt:1,callStatus:'accepted',micChecked:true,connectionChecked:true}));
+ game.participation=game.books.map(book=>({id:'entry-'+book.profileId,accountId:book.accountId,profileId:book.profileId,name:book.name,child:true,parentConsent:true,callConsentEnabled:true,callConsentAt:1,callStatus:'accepted',micChecked:true,connectionChecked:true,headphones:true,callPresenceAt:Date.now(),technicalReadyAt:Date.now()}));
  game.results=[{id:'confirmed-result',type:'bingo',acknowledged:true,winner:{accountId:'parent-family',profileId:'child-sophie'},prize:{title:'Een toverdoos'},roundIndex:0,createdAt:123}];
  const calls=[],failures=[],notices=[];
  const engine={demo,isOutput:false,game,clientId:'director-browser',hostId:'milo',voicePhase:'idle',magic:null,camera:'wide',speakerId:'milo',dirty:false,
@@ -33,7 +33,7 @@ function fixture({demo=true,Connection=SilentConnection,Media,Output}={}){
 }
 const prepare=({runtime,queue},name='Sophie',character='milo')=>runtime.prepare(queue().find(e=>e.name===name).id,{callName:name,pronunciation:'Sofie',reason:'Een gezellig showgesprek',note:'Begin met een makkelijke vraag.',confirmedFacts:[{confirmed:true,prize:'Verzonnen prijs'}]},90,character);
 async function backstage(f){await prepare(f);await f.runtime.action('ring');await f.runtime.action('simulate',{outcome:'answer'});}
-async function stage(f){await f.runtime.action('backstage-ready',{soundChecked:true,explanationGiven:true});await f.runtime.action('stage');}
+async function stage(f){await f.runtime.action('backstage-ready',{soundChecked:true,explanationGiven:true});await f.runtime.action('stage');if(!f.runtime.call.liveAgreement?.agreedAt){await assert.rejects(f.runtime.action('go-live',{contextConfirmed:true}),/gezin.*toestemming/);await f.runtime.action('simulate',{outcome:'agree-live'});}}
 async function completeReturn(f,{manual=false}={}){if(!manual)await f.runtime.action('simulate',{outcome:'returned'});await f.runtime.action('confirm-return',{confirmed:true,...(manual?{manual:true,note:'Ouder bevestigt dat YouTube weer zichtbaar en hoorbaar is.'}:{})});assert(f.runtime.drawHeld);await f.runtime.action('resume-draw');}
 
 // All nine steps use the actual runtime and the shared server model.
@@ -118,4 +118,15 @@ for(const characterId of Object.keys(CHARACTERS)){
  await f.runtime.tick();assert.equal(outputTicks,1);assert.equal(f.runtime.ticking,false);gate.resolve();await turn();f.runtime.dispose();
 }
 
-console.log('✓ Live-call runtime: actual nine-step demo, confirmed context, all failure holds, explicit return, no provider calls, protected prepare/cancel races, refreshed snapshots, all presenter identities, other-show recovery and nonblocking output');
+// The new compact card's demo route schedules without a hold, then uses the
+// same invitation/model/return guards as a real cue. No providers are called.
+for(const outcome of ['success','declined','disconnected']){
+ const f=fixture(),r=f.runtime,e=f.engine;e.game.status='running';let resumeTarget=null;e.resumeAfterCall=async target=>{resumeTarget=target;};
+ const cue=await r.schedule({entryId:f.queue()[0].id,context:{callName:'Sofietje',reason:'Een voorbereid magisch belletje'},characterId:'bella',mode:'prepared'});assert(cue.id.startsWith('manual:'));assert.equal(e.game.state.drawHold,undefined);assert.equal(cue.context.callName,'Sofietje');assert.equal(cue.characterId,'bella');
+ cue.resumeTarget='ending';await r.inviteCue(cue.id,{characterId:'bella',mode:'prepared'});assert.equal(r.call.phase,'ringing');assert.equal(r.call.mode,'prepared');assert.equal(r.call.context.callName,'Sofietje');assert.equal(r.call.characterId,'bella');assert(r.drawHeld);
+ if(outcome==='declined')await r.action('simulate',{outcome:'declined'});
+ else{await r.action('simulate',{outcome:'answer'});await r.connectPrivate();await r.action('backstage-ready',{soundChecked:true,explanationGiven:true});await r.action('stage');await assert.rejects(r.action('go-live',{contextConfirmed:true}),/gezin.*toestemming/);await r.action('simulate',{outcome:'agree-live'});await r.action('go-live',{contextConfirmed:true});assert.equal(r.call.phase,'live');assert(r.call.magicReadyAt);await r.action('magic-choice',{choice:'stars'});const id=r.call.magic.id;await r.action('magic-choice',{choice:'bubbles'});assert.equal(r.call.magic.id,id);assert.equal(r.call.magic.choice,'stars');await r.action(outcome==='success'?'thank':'simulate',outcome==='success'?{}:{outcome:'disconnected'});}
+ assert.equal(r.call.phase,'returning');assert(r.drawHeld);await assert.rejects(r.action('resume-draw'),/belstap/);await completeReturn(f,{manual:outcome!=='success'});assert.equal(r.call.phase,'completed');assert.equal(cue.status,'completed');assert.equal(r.drawHeld,false);assert.equal(resumeTarget,'ending');assert.equal(e.runner.autoDraw,false);assert.deepEqual(e.game.state.drawn,[3,7,42]);assert.equal(f.realRequests.length,0);assert.equal(r.connection.actions.length,0);r.dispose();
+}
+
+console.log('✓ Live-call runtime: guarded legacy flow and three complete scheduled Milo demos (success, refusal, disconnect), confirmed context, checked finale return, protected prepare/cancel races and no provider calls');

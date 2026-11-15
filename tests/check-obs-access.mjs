@@ -43,10 +43,10 @@ async function fixture(t,{postgres=false}={}){
  return {env,DB,user,game,bingo,ids,state,request,invoke,create,scoped,row,write,heartbeat};
 }
 async function liveCall(h){
- const entry={id:crypto.randomUUID(),accountId:crypto.randomUUID(),profileId:crypto.randomUUID(),name:'Sophie',child:true,parentConsent:true,callConsentAt:Date.now(),callStatus:'accepted'};
- h.game.status='running';h.game.participation=[entry];
+ const entry={id:crypto.randomUUID(),accountId:crypto.randomUUID(),profileId:crypto.randomUUID(),name:'Sophie',child:true,parentConsent:true,callConsentEnabled:true,callConsentAt:Date.now(),callPresenceAt:Date.now(),technicalReadyAt:Date.now(),micChecked:true,headphones:true,connectionChecked:true,callStatus:'accepted'};
+ h.game.status='running';h.game.participation=[entry];h.game.books=[{id:crypto.randomUUID(),accountId:entry.accountId,profileId:entry.profileId,admitted:true,cards:[]}];
  const call=makeLiveCall(h.game,entry,{clientId:h.ids.host,outputId:h.ids.output,character:{id:'milo',name:'Milo',realtimeVoice:'marin'},presenter:CHARACTERS.milo,context:{callName:'Sofietje',reason:'PRIVATE_REASON',pronunciation:'PRIVATE_PRONUNCIATION',note:'PRIVATE_NOTE'}});
- Object.assign(call,{phase:'live',holdConfirmed:true,speechEngine:'gpt-live',liveAt:Date.now(),liveUntil:Date.now()+90000,resourcesClosed:false});call.seen.player=Date.now();call.media.player={connected:true,micReady:true,audioReady:true};call.activeContext=structuredClone(call.context);h.game.state.drawHold={callId:call.id};
+ Object.assign(call,{mode:'ai',liveAgreement:{agreedAt:Date.now(),profileId:entry.profileId},phase:'live',holdConfirmed:true,speechEngine:'gpt-live',liveAt:Date.now(),liveUntil:Date.now()+90000,resourcesClosed:false});call.seen.player=Date.now();call.media.player={connected:true,micReady:true,audioReady:true};call.activeContext=structuredClone(call.context);h.game.state.drawHold={callId:call.id};
  await h.DB.prepare('UPDATE bingo_games SET document = ? WHERE id = ?').bind(JSON.stringify(h.game),h.game.id).run();
  await h.DB.prepare('INSERT INTO studio_calls (owner_id,game_id,revision,document) VALUES (?,?,0,?)').bind(h.user.id,h.game.id,JSON.stringify(call)).run();
  return {call,body:extra=>({role:'output',clientId:h.ids.output,gameId:h.game.id,callId:call.id,...extra}),read:async()=>JSON.parse((await h.DB.prepare('SELECT document FROM studio_calls WHERE owner_id = ?').bind(h.user.id).first()).document)};
@@ -151,6 +151,21 @@ test('scoped live calls expose consented display name and required media state, 
  const token=(await h.scoped(created.token,'/api/obs/live-calls/token',c.body({target:'live'}))).data;assert.equal(token.role,'output');assert.equal(token.target,'live');const claims=JSON.parse(Buffer.from(token.token.split('.')[1],'base64url'));assert.equal(claims.video.room,'live-'+c.call.id);assert.equal(claims.sub,'output-'+c.call.id);
  await h.scoped(created.token,'/api/obs/live-calls/token',c.body({target:'backstage'}),{status:403});await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'heartbeat',clientId:crypto.randomUUID(),target:'live'}),{status:403});
  await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'heartbeat',target:'live',connected:true,audioReady:true}));assert.equal((await c.read()).media.output.connected,true);
+});
+
+test('OBS prepared calls receive only scoped script/effect metadata and can claim one effect, acknowledge it and finish only after the host outro request',async t=>{
+ const h=await fixture(t),created=await h.create();await h.heartbeat(created.token);const c=await liveCall(h);
+ await h.DB.prepare('UPDATE studio_calls SET document = ? WHERE owner_id = ?').bind(JSON.stringify({...await c.read(),mode:'prepared',source:'random',cueId:'random:second',resumeTarget:'ending'}),h.user.id).run();
+ const query=new URLSearchParams(c.body({})),polled=await h.scoped(created.token,'/api/obs/live-calls?'+query);assert.equal(polled.data.call.mode,'prepared');assert.equal(polled.data.call.source,'random');assert.equal(polled.data.call.resumeTarget,'ending');for(const hidden of ['PRIVATE_NOTE','PRIVATE_REASON','PRIVATE_PRONUNCIATION','profileId','accountId','liveAgreement','checkpoint'])assert(!polled.text.includes(hidden));
+ await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'finish'}),{status:409});await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'magic-choice',choice:'stars'}),{status:403});
+ await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'magic-ready'}));assert((await c.read()).magicReadyAt);
+ const host=async(action,extra={})=>h.invoke('/api/live-calls',{role:'host',clientId:h.ids.host,gameId:h.game.id,callId:c.call.id,action,...extra},{headers:{'X-Vlampie-Call':'1'}});
+ await host('magic-choice',{choice:'bubbles'});const magic=(await c.read()).magic;
+ const claim=await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'magic-claim',magicId:magic.id,effectId:magic.effectId}));assert.equal(claim.data.effectGranted,true);assert.equal(claim.data.call.magic.choice,'bubbles');
+ const replay=await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'magic-claim',magicId:magic.id,effectId:magic.effectId}));assert.equal(replay.data.effectGranted,false);assert.equal((await c.read()).magic.playedAt,undefined);
+ await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'magic-played',magicId:magic.id,effectId:magic.effectId}));assert((await c.read()).magic.playedAt);assert.equal((await c.read()).phase,'live');
+ await host('thank');const requested=await h.scoped(created.token,'/api/obs/live-calls?'+query);assert(requested.data.call.outroRequestedAt);
+ const closed=await h.scoped(created.token,'/api/obs/live-calls',c.body({action:'finish'}));assert.equal(closed.data.call.phase,'returning');assert.equal((await c.read()).drawHeld,true);assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold.callId,c.call.id);
 });
 
 test('queued realtime rechecks revoked capability and aborted request before any provider start',async t=>{
