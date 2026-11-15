@@ -1,0 +1,9 @@
+{
+  "runUrl": "https://github.com/milobingo/platform/actions/runs/43711460798",
+  "releaseSha": "84e2511194b184b13d4ace0059eafac3c5be8350",
+  "conclusion": "failure",
+  "failedCheck": "check-regie-provider-settings",
+  "trigger": "A fixture created an older call whose game had never been inserted. CallStore now correctly requires an actual active owned game before admitting a call.",
+  "resolution": "Seed the fixture with the actual older owned game; retain rejection of replacing unconfirmed resources and acceptance only after confirmed cleanup. No application guard is weakened.",
+  "deployed": false
+}

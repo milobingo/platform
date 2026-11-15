@@ -1,0 +1,160 @@
+verify	Offline contract tests	﻿2026-11-15T11:59:17.4185520Z ##[group]Run pnpm test
+verify	Offline contract tests	2026-11-15T11:59:17.4185890Z ^[[36;1mpnpm test^[[0m
+verify	Offline contract tests	2026-11-15T11:59:17.4243266Z shell: /usr/bin/bash -e {0}
+verify	Offline contract tests	2026-11-15T11:59:17.4243618Z env:
+verify	Offline contract tests	2026-11-15T11:59:17.4243863Z   CI: true
+verify	Offline contract tests	2026-11-15T11:59:17.4244124Z   NEXT_TELEMETRY_DISABLED: 1
+verify	Offline contract tests	2026-11-15T11:59:17.4244918Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	Offline contract tests	2026-11-15T11:59:17.4245425Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	Offline contract tests	2026-11-15T11:59:17.4245855Z   MILO_TEST_VISUDO: /usr/sbin/visudo.ws
+verify	Offline contract tests	2026-11-15T11:59:17.4246505Z   MILO_TEST_POSTGRES_CONTAINER: 2826fa893e3eb30ad9ccbd3bcdc464eff408f7c077cbf23f6cb0d8d6915a208c
+verify	Offline contract tests	2026-11-15T11:59:17.4247138Z ##[endgroup]
+verify	Offline contract tests	2026-11-15T11:59:18.1169894Z $ node scripts/run-checks.mjs
+verify	Offline contract tests	2026-11-15T11:59:23.3276168Z ✓ check-family-demo (5158 ms)
+verify	Offline contract tests	2026-11-15T11:59:35.4375017Z ✓ check-family-extras (12110 ms)
+verify	Offline contract tests	2026-11-15T11:59:35.4852457Z ✓ check-family-brand (47 ms)
+verify	Offline contract tests	2026-11-15T11:59:37.2717414Z ✓ check-player-auth (1787 ms)
+verify	Offline contract tests	2026-11-15T11:59:51.5337882Z ✓ check-bingo (14262 ms)
+verify	Offline contract tests	2026-11-15T11:59:52.2723964Z ✓ check-live-chat (738 ms)
+verify	Offline contract tests	2026-11-15T11:59:54.9023887Z ✓ check-chat-client (2631 ms)
+verify	Offline contract tests	2026-11-15T11:59:57.2694344Z ✓ check-milo-print (2366 ms)
+verify	Offline contract tests	2026-11-15T11:59:57.4119583Z ✓ check-characters (142 ms)
+verify	Offline contract tests	2026-11-15T11:59:57.4681346Z ✓ check-cast-runner (55 ms)
+verify	Offline contract tests	2026-11-15T11:59:58.2031016Z ✓ check-milo-motion (734 ms)
+verify	Offline contract tests	2026-11-15T11:59:58.2730792Z ✓ check-milo-life (70 ms)
+verify	Offline contract tests	2026-11-15T11:59:59.4500640Z ✓ check-milo-minigame-catalog (1177 ms)
+verify	Offline contract tests	2026-11-15T11:59:59.7726179Z ✓ check-milo-minigame-server (323 ms)
+verify	Offline contract tests	2026-11-15T11:59:59.9738764Z ✓ check-milo-game-clock (201 ms)
+verify	Offline contract tests	2026-11-15T12:00:00.0652966Z ✓ check-call-draw-hold (91 ms)
+verify	Offline contract tests	2026-11-15T12:00:00.1126176Z ✓ check-live-call-audio (48 ms)
+verify	Offline contract tests	2026-11-15T12:00:00.5230667Z ✓ check-live-calls (409 ms)
+verify	Offline contract tests	2026-11-15T12:00:00.5749498Z ✓ check-player-live-call (53 ms)
+verify	Offline contract tests	2026-11-15T12:00:04.1113478Z ✓ check-regie-workspace (3537 ms)
+verify	Offline contract tests	2026-11-15T12:00:04.8952821Z ✓ check-regie-panels (783 ms)
+verify	Offline contract tests	2026-11-15T12:00:07.1502959Z ✓ check-brand-contract (2255 ms)
+verify	Offline contract tests	2026-11-15T12:00:07.2563129Z ✓ check-secrets (106 ms)
+verify	Offline contract tests	2026-11-15T12:00:07.5021293Z ✓ check-youtube-player (245 ms)
+verify	Offline contract tests	2026-11-15T12:00:07.5451839Z ✓ check-startup-recovery (43 ms)
+verify	Offline contract tests	2026-11-15T12:00:07.7771038Z ✓ check-gpt-live (232 ms)
+verify	Offline contract tests	2026-11-15T12:00:08.1493494Z ✓ check-show-preparation (372 ms)
+verify	Offline contract tests	2026-11-15T12:00:09.1573643Z ✓ check-studio-engine (1008 ms)
+verify	Offline contract tests	2026-11-15T12:00:09.9571037Z ✓ check-simple-preparation-ui (800 ms)
+verify	Offline contract tests	2026-11-15T12:00:14.0016462Z ✓ check-broadcast-preparation (4045 ms)
+verify	Offline contract tests	2026-11-15T12:00:14.3953538Z ✓ check-calls (393 ms)
+verify	Offline contract tests	2026-11-15T12:00:17.3457131Z ✓ check-force-cancel-calls (2951 ms)
+verify	Offline contract tests	2026-11-15T12:00:17.6339774Z ✓ check-force-cancel-output (288 ms)
+verify	Offline contract tests	2026-11-15T12:00:17.7213363Z ✓ check-planner-api (87 ms)
+verify	Offline contract tests	2026-11-15T12:00:18.1453306Z ✓ check-planner-ui (424 ms)
+verify	Offline contract tests	2026-11-15T12:00:18.2552924Z ✓ check-openai (110 ms)
+verify	Offline contract tests	2026-11-15T12:00:18.9073168Z ✓ check-production (651 ms)
+verify	Offline contract tests	2026-11-15T12:00:19.1684432Z ✓ check-milo-brand-isolation (261 ms)
+verify	Offline contract tests	2026-11-15T12:00:19.4994044Z ✓ check-presentation (331 ms)
+verify	Offline contract tests	2026-11-15T12:00:19.8380339Z ✓ check-claim-priority (339 ms)
+verify	Offline contract tests	2026-11-15T12:00:19.9022787Z ✓ check-family-consolation (65 ms)
+verify	Offline contract tests	2026-11-15T12:00:23.6288100Z ✓ check-bingo-orders (3725 ms)
+verify	Offline contract tests	2026-11-15T12:00:23.7042911Z ✓ check-order-demo (76 ms)
+verify	Offline contract tests	2026-11-15T12:00:40.1052296Z ✓ check-workspace-navigation (16401 ms)
+verify	Offline contract tests	2026-11-15T12:00:43.2476604Z ✓ check-character-navigation (3142 ms)
+verify	Offline contract tests	2026-11-15T12:00:45.1155226Z ✓ check-administration-ui (1868 ms)
+verify	Offline contract tests	2026-11-15T12:00:48.3065300Z ✓ check-broadcast-shell (3191 ms)
+verify	Offline contract tests	2026-11-15T12:00:50.8363510Z ✓ check-show-cue-ui (2530 ms)
+verify	Offline contract tests	2026-11-15T12:00:50.9213114Z ✓ check-magic-catalog (84 ms)
+verify	Offline contract tests	2026-11-15T12:00:51.0033233Z ✓ check-milo-studio-tour (82 ms)
+verify	Offline contract tests	2026-11-15T12:00:51.4243052Z ✓ check-milo-leg-render (422 ms)
+verify	Offline contract tests	2026-11-15T12:00:53.1189741Z ✓ check-milo-magic-render (1693 ms)
+verify	Offline contract tests	2026-11-15T12:00:54.4952803Z ✓ check-milo-puppet-render (1377 ms)
+verify	Offline contract tests	2026-11-15T12:00:57.2380542Z ✓ check-milo-effect-continuity (2742 ms)
+verify	Offline contract tests	2026-11-15T12:00:57.4670459Z ✓ check-livekit (229 ms)
+verify	Offline contract tests	2026-11-15T12:00:57.5262459Z ✓ check-live-call-output (59 ms)
+verify	Offline contract tests	2026-11-15T12:00:57.6175637Z ✓ check-live-call-runtime (92 ms)
+verify	Offline contract tests	2026-11-15T12:00:58.0183829Z ✓ check-live-call-recovery (400 ms)
+verify	Offline contract tests	2026-11-15T12:00:58.0760567Z ✓ check-mail-templates (58 ms)
+verify	Offline contract tests	2026-11-15T12:00:58.3251157Z ✓ check-mail-service (249 ms)
+verify	Offline contract tests	2026-11-15T12:01:05.5244173Z ✓ check-mail-ui (7200 ms)
+verify	Offline contract tests	2026-11-15T12:01:13.8403231Z ✓ check-provider-settings-ui (8315 ms)
+verify	Offline contract tests	2026-11-15T12:01:15.4321926Z ✓ check-obs-source-ui (1592 ms)
+verify	Offline contract tests	2026-11-15T12:01:15.9120968Z ✓ check-obs-recovery (479 ms)
+verify	Offline contract tests	2026-11-15T12:01:20.9970949Z ✓ check-milo-ui (5085 ms)
+verify	Offline contract tests	2026-11-15T12:01:26.4363615Z ✓ check-showtime (5439 ms)
+verify	Offline contract tests	2026-11-15T12:01:31.4271092Z ✓ check-start-readiness (4990 ms)
+verify	Offline contract tests	2026-11-15T12:01:31.6143329Z ✓ check-director-whisper-runtime (187 ms)
+verify	Offline contract tests	2026-11-15T12:01:33.1053754Z ✓ check-director-whisper-ui (1492 ms)
+verify	Offline contract tests	2026-11-15T12:01:33.3238792Z ✓ check-director-whisper-server (217 ms)
+verify	Offline contract tests	2026-11-15T12:01:33.6291886Z ✓ check-live-director-whisper (306 ms)
+verify	Offline contract tests	2026-11-15T12:01:34.2743443Z ✓ check-standard-show (645 ms)
+verify	Offline contract tests	2026-11-15T12:01:34.8235588Z ✓ check-force-cancel (549 ms)
+verify	Offline contract tests	2026-11-15T12:01:35.1673318Z ✓ check-long-speech (344 ms)
+verify	Offline contract tests	2026-11-15T12:01:36.1433421Z ✓ check-regie-resend-settings (976 ms)
+verify	Offline contract tests	2026-11-15T12:01:36.5323195Z ✓ check-node-resend-mail (389 ms)
+verify	Offline contract tests	2026-11-15T12:01:36.9106631Z ✓ check-protected-config (377 ms)
+verify	Offline contract tests	2026-11-15T12:01:38.0736754Z ✓ check-protected-production (1164 ms)
+verify	Offline contract tests	2026-11-15T12:01:39.1925921Z ✓ check-node-storage (1119 ms)
+verify	Offline contract tests	2026-11-15T12:01:40.4565856Z ✓ check-node-game-queue (1263 ms)
+verify	Offline contract tests	2026-11-15T12:01:40.8193030Z ✓ check-queued-bingo-time (363 ms)
+verify	Offline contract tests	2026-11-15T12:01:42.6819502Z ✓ check-node-runtime (1863 ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6783782Z ✔ native status works without environment keys and ignores imported prototype credentials (108.337931ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6784685Z ✗ check-regie-provider-settings (996 ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6785796Z ✔ native save is encrypted, redacted and independent of provider tests; explicit overrides and fallback are reversible (60.911308ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6787098Z ✔ provider rejection or connection failure invalidates a receipt without replacing credentials (33.664555ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6788364Z ✔ verified organizer, same origin, custom header, CAS and fresh role after admission protect every native save (22.543342ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6789707Z ✔ both provider rotations reject another organizer active call, failed cleanup and orphan draw hold without mutation (18.388314ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6790647Z ✔ corrupt or unreadable native overrides fail closed and never expose or silently restore environment credentials (146.26246ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6791326Z ✔ durable preview ledger survives role deletion and missing latest pointer (32.137271ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6792270Z ✔ failed latest write plus rejected hangup stays registered and blocks both credential rotations (42.533069ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6793100Z ✔ native start lock never delays parental withdrawal and late provider resources are closed with their original key (33.375587ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6793824Z ✔ native legacy hangup failure preserves hold and blocks rotation until confirmed retry (22.58219ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6794450Z ✔ late native cleanup cannot mutate a replacement call or clear its new show hold (19.915227ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6795131Z ✔ microphone stop during a blocked native preview start returns promptly and closes the late session (23.468604ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6795934Z ✖ native legacy and LiveKit prepare cannot replace an unconfirmed terminal session; confirmed cleanup allows replacement (4.674308ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6796709Z ✔ a slow or aborted provider body holds no credential lock and oversized input cannot mutate credentials (19.085657ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6797328Z ✔ a lost native PostgreSQL lock lease prevents credential persistence (11.782453ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6797938Z ✔ PostgreSQL lock serializes adapters while the local FIFO consumes only one lock admission (132.864052ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6798345Z ℹ tests 16
+verify	Offline contract tests	2026-11-15T12:01:43.6798528Z ℹ suites 0
+verify	Offline contract tests	2026-11-15T12:01:43.6798958Z ℹ pass 15
+verify	Offline contract tests	2026-11-15T12:01:43.6799121Z ℹ fail 1
+verify	Offline contract tests	2026-11-15T12:01:43.6799297Z ℹ cancelled 0
+verify	Offline contract tests	2026-11-15T12:01:43.6799475Z ℹ skipped 0
+verify	Offline contract tests	2026-11-15T12:01:43.6799646Z ℹ todo 0
+verify	Offline contract tests	2026-11-15T12:01:43.6799837Z ℹ duration_ms 742.814539
+verify	Offline contract tests	2026-11-15T12:01:43.6799966Z 
+verify	Offline contract tests	2026-11-15T12:01:43.6800065Z ✖ failing tests:
+verify	Offline contract tests	2026-11-15T12:01:43.6800167Z 
+verify	Offline contract tests	2026-11-15T12:01:43.6800356Z test at tests/check-regie-provider-settings.mjs:155:1
+verify	Offline contract tests	2026-11-15T12:01:43.6801026Z ✖ native legacy and LiveKit prepare cannot replace an unconfirmed terminal session; confirmed cleanup allows replacement (4.674308ms)
+verify	Offline contract tests	2026-11-15T12:01:43.6810727Z   Error: Deze show is beëindigd. Er kan geen belverbinding meer worden geopend.
+verify	Offline contract tests	2026-11-15T12:01:43.6811768Z       at callError (file:///home/runner/work/platform/platform/server/calls-model.js:4:64)
+verify	Offline contract tests	2026-11-15T12:01:43.6812877Z       at assertCallGameActive (file:///home/runner/work/platform/platform/server/calls.js:14:173)
+verify	Offline contract tests	2026-11-15T12:01:43.6813846Z       at async CallStore.create (file:///home/runner/work/platform/platform/server/calls.js:18:80)
+verify	Offline contract tests	2026-11-15T12:01:43.6814910Z       at async TestContext.<anonymous> (file:///home/runner/work/platform/platform/tests/check-regie-provider-settings.mjs:157:2)
+verify	Offline contract tests	2026-11-15T12:01:43.6815762Z       at async Test.run (node:internal/test_runner/test:1332:7)
+verify	Offline contract tests	2026-11-15T12:01:43.6816389Z       at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+verify	Offline contract tests	2026-11-15T12:01:43.6816903Z     status: 409,
+verify	Offline contract tests	2026-11-15T12:01:43.6817159Z     code: 'call_state'
+verify	Offline contract tests	2026-11-15T12:01:43.6817442Z   }
+verify	Offline contract tests	2026-11-15T12:01:43.6817577Z 
+verify	Offline contract tests	2026-11-15T12:01:44.9151036Z ✓ check-obs-access (1237 ms)
+verify	Offline contract tests	2026-11-15T12:01:45.1302574Z ✓ check-staging-workspace-preflight (215 ms)
+verify	Offline contract tests	2026-11-15T12:01:45.4503693Z ✓ check-node-provider-fetch (320 ms)
+verify	Offline contract tests	2026-11-15T12:01:45.5193115Z ✓ check-node-mail-gateway (69 ms)
+verify	Offline contract tests	2026-11-15T12:01:45.5933904Z ✓ check-node-postgres-tls (74 ms)
+verify	Offline contract tests	2026-11-15T12:01:45.6507720Z ✓ check-deploy-contract (57 ms)
+verify	Offline contract tests	2026-11-15T12:01:46.7751397Z ✓ check-production-deploy (1124 ms)
+verify	Offline contract tests	2026-11-15T12:01:55.9870312Z ✓ check-deploy-database (9212 ms)
+verify	Offline contract tests	2026-11-15T12:01:57.2687017Z ✓ check-provision-runtime (1282 ms)
+verify	Offline contract tests	2026-11-15T12:01:57.3394004Z ✓ check-show-time (71 ms)
+verify	Offline contract tests	2026-11-15T12:01:58.0592267Z ✓ check-game-invariants (719 ms)
+verify	Offline contract tests	2026-11-15T12:02:09.6627559Z ✓ check-game-capacity (11603 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.0094588Z ✓ check-family-claim-context (346 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.1513198Z ✓ check-live-feed (142 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.2626723Z ✓ check-live-feed-isolation (111 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.3168410Z ✓ check-v70-schema-upgrade (54 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.4247410Z ✓ check-show-time-audit (108 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.7930715Z ✓ check-account-mail (368 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.9604828Z ✓ check-staging-restore-relay (167 ms)
+verify	Offline contract tests	2026-11-15T12:02:10.9995382Z ✓ check-staging-restore-target (40 ms)
+verify	Offline contract tests	2026-11-15T12:02:11.5489861Z ✓ check-family-accessibility (549 ms)
+verify	Offline contract tests	2026-11-15T12:02:11.9273162Z ✓ check-v70-restart-safety (378 ms)
+verify	Offline contract tests	2026-11-15T12:05:14.7113539Z ✓ check-staging-capacity-v70 (182785 ms)
+verify	Offline contract tests	2026-11-15T12:05:14.7341060Z [ELIFECYCLE] Test failed. See above for more details.
+verify	Offline contract tests	2026-11-15T12:05:14.7592010Z ##[error]Process completed with exit code 1.

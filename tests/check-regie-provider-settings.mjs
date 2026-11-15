@@ -153,8 +153,9 @@ test('microphone stop during a blocked native preview start returns promptly and
 });
 
 test('native legacy and LiveKit prepare cannot replace an unconfirmed terminal session; confirmed cleanup allows replacement',async t=>{
- const h=await callFixture(t),previous={id:'unconfirmed-legacy-session',gameId:'older-show',phase:'ended',realtimeId:'old-provider-session',realtimeStarted:true,resourcesClosed:false,hangupAttempted:'not-proof'};
- await h.calls.create('host','older-show',previous);const before=await h.calls.get('host');
+ const h=await callFixture(t),oldGame=makeGame({brandId:'milo',title:'Previous provider cleanup',date:'2026-11-18T12:00:00Z'},'host',origin);oldGame.status='running';await h.bingo.create(oldGame);
+ const previous={id:'unconfirmed-legacy-session',gameId:oldGame.id,phase:'ended',realtimeId:'old-provider-session',realtimeStarted:true,resourcesClosed:false,hangupAttempted:'not-proof'};
+ await h.calls.create('host',oldGame.id,previous);const before=await h.calls.get('host');
  await assert.rejects(h.calls.create('host',h.game.id,{id:'replacement',gameId:h.game.id,phase:'checking'},{requireConfirmedCleanup:true}),error=>error.status===409);assert.deepEqual(await h.calls.get('host'),before);
  const credentials=(await readPrivateSetting(h.env,'livekit-cloud')).value;h.env.NATIVE_PROVIDER_SETTINGS=true;
  await writePrivateSetting(h.env,'native-provider-livekit',{version:1,mode:'regie',credentials:{url:credentials.url,apiKey:credentials.apiKey,apiSecret:credentials.apiSecret},fingerprint:await livekitCredentialFingerprint(credentials),connectionTest:{tested:true,testedAt:Date.now()}},null);

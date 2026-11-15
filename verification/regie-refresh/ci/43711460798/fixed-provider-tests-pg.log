@@ -1,0 +1,32 @@
+Isolated disposable local PostgreSQL test; no production accounts, data or providers.
+PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+Image: sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+Loopback ephemeral binding: 127.0.0.1:32778
+
+✔ native status works without environment keys and ignores imported prototype credentials (97.470529ms)
+✔ native save is encrypted, redacted and independent of provider tests; explicit overrides and fallback are reversible (111.177209ms)
+✔ provider rejection or connection failure invalidates a receipt without replacing credentials (53.499436ms)
+✔ verified organizer, same origin, custom header, CAS and fresh role after admission protect every native save (75.686732ms)
+✔ both provider rotations reject another organizer active call, failed cleanup and orphan draw hold without mutation (35.410147ms)
+✔ corrupt or unreadable native overrides fail closed and never expose or silently restore environment credentials (271.512434ms)
+✔ durable preview ledger survives role deletion and missing latest pointer (26.135395ms)
+✔ failed latest write plus rejected hangup stays registered and blocks both credential rotations (51.687151ms)
+✔ native start lock never delays parental withdrawal and late provider resources are closed with their original key (40.303862ms)
+✔ native legacy hangup failure preserves hold and blocks rotation until confirmed retry (35.987856ms)
+✔ late native cleanup cannot mutate a replacement call or clear its new show hold (28.105748ms)
+✔ microphone stop during a blocked native preview start returns promptly and closes the late session (32.189044ms)
+✔ native legacy and LiveKit prepare cannot replace an unconfirmed terminal session; confirmed cleanup allows replacement (11.68189ms)
+✔ a slow or aborted provider body holds no credential lock and oversized input cannot mutate credentials (24.993064ms)
+✔ a lost native PostgreSQL lock lease prevents credential persistence (18.422711ms)
+✔ PostgreSQL lock serializes adapters while the local FIFO consumes only one lock admission (126.228238ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1292.906468
+
+Exit status: 0
+Unique disposable container cleanup exit status: 0
