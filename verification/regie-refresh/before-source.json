@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-11-15T11:23:32.376Z",
+  "url": "https://milo-staging.dgwebservices.nl/api/health",
+  "httpStatus": 200,
+  "status": "ok",
+  "revision": "f1550dd028ef668f09ed6e45a7c6b9d88c4dc5ee",
+  "releaseId": "43026808427-1",
+  "configVersion": "staging-2026-11-11-v2",
+  "checks": [
+    "http"
+  ]
+}

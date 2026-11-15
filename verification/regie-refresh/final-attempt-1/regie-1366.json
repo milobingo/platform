@@ -1,0 +1,94 @@
+{
+  "observedAt": "2026-11-15T11:26:30.405Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "actualHandlerScope": [
+    "reads",
+    "heartbeat",
+    "pause"
+  ],
+  "syntheticBingoWindow": true,
+  "actualClaimValidation": false,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "c4ab0d3a-25b4-4f1a-b71e-0d89bfc6cdd6",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/c4ab0d3a-25b4-4f1a-b71e-0d89bfc6cdd6/heartbeat",
+      "body": {
+        "regieId": "1a28bb90-5729-487b-b9ab-1a2b0228c02f",
+        "requestId": "3b61dc3a-9b7c-45b9-bf92-24c275b7c3fc"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/c4ab0d3a-25b4-4f1a-b71e-0d89bfc6cdd6/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "1a28bb90-5729-487b-b9ab-1a2b0228c02f",
+        "requestId": "3757c625-4430-4267-a0dc-628f74c35da8"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/c4ab0d3a-25b4-4f1a-b71e-0d89bfc6cdd6/pause",
+      "body": {
+        "paused": true,
+        "regieId": "1a28bb90-5729-487b-b9ab-1a2b0228c02f",
+        "requestId": "096c6158-f349-4c90-8403-eb20d7a81326"
+      },
+      "status": 200
+    }
+  ],
+  "monitorRatios": [
+    1.777875566989371,
+    1.777875566989371
+  ],
+  "blockedKeysPreserveBingoWindow": true,
+  "layout": {
+    "bounds": {
+      "x": 80,
+      "y": 82,
+      "width": 1268,
+      "height": 153.578125,
+      "top": 82,
+      "right": 1348,
+      "bottom": 235.578125,
+      "left": 80
+    },
+    "labels": [
+      {
+        "text": "Actuele ronde",
+        "size": "12px"
+      },
+      {
+        "text": "Prijsstap 2 / 3",
+        "size": "12px"
+      },
+      {
+        "text": "Laatste officiële bal",
+        "size": "12px"
+      },
+      {
+        "text": "Volgende bal",
+        "size": "12px"
+      }
+    ]
+  },
+  "bingoOrder": [
+    "rd-section rd-claims window-open",
+    "rd-section rd-bingo"
+  ]
+}

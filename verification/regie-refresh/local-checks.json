@@ -1,0 +1,41 @@
+{
+  "format": "milo-regie-refresh-local-checks-v1",
+  "observedAt": "2026-11-15T11:30:08.527449+00:00",
+  "sourceHashes": {
+    "frontend/RegieWorkspace.jsx": "3ba215e3f0a15e9c5f1d1aad90e4ec86f53503775361d7e7778b21131ee09440",
+    "frontend/regie-live.css": "8c2d111ee5884bbdd82189bed0179774e6d051b668e44736a94d3bfa1a1cfc74",
+    "tests/browser/regie-refresh.spec.mjs": "eac6ba7a43877af12c25609f7257383fdf944357029417107bb598ebe1f9c415",
+    "tests/browser/start-rules.spec.mjs": "6b6b69ccae1f625615bb3985ae7ff3ff9b29ffe24fa63abe6f61946394e1a7c0"
+  },
+  "build": "passed",
+  "lint": "passed",
+  "typecheck": "passed",
+  "readinessTests": {
+    "passed": 15
+  },
+  "standardShowTests": {
+    "passed": 13,
+    "skippedPostgresWithoutLocalService": 1
+  },
+  "workspaceNavigation": "passed:13routes33nestedtabs",
+  "focusedBrowser": {
+    "passed": 6,
+    "failed": 0,
+    "widths": [
+      1920,
+      1366,
+      390
+    ],
+    "fixture": "realapplicationandBingoAPIwithisolatedSQLiteandinterceptedAuth/providers",
+    "liveBackendWrites": false,
+    "sourceBinding": "verification/regie-refresh/final-source-binding.json",
+    "evidence": "verification/regie-refresh/final-browser-report.json"
+  },
+  "vlampie": "48computedstylepropertiesequalplusallsevenmodulesandcontrolsverified",
+  "earlierBrowserFailure": {
+    "evidence": "verification/regie-refresh/final-attempt-1-browser-report.json",
+    "cause": "Testminimal-scrollpositionclipped1.08pxofmonitorborderandunderfixedheader; explicitcenteringfixedtestwhilekeepingfullviewportassertion. Noapplicationchange."
+  },
+  "productionDeployment": false,
+  "realAccountsOrProviderCalls": false
+}

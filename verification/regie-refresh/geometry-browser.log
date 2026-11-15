@@ -1,0 +1,46 @@
+
+Running 1 test using 1 worker
+
+(node:3052856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests/browser/regie-refresh.spec.mjs:56:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API
+  1) tests/browser/regie-refresh.spec.mjs:56:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API
+
+    Error: expect(locator).toBeInViewport() failed
+
+    Locator:  locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })
+    Expected: in viewport
+    Received: viewport ratio 0.9960866570472717
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeInViewport" locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' }) with timeout 5000ms
+      - waiting for locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })
+        13 × locator resolved to <section class="rd-program" aria-label="Programmonitor">…</section>
+           - unexpected value "viewport ratio 0.9960866570472717"
+
+
+      74 |    const first=advanced.first();await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).toHaveAttribute('open','');const program=workspace.getByRole('region',{name:'Programmonitor'});await expect(program).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();await noOverflow(page);
+      75 |    await first.locator('.rd-monitor-wall').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));await shot(page,`regie-${width}-advanced`);
+    > 76 |    if(width===390){await program.scrollIntoViewIfNeeded();evidence.mobileProgramGeometry=await program.evaluate(node=>{const parents=[];for(let current=node;current&&parents.length<6;current=current.parentElement){const style=getComputedStyle(current);parents.push({className:current.className,bounds:current.getBoundingClientRect().toJSON(),overflow:style.overflow,overflowX:style.overflowX,overflowY:style.overflowY,borderWidth:style.borderWidth,borderRadius:style.borderRadius});}return {viewport:{width:innerWidth,height:innerHeight},parents};});await shot(page,`regie-${width}-advanced-program`);await expect(program).toBeInViewport({ratio:1});const presenter=workspace.locator('.rd-quick-host');await presenter.scrollIntoViewIfNeeded();await expect(presenter).toBeInViewport({ratio:1});await noOverflow(page);await shot(page,`regie-${width}-advanced-presenter`);}
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+      77 |    evidence.monitorRatios=await workspace.locator('.rd-monitor-wall .mf-stage-frame').evaluateAll(nodes=>nodes.map(node=>{const bounds=node.getBoundingClientRect();return bounds.width/bounds.height;}));for(const ratio of evidence.monitorRatios)expect(Math.abs(ratio-16/9)).toBeLessThan(.02);
+      78 |    await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).not.toHaveAttribute('open','');
+      79 |    // Simulate a server-observed BINGO window in this in-memory fixture only.
+        at /home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs:76:624
+
+    Error Context: verification/regie-refresh/geometry-test-results/regie-refresh-regie-refres-0523e-cus-isolated-real-Bingo-API/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    verification/regie-refresh/geometry-test-results/regie-refresh-regie-refres-0523e-cus-isolated-real-Bingo-API/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace verification/regie-refresh/geometry-test-results/regie-refresh-regie-refres-0523e-cus-isolated-real-Bingo-API/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests/browser/regie-refresh.spec.mjs:56:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API

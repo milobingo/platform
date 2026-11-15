@@ -1,0 +1,90 @@
+{
+  "reviewedAt": "2026-11-15T11:30:13.598Z",
+  "status": "passed",
+  "browserStats": {
+    "startTime": "2026-11-15T11:29:05.646Z",
+    "duration": 24325.843,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "uiSourceFrozen": true,
+  "sourceBinding": "final-source-binding.json",
+  "actualBuiltUI": true,
+  "readOnlyRealEnvironments": true,
+  "actualBingoHandlerScope": [
+    "reads",
+    "heartbeat",
+    "pause"
+  ],
+  "fixtureDatabase": "isolated in-memory SQLite",
+  "syntheticBingoWindow": true,
+  "actualClaimValidation": false,
+  "actualAccountOrProviderWrites": false,
+  "actualOBSInstallation": false,
+  "manualVisualReview": [
+    {
+      "file": "final/screenshots/regie-1920-saved-round.png",
+      "result": "Readable live hierarchy, one gold official ball, balanced Bingo surfaces and calm empty claim state."
+    },
+    {
+      "file": "final/screenshots/regie-1366-advanced.png",
+      "result": "Program, preview and presenter stay in three columns; actual frames preserve 16:9 and TAKE remains reachable."
+    },
+    {
+      "file": "final/screenshots/regie-1920-advanced.png",
+      "result": "Large monitors stay proportional; direct presenter controls are legible."
+    },
+    {
+      "file": "final/screenshots/regie-390-advanced-program.png",
+      "result": "Programme monitor fully visible below fixed header; responsive preview and TAKE fit horizontally."
+    },
+    {
+      "file": "final/screenshots/regie-390-advanced-presenter.png",
+      "result": "All presenter fields and actions fit without horizontal scrolling."
+    },
+    {
+      "file": "final/screenshots/regie-390-bingo.png",
+      "result": "Active BINGO review is ahead of number history, with claim and countdown visible."
+    }
+  ],
+  "vlampieComparison": "vlampie-style-comparison-final.json",
+  "attempts": [
+    {
+      "report": "before-browser-report.json",
+      "status": "passed",
+      "count": 3,
+      "scope": "Baseline staging rendering before new readability checks were added."
+    },
+    {
+      "report": "before-vlampie-report.json",
+      "status": "passed",
+      "count": 1
+    },
+    {
+      "report": "after-browser-report.json",
+      "status": "passed",
+      "count": 6,
+      "scope": "First UI pass before final CSS breakpoint and restored Vlampie icon sizes."
+    },
+    {
+      "report": "final-attempt-1-browser-report.json",
+      "status": "failed",
+      "passed": 5,
+      "failed": 1,
+      "reason": "Test CDP minimal scrolling placed programme panel y=-1.078125px; exact viewport-ratio assertion rejected it. UI unchanged; test now positions real content below fixed header and retains full visibility assertions."
+    },
+    {
+      "report": "geometry-browser-report.json",
+      "status": "failed",
+      "scope": "Instrumented reproduction of same scrolling geometry, no UI change."
+    },
+    {
+      "report": "final-browser-report.json",
+      "status": "passed",
+      "count": 6
+    }
+  ],
+  "remainingAcceptance": "The browser tests use transport fixtures and do not qualify real provider credentials, production accounts or a physical OBS installation."
+}

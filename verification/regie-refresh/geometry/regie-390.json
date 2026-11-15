@@ -1,0 +1,179 @@
+{
+  "observedAt": "2026-11-15T11:28:12.704Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "actualHandlerScope": [
+    "reads",
+    "heartbeat",
+    "pause"
+  ],
+  "syntheticBingoWindow": true,
+  "actualClaimValidation": false,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "eec038b2-cb2a-45ad-a5fd-1ef38deb8909",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/eec038b2-cb2a-45ad-a5fd-1ef38deb8909/heartbeat",
+      "body": {
+        "regieId": "f10ac91c-7b22-411c-a542-8d90def40bdd",
+        "requestId": "de2024a7-65e7-40e7-9a7c-bba3bf66d7ae"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/eec038b2-cb2a-45ad-a5fd-1ef38deb8909/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "f10ac91c-7b22-411c-a542-8d90def40bdd",
+        "requestId": "ac161438-b1b0-4c7c-92f8-2324019378e4"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/eec038b2-cb2a-45ad-a5fd-1ef38deb8909/pause",
+      "body": {
+        "paused": true,
+        "regieId": "f10ac91c-7b22-411c-a542-8d90def40bdd",
+        "requestId": "e93e26d9-3a3e-4066-89e7-7fb0588aa244"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/eec038b2-cb2a-45ad-a5fd-1ef38deb8909/heartbeat",
+      "body": {
+        "regieId": "f10ac91c-7b22-411c-a542-8d90def40bdd",
+        "requestId": "de3edd30-df72-4017-852f-e9749c2be8b8"
+      },
+      "status": 200
+    }
+  ],
+  "mobileProgramGeometry": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "parents": [
+      {
+        "className": "rd-program",
+        "bounds": {
+          "x": 38,
+          "y": -1.078125,
+          "width": 314,
+          "height": 275.5,
+          "top": -1.078125,
+          "right": 352,
+          "bottom": 274.421875,
+          "left": 38
+        },
+        "overflow": "hidden",
+        "overflowX": "hidden",
+        "overflowY": "hidden",
+        "borderWidth": "1px",
+        "borderRadius": "12px"
+      },
+      {
+        "className": "rd-monitor-wall",
+        "bounds": {
+          "x": 38,
+          "y": -1.078125,
+          "width": 314,
+          "height": 1025.28125,
+          "top": -1.078125,
+          "right": 352,
+          "bottom": 1024.203125,
+          "left": 38
+        },
+        "overflow": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "borderWidth": "0px",
+        "borderRadius": "0px"
+      },
+      {
+        "className": "mf-live-advanced mf-live-advanced-monitors",
+        "bounds": {
+          "x": 24,
+          "y": -87.859375,
+          "width": 342,
+          "height": 1126.0625,
+          "top": -87.859375,
+          "right": 366,
+          "bottom": 1038.203125,
+          "left": 24
+        },
+        "overflow": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "borderWidth": "1px",
+        "borderRadius": "12px"
+      },
+      {
+        "className": "rd-workspace rd-compact mf-live-workspace ",
+        "bounds": {
+          "x": 16,
+          "y": -1405,
+          "width": 358,
+          "height": 2600.78125,
+          "top": -1405,
+          "right": 374,
+          "bottom": 1195.78125,
+          "left": 16
+        },
+        "overflow": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "borderWidth": "0px",
+        "borderRadius": "0px"
+      },
+      {
+        "className": "mf-route-view",
+        "bounds": {
+          "x": 16,
+          "y": -1405,
+          "width": 358,
+          "height": 2600.78125,
+          "top": -1405,
+          "right": 374,
+          "bottom": 1195.78125,
+          "left": 16
+        },
+        "overflow": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "borderWidth": "0px",
+        "borderRadius": "0px"
+      },
+      {
+        "className": "mf-main",
+        "bounds": {
+          "x": 0,
+          "y": -1427,
+          "width": 390,
+          "height": 2622.78125,
+          "top": -1427,
+          "right": 390,
+          "bottom": 1195.78125,
+          "left": 0
+        },
+        "overflow": "hidden auto",
+        "overflowX": "hidden",
+        "overflowY": "auto",
+        "borderWidth": "0px",
+        "borderRadius": "0px"
+      }
+    ]
+  }
+}

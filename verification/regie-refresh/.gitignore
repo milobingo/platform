@@ -1,0 +1,4 @@
+# Keep local Playwright trace archives available without adding generated bundles.
+*-test-results/
+*-results/
+page@*.jpeg

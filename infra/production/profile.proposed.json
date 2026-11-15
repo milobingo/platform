@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "environment": "production",
+  "repository": "milobingo/platform",
+  "branch": "main",
+  "siteId": "milobingo-production",
+  "appUrl": "https://milo.dgwebservices.nl",
+  "host": "dg-nxttrack-01",
+  "runnerName": "dg-nxttrack-01-milobingo-production",
+  "runnerUser": "run-mil-prd",
+  "buildUser": "build-mil-prd",
+  "appUser": "app-mil-prd",
+  "buildLockGroup": "dg-build",
+  "workspace": "/home/run-mil-prd/_work/platform/platform",
+  "port": 4178,
+  "supabaseRef": "msupvdycmtbycaonqgan",
+  "bucket": "milo-private",
+  "configVersion": "production-2026-11-15-v1",
+  "mailMode": "disabled"
+}

@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-11-15T11:29:04.809Z",
+  "baseURL": "http://127.0.0.1:4175",
+  "buildId": "TCr0DTHwCN2fZvnd6hMCt",
+  "sourceSha256": {
+    "frontend/RegieWorkspace.jsx": "3ba215e3f0a15e9c5f1d1aad90e4ec86f53503775361d7e7778b21131ee09440",
+    "frontend/regie-live.css": "8c2d111ee5884bbdd82189bed0179774e6d051b668e44736a94d3bfa1a1cfc74",
+    "tests/browser/regie-refresh.spec.mjs": "eac6ba7a43877af12c25609f7257383fdf944357029417107bb598ebe1f9c415",
+    "tests/browser/start-rules.spec.mjs": "6b6b69ccae1f625615bb3985ae7ff3ff9b29ffe24fa63abe6f61946394e1a7c0"
+  },
+  "sourceUnchangedAfterTest": true,
+  "completedAt": "2026-11-15T11:29:54.058Z"
+}

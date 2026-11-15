@@ -1,0 +1,88 @@
+{
+  "observedAt": "2026-11-15T11:29:22.291Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "actualBrowserRendering": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "b7a5247c-0b63-4abb-bce7-9249190e72df",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [],
+  "modules": [
+    "rundown",
+    "cameras",
+    "bingo",
+    "presentation",
+    "audience",
+    "show",
+    "audio"
+  ],
+  "styles": {
+    ".rd-console-status": {
+      "display": "flex",
+      "fontSize": "11px",
+      "color": "rgb(181, 164, 195)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "padding": "0px",
+      "gap": "14px",
+      "gridTemplateColumns": "none"
+    },
+    ".rd-monitor-wall": {
+      "display": "grid",
+      "fontSize": "13px",
+      "color": "rgb(245, 237, 249)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "padding": "0px",
+      "gap": "10px",
+      "gridTemplateColumns": "464.5px 464.5px 355px"
+    },
+    ".rd-program": {
+      "display": "flex",
+      "fontSize": "13px",
+      "color": "rgb(245, 237, 249)",
+      "backgroundColor": "rgb(5, 10, 19)",
+      "borderRadius": "12px",
+      "padding": "0px",
+      "gap": "normal",
+      "gridTemplateColumns": "none"
+    },
+    ".rd-transport": {
+      "display": "flex",
+      "fontSize": "13px",
+      "color": "rgb(245, 237, 249)",
+      "backgroundColor": "rgb(36, 25, 47)",
+      "borderRadius": "12px",
+      "padding": "7px 10px",
+      "gap": "12px",
+      "gridTemplateColumns": "none"
+    },
+    ".rd-quick-host": {
+      "display": "flex",
+      "fontSize": "13px",
+      "color": "rgb(245, 237, 249)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderRadius": "12px",
+      "padding": "10px 12px",
+      "gap": "7px",
+      "gridTemplateColumns": "none"
+    },
+    ".rd-section": {
+      "display": "block",
+      "fontSize": "13px",
+      "color": "rgb(234, 223, 242)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderRadius": "10px",
+      "padding": "0px",
+      "gap": "normal",
+      "gridTemplateColumns": "none"
+    }
+  }
+}

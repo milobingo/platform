@@ -1,0 +1,87 @@
+{
+  "observedAt": "2026-11-15T11:24:25.643Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "27d49737-616e-4692-81a7-d2eda9f69a1e",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/27d49737-616e-4692-81a7-d2eda9f69a1e/heartbeat",
+      "body": {
+        "regieId": "2dad69d4-458b-4a08-bab2-a7732425a09f",
+        "requestId": "1a85e445-2692-4928-a563-5dc9e1ebb6f3"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/27d49737-616e-4692-81a7-d2eda9f69a1e/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "2dad69d4-458b-4a08-bab2-a7732425a09f",
+        "requestId": "fbec42f3-01cb-47ee-a489-cf9bac17b027"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/27d49737-616e-4692-81a7-d2eda9f69a1e/pause",
+      "body": {
+        "paused": true,
+        "regieId": "2dad69d4-458b-4a08-bab2-a7732425a09f",
+        "requestId": "83789f1b-f08d-4364-bcad-61979657101f"
+      },
+      "status": 200
+    }
+  ],
+  "monitorRatios": [
+    1.7777777777777777,
+    1.7777777777777777
+  ],
+  "blockedKeysPreserveBingoWindow": true,
+  "layout": {
+    "bounds": {
+      "x": 80,
+      "y": 68,
+      "width": 1268,
+      "height": 153.578125,
+      "top": 68,
+      "right": 1348,
+      "bottom": 221.578125,
+      "left": 80
+    },
+    "labels": [
+      {
+        "text": "Actuele ronde",
+        "size": "12px"
+      },
+      {
+        "text": "Prijsstap 2 / 3",
+        "size": "12px"
+      },
+      {
+        "text": "Laatste officiële bal",
+        "size": "12px"
+      },
+      {
+        "text": "Volgende bal",
+        "size": "12px"
+      }
+    ]
+  },
+  "bingoOrder": [
+    "rd-section rd-claims window-open",
+    "rd-section rd-bingo"
+  ]
+}

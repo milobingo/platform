@@ -1,0 +1,181 @@
+{
+  "config": {
+    "argv": [
+      "/home/codex/.nvm/versions/node/v24.18.0/bin/node",
+      "/home/codex/repos/milobingo/node_modules/@playwright/test/cli.js",
+      "test",
+      "tests/browser/regie-refresh.spec.mjs",
+      "--workers=1",
+      "--reporter=line,json",
+      "--grep=390px",
+      "--output=verification/regie-refresh/geometry-test-results"
+    ],
+    "configFile": "/home/codex/repos/milobingo/playwright.config.mjs",
+    "rootDir": "/home/codex/repos/milobingo/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/codex/repos/milobingo/verification/regie-refresh/geometry-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/codex/repos/milobingo/verification/regie-refresh/geometry-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/codex/repos/milobingo/tests/browser",
+        "snapshotDir": "/home/codex/repos/milobingo/tests/browser",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4175",
+          "headless": true,
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "regie-refresh.spec.mjs",
+      "file": "regie-refresh.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 7174,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeInViewport\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\nExpected: in viewport\nReceived: viewport ratio 0.9960866570472717\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeInViewport\" locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\u001b[22m\n\u001b[2m    13 × locator resolved to <section class=\"rd-program\" aria-label=\"Programmonitor\">…</section>\u001b[22m\n\u001b[2m       - unexpected value \"viewport ratio 0.9960866570472717\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeInViewport\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\nExpected: in viewport\nReceived: viewport ratio 0.9960866570472717\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeInViewport\" locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\u001b[22m\n\u001b[2m    13 × locator resolved to <section class=\"rd-program\" aria-label=\"Programmonitor\">…</section>\u001b[22m\n\u001b[2m       - unexpected value \"viewport ratio 0.9960866570472717\"\u001b[22m\n\n    at /home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs:76:624",
+                    "location": {
+                      "file": "/home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs",
+                      "column": 624,
+                      "line": 76
+                    },
+                    "snippet": "  74 |    const first=advanced.first();await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).toHaveAttribute('open','');const program=workspace.getByRole('region',{name:'Programmonitor'});await expect(program).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();await noOverflow(page);\n  75 |    await first.locator('.rd-monitor-wall').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));await shot(page,`regie-${width}-advanced`);\n> 76 |    if(width===390){await program.scrollIntoViewIfNeeded();evidence.mobileProgramGeometry=await program.evaluate(node=>{const parents=[];for(let current=node;current&&parents.length<6;current=current.parentElement){const style=getComputedStyle(current);parents.push({className:current.className,bounds:current.getBoundingClientRect().toJSON(),overflow:style.overflow,overflowX:style.overflowX,overflowY:style.overflowY,borderWidth:style.borderWidth,borderRadius:style.borderRadius});}return {viewport:{width:innerWidth,height:innerHeight},parents};});await shot(page,`regie-${width}-advanced-program`);await expect(program).toBeInViewport({ratio:1});const presenter=workspace.locator('.rd-quick-host');await presenter.scrollIntoViewIfNeeded();await expect(presenter).toBeInViewport({ratio:1});await noOverflow(page);await shot(page,`regie-${width}-advanced-presenter`);}\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n  77 |    evidence.monitorRatios=await workspace.locator('.rd-monitor-wall .mf-stage-frame').evaluateAll(nodes=>nodes.map(node=>{const bounds=node.getBoundingClientRect();return bounds.width/bounds.height;}));for(const ratio of evidence.monitorRatios)expect(Math.abs(ratio-16/9)).toBeLessThan(.02);\n  78 |    await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).not.toHaveAttribute('open','');\n  79 |    // Simulate a server-observed BINGO window in this in-memory fixture only."
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs",
+                        "column": 624,
+                        "line": 76
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeInViewport\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\nExpected: in viewport\nReceived: viewport ratio 0.9960866570472717\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeInViewport\" locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main#mf-main').locator('.rd-workspace').getByRole('region', { name: 'Programmonitor' })\u001b[22m\n\u001b[2m    13 × locator resolved to <section class=\"rd-program\" aria-label=\"Programmonitor\">…</section>\u001b[22m\n\u001b[2m       - unexpected value \"viewport ratio 0.9960866570472717\"\u001b[22m\n\n\n  74 |    const first=advanced.first();await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).toHaveAttribute('open','');const program=workspace.getByRole('region',{name:'Programmonitor'});await expect(program).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();await noOverflow(page);\n  75 |    await first.locator('.rd-monitor-wall').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));await shot(page,`regie-${width}-advanced`);\n> 76 |    if(width===390){await program.scrollIntoViewIfNeeded();evidence.mobileProgramGeometry=await program.evaluate(node=>{const parents=[];for(let current=node;current&&parents.length<6;current=current.parentElement){const style=getComputedStyle(current);parents.push({className:current.className,bounds:current.getBoundingClientRect().toJSON(),overflow:style.overflow,overflowX:style.overflowX,overflowY:style.overflowY,borderWidth:style.borderWidth,borderRadius:style.borderRadius});}return {viewport:{width:innerWidth,height:innerHeight},parents};});await shot(page,`regie-${width}-advanced-program`);await expect(program).toBeInViewport({ratio:1});const presenter=workspace.locator('.rd-quick-host');await presenter.scrollIntoViewIfNeeded();await expect(presenter).toBeInViewport({ratio:1});await noOverflow(page);await shot(page,`regie-${width}-advanced-presenter`);}\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n  77 |    evidence.monitorRatios=await workspace.locator('.rd-monitor-wall .mf-stage-frame').evaluateAll(nodes=>nodes.map(node=>{const bounds=node.getBoundingClientRect();return bounds.width/bounds.height;}));for(const ratio of evidence.monitorRatios)expect(Math.abs(ratio-16/9)).toBeLessThan(.02);\n  78 |    await first.locator(':scope>summary').focus();await page.keyboard.press('Enter');await expect(first).not.toHaveAttribute('open','');\n  79 |    // Simulate a server-observed BINGO window in this in-memory fixture only.\n    at /home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs:76:624"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T11:28:06.035Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/codex/repos/milobingo/verification/regie-refresh/geometry-test-results/regie-refresh-regie-refres-0523e-cus-isolated-real-Bingo-API/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/codex/repos/milobingo/verification/regie-refresh/geometry-test-results/regie-refresh-regie-refres-0523e-cus-isolated-real-Bingo-API/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/codex/repos/milobingo/tests/browser/regie-refresh.spec.mjs",
+                    "column": 624,
+                    "line": 76
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d3886fe5c0d95998c46c-c6313b4c0c647d1743b0",
+          "file": "regie-refresh.spec.mjs",
+          "line": 56,
+          "column": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-15T11:28:05.038Z",
+    "duration": 8872.864,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

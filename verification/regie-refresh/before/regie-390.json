@@ -1,0 +1,82 @@
+{
+  "observedAt": "2026-11-15T11:21:05.439Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "gameId": "2b78c6b5-13d7-46db-b016-2b64a1c85088",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/2b78c6b5-13d7-46db-b016-2b64a1c85088/heartbeat",
+      "body": {
+        "regieId": "b283544f-1450-4b68-bd8f-87c80cd0a162",
+        "requestId": "dee36719-020b-4370-a305-cc04dd0cdeee"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/2b78c6b5-13d7-46db-b016-2b64a1c85088/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "b283544f-1450-4b68-bd8f-87c80cd0a162",
+        "requestId": "6537c815-fede-43e7-b5b2-c644d28a1d99"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/2b78c6b5-13d7-46db-b016-2b64a1c85088/pause",
+      "body": {
+        "paused": true,
+        "regieId": "b283544f-1450-4b68-bd8f-87c80cd0a162",
+        "requestId": "b9f0d267-0c7a-478b-92b5-7fdbbf889fdf"
+      },
+      "status": 200
+    }
+  ],
+  "layout": {
+    "bounds": {
+      "x": 26,
+      "y": 253.375,
+      "width": 338,
+      "height": 275.5625,
+      "top": 253.375,
+      "right": 364,
+      "bottom": 528.9375,
+      "left": 26
+    },
+    "labels": [
+      {
+        "text": "Actuele ronde",
+        "size": "11px"
+      },
+      {
+        "text": "Prijsstap 2 / 3",
+        "size": "11px"
+      },
+      {
+        "text": "Laatste officiële bal",
+        "size": "11px"
+      },
+      {
+        "text": "Volgende bal",
+        "size": "11px"
+      }
+    ]
+  },
+  "bingoOrder": [
+    "rd-section rd-claims window-open",
+    "rd-section rd-bingo"
+  ]
+}

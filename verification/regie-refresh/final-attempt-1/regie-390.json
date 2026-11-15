@@ -1,0 +1,63 @@
+{
+  "observedAt": "2026-11-15T11:26:37.258Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "actualHandlerScope": [
+    "reads",
+    "heartbeat",
+    "pause"
+  ],
+  "syntheticBingoWindow": true,
+  "actualClaimValidation": false,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderRequests": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "5e812f36-6d2f-414e-9b53-459f33f87c35",
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "forbiddenWrites": [],
+  "mutations": [
+    {
+      "path": "/api/bingo/games/5e812f36-6d2f-414e-9b53-459f33f87c35/heartbeat",
+      "body": {
+        "regieId": "f10c21ef-716a-47bc-8c77-e68413a59250",
+        "requestId": "543281d3-ead0-406d-b632-d5893f0b46d7"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/5e812f36-6d2f-414e-9b53-459f33f87c35/pause",
+      "body": {
+        "paused": false,
+        "restartClock": true,
+        "regieId": "f10c21ef-716a-47bc-8c77-e68413a59250",
+        "requestId": "7b05607d-86f8-4452-aacd-d33d165f7753"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/5e812f36-6d2f-414e-9b53-459f33f87c35/pause",
+      "body": {
+        "paused": true,
+        "regieId": "f10c21ef-716a-47bc-8c77-e68413a59250",
+        "requestId": "4b04c6ed-07f3-4ea3-b398-a329d9d5a5fa"
+      },
+      "status": 200
+    },
+    {
+      "path": "/api/bingo/games/5e812f36-6d2f-414e-9b53-459f33f87c35/heartbeat",
+      "body": {
+        "regieId": "f10c21ef-716a-47bc-8c77-e68413a59250",
+        "requestId": "a5d03e82-6238-42bb-815e-ac1101efa79e"
+      },
+      "status": 200
+    }
+  ]
+}

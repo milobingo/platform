@@ -1,0 +1,21 @@
+{
+  "changes": "LFlineendingsandtrailingwhitespaceonly;messagesandresultsunchanged",
+  "files": {
+    "verification/regie-refresh/geometry-browser.log": {
+      "originalSha256": "57debc44a1834c3f5b61b18ebbb40be108cbfcf1106b8084c01ca56b73fe5baf",
+      "normalizedSha256": "54eb52bf7eb32d1ec5520133c5b2ba6fc041420b983dbd5c743093ab30626aba"
+    },
+    "verification/regie-refresh/local-build.log": {
+      "originalSha256": "17a91475825023c4f64d0b403238577b3229fa2e2e5485f36c7aef2d4e4ea817",
+      "normalizedSha256": "5648265582563ef85ccb8572b075c7f0a4b4fde65d94c875d2fb084746e8aac5"
+    },
+    "verification/regie-refresh/final-attempt-1-browser.log": {
+      "originalSha256": "cc9ba6268b427df2f4b20e21c6d505532326f144d939e2ed5407f13f7ea962f1",
+      "normalizedSha256": "a5438792a1df47b53c53a4148da28db08aca6ee75ace482a8486c33196eddb48"
+    },
+    "verification/regie-refresh/ci/43052562150/failure.log": {
+      "originalSha256": "977e5ff3b04fa474c9974d6b66b4693d851228cb25d9e2811ce47430a8dec1c7",
+      "normalizedSha256": "151b10efb97406ecec7a369c6b1695a8798153585b59af660bc47aebe93caf7c"
+    }
+  }
+}

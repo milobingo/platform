@@ -5,6 +5,14 @@ GitHub start een beoordeelde release, de doel-VPS bewaart infrastructuurgeheimen
 en de Milo-regie beheert OpenAI, LiveKit en Resend. Er is geen lange lijst met
 GitHub-runtimevariabelen of blijvende GitHub-secrets nodig.
 
+**Actualisatie 15 november 2026:** de beheerder heeft de productie-Storage-key
+inmiddels via de verborgen serverprompt ingevoerd. Een nieuwe controle tegen
+het vaste productieproject slaagde; de sleutel bleef op de doel-VPS. De
+[actuele voorbereiding](PRODUCTIE-VOORBEREIDING-2026-11-15.md) bevat het concrete
+openbare voorstel en de nieuwe host-/projectinventaris. Poort `4176` is inmiddels
+bezet; het voorstel gebruikt de opnieuw gecontroleerde vrije poort `4178`.
+Er is met dit voorstel nog geen productie-inrichting of vrijgave uitgevoerd.
+
 Het productiedomein **`https://milo.dgwebservices.nl`** en het afzonderlijke
 Supabase-project **`msupvdycmtbycaonqgan`** (`milobingo-production`, `eu-west-1`)
 zijn bevestigd. Het project is via het bestaande gekoppelde account

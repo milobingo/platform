@@ -1,0 +1,724 @@
+verify	UNKNOWN STEP	﻿2026-11-11T15:51:54.3668770Z Current runner version: '2.338.2'
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3759640Z ##[group]Runner Image Provisioner
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3761337Z Hosted Compute Agent
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3762430Z Version: 20261028.624
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3763541Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3764908Z Build Date: 2026-10-28T21:51:42Z
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3766324Z Worker ID: {7d352a63-807d-4f94-ac05-977dd2cad051}
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3767665Z Region: westus2
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3768746Z Cloud: Azure
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3769682Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3792449Z ##[group]Operating System
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3793613Z Ubuntu
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3794486Z 26.04.1
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3795512Z LTS
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3796446Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3797472Z ##[group]Runner Image
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3798660Z Image: ubuntu-26.04
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3799654Z Version: 20261101.186.1
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3802255Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3805307Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3807180Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3809091Z ##[group]GITHUB_TOKEN Permissions
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3832533Z Contents: read
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3833540Z Metadata: read
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3834548Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3837439Z Secret source: Actions
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3839099Z Cache mode: write
+verify	UNKNOWN STEP	2026-11-11T15:51:54.3840253Z Prepare workflow directory
+verify	UNKNOWN STEP	2026-11-11T15:51:54.4583514Z Prepare all required actions
+verify	UNKNOWN STEP	2026-11-11T15:51:54.4655776Z Getting action download info
+verify	UNKNOWN STEP	2026-11-11T15:51:54.9093968Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+verify	UNKNOWN STEP	2026-11-11T15:51:55.0376839Z Download action repository 'pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1' (SHA:b906affcce14559ad1aafd4ab0e942779e9f58b1)
+verify	UNKNOWN STEP	2026-11-11T15:51:55.2856112Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+verify	UNKNOWN STEP	2026-11-11T15:51:55.4749053Z Complete job name: verify
+verify	UNKNOWN STEP	2026-11-11T15:51:55.5414680Z ##[group]Checking docker version
+verify	UNKNOWN STEP	2026-11-11T15:51:55.5427860Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6683570Z '1.54'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6705687Z Docker daemon API version: '1.54'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6706957Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6956590Z '1.54'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6973017Z Docker client API version: '1.54'
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6979232Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6983683Z ##[group]Clean up resources from previous jobs
+verify	UNKNOWN STEP	2026-11-11T15:51:55.6988956Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=0ff736"
+verify	UNKNOWN STEP	2026-11-11T15:51:55.7179841Z ##[command]/usr/bin/docker network prune --force --filter "label=0ff736"
+verify	UNKNOWN STEP	2026-11-11T15:51:55.7379131Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:55.7380032Z ##[group]Create local container network
+verify	UNKNOWN STEP	2026-11-11T15:51:55.7394449Z ##[command]/usr/bin/docker network create --label 0ff736 github_network_580e3c648210420c8b4d609c4c803004
+verify	UNKNOWN STEP	2026-11-11T15:51:55.8041875Z 6dd6f74ecf564a8422ea4e947fa6269cd82aa59faa1b23b7e5514d04244a0014
+verify	UNKNOWN STEP	2026-11-11T15:51:55.8049719Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:51:55.8074930Z ##[group]Starting postgres service container
+verify	UNKNOWN STEP	2026-11-11T15:51:55.8096535Z ##[command]/usr/bin/docker pull postgres:17-alpine@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+verify	UNKNOWN STEP	2026-11-11T15:51:56.6208556Z docker.io/library/postgres@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b: Pulling from library/postgres
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9985077Z d5bf1ad711f7: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9990716Z 7b229517ed22: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9992546Z 9098654d3377: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9993912Z dddde5442af4: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9994933Z fa5e490e3893: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9996406Z 694a01b64034: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9997363Z 7a82a00c713d: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9998535Z d6e09b1bfe5f: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:56.9999686Z e018eb860c5e: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:57.0005363Z f5e975d661d7: Pulling fs layer
+verify	UNKNOWN STEP	2026-11-11T15:51:57.0289014Z f5e975d661d7: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.1276377Z d5bf1ad711f7: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.1281150Z 9098654d3377: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.1284138Z dddde5442af4: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.2301070Z d6e09b1bfe5f: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.2307398Z e018eb860c5e: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.2345924Z 7b229517ed22: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.2361321Z fa5e490e3893: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.2390208Z 7a82a00c713d: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.4327924Z 112f26c8faed: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.4351288Z e22336567ca8: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.4498894Z 7b229517ed22: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.5370171Z 9098654d3377: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.5383934Z dddde5442af4: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:51:57.5448266Z fa5e490e3893: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:51:58.0291267Z 694a01b64034: Download complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1277821Z f5e975d661d7: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1298887Z d5bf1ad711f7: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1324516Z d6e09b1bfe5f: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1366072Z e018eb860c5e: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1388525Z 7a82a00c713d: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1458149Z f5e975d661d7: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1497046Z d5bf1ad711f7: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1519831Z d6e09b1bfe5f: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1558796Z e018eb860c5e: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1602534Z 7a82a00c713d: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1616681Z 694a01b64034: Pull complete
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1618142Z Digest: sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1621866Z Status: Downloaded newer image for postgres@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1642188Z docker.io/library/postgres:17-alpine@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+verify	UNKNOWN STEP	2026-11-11T15:52:00.1808956Z ##[command]/usr/bin/docker create --name f832affd9437437eb4f4e2ef1c8b9dab_postgres17alpinesha256266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b_3364a2 --label 0ff736 --network github_network_580e3c648210420c8b4d609c4c803004 --network-alias postgres -p 5432:5432 --health-cmd "pg_isready -U postgres -d milo_storage_test" --health-interval 5s --health-timeout 5s --health-retries 10 -e "POSTGRES_USER=postgres" -e "POSTGRES_PASSWORD=test-password" -e "POSTGRES_DB=milo_storage_test" -e GITHUB_ACTIONS=true -e CI=true postgres:17-alpine@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+verify	UNKNOWN STEP	2026-11-11T15:52:01.5380837Z 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:01.5408804Z ##[command]/usr/bin/docker start 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:01.8448116Z 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:01.8486106Z ##[command]/usr/bin/docker ps --all --filter id=4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+verify	UNKNOWN STEP	2026-11-11T15:52:01.8985096Z 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690 Up Less than a second (health: starting)
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9025544Z ##[command]/usr/bin/docker port 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9251374Z 5432/tcp -> 0.0.0.0:5432
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9252066Z 5432/tcp -> [::]:5432
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9319098Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9331426Z ##[group]Waiting for all services to be ready
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9350811Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9601640Z starting
+verify	UNKNOWN STEP	2026-11-11T15:52:01.9675497Z postgres service is starting, waiting 2 seconds before checking again.
+verify	UNKNOWN STEP	2026-11-11T15:52:03.9676826Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:03.9847581Z starting
+verify	UNKNOWN STEP	2026-11-11T15:52:03.9864922Z postgres service is starting, waiting 4 seconds before checking again.
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0173051Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0341257Z healthy
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0364141Z postgres service is healthy.
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0364937Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0757442Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0758171Z with:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0758426Z   repository: milobingo/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0761154Z   token: ***
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0761391Z   ssh-strict: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0761606Z   ssh-user: git
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0761822Z   persist-credentials: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0762058Z   clean: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0762271Z   sparse-checkout-cone-mode: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0762533Z   fetch-depth: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0762738Z   fetch-tags: false
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0762944Z   show-progress: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0763145Z   lfs: false
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0763430Z   submodules: false
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0763709Z   set-safe-directory: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0763956Z   allow-unsafe-pr-checkout: false
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0764470Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0764660Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0764856Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0765471Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:08.0765802Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4313314Z Syncing repository: milobingo/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4315232Z ##[group]Getting Git version info
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4315884Z Working directory is '/home/runner/work/platform/platform'
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4316757Z [command]/usr/bin/git version
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4381543Z git version 2.56.0
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4412939Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4439789Z Temporarily overriding HOME='/home/runner/work/_temp/5dfab4cf-f1b2-4499-bb0a-6e038a561531' before making global git config changes
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4452037Z Adding repository directory to the temporary git global config as a safe directory
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4471349Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/platform/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4585776Z Deleting the contents of '/home/runner/work/platform/platform'
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4614042Z ##[group]Initializing the repository
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4620020Z [command]/usr/bin/git init /home/runner/work/platform/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4782568Z hint: Using 'master' as the name for the initial branch. This default branch name
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4786179Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4787435Z hint: to use in all of your new repositories, which will suppress this warning,
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4788792Z hint: call:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4789742Z hint:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4790674Z hint: 	git config --global init.defaultBranch <name>
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4791611Z hint:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4792481Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4793927Z hint: 'development'. The just-created branch can be renamed via this command:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4794837Z hint:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4795435Z hint: 	git branch -m <name>
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4796442Z hint:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4797229Z hint: Disable this message with "git config set advice.defaultBranchName false"
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4816736Z Initialized empty Git repository in /home/runner/work/platform/platform/.git/
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4830992Z [command]/usr/bin/git remote add origin https://github.com/milobingo/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4921566Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4922476Z ##[group]Disabling automatic garbage collection
+verify	UNKNOWN STEP	2026-11-11T15:52:08.4923366Z [command]/usr/bin/git config --local gc.auto 0
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5017319Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5018277Z ##[group]Setting up auth
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5019421Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5073800Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5734008Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	UNKNOWN STEP	2026-11-11T15:52:08.5779579Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6092064Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6140233Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6471121Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6553029Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6554739Z ##[group]Fetching the repository
+verify	UNKNOWN STEP	2026-11-11T15:52:08.6565919Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c8a01f6319dacab6dd07f726d5a3476829045a60:refs/remotes/origin/main
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4851818Z From https://github.com/milobingo/platform
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4862558Z  * [new ref]         c8a01f6319dacab6dd07f726d5a3476829045a60 -> origin/main
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4900058Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4901072Z ##[group]Determining the checkout info
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4901877Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4902468Z [command]/usr/bin/git sparse-checkout disable
+verify	UNKNOWN STEP	2026-11-11T15:52:25.4960186Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+verify	UNKNOWN STEP	2026-11-11T15:52:25.5019521Z ##[group]Checking out the ref
+verify	UNKNOWN STEP	2026-11-11T15:52:25.5020703Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5130078Z Updating files:  87% (2037/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5267082Z Updating files:  88% (2047/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5421442Z Updating files:  89% (2071/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5457532Z Updating files:  90% (2094/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5533080Z Updating files:  91% (2117/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5642267Z Updating files:  92% (2140/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5750881Z Updating files:  93% (2164/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5828345Z Updating files:  94% (2187/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5841734Z Updating files:  95% (2210/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5941845Z Updating files:  96% (2233/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5962015Z Updating files:  97% (2257/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5974972Z Updating files:  98% (2280/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5985242Z Updating files:  99% (2303/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5986574Z Updating files: 100% (2326/2326)
+verify	UNKNOWN STEP	2026-11-11T15:52:26.5987381Z Updating files: 100% (2326/2326), done.
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6031824Z Switched to a new branch 'main'
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6039770Z branch 'main' set up to track 'origin/main'.
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6133850Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6185094Z [command]/usr/bin/git log -1 --format=%H
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6216678Z c8a01f6319dacab6dd07f726d5a3476829045a60
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6468274Z ##[group]Run pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6468668Z with:
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6468854Z   version: 11.25.0
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6469060Z   dest: ~/setup-pnpm
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6469268Z   run_install: null
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6469462Z   cache: false
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6469676Z   cache_dependency_path: pnpm-lock.yaml
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6470162Z   package_json_file: package.json
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6470721Z   standalone: false
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6470959Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6471131Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6471319Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6471945Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:26.6472276Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:26.8101316Z ##[group]Running self-installer...
+verify	UNKNOWN STEP	2026-11-11T15:52:27.4600094Z (node:3095) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+verify	UNKNOWN STEP	2026-11-11T15:52:27.4602458Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	UNKNOWN STEP	2026-11-11T15:52:27.6152984Z Progress: resolved 1, reused 0, downloaded 0, added 0
+verify	UNKNOWN STEP	2026-11-11T15:52:27.6266045Z Packages: +1
+verify	UNKNOWN STEP	2026-11-11T15:52:27.6266951Z +
+verify	UNKNOWN STEP	2026-11-11T15:52:27.9781875Z Progress: resolved 1, reused 0, downloaded 1, added 1, done
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0251099Z
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0289960Z dependencies:
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0314650Z + pnpm 11.25.0 (12.18.0 is available)
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0320971Z
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0384937Z Done in 978ms
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0586893Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0618485Z Installation Completed!
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0795919Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0796320Z with:
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0796515Z   node-version: 24.18.0
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0796733Z   cache: pnpm
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0796937Z   always-auth: false
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0797165Z   check-latest: false
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0799564Z   token: ***
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0799763Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0799941Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0800143Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0801016Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0801424Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:28.0801753Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:28.2363149Z Attempting to download 24.18.0...
+verify	UNKNOWN STEP	2026-11-11T15:52:28.2485641Z (node:3128) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	UNKNOWN STEP	2026-11-11T15:52:28.2487073Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	UNKNOWN STEP	2026-11-11T15:52:29.3695196Z Acquiring 24.18.0 - x64 from https://github.com/actions/node-versions/releases/download/24.18.0-28070977815/node-24.18.0-linux-x64.tar.gz
+verify	UNKNOWN STEP	2026-11-11T15:52:29.8827087Z Extracting ...
+verify	UNKNOWN STEP	2026-11-11T15:52:29.8963851Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/c0451bd7-7d53-4aa1-a8af-6b644a098afb -f /home/runner/work/_temp/45839c60-8f7b-4718-9c6e-d810afcdf93e
+verify	UNKNOWN STEP	2026-11-11T15:52:30.8092094Z Adding to the cache ...
+verify	UNKNOWN STEP	2026-11-11T15:52:33.5940843Z ##[group]Environment details
+verify	UNKNOWN STEP	2026-11-11T15:52:33.8881674Z node: v24.18.0
+verify	UNKNOWN STEP	2026-11-11T15:52:33.8882158Z npm: 11.16.0
+verify	UNKNOWN STEP	2026-11-11T15:52:33.8882696Z yarn: 1.22.22
+verify	UNKNOWN STEP	2026-11-11T15:52:33.8883444Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:33.8955307Z [command]/home/runner/setup-pnpm/node_modules/.bin/pnpm store path --silent
+verify	UNKNOWN STEP	2026-11-11T15:52:34.5429896Z /home/runner/setup-pnpm/node_modules/.bin/store/v11
+verify	UNKNOWN STEP	2026-11-11T15:52:34.8095783Z Cache hit for: node-cache-Linux-x64-pnpm-5b2194dac420d0764518b9d3d090394ae87b60d30b1a5e0c0f2b3cc8b24d4eaa
+verify	UNKNOWN STEP	2026-11-11T15:52:34.8284162Z (node:3128) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+verify	UNKNOWN STEP	2026-11-11T15:52:36.0871991Z Received 33554432 of 169821781 (19.8%), 31.9 MBs/sec
+verify	UNKNOWN STEP	2026-11-11T15:52:37.0931847Z Received 134217728 of 169821781 (79.0%), 63.8 MBs/sec
+verify	UNKNOWN STEP	2026-11-11T15:52:37.2249079Z Received 169821781 of 169821781 (100.0%), 75.7 MBs/sec
+verify	UNKNOWN STEP	2026-11-11T15:52:37.2249698Z Cache Size: ~162 MB (169821781 B)
+verify	UNKNOWN STEP	2026-11-11T15:52:37.2279673Z [command]/usr/bin/tar -xf /home/runner/work/_temp/a592f8da-111d-4322-b5b3-25a8cb0ca009/cache.tzst -P -C /home/runner/work/platform/platform --use-compress-program unzstd
+verify	UNKNOWN STEP	2026-11-11T15:52:39.8524097Z Cache restored successfully
+verify	UNKNOWN STEP	2026-11-11T15:52:39.8605851Z Cache restored from key: node-cache-Linux-x64-pnpm-5b2194dac420d0764518b9d3d090394ae87b60d30b1a5e0c0f2b3cc8b24d4eaa
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9174461Z ##[group]Run pnpm install --frozen-lockfile
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9175135Z ^[[36;1mpnpm install --frozen-lockfile^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9246371Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9246672Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9246881Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9247114Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9247817Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9248271Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:39.9248629Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:40.6829399Z ? Verifying lockfile against supply-chain policies (331 entries)...
+verify	UNKNOWN STEP	2026-11-11T15:52:40.6916010Z Lockfile is up to date, resolution step is skipped
+verify	UNKNOWN STEP	2026-11-11T15:52:40.8071699Z Progress: resolved 1, reused 0, downloaded 0, added 0
+verify	UNKNOWN STEP	2026-11-11T15:52:40.8491161Z Packages: +217
+verify	UNKNOWN STEP	2026-11-11T15:52:40.8495310Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+verify	UNKNOWN STEP	2026-11-11T15:52:41.8162556Z Progress: resolved 217, reused 47, downloaded 0, added 0
+verify	UNKNOWN STEP	2026-11-11T15:52:42.5756634Z Packages are hard linked from the content-addressable store to the virtual store.
+verify	UNKNOWN STEP	2026-11-11T15:52:42.5780644Z   Content-addressable store is at: /home/runner/setup-pnpm/node_modules/.bin/store/v11
+verify	UNKNOWN STEP	2026-11-11T15:52:42.5784967Z   Virtual store is at:             node_modules/.pnpm
+verify	UNKNOWN STEP	2026-11-11T15:52:42.8162029Z Progress: resolved 217, reused 217, downloaded 0, added 4
+verify	UNKNOWN STEP	2026-11-11T15:52:43.8757816Z ✓ Lockfile passes supply-chain policies (331 entries in 3.1s)
+verify	UNKNOWN STEP	2026-11-11T15:52:43.8773523Z Progress: resolved 217, reused 217, downloaded 0, added 53
+verify	UNKNOWN STEP	2026-11-11T15:52:44.0222559Z Progress: resolved 217, reused 217, downloaded 0, added 217, done
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5095873Z
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5096951Z dependencies:
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5097833Z + @supabase/ssr 0.12.7
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5098656Z + @supabase/supabase-js 2.118.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5099356Z + lit 3.3.3
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5099982Z + livekit-client 2.23.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5100919Z + lucide-react 0.468.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5101606Z + motion 14.4.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5102253Z + next 16.4.5
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5102823Z + pdf-lib 1.17.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5103429Z + pg 8.23.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5104049Z + qrcode-generator 2.0.4
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5104704Z + react 19.3.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5105338Z + react-dom 19.3.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5105935Z + three 0.180.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5106447Z + ws 8.22.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5106786Z
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5107101Z devDependencies:
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5107685Z + @napi-rs/canvas 1.1.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5108315Z + @playwright/test 1.64.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5108983Z + @types/node 24.10.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5109614Z + @types/react 19.2.7
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5110282Z + @types/react-dom 19.2.3
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5111282Z + @typescript-eslint/parser 8.72.1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5111975Z + drizzle-kit 0.31.11
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5112555Z + drizzle-orm 0.45.3
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5113099Z + esbuild 0.28.2
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5113615Z + eslint 10.14.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5114162Z + jsqr 1.4.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5114730Z + linkedom 0.18.13
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5115288Z + typescript 5.9.3
+verify	UNKNOWN STEP	2026-11-11T15:52:44.5115674Z
+verify	UNKNOWN STEP	2026-11-11T15:52:44.6471869Z Done in 4.6s using pnpm v11.25.0
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7051796Z ##[group]Run pnpm check:config --phase=build
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7052209Z ^[[36;1mpnpm check:config --phase=build^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7104110Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7104375Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7104564Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7104768Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7105383Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7105808Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:44.7106360Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:45.2798963Z $ node scripts/check-config.mjs --phase=build
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3195781Z Configuratienamen en formaten akkoord (build, local). Waarden zijn niet getoond; verbindingen zijn niet getest.
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3424724Z ##[group]Run pnpm lint
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3425012Z ^[[36;1mpnpm lint^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3475582Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3475870Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3476076Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3476298Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3476928Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3477378Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:45.3477734Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:45.9062708Z $ eslint app components server/node-*.js tests scripts/check-config.mjs scripts/prepare-next.mjs scripts/package-standalone.mjs scripts/start-standalone-test.mjs scripts/deploy scripts/run-checks.mjs playwright.config.mjs
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1444173Z ##[group]Run # Ubuntu 26.04 uses sudo-rs by default. Keep that default unchanged;
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1445163Z ^[[36;1m# Ubuntu 26.04 uses sudo-rs by default. Keep that default unchanged;^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1446080Z ^[[36;1m# the supported C sudo parser is needed for our mandatory digest policy.^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1446935Z ^[[36;1mif ! node tests/helpers/sudoers-toolchain.mjs; then^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1447572Z ^[[36;1m  sudo apt-get update^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1448181Z ^[[36;1m  sudo apt-get install --yes --no-install-recommends sudo^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1448787Z ^[[36;1mfi^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1449264Z ^[[36;1mnode tests/helpers/sudoers-toolchain.mjs --github-env^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1449882Z ^[[36;1mcat /etc/os-release^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1450747Z ^[[36;1mprintf 'Runner image: %s %s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}"^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1451569Z ^[[36;1mdpkg-query -W -f='${Package} ${Version}\n' sudo^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1515025Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1515379Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1515562Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1515764Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1516645Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1517133Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:48.1517469Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:48.2898729Z {"parser":"/usr/sbin/visudo.ws","version":"visudo.ws version 1.9.17p2","digestAndArgumentRegex":true,"malformedDigestRejected":true}
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3337202Z {"parser":"/usr/sbin/visudo.ws","version":"visudo.ws version 1.9.17p2","digestAndArgumentRegex":true,"malformedDigestRejected":true}
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3402468Z PRETTY_NAME="Ubuntu 26.04.1 LTS"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3403174Z NAME="Ubuntu"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3403823Z VERSION_ID="26.04"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3404609Z VERSION="26.04.1 LTS (Resolute Raccoon)"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3405359Z VERSION_CODENAME=resolute
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3407694Z ID=ubuntu
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3408381Z ID_LIKE=debian
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3409127Z HOME_URL="https://www.ubuntu.com/"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3410000Z SUPPORT_URL="https://help.ubuntu.com/"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3412125Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3413398Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3414242Z UBUNTU_CODENAME=resolute
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3414666Z LOGO=ubuntu-logo
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3415163Z Runner image: ubuntu26 20261101.186.1
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3561194Z sudo 1.9.17p2-1ubuntu3.2
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3622049Z ##[group]Run pnpm test
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3622329Z ^[[36;1mpnpm test^[[0m
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3672639Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3672900Z env:
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3673089Z   CI: true
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3673290Z   NEXT_TELEMETRY_DISABLED: 1
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3673892Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3674497Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3674845Z   MILO_TEST_VISUDO: /usr/sbin/visudo.ws
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3675331Z   MILO_TEST_POSTGRES_CONTAINER: 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:52:48.3675798Z ##[endgroup]
+verify	UNKNOWN STEP	2026-11-11T15:52:48.9211189Z $ node scripts/run-checks.mjs
+verify	UNKNOWN STEP	2026-11-11T15:52:53.7256999Z ✓ check-family-demo (4768 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:06.4682767Z ✓ check-family-extras (12742 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:06.5258082Z ✓ check-family-brand (56 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:08.5597426Z ✓ check-player-auth (2035 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:28.6333266Z ✓ check-bingo (20074 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:29.5331028Z ✓ check-live-chat (899 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:32.2092221Z ✓ check-chat-client (2676 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:35.1118875Z ✓ check-milo-print (2902 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:35.2784663Z ✓ check-characters (168 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:35.3542594Z ✓ check-cast-runner (75 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:36.3003318Z ✓ check-milo-motion (945 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:36.3814594Z ✓ check-milo-life (80 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:37.8053089Z ✓ check-milo-minigame-catalog (1424 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:38.2353358Z ✓ check-milo-minigame-server (430 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:38.5069614Z ✓ check-milo-game-clock (271 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:38.6212213Z ✓ check-call-draw-hold (114 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:38.6761226Z ✓ check-live-call-audio (55 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:39.1651055Z ✓ check-live-calls (489 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:39.2325492Z ✓ check-player-live-call (68 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:43.1931194Z ✓ check-regie-workspace (3960 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:44.1152248Z ✓ check-regie-panels (922 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:46.8232428Z ✓ check-brand-contract (2708 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:46.9638367Z ✓ check-secrets (141 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:47.2216859Z ✓ check-youtube-player (258 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:47.2737793Z ✓ check-startup-recovery (52 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:47.5418481Z ✓ check-gpt-live (268 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:48.0202115Z ✓ check-show-preparation (478 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:49.1072383Z ✓ check-studio-engine (1087 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:50.1022794Z ✓ check-simple-preparation-ui (995 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:54.2157343Z ✓ check-broadcast-preparation (4114 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:54.6941361Z ✓ check-calls (477 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:54.7962996Z ✓ check-planner-api (102 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:55.3463744Z ✓ check-planner-ui (551 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:55.4832494Z ✓ check-openai (137 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:56.2946245Z ✓ check-production (811 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:56.6203427Z ✓ check-milo-brand-isolation (326 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:57.0493235Z ✓ check-presentation (428 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:57.4678689Z ✓ check-claim-priority (419 ms)
+verify	UNKNOWN STEP	2026-11-11T15:53:57.5415280Z ✓ check-family-consolation (74 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:01.9828476Z ✓ check-bingo-orders (4441 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:02.0785322Z ✓ check-order-demo (96 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:18.8258060Z ✓ check-workspace-navigation (16746 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:22.3952904Z ✓ check-character-navigation (3570 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:24.4904980Z ✓ check-administration-ui (2096 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:27.5919885Z ✓ check-broadcast-shell (3101 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:30.4629939Z ✓ check-show-cue-ui (2871 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:30.5627631Z ✓ check-magic-catalog (99 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:30.6617125Z ✓ check-milo-studio-tour (100 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:31.0408207Z ✓ check-milo-leg-render (379 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:33.0529203Z ✓ check-milo-magic-render (2012 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:34.6995034Z ✓ check-milo-puppet-render (1647 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:37.8100732Z ✓ check-milo-effect-continuity (3110 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:38.0583548Z ✓ check-livekit (249 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:38.1292664Z ✓ check-live-call-output (68 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:38.2376611Z ✓ check-live-call-runtime (111 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:38.6572392Z ✓ check-live-call-recovery (419 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:38.7287979Z ✓ check-mail-templates (72 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:39.0587518Z ✓ check-mail-service (330 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:46.5767267Z ✓ check-mail-ui (7518 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:55.1832851Z ✓ check-provider-settings-ui (8606 ms)
+verify	UNKNOWN STEP	2026-11-11T15:54:56.9672312Z ✓ check-obs-source-ui (1784 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:02.4543165Z ✓ check-milo-ui (5488 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:08.3366255Z ✓ check-showtime (5882 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:15.2005177Z ✓ check-start-readiness (6863 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:15.4303471Z ✓ check-director-whisper-runtime (230 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:17.0896951Z ✓ check-director-whisper-ui (1660 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:17.3622024Z ✓ check-director-whisper-server (272 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:17.6853874Z ✓ check-live-director-whisper (324 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:18.4861374Z ✓ check-standard-show (799 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:19.2585378Z ✓ check-regie-resend-settings (773 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:19.6112167Z ✓ check-node-resend-mail (353 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:20.0323864Z ✓ check-protected-config (421 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:21.4216904Z ✓ check-protected-production (1390 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:22.5598488Z ✓ check-node-storage (1137 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:23.6776908Z ✓ check-node-game-queue (1119 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:24.1291617Z ✓ check-queued-bingo-time (450 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:26.1832581Z ✓ check-node-runtime (2054 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:27.2954186Z ✓ check-regie-provider-settings (1113 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3392907Z ✗ check-obs-access (1044 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3395452Z ✔ organizer creates one-time opaque OBS access; status and every legacy output response omit hashes and raw secret (59.809954ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3397955Z ✔ OBS token cannot authenticate a general session or reach regie APIs, publish, change role, join backstage or cross origins (31.295765ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3400274Z ✔ management requires verified regie, fresh role, exact origin, custom header and stable current access intent (27.849169ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3403050Z ✔ output projection contains programme visuals only; another show produces waiting state and no voice access (22.603811ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3404956Z ✔ OBS can retrieve only the current published voice clip and never create a paid voice request (26.390256ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3407022Z ✔ revocation, replacement, expiry, owner demotion and ownership change invalidate scoped access and preserve regie data (27.441561ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3408998Z ✔ malformed durable access metadata fails closed without provider or Auth contact (24.176986ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3410306Z ✔ revocation wins a racing output heartbeat CAS without resurrecting its lease (18.56416ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3412571Z ✔ scoped live calls expose consented display name and required media state, with existing bound output lease and live-only token (34.742772ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3414546Z ✖ queued realtime rechecks revoked capability and aborted request before any provider start (99.576534ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3416722Z ✔ revocation during provider start retains remote session ID and closes it without granting a programme answer (53.846565ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3418676Z ✔ revocation during ready CAS closes the durably known session and leaves the draw hold (31.093379ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3421286Z ✔ a valid OBS output starts exactly its bound live voice and can close it outside the provider FIFO (27.733934ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3423145Z ✔ PostgreSQL locator lookup, output CAS and stale management intent use the actual adapter (237.447048ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3424250Z ℹ tests 14
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3424735Z ℹ suites 0
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3425225Z ℹ pass 13
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3425709Z ℹ fail 1
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3426226Z ℹ cancelled 0
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3426743Z ℹ skipped 0
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3427248Z ℹ todo 0
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3427796Z ℹ duration_ms 731.269151
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3428209Z
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3428545Z ✖ failing tests:
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3428914Z
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3429373Z test at tests/check-obs-access.mjs:146:1
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3431356Z ✖ queued realtime rechecks revoked capability and aborted request before any provider start (99.576534ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3433247Z   AssertionError [ERR_ASSERTION]: {"error":"De belaanvraag kon niet worden bevestigd. De trekking blijft geblokkeerd als het belmoment al was voorbereid."}
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3434627Z
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3435136Z   503 !== 408
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3435974Z
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3436961Z       at invoke (file:///home/runner/work/platform/platform/tests/check-obs-access.mjs:36:278)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3438647Z       at async TestContext.<anonymous> (file:///home/runner/work/platform/platform/tests/check-obs-access.mjs:150:211)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3440027Z       at async Test.run (node:internal/test_runner/test:1332:7)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3441489Z       at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3442576Z     generatedMessage: false,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3443219Z     code: 'ERR_ASSERTION',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3443823Z     actual: 503,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3444356Z     expected: 408,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3444910Z     operator: 'strictEqual',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3445551Z     diff: 'simple'
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3446072Z   }
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3446604Z gpt_live_close_unconfirmed {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3447187Z   restStatus: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3447693Z   attachStatus: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3448253Z   reason: 'attach_rejected',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3448831Z   rest: {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3449305Z     status: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3449821Z     responseType: 'other',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3450569Z     requestId: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3451176Z     errorCode: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3451702Z     errorType: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3452248Z     retryAfter: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3452804Z     policyBlocked: false
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3453373Z   },
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3453854Z   attach: {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3454337Z     status: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3454875Z     responseType: 'other',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3455453Z     requestId: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3455979Z     errorCode: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3456502Z     errorType: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3457053Z     retryAfter: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3457626Z     policyBlocked: false
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3458173Z   }
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3458643Z }
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3459160Z gpt_live_close_unconfirmed {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3459947Z   restStatus: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3460685Z   attachStatus: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3461241Z   reason: 'attach_rejected',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3461808Z   rest: {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3462274Z     status: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3462796Z     responseType: 'other',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3463587Z     requestId: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3468020Z     errorCode: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3469010Z     errorType: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3469596Z     retryAfter: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3470179Z     policyBlocked: false
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3470993Z   },
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3471526Z   attach: {
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3472064Z     status: 500,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3472622Z     responseType: 'other',
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3473225Z     requestId: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3473775Z     errorCode: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3474317Z     errorType: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3474867Z     retryAfter: null,
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3475452Z     policyBlocked: false
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3476011Z   }
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3476492Z }
+verify	UNKNOWN STEP	2026-11-11T15:55:28.3476821Z
+verify	UNKNOWN STEP	2026-11-11T15:55:28.5852476Z ✓ check-staging-workspace-preflight (245 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:28.9424138Z ✓ check-node-provider-fetch (358 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:29.0291486Z ✓ check-node-mail-gateway (86 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:29.1229687Z ✓ check-node-postgres-tls (94 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:29.1938328Z ✓ check-deploy-contract (71 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:30.5778249Z ✓ check-production-deploy (1384 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:38.3856419Z ✓ check-deploy-database (7808 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:39.8855422Z ✓ check-provision-runtime (1500 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:39.9619929Z ✓ check-show-time (75 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:40.8567886Z ✓ check-game-invariants (895 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:54.9366673Z ✓ check-game-capacity (14081 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:55.3935031Z ✓ check-family-claim-context (457 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:55.5747625Z ✓ check-live-feed (181 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:55.7111070Z ✓ check-live-feed-isolation (136 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:55.7732600Z ✓ check-v70-schema-upgrade (62 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:55.8973085Z ✓ check-show-time-audit (124 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:56.3662766Z ✓ check-account-mail (469 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:56.5453105Z ✓ check-staging-restore-relay (178 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:56.5922509Z ✓ check-staging-restore-target (47 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:57.2046830Z ✓ check-family-accessibility (612 ms)
+verify	UNKNOWN STEP	2026-11-11T15:55:57.6044874Z ✓ check-v70-restart-safety (400 ms)
+verify	UNKNOWN STEP	2026-11-11T15:59:00.7905718Z ✓ check-staging-capacity-v70 (183186 ms)
+verify	UNKNOWN STEP	2026-11-11T15:59:00.8151309Z [ELIFECYCLE] Test failed. See above for more details.
+verify	UNKNOWN STEP	2026-11-11T15:59:00.8453267Z ##[error]Process completed with exit code 1.
+verify	UNKNOWN STEP	2026-11-11T15:59:00.8575507Z Post job cleanup.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.0297079Z Pruning is unnecessary.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.0557623Z Post job cleanup.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2299393Z [command]/usr/bin/git version
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2461652Z git version 2.56.0
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2574907Z Temporarily overriding HOME='/home/runner/work/_temp/4e1385dd-3c91-4eea-98b1-843d31c61032' before making global git config changes
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2591335Z Adding repository directory to the temporary git global config as a safe directory
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2601595Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/platform/platform
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2691476Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	UNKNOWN STEP	2026-11-11T15:59:01.2745664Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3281569Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3283466Z http.https://github.com/.extraheader
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3341407Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3349337Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3802279Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	UNKNOWN STEP	2026-11-11T15:59:01.3828611Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4280227Z Print service container logs: f832affd9437437eb4f4e2ef1c8b9dab_postgres17alpinesha256266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b_3364a2
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4286176Z ##[command]/usr/bin/docker logs --details 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4467794Z  sh: locale: not found
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4468443Z  The files belonging to this database system will be owned by user "postgres".
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4469276Z  2026-11-11 15:52:02.381 UTC [34] WARNING:  no usable system locales were found
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4470325Z  This user must also own the server process.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4471278Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4471983Z  The database cluster will be initialized with locale "en_US.utf8".
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4472943Z  The default database encoding has accordingly been set to "UTF8".
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4473865Z  The default text search configuration will be set to "english".
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4474603Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4475154Z  Data page checksums are disabled.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4475743Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4476407Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4477203Z  creating subdirectories ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4477855Z  selecting dynamic shared memory implementation ... posix
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4478589Z  selecting default "max_connections" ... 100
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4479260Z  selecting default "shared_buffers" ... 128MB
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4479927Z  selecting default time zone ... UTC
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4480681Z  creating configuration files ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4481424Z  running bootstrap script ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4482087Z  performing post-bootstrap initialization ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4483235Z  syncing data to disk ... ok
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4483788Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4484228Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4484757Z  Success. You can now start the database server using:
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4485437Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4486020Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4486694Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4487756Z  waiting for server to start....2026-11-11 15:52:03.023 UTC [40] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4489686Z  initdb: warning: enabling "trust" authentication for local connections
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4491093Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4492599Z  2026-11-11 15:52:03.311 UTC [1] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4493730Z  2026-11-11 15:52:03.312 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4494543Z  2026-11-11 15:52:03.312 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4495164Z  2026-11-11 15:52:03.313 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4495765Z  2026-11-11 15:52:03.317 UTC [56] LOG:  database system was shut down at 2026-11-11 15:52:03 UTC
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4496296Z  2026-11-11 15:52:03.323 UTC [1] LOG:  database system is ready to accept connections
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4496818Z  2026-11-11 15:55:22.128 UTC [348] ERROR:  could not serialize access due to concurrent update
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4497907Z  2026-11-11 15:55:22.128 UTC [348] STATEMENT:  UPDATE bingo_families SET revision = $1,document = $2 WHERE account_id = $3 AND revision = $4 AND EXISTS(SELECT 1 FROM bingo_games WHERE id = $5 AND revision = $6 AND ((document)::jsonb #>> '{lastOp}') = $7) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4500506Z  2026-11-11 15:55:22.129 UTC [345] ERROR:  could not serialize access due to read/write dependencies among transactions
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4502766Z  2026-11-11 15:55:22.129 UTC [345] DETAIL:  Reason code: Canceled on identification as a pivot, during conflict out checking.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4503918Z  2026-11-11 15:55:22.129 UTC [345] HINT:  The transaction might succeed if retried.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4505749Z  2026-11-11 15:55:22.129 UTC [345] STATEMENT:  UPDATE bingo_families SET revision = $1,document = $2 WHERE account_id = $3 AND revision = $4 AND EXISTS(SELECT 1 FROM bingo_games WHERE id = $5 AND revision = $6 AND ((document)::jsonb #>> '{lastOp}') = $7) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4507700Z  2026-11-11 15:55:22.130 UTC [347] ERROR:  could not serialize access due to read/write dependencies among transactions
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4508437Z  2026-11-11 15:55:22.130 UTC [347] DETAIL:  Reason code: Canceled on identification as a pivot, during write.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4509055Z  2026-11-11 15:55:22.130 UTC [347] HINT:  The transaction might succeed if retried.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4510581Z  2026-11-11 15:55:22.130 UTC [347] STATEMENT:  UPDATE bingo_games SET revision = $1,document = $2,updated_at = $3 WHERE id = $4 AND revision = $5 AND EXISTS(SELECT 1 FROM bingo_families WHERE account_id = $6 AND revision = $7) AND NOT EXISTS(SELECT 1 FROM bingo_codes WHERE code IN(SELECT value FROM jsonb_array_elements_text(($8)::jsonb))) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4512251Z  2026-11-11 15:55:22.223 UTC [347] ERROR:  could not serialize access due to read/write dependencies among transactions
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4512963Z  2026-11-11 15:55:22.223 UTC [347] DETAIL:  Reason code: Canceled on identification as a pivot, during write.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4513579Z  2026-11-11 15:55:22.223 UTC [347] HINT:  The transaction might succeed if retried.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4514910Z  2026-11-11 15:55:22.223 UTC [347] STATEMENT:  UPDATE bingo_games SET revision = $1,document = $2,updated_at = $3 WHERE id = $4 AND revision = $5 AND EXISTS(SELECT 1 FROM bingo_families WHERE account_id = $6 AND revision = $7) AND NOT EXISTS(SELECT 1 FROM bingo_codes WHERE code IN(SELECT value FROM jsonb_array_elements_text(($8)::jsonb))) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4516452Z  2026-11-11 15:55:22.293 UTC [347] ERROR:  could not serialize access due to concurrent update
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4518308Z  2026-11-11 15:55:22.293 UTC [347] STATEMENT:  UPDATE bingo_chat_rooms SET revision=revision+1,last_op=$1 WHERE game_id=$2 AND EXISTS(SELECT 1 FROM bingo_games WHERE id=$3 AND revision=$4) AND EXISTS(SELECT 1 FROM bingo_families WHERE account_id=$5 AND revision=$6) AND EXISTS(SELECT 1 FROM bingo_chat_members WHERE game_id=$7 AND id=$8 AND role=$9 AND muted_until=$10 AND last_sent_at=$11) AND NOT EXISTS(SELECT 1 FROM bingo_chat_operations WHERE game_id=$12 AND account_id=$13 AND request_id=$14) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4520175Z  2026-11-11 15:55:22.318 UTC [347] ERROR:  could not serialize access due to concurrent update
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4522832Z  2026-11-11 15:55:22.318 UTC [347] STATEMENT:  UPDATE bingo_chat_rooms SET revision=revision+1,last_op=$1 WHERE game_id=$2 AND EXISTS(SELECT 1 FROM bingo_games WHERE id=$3 AND revision=$4) AND EXISTS(SELECT 1 FROM bingo_families WHERE account_id=$5 AND revision=$6) AND EXISTS(SELECT 1 FROM bingo_chat_members WHERE game_id=$7 AND id=$8 AND role=$9 AND muted_until=$10 AND last_sent_at=$11) AND NOT EXISTS(SELECT 1 FROM bingo_chat_operations WHERE game_id=$12 AND account_id=$13 AND request_id=$14) RETURNING revision
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4524691Z  2026-11-11 15:55:22.326 UTC [347] FATAL:  terminating connection due to administrator command
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4525230Z  2026-11-11 15:55:22.336 UTC [342] ERROR:  permission denied for table bingo_families
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4525845Z  2026-11-11 15:55:22.336 UTC [342] STATEMENT:  SELECT * FROM milo_storage_eb6110e31e2242d8a18defa9d6360bc8.bingo_families
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4526544Z  2026-11-11 15:55:22.346 UTC [342] ERROR:  new row violates row-level security policy for table "app_user_roles"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4527417Z  2026-11-11 15:55:22.346 UTC [342] STATEMENT:  INSERT INTO milo_storage_eb6110e31e2242d8a18defa9d6360bc8.app_user_roles (user_id,role) VALUES ('attacker','regie')
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4528377Z  2026-11-11 15:55:22.450 UTC [351] ERROR:  permission denied for table app_user_roles
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4528958Z  2026-11-11 15:55:22.450 UTC [351] STATEMENT:  INSERT INTO app_user_roles(user_id,role) VALUES($1,$2)
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4529491Z  2026-11-11 15:55:22.468 UTC [352] ERROR:  must be owner of table bingo_games
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4529923Z  2026-11-11 15:55:22.468 UTC [352] STATEMENT:  DROP TABLE bingo_games
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4530747Z  2026-11-11 15:55:23.633 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4531964Z  2026-11-11 15:55:23.654 UTC [54] LOG:  checkpoint complete: wrote 210 buffers (1.3%); 1 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.003 s, total=0.021 s; sync files=281, longest=0.001 s, average=0.001 s; distance=6654 kB, estimate=6654 kB; lsn=0/1F9E308, redo lsn=0/1F9E2B0
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4533054Z  2026-11-11 15:55:27.266 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4534138Z  2026-11-11 15:55:27.269 UTC [54] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4294 kB, estimate=6418 kB; lsn=0/23CFED8, redo lsn=0/23CFE80
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4535186Z  2026-11-11 15:55:33.164 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4536259Z  2026-11-11 15:55:33.225 UTC [54] LOG:  checkpoint complete: wrote 1045 buffers (6.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.016 s, sync=0.042 s, total=0.061 s; sync files=528, longest=0.025 s, average=0.001 s; distance=10184 kB, estimate=10184 kB; lsn=0/2DC1FF0, redo lsn=0/2DC1F98
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4537594Z  2026-11-11 15:55:33.235 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4538639Z  2026-11-11 15:55:33.238 UTC [54] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=3, longest=0.001 s, average=0.001 s; distance=9 kB, estimate=9166 kB; lsn=0/2DC4478, redo lsn=0/2DC4420
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4539679Z  2026-11-11 15:55:34.446 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4541127Z  2026-11-11 15:55:34.488 UTC [54] LOG:  checkpoint complete: wrote 1003 buffers (6.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.015 s, sync=0.024 s, total=0.043 s; sync files=507, longest=0.001 s, average=0.001 s; distance=9389 kB, estimate=9389 kB; lsn=0/36EFBF0, redo lsn=0/36EFB98
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4542227Z  2026-11-11 15:55:34.496 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4543271Z  2026-11-11 15:55:34.498 UTC [54] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=9 kB, estimate=8451 kB; lsn=0/36F22B0, redo lsn=0/36F2258
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4544312Z  2026-11-11 15:55:38.060 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4545362Z  2026-11-11 15:55:38.062 UTC [54] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=10, longest=0.001 s, average=0.001 s; distance=4461 kB, estimate=8052 kB; lsn=0/3B4D810, redo lsn=0/3B4D7B8
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4546422Z  2026-11-11 15:55:39.484 UTC [533] ERROR:  permission denied for table app_user_roles
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4546972Z  2026-11-11 15:55:39.484 UTC [533] STATEMENT:  INSERT INTO app_user_roles VALUES ('elevate','regie')
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4547544Z  2026-11-11 15:55:39.494 UTC [534] ERROR:  permission denied for schema public at character 14
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4548109Z  2026-11-11 15:55:39.494 UTC [534] STATEMENT:  CREATE TABLE public.illegal_runtime_ddl (id int)
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4548692Z  2026-11-11 15:55:39.503 UTC [535] ERROR:  permission denied for schema milo_deploy at character 15
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4549382Z  2026-11-11 15:55:39.503 UTC [535] STATEMENT:  SELECT * FROM milo_deploy.migrations
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4549949Z  2026-11-11 15:55:39.511 UTC [536] FATAL:  password authentication failed for user "milo_staging_runtime"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4550965Z  2026-11-11 15:55:39.511 UTC [536] DETAIL:  Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4551672Z  2026-11-11 15:55:39.858 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4552732Z  2026-11-11 15:55:39.862 UTC [54] LOG:  checkpoint complete: wrote 16 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=16, longest=0.001 s, average=0.001 s; distance=4754 kB, estimate=7723 kB; lsn=0/3FF23A8, redo lsn=0/3FF2350
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4553803Z  2026-11-11 15:59:00.351 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4554882Z  2026-11-11 15:59:00.357 UTC [54] LOG:  checkpoint complete: wrote 127 buffers (0.8%); 0 WAL file(s) added, 0 removed, 9 recycled; write=0.002 s, sync=0.001 s, total=0.006 s; sync files=47, longest=0.001 s, average=0.001 s; distance=135320 kB, estimate=135320 kB; lsn=0/C418450, redo lsn=0/C4183F8
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4555954Z  2026-11-11 15:59:00.743 UTC [54] LOG:  checkpoint starting: immediate force wait
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4557001Z  2026-11-11 15:59:00.746 UTC [54] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=7, longest=0.001 s, average=0.001 s; distance=4795 kB, estimate=122267 kB; lsn=0/C8C7190, redo lsn=0/C8C7138
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4558119Z  2026-11-11 15:52:03.024 UTC [40] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4558833Z  2026-11-11 15:52:03.026 UTC [43] LOG:  database system was shut down at 2026-11-11 15:52:02 UTC
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4559355Z  2026-11-11 15:52:03.031 UTC [40] LOG:  database system is ready to accept connections
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4559732Z   done
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4559928Z  server started
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4560133Z  CREATE DATABASE
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4560333Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4560796Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4561128Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4561679Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4561935Z  2026-11-11 15:52:03.182 UTC [40] LOG:  received fast shutdown request
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4562471Z  waiting for server to shut down....2026-11-11 15:52:03.183 UTC [40] LOG:  aborting any active transactions
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4563157Z  2026-11-11 15:52:03.188 UTC [40] LOG:  background worker "logical replication launcher" (PID 46) exited with exit code 1
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4563714Z  2026-11-11 15:52:03.188 UTC [41] LOG:  shutting down
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4564102Z  2026-11-11 15:52:03.189 UTC [41] LOG:  checkpoint starting: shutdown immediate
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4565174Z  2026-11-11 15:52:03.210 UTC [41] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.015 s, sync=0.002 s, total=0.022 s; sync files=301, longest=0.001 s, average=0.001 s; distance=4266 kB, estimate=4266 kB; lsn=0/191E828, redo lsn=0/191E828
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4566216Z  2026-11-11 15:52:03.218 UTC [40] LOG:  database system is shut down
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4566543Z   done
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4566725Z  server stopped
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4566922Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4567156Z  PostgreSQL init process complete; ready for start up.
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4567499Z
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4575278Z Stop and remove container: f832affd9437437eb4f4e2ef1c8b9dab_postgres17alpinesha256266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b_3364a2
+verify	UNKNOWN STEP	2026-11-11T15:59:01.4581969Z ##[command]/usr/bin/docker rm --force 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:59:01.6500037Z 4858ab38e7fc9a704da43c8d1d06d15284daa2668ffb2df5f75eccbdd9157690
+verify	UNKNOWN STEP	2026-11-11T15:59:01.6538491Z Remove container network: github_network_580e3c648210420c8b4d609c4c803004
+verify	UNKNOWN STEP	2026-11-11T15:59:01.6543396Z ##[command]/usr/bin/docker network rm github_network_580e3c648210420c8b4d609c4c803004
+verify	UNKNOWN STEP	2026-11-11T15:59:01.7076424Z github_network_580e3c648210420c8b4d609c4c803004
+verify	UNKNOWN STEP	2026-11-11T15:59:01.7164224Z Cleaning up orphan processes
+verify	UNKNOWN STEP	2026-11-11T15:59:01.7500967Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
