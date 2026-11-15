@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ShowCallCues} from '../frontend/show-call-cues.js';
 import {ShowRunner} from '../public/show-runner.js';
-import {winnerAnnouncementText} from '../server/call-cues.js';
+import {winnerAnnouncementText,WINNER_SPEECH_VERSION} from '../server/call-cues.js';
 import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -22,9 +22,9 @@ const winner=(status='waiting-announcement',extra={})=>({id:'winner:result-one',
 const random=(status='pending',extra={})=>({id:'random:random-one',source:'random',status,sourceBlockId:'random-one',...extra});
 
 test('official winner is displayed and spoken once, and only matching ended output acknowledgement permits invitation',async()=>{
- const f=fixture({cues:[winner()]});await f.adapter.process();assert.equal(f.invites().length,0);assert.equal(f.speech.length,1);assert.equal(f.speech[0][0],winnerAnnouncementText());assert.deepEqual(f.speech[0].slice(1),['milo','ai',false,{preparedOnly:true}]);assert.equal(f.director.scene,'winner');assert.equal(f.director.lastWinner,'Noor');assert(f.events.some(event=>event[0]==='audio'&&event[1]==='win'));
+ const f=fixture({cues:[winner()]});await f.adapter.process();assert.equal(f.invites().length,0);assert.equal(f.speech.length,1);assert.equal(f.speech[0][0],winnerAnnouncementText(f.game.results[0]));assert.deepEqual(f.speech[0].slice(1),['milo','ai',false,{preparedOnly:false}]);assert.equal(f.director.scene,'winner');assert.equal(f.director.lastWinner,'Noor');assert(f.events.some(event=>event[0]==='audio'&&event[1]==='win'));
  await f.adapter.process();assert.equal(f.speech.length,1);f.engine.voicePhase='idle';for(const ack of [null,{id:'other-output-voice',status:'ended'},{id:'voice-1',status:'started'},{id:'voice-1',status:'error'}]){f.engine.bridge.latest.output.voiceAck=ack;await f.adapter.process();assert.equal(f.actions().length,0);assert.equal(f.invites().length,0);}
- f.engine.bridge.latest.output.voiceAck={id:'voice-1',status:'ended'};await f.adapter.process();assert.equal(f.actions().length,1);assert.deepEqual(f.actions()[0],['action','cue-result-announced',{resultId:'result-one',voiceId:'voice-1'}]);assert.equal(f.invites().length,0,'Durable announcement acknowledgement finishes before any invite');await f.adapter.process();assert.equal(f.invites().length,1);assert.equal(f.invites()[0][1],'winner:result-one');assert.equal(f.invites()[0][2].mode,'prepared');assert.equal(f.game.callCues[0].callId,'call:winner:result-one');await f.adapter.process();assert.equal(f.invites().length,1);
+ f.engine.bridge.latest.output.voiceAck={id:'voice-1',status:'ended'};await f.adapter.process();assert.equal(f.actions().length,1);assert.deepEqual(f.actions()[0],['action','cue-result-announced',{resultId:'result-one',voiceId:'voice-1',scriptVersion:WINNER_SPEECH_VERSION}]);assert.equal(f.invites().length,0,'Durable announcement acknowledgement finishes before any invite');await f.adapter.process();assert.equal(f.invites().length,1);assert.equal(f.invites()[0][1],'winner:result-one');assert.equal(f.invites()[0][2].mode,'prepared');assert.equal(f.game.callCues[0].callId,'call:winner:result-one');await f.adapter.process();assert.equal(f.invites().length,1);
  // Reconstruct the adapter as if the director tab had reloaded. The persisted
  // cue/call reference is enough to prevent another invitation or announcement.
  f.engine.liveCalls.call=null;const recovered=new ShowCallCues(f.engine);await recovered.process();assert.equal(f.invites().length,1);assert.equal(f.speech.length,1);assert.equal(recovered.held,true);
@@ -71,4 +71,7 @@ test('actual ShowRunner respects durable call-cue hold on automatic and manual p
 
 test('a pre-existing manual pause survives explicit call cleanup without a hidden unpause or next-round activation',async()=>{
  for(const [source,target] of [['random','draw'],['winner','next-round'],['winner','ending']]){const cue=source==='random'?random('completed'):winner('completed',{resumeTarget:target}),f=fixture({cues:[cue],block:source==='random'?2:0});f.game.state.paused=true;await f.adapter.resume(target,{source,cueId:cue.id,resumeTarget:target,checkpoint:{paused:true}});assert.equal(f.game.state.paused,true);assert.equal(f.director.paused,true);assert.equal(f.engine.runner.autoDraw,false);assert.equal(f.events.some(event=>event[0]==='enter'||event[0]==='pause'),false);assert.deepEqual(f.game.state.drawn,[7,13,27]);}
+});
+test('a declined custom call uses its own prepared fallback and presenter instead of another call or a winner greeting',()=>{
+ const cue=random('skipped',{characterId:'stella',fallbackText:'Dan laat Stella haar geluksster zelf schitteren.'}),f=fixture({cues:[cue]});f.adapter.fallback(cue);assert.equal(f.speech[0][0],cue.fallbackText);assert.equal(f.speech[0][1],'stella');assert.deepEqual(f.speech[0].at(-1),{preparedOnly:true});f.engine.voicePhase='idle';f.adapter.fallback(cue);assert.equal(f.speech.length,1);
 });

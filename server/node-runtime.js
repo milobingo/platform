@@ -7,6 +7,7 @@ import {handleLiveCalls} from './live-calls.js';
 import {handleLiveKit} from './livekit.js';
 import {handleOpenAI} from './openai.js';
 import {handlePlanner} from './planner.js';
+import {handleShowDesign} from './show-design.js';
 import {handleBingo} from './bingo.js';
 import {handleChat} from './chat.js';
 import {handlePresentation} from './presentation.js';
@@ -125,6 +126,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
    }
   }
   else if(path.startsWith('/api/presentation/'))response=await handlePresentation(cleanRequest,verifiedEnv);
+  else if(path==='/api/show-design')response=await handleShowDesign(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/planner/'))response=await handlePlanner(cleanRequest,verifiedEnv);
   else if(/^\/api\/bingo\/games\/[^/]+\/chat(?:\/|$)/.test(path))response=await handleChat(cleanRequest,verifiedEnv);
   else if(/^\/api\/bingo\/games\/[^/]+\/live$/.test(path))response=await handleLiveFeed(cleanRequest,verifiedEnv);

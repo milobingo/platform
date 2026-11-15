@@ -22,7 +22,7 @@ export function standardMiloPlan(){
  const plan=defaultPlan(),rounds=[];
  for(let i=0;i<4;i++){
   const final=i===3;
-  rounds.push({id:newId('ronde'),type:'round',title:final?'Finaleronde':`Ronde ${i+1}`,goals:(final?['patroon-vol']:['patroon-hoeken','patroon-boven-onder','patroon-vol']).map(patternId=>({id:newId('doel'),patternId,prizeId:final?'prijs-hoofdprijs':'prijs-verrassing'})),interval:15,newBoard:true});
+  rounds.push({id:newId('ronde'),type:'round',callFullCardWinner:true,title:final?'Finaleronde':`Ronde ${i+1}`,goals:(final?['patroon-vol']:['patroon-hoeken','patroon-boven-onder','patroon-vol']).map(patternId=>({id:newId('doel'),patternId,prizeId:final?'prijs-hoofdprijs':'prijs-verrassing'})),interval:15,newBoard:true});
   if(!final)rounds.push({id:newId('pauze'),type:'pause',title:'Magische pauze',seconds:60,unit:'seconds'});
  }
  plan.blocks=[...plan.blocks.slice(0,3),...rounds,plan.blocks.at(-1)];
@@ -35,7 +35,7 @@ export function loadStandardMiloPlan(existing){
  plan.patterns=[...plan.patterns.filter(pattern=>!['patroon-hoeken','patroon-boven-onder','patroon-vol'].includes(pattern.id)),...standard.patterns.filter(pattern=>['patroon-hoeken','patroon-boven-onder','patroon-vol'].includes(pattern.id))];
  const replacements=stock.map((round,index)=>{
   const old=rounds[index],fallback=old?.goals?.find(goal=>plan.prizes.some(prize=>prize.id===goal.prizeId))?.prizeId||plan.prizes[0]?.id;
-  return {...round,...(old?{id:old.id,title:old.title}:{}),goals:round.goals.map((goal,i)=>({...goal,...(old?.goals?.[i]?{id:old.goals[i].id}:{}),prizeId:old?.goals?.[i]&&plan.prizes.some(prize=>prize.id===old.goals[i].prizeId)?old.goals[i].prizeId:fallback||goal.prizeId}))};
+  return {...round,...(old?{id:old.id,title:old.title,callFullCardWinner:old.callFullCardWinner===true}:{}),goals:round.goals.map((goal,i)=>({...goal,...(old?.goals?.[i]?{id:old.goals[i].id}:{}),prizeId:old?.goals?.[i]&&plan.prizes.some(prize=>prize.id===old.goals[i].prizeId)?old.goals[i].prizeId:fallback||goal.prizeId}))};
  });
  if(!plan.prizes.length)plan.prizes=standard.prizes;
  if(rounds.length===4){let index=0;plan.blocks=plan.blocks.map(block=>block.type==='round'?replacements[index++]:block);}

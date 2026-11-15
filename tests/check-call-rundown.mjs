@@ -9,9 +9,9 @@ import {CHARACTER_IDS} from '../server/characters.js';
 import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 
 const game=brandId=>makeGame({brandId,title:'Fictieve belrepetitie',date:'2027-01-01T12:00:00Z',roundCount:4},'fictional-owner','https://example.invalid');
-test('new standard Milo and premiere have two movable calls after rounds one and three, with all winner switches initially off',()=>{
+test('new standard Milo and premiere have two movable calls after rounds one and three, with all winner switches enabled for new templates',()=>{
  for(const plan of [game('milo').plan,premierePlan()]){
-  const summary=callRundownSummary(plan);assert.equal(summary.randomCount,2);assert(summary.randomReady);assert(summary.winnerRounds.every(r=>!r.enabled));
+  const summary=callRundownSummary(plan);assert.equal(summary.randomCount,2);assert(summary.randomReady);assert(summary.winnerRounds.every(r=>r.enabled));
   for(const [slot,block] of plan.blocks.filter(b=>b.type==='random-call').entries()){
    const index=plan.blocks.indexOf(block);assert.equal(plan.blocks[index-1].type,'round');assert.equal(plan.blocks.slice(0,index).filter(b=>b.type==='round').length,slot===0?1:3);
   }

@@ -40,7 +40,7 @@ test('late provider creation after cancellation is hung up and never returns SDP
 test('expired unknown orphan stays explicitly uncertain; closing an unrelated session cannot release the hold',async t=>{
  const h=await fixture(t);await h.live();await h.calls.mutate('host',call=>{call.realtimeStatus='starting';call.realtimeStart={id:crypto.randomUUID(),createdAt:Date.now()-40000,expiresAt:Date.now()-1000};return call;});
  const polled=await h.invoke('host');assert.equal(polled.call.recoveryStatus,'manual-reconciliation');assert.equal(polled.call.phase,'returning');assert.equal(polled.call.resourcesClosed,false);
- await h.step('output',undefined,{},409,{path:'/api/live-calls/realtime-stop'});await h.step('host','confirm-return',{confirmed:true,manual:true,note:'Ouder heeft actuele beeldcue en laatste bal gecontroleerd.'});await h.step('host','resume-draw',{},409);
+ await h.step('output',undefined,{},409,{path:'/api/live-calls/realtime-stop'});await h.step('host','confirm-return',{confirmed:true},409);await h.step('host','resume-draw',{},409);
  await h.step('host','reconcile',{sessionId:'live_unrelated_fixture'},409);assert.equal((await h.current()).resourcesClosed,false);await h.step('host','resume-draw',{},409);assert((await h.bingo.game(h.game.id)).data.state.drawHold);
 });
 
@@ -78,12 +78,8 @@ test('unpublished results never enter live context and active-call key replaceme
  await h.live();const request=h.req('host',{action:'remove',revision:null},{path:'/api/openai/settings',headers:{'X-Vlampie-Settings':'1'}});const response=await handleOpenAI(request,verifiedTestEnvironment(request,h.env),()=>{throw Error('No provider probe during call');});assert.equal(response.status,409);assert.equal((await response.json()).error.code,'call_cleanup_required');
 });
 
-test('120s playback at a 240s live edge and plain audible playback cannot prove return; a current cue can',async t=>{
- const h=await fixture(t);await h.live();await h.step('host','finish');const call=await h.current(),base={checkpointId:call.checkpoint.id,confirmed:true};
- await h.step('player','player-returned',{...base,playbackInfo:{ready:true,audible:true,currentTime:120,duration:240}},409);
- await h.step('player','player-returned',{...base,playbackInfo:{ready:true,audible:true}},409);
- await h.publishReturnCue();await h.step('player','player-returned',{...base,playbackInfo:{ready:true,audible:true,source:'current-cue-and-parent-confirmation',normalShowConfirmed:true,heardCurrentCue:true,cueId:call.returnState.cue.id,cueLastNumber:call.returnState.cue.lastNumber}});
- assert.equal((await h.current()).returnState.method,'player-current-cue');assert((await h.bingo.game(h.game.id)).data.state.drawHold);
+test('Milo return only requires confirmed audio cleanup, never YouTube position or a control word',async t=>{
+ const h=await fixture(t);await h.live();await h.step('host','finish');const call=await h.current();assert.equal(call.returnState.cue,undefined);await h.step('player','player-returned',{confirmed:true});assert.equal((await h.current()).returnState.method,'call-audio-closed');assert((await h.bingo.game(h.game.id)).data.state.drawHold);await h.step('host','confirm-return',{confirmed:true});await h.step('host','resume-draw');assert.equal((await h.bingo.game(h.game.id)).data.state.drawHold,null);
 });
 
 test('fresh output generation restarts sequence safely and rejects delayed old producer; output acknowledges actual rendered generation',async t=>{

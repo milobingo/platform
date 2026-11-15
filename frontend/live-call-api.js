@@ -46,7 +46,7 @@ export class LiveCallConnection{
   return epoch===this.epoch&&gameId===this.gameId?this.accept(data):data;
  }
  token(target){return this.request('/api/live-calls/token',{target});}
- preflight(profileId){return this.request('/api/livekit/preflight',{profileId});}
+ preflight(profileId,technicalContext){return this.request('/api/livekit/preflight',{profileId,...(technicalContext?{technicalContext}:{})});}
  realtime(sdp){return this.request('/api/live-calls/realtime',{sdp});}
  stopRealtime(){return this.request('/api/live-calls/realtime-stop',{});}
  heartbeat(extra={}){return this.action('heartbeat',extra);}

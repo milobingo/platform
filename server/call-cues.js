@@ -1,10 +1,23 @@
+import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 import {FIXED_SHOW_SPEECH} from '../public/bingo-speech.js';
 export const CALL_PRESENCE_MS=45000;
-export const CALL_TECHNICAL_MS=30*60*1000;
+// Technical preparation remains valid for the same show and device session.
+export const CALL_TECHNICAL_MS=30*60*1000; // Legacy export; not a Milo expiry.
 const failure=(message,code='call_cue_conflict')=>{throw Object.assign(new Error(message),{status:409,code});};
 const rounds=g=>(g.plan?.blocks||[]).filter(b=>b.type==='round');
 export const openCallCue=c=>!!c&&!['completed','skipped'].includes(c.status);
-export const winnerAnnouncementText=()=>FIXED_SHOW_SPEECH.winner;
+export const WINNER_SPEECH_VERSION='milo-winner-v2';
+const spokenName=value=>typeof value==='string'&&value.length<=60&&/^[\p{L}\p{M}][\p{L}\p{M} '\u2019-]*$/u.test(value.trim())?value.trim():null;
+const spokenPrize=value=>typeof value==='string'&&value.length<=140&&/^[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N} '\u2019€.,()!&-]*$/u.test(value.trim())?value.trim():null;
+export function winnerAnnouncementText(result){
+ const name=spokenName(result?.winner?.name),prize=spokenPrize(result?.prize?.title);
+ return result?.acknowledged===true&&name&&prize?`Jaaa, ${name}, jij hebt bingo! En jij wint ${prize}! Geef ${name} een daverend applaus!`:FIXED_SHOW_SPEECH.winner;
+}
+export function winnerCallGreeting(call){
+ const fact=call?.source==='winner'&&(call.activeContext||call.context)?.confirmedFacts?.find(f=>f.confirmed===true&&f.resultId===call.winnerResultId),name=spokenName((call.activeContext||call.context)?.callName),prize=spokenPrize(fact?.prize);
+ const questions=['Ben je er blij mee?','Wat dacht je toen je die laatste bal hoorde?','Wat wil je het liefst met je prijs doen?'],variant=[...(call?.winnerResultId||'')].reduce((total,char)=>total+char.charCodeAt(0),0)%questions.length;
+ return name&&prize?`Hoi ${name}! Jij hebt ${prize} gewonnen! ${questions[variant]}`:'Wat knap! Van harte gefeliciteerd met je bevestigde bingo en de prijs! Ben je er blij mee?';
+}
 export function canonicalRoundWinner(game,result){
  if(game.brandId!=='milo'||!result||result.type!=='bingo'||result.acknowledged!==true)return null;
  const rs=rounds(game),round=rs[result.roundIndex],goal=round?.goals?.[result.goalIndex],pattern=game.plan.patterns.find(p=>p.id===goal?.patternId),cells=new Set(pattern?.cells||[]);
@@ -16,9 +29,9 @@ export function canonicalRoundWinner(game,result){
 export function ensureWinnerCallCue(game,result,now=Date.now()){
  const canonical=canonicalRoundWinner(game,result);if(!canonical)return null;
  const cues=game.callCues??=[],id='winner:'+result.id,existing=cues.find(c=>c.id===id);if(existing)return existing;
- const cue={id,source:'winner',status:'waiting-announcement',resultId:result.id,roundId:canonical.round.id,roundIndex:canonical.roundIndex,resumeTarget:canonical.resumeTarget,createdAt:now,winner:structuredClone(result.winner),facts:{confirmed:true,resultId:result.id,round:canonical.round.title,prize:result.prize.title,type:'bingo'},fallbackText:'Een groot applaus voor onze winnaar! Milo tovert de felicitaties naar je toe.'};cues.push(cue);
+ const cue={id,source:'winner',status:'waiting-announcement',resultId:result.id,roundId:canonical.round.id,roundIndex:canonical.roundIndex,resumeTarget:canonical.resumeTarget,createdAt:now,winner:structuredClone(result.winner),facts:{confirmed:true,resultId:result.id,round:canonical.round.title,prize:result.prize.title,type:'bingo'},announcementScript:{version:WINNER_SPEECH_VERSION,resultId:result.id,text:winnerAnnouncementText(result)},announcementDeadlineAt:now+60000,fallbackText:FIXED_SHOW_SPEECH.winner};cues.push(cue);
  const roundBlockIndex=game.plan.blocks.findIndex(b=>b.id===canonical.round.id),following=game.plan.blocks[roundBlockIndex+1],randoms=game.plan.blocks.filter(b=>b.type==='random-call'),randomIndex=randoms.findIndex(b=>b.id===following?.id);
- if(following?.type==='random-call'&&randomIndex>=0&&randomIndex<2){const existingRandom=cues.find(c=>c.sourceBlockId===following.id);if(!existingRandom)cues.push({id:'random:'+following.id,source:'random',sourceBlockId:following.id,randomIndex:randomIndex+1,status:'deferred',resumeTarget:'draw',createdAt:now,reason:'De rondewinnaar gaat eerst; dit belletje wacht op de volgende geplande belpauze.',fallbackText:'Dan doet Milo het tovertrucje zelf! Tover maar gezellig met ons mee.'});else if(openCallCue(existingRandom)&&!existingRandom.callId){existingRandom.status='deferred';existingRandom.reason='De rondewinnaar gaat eerst; dit belletje wacht op de volgende geplande belpauze.';}}
+ if(following?.type==='random-call'&&randomIndex>=0&&randomIndex<2){const existingRandom=cues.find(c=>c.sourceBlockId===following.id);if(!existingRandom)cues.push({id:'random:'+following.id,source:'random',sourceBlockId:following.id,characterId:following.speakerId||game.plan.leadId||'milo',mode:'prepared',randomIndex:randomIndex+1,status:'deferred',resumeTarget:'draw',createdAt:now,reason:'De rondewinnaar gaat eerst; dit belletje wacht op de volgende geplande belpauze.',fallbackText:following.preparedCallLines?.fallback||following.fallbackText||LIVE_CALL_LINES.fallback});else if(openCallCue(existingRandom)&&!existingRandom.callId){existingRandom.status='deferred';existingRandom.reason='De rondewinnaar gaat eerst; dit belletje wacht op de volgende geplande belpauze.';}}
  return cue;
 }
 export function assertCallCueProgress(game){if(game.brandId==='milo'&&(game.callCues||[]).some(c=>c.source!=='manual'&&!(c.source==='random'&&c.status==='deferred')&&openCallCue(c)))failure('Rond eerst de geplande belkaart af of sla dit belmoment bewust over.','call_cue_open');}
@@ -27,7 +40,7 @@ export function callEntryAvailability(game,entry,now=Date.now(),{blockedAccounts
  if(blockedAccounts.has(entry.accountId)||!game.books.some(b=>b.accountId===entry.accountId&&b.profileId===entry.profileId&&b.admitted&&!b.revokedAt))return {available:false,reason:'Geen geldig deelnemend boekje.'};
  if(!game.production?.calls?.enabled||entry.callConsentEnabled!==true||!entry.callConsentAt||entry.parentConsent!==true)return {available:false,reason:'Geen actuele beltoestemming voor dit kind en deze show.'};
  if(!entry.callPresenceAt||entry.callPresenceAt>now+5000||now-entry.callPresenceAt>CALL_PRESENCE_MS)return {available:false,reason:'De familieapp van dit kind is niet bereikbaar.'};
- if(entry.micChecked!==true||entry.headphones!==true||entry.connectionChecked!==true||!entry.technicalReadyAt||now-entry.technicalReadyAt>CALL_TECHNICAL_MS)return {available:false,reason:'Microfoon, koptelefoon of verbinding moeten opnieuw worden gecontroleerd.'};
+ if(entry.micChecked!==true||entry.headphones!==true||entry.connectionChecked!==true||!entry.technicalReadyAt||entry.technicalGameId&&entry.technicalGameId!==game.id||entry.technicalContext&&entry.technicalContext!==entry.callPresenceContext)return {available:false,reason:'Microfoon, koptelefoon of verbinding moeten opnieuw worden gecontroleerd.'};
  return {available:true,reason:'Toestemming, app en apparatuur zijn klaar.'};
 }
 export function eligibleCallEntries(game,now=Date.now(),{random=false,blockedAccounts=new Set()}={}){
@@ -40,14 +53,14 @@ export function scheduleCallCue(game,body,now=Date.now()){
  if(body.blockId){const blocks=game.plan.blocks.filter(b=>b.type==='random-call'),block=blocks.find(b=>b.id===body.blockId),index=blocks.indexOf(block);if(!block||index<0||index>=2)failure('Er zijn uitsluitend twee geplande willekeurige belkansen.');
   const existing=cues.find(c=>c.sourceBlockId===block.id);if(existing)return existing;if(cues.filter(c=>c.source==='random').length>=2)failure('De twee willekeurige belkansen zijn al gebruikt.');
   if(game.plan.blocks[game.state.blockIndex]?.id!==block.id)failure('Open eerst dit geplande belmoment uit het draaiboek.');
-  const cue={id:'random:'+block.id,source:'random',sourceBlockId:block.id,randomIndex:index+1,status:'pending',resumeTarget:'draw',createdAt:now,fallbackText:'Dan doet Milo het tovertrucje zelf! Tover maar gezellig met ons mee.'};cues.push(cue);return cue;
+  const cue={id:'random:'+block.id,source:'random',sourceBlockId:block.id,characterId:block.speakerId||game.plan.leadId||'milo',mode:'prepared',randomIndex:index+1,status:'pending',resumeTarget:'draw',createdAt:now,fallbackText:block.preparedCallLines?.fallback||block.fallbackText||'Dan doet Milo het tovertrucje zelf! Tover maar gezellig met ons mee.'};cues.push(cue);return cue;
  }
  if(typeof body.entryId!=='string')failure('Kies het juiste kind voor deze belkaart.');
  if(typeof body.requestId!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(body.requestId))failure('Plan dit belmoment opnieuw vanuit de regie.');const requestCue=cues.find(c=>c.id==='manual:'+body.requestId);if(requestCue){if(requestCue.entryId!==body.entryId)failure('Dit verzoek hoort bij een ander kind.');return requestCue;}
  const existing=cues.find(c=>c.source==='manual'&&openCallCue(c));if(existing){if(existing.entryId!==body.entryId)failure('Er staat al een handmatige belkaart klaar.');return existing;}
  if(cues.length>=100)failure('Deze show heeft al veel belkaarten.');
  const entry=game.participation?.find(e=>e.id===body.entryId);if(!entry)failure('Dit kind staat niet bij deze show.');
- const cue={id:'manual:'+body.requestId,source:'manual',entryId:entry.id,status:'pending',resumeTarget:'draw',createdAt:now,characterId:body.characterId||game.plan?.leadId||'milo',mode:body.mode||'prepared',context:structuredClone(body.context||{}),fallbackText:'We gaan gezellig verder met de show!'};cues.push(cue);return cue;
+ const cue={id:'manual:'+body.requestId,source:'manual',entryId:entry.id,status:'pending',resumeTarget:'draw',createdAt:now,characterId:body.characterId||game.plan?.leadId||'milo',mode:body.mode||'prepared',context:structuredClone(body.context||{}),fallbackText:LIVE_CALL_LINES.fallback};cues.push(cue);return cue;
 }
 export function skipCallCue(game,cueId,reason,now=Date.now()){
  const cue=game.callCues?.find(c=>c.id===cueId);if(!cue)failure('Deze belkaart bestaat niet.');if(!openCallCue(cue))return cue;if(cue.callId)failure('Sluit eerst het bestaande gesprek en de terugkeer af.');cue.status='skipped';cue.reason=String(reason||'Overgeslagen door de regie.').slice(0,200);cue.completedAt=now;return cue;

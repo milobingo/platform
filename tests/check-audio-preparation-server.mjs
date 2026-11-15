@@ -119,6 +119,10 @@ test('a verified script finishing near its deadline retains its separate bounded
  // have elapsed. Success still requires an actual session.closed event.
  t.mock.timers.tick(15);emit({type:'session.closed'});const audio=await pending;assert.equal(new TextDecoder().decode(audio.slice(0,4)),'RIFF');assert(audio.length>48000);assert.equal(closeRequests,1);
 });
+test('a clean provider closure with a correct but cut-off Dutch ending is retryable truncation, never an accepted clip',async()=>{
+ const listeners=new Map(),emit=data=>queueMicrotask(()=>listeners.get('message')?.({data:JSON.stringify(data)})),socket={webSocket:{accept(){},addEventListener(type,fn){listeners.set(type,fn);},send(raw){if(JSON.parse(raw).type!=='session.start')return;emit({type:'session.started'});emit({type:'session.output_transcript.delta',delta:'Bernhard vij'});emit({type:'session.closed'});},close(){}}};
+ await assert.rejects(synthesizeLiveScript('synthetic-key',CHARACTERS.milo,'Bernhard vijftien!',new Request(origin),async()=>socket),error=>error.status===504&&error.code==='speech_truncated'&&error.phase==='transcript');
+});
 
 for(const route of ['speech','test'])test(`${route}: only an explicit temporary rate limit permits retries, never quota or credentials`,async t=>{
  const h=await fixture(t),body=route==='speech'?h.speech():{};

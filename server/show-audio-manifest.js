@@ -33,7 +33,7 @@ export function showAudioScripts(game){
    for(const goal of block.goals){const pattern=plan.patterns.find(item=>item.id===goal.patternId),prize=plan.prizes.find(item=>item.id===goal.prizeId);if(pattern)add(roundSpeech(block.title,pattern.title),speaker,'round',goal.id);if(prize)add(prizeSpeech(prize.title),speaker,'prize',goal.id);}
   }else if(block.type==='explanation'&&block.explanationSteps?.length){for(const [index,step]of block.explanationSteps.entries())add(step.text,speaker,'explanation',block.id+'-'+index);}
   else if(block.type!=='show')add(block.text,speaker,'plan',block.id);
-  if(block.type==='random-call')add(block.fallbackText,speaker,'call-fallback',block.id);
+  if(block.type==='random-call'){add(block.fallbackText,speaker,'call-fallback',block.id);for(const [key,text] of Object.entries(block.preparedCallLines||{}))add(text,speaker,'live-call-block',block.id+':'+key);}
   if(block.type==='guest')for(const [index,turn] of (block.dialogue||[]).entries())add(turn.text,turn.speakerId||speaker,'dialogue',block.id+'-'+index);
  }
  for(const cue of plan.manualCues||[])add(cue.text,cue.speakerId||lead,'manual',cue.id);
@@ -66,4 +66,4 @@ export async function buildShowAudioManifest(env,owner,gameId,{includeReadiness=
  const ready=items.filter(item=>item.ready).length;
  return {version:1,gameId:game.id,policyVersion:SPEECH_POLICY_VERSION,fingerprint,items,total:items.length,ready,complete:includeReadiness&&ready===items.length};
 }
-export function scopedShowAudioManifest(manifest){return {version:manifest.version,gameId:manifest.gameId,policyVersion:manifest.policyVersion,fingerprint:manifest.fingerprint,total:manifest.total,ready:manifest.ready,complete:manifest.complete,items:manifest.items.map(({key,clip,durationMs,ready,characterId,sources})=>{const call=sources.find(source=>source.kind==='live-call');return {key,clip,durationMs,ready,...(call?{callKey:call.id,characterId}: {})};})};}
+export function scopedShowAudioManifest(manifest){return {version:manifest.version,gameId:manifest.gameId,policyVersion:manifest.policyVersion,fingerprint:manifest.fingerprint,total:manifest.total,ready:manifest.ready,complete:manifest.complete,items:manifest.items.map(({key,clip,durationMs,ready,characterId,sources})=>{const call=sources.find(source=>source.kind==='live-call'),callBindings=sources.filter(source=>source.kind==='live-call-block').map(source=>{const split=source.id.lastIndexOf(':');return {callBlockId:source.id.slice(0,split),callKey:source.id.slice(split+1),characterId};}),number=sources.find(source=>source.kind==='number'&&/^ball-\d+$/.test(source.id||''));return {key,clip,durationMs,ready,...(callBindings.length?{callBindings}:{}),...(number?{officialNumber:Number(number.id.slice(5))}:{}),...(call?{callKey:call.id,characterId}: {})};})};}

@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:296132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/show-design.spec.mjs:40:1 › three durable proposals, manual edit, scene rewrite, reload, variant, new set and ordinary editable import without audio; synthetic provider (13.1s)
+  ✓  2 tests/browser/show-design.spec.mjs:47:1 › partial failure keeps two complete candidates usable and retry generates only the failed proposal (3.4s)
+  ✓  3 tests/browser/show-design.spec.mjs:48:1 › selected existing scene changes only after explicit diff confirmation and preserves game structure (2.9s)
+  ✓  4 tests/browser/show-design.spec.mjs:49:1 › mobile comparison and full script remain within the viewport (2.0s)
+
+  4 passed (22.7s)

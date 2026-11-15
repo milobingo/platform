@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {OutputBridge} from '../public/output-bridge.js';
 import {obsOutputState} from '../server/node-obs-access.js';
+import {bingoNumberText,SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
 
 const GAME='11111111-1111-4111-8111-111111111111',TOKEN='a'.repeat(43)+'.'+'b'.repeat(43),FP='c'.repeat(64),NEXT='d'.repeat(64);
 const key=n=>n.toString(16).padStart(64,'0');
@@ -40,6 +41,16 @@ test('OBS loads all 75 fixed clips through its scoped capability before any comm
 
 test('ordinary authenticated output uses the same manifest contract through POST and never receives an OBS token',async t=>{
  const h=fixture(t,{obs:false});await h.load();assert.equal(h.requests[0].path,'/api/openai/show-audio');assert.equal(h.requests[0].method,'POST');assert.deepEqual(h.requests[0].body,{gameId:GAME});assert(h.requests.every(request=>new Headers(request.options.headers).get('X-Milo-OBS-Token')===null));assert.equal(h.bridge.outputAudioPreparation.ready,2);
+});
+
+test('a reloaded output never restarts an already playing or paused ordinary cue; a new prepared cue still plays',async t=>{
+ const h=fixture(t);await h.load();const before=h.requests.length;
+ for(const phase of ['play','pause']){
+  await h.bridge.applyVoice({...h.command(key(90),FP,'previous-'+phase),preparedOnly:false,phase});
+  assert.equal(h.bridge.ack.status,'error');assert.match(h.bridge.ack.error,/niet opnieuw gestart/);
+ }
+ assert.equal(h.requests.length,before,'an old command must not even fetch or decode a clip');assert.equal(h.decodes.length,0);assert.equal(h.sources.length,0);
+ const command=h.command(key(1),FP,'explicit-new-cue');await h.bridge.applyVoice(command);await h.bridge.applyVoice({...command,phase:'play'});assert.equal(h.sources.filter(source=>source.started).length,1);assert.equal(h.bridge.ack.status,'playing');
 });
 
 test('a missing prepared-only clip never falls back to a runtime GET',async t=>{
@@ -113,4 +124,27 @@ test('producer readiness cannot trust an expired output lease with an old comple
  const h=fixture(t);Object.assign(h.bridge,{isOutput:false,routing:true,getGame:()=>({id:GAME})});h.bridge.latest=h.packet(FP,{output:{id:h.bridge.id,until:Date.now()-1,audioReady:true,generation:1,seq:1,audioPreparation:{fingerprint:FP,total:2,ready:2}}});
  let publishes=0;h.bridge.publish=async()=>{publishes++;h.bridge.latest=h.packet(FP,{output:{id:h.bridge.id,until:Date.now()+7000,audioReady:true,generation:1,seq:1,audioPreparation:{fingerprint:FP,total:2,ready:2}}});};
  await h.bridge.ensurePreparedAudio(FP,{timeoutMs:1000});assert(publishes>0,'a fresh output lease must be observed before accepting readiness');
+});
+
+test('an official number is bound to its exact clip and server-start reservation; reloading cannot replay it',async t=>{
+ const manifest=list([key(1)]);manifest.items[0].officialNumber=1;const h=fixture(t,{manifest}),ball={gameId:GAME,roundIndex:0,epoch:'round-epoch',commitId:'immutable-ball-one',index:1,number:1,at:Date.now(),policyVersion:SPEECH_POLICY_VERSION},state=h.packet(FP,{snapshot:{...h.packet().snapshot,lastNumber:1,drawn:[1],officialBall:ball}});let starts=0;
+ h.respond(request=>request.path.endsWith('/show-audio')?Response.json(manifest):request.path.includes('/clips/')?audio(1):Response.json({state,audioStart:{allowed:starts++===0,voiceId:request.body?.voiceId},serverTime:Date.now()}));await h.load(state);
+ const command={...h.command(),text:bingoNumberText(1),officialBall:ball};await h.bridge.applyVoice(command);await h.bridge.applyVoice({...command,phase:'play'});assert.equal(h.sources.filter(source=>source.started).length,1);assert.equal(starts,1);
+ h.bridge.cancelOutputVoice();h.bridge.voiceId=null;h.bridge.ack=null;await h.bridge.applyVoice(command);await h.bridge.applyVoice({...command,phase:'play'});assert.equal(h.sources.filter(source=>source.started).length,1);assert.equal(h.bridge.ack.status,'error');assert.match(h.bridge.ack.error,/niet opnieuw/);
+});
+test('a wrong-number clip and a late confirmed start cannot speak another ball or resurrect cancelled speech',async t=>{
+ const manifest=list([key(1),key(2)]);manifest.items[0].officialNumber=1;manifest.items[1].officialNumber=2;const h=fixture(t,{manifest}),ball={gameId:GAME,roundIndex:0,epoch:'round-epoch',commitId:'immutable-ball-one',index:1,number:1,at:Date.now(),policyVersion:SPEECH_POLICY_VERSION},state=h.packet(FP,{snapshot:{...h.packet().snapshot,lastNumber:1,drawn:[1],officialBall:ball}});await h.load(state);
+ const wrong={...h.command(key(2)),text:bingoNumberText(1),officialBall:ball};await h.bridge.applyVoice(wrong);assert.equal(h.decodes.length,0);assert.equal(h.sources.length,0);assert.equal(h.bridge.ack.status,'error');
+ const command={...h.command(key(1),FP,'valid-number'),text:bingoNumberText(1),officialBall:ball},held=deferred();let entered=false;h.respond(async()=>{entered=true;await held.promise;return Response.json({state,audioStart:{allowed:true,voiceId:command.id},serverTime:Date.now()});});await h.bridge.applyVoice(command);const pending=h.bridge.applyVoice({...command,phase:'play'});await until(()=>entered);h.bridge.cancelOutputVoice();held.resolve();await pending;assert.equal(h.sources.length,0);assert(!h.events.some(event=>event.kind==='speech-start'));
+});
+test('deduplicated custom call fragments retain every block binding and cannot borrow a previous call script',async t=>{
+ const manifest=list([key(1)]);manifest.items[0].callBindings=[{callBlockId:'random-one',callKey:'greeting',characterId:'milo'},{callBlockId:'random-three',callKey:'greeting',characterId:'milo'}];const h=fixture(t,{manifest});await h.load();let call={id:'live-one',phase:'live',mode:'prepared',characterId:'milo',sourceBlockId:'random-one',preparedLines:{greeting:'Hallo, toverassistent! Welke ster kies jij?'}};h.bridge.getLiveCall=()=>call;
+ assert.equal(h.bridge.preparedCallClip('greeting','milo','live-one').text,call.preparedLines.greeting);assert.equal(h.bridge.preparedCallClips.size,2);
+ call={...call,id:'live-three',sourceBlockId:'random-three'};assert.equal(h.bridge.preparedCallClip('greeting','milo','live-three').text,call.preparedLines.greeting);assert.throws(()=>h.bridge.preparedCallClip('greeting','milo','live-one'),/niet beschikbaar/);
+ call={...call,sourceBlockId:'unprepared-block'};assert.throws(()=>h.bridge.preparedCallClip('greeting','milo','live-three'),/niet beschikbaar/);
+});
+test('presentation recovery accepts only a fresh stop acknowledgement for its exact published utterance',async t=>{
+ const h=fixture(t),command={...h.command(),phase:'stop'};await h.bridge.applyVoice(command);assert.equal(h.bridge.ack.status,'stopped');
+ Object.assign(h.bridge,{isOutput:false,routing:true,command});let publishes=0;h.bridge.publish=async()=>{publishes++;h.bridge.latest=h.packet(FP,{output:{...h.packet().output,voiceAck:{id:command.id,status:'stopped'}}});};assert.equal(await h.bridge.ensureVoiceStopped(command.id),true);assert.equal(publishes,1);
+ h.bridge.publish=async()=>{h.advance(10);h.bridge.latest=h.packet(FP,{output:{...h.packet().output,voiceAck:{id:'a-different-voice',status:'stopped'}}});};await assert.rejects(h.bridge.ensureVoiceStopped(command.id,{timeoutMs:5}),/stoppen van de stem nog niet bevestigd/);
 });

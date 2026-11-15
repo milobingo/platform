@@ -10,6 +10,7 @@ import {CAMERA_PRESETS,CameraRig,resolveCameraShot,boundCamera} from './mf-camer
 import {studioTourAt} from './milo-studio-tour.js';
 import {MAGIC_CUES} from './magic-cues.js';
 import {drawExtraMagic,EXTRA_MAGIC_IDS} from './milo-magic-effects.js';
+import {PresenterMouthEnvelope} from './presenter-mouth.js';
 export {CAMERA_PRESETS} from './mf-camera.js';
 
 const W=1920,H=1080,TAU=Math.PI*2;
@@ -85,7 +86,7 @@ export function mountStudio(container,options={}){
       let talk=null;try{talk=await loadImage(ASSETS+id+'-talk.png');}catch{}
       if(disposed)return;
       const rig=(id==='milo'?createMiloPuppet:createCutoutRig)(img,{id,talkImage:talk,profile:manifest[id]?.rig||manifest[id]||{}});
-      actors.set(id,{rig,image:img,talk,phase:Object.keys(LABELS).indexOf(id)*1.37});actorErrors.delete(id);
+      actors.set(id,{rig,image:img,talk,mouthEnvelope:new PresenterMouthEnvelope(),phase:Object.keys(LABELS).indexOf(id)*1.37});actorErrors.delete(id);
       options.onAssetReady?.(id,{talking:!!talk,stats:rig.stats});
     }catch(error){
       if(id==='milo')try{const [img,talk]=await Promise.all([loadImage('/assets/hosts/milo-mascot.png'),loadImage('/assets/hosts/milo-talking.png')]);if(!disposed)actors.set(id,{rig:createCutoutRig(img,{id,talkImage:talk}),image:img,talk,phase:0});}catch{actorErrors.add(id);}
@@ -184,7 +185,8 @@ export function mountStudio(container,options={}){
     const t=reducedMotion()||((state.idleMotion===false||settings.idleMotion===false)&&motion==='idle')?0:actingTime;
     const motionBlend=walking?walking.blend:movement?motionEnvelope(movement.elapsed,movement.duration):cue&&id===state.hostId?motionEnvelope(cue.elapsed,cue.duration):1;
     const energy=Number.isFinite(settings.gestureEnergy)?clamp(settings.gestureEnergy,0,100)/70:Number.isFinite(state.gestureEnergy)?(state.gestureEnergy>2?clamp(state.gestureEnergy,0,100)/70:state.gestureEnergy):1;
-    const mouth=state.lipSync===false||settings.lipSync===false?0:typeof state.mouth==='number'?state.mouth:speaking?clamp(.15+Math.sin(liveTime*15.5)*.31+Math.sin(liveTime*24.2)*.24,.03,1):0;
+    const enabled=state.lipSync!==false&&settings.lipSync!==false,measured=typeof state.mouth==='number'?state.mouth:typeof state.mouth?.open==='number'?state.mouth.open:state.voiceMode==='browser'&&speaking?clamp(.15+Math.sin(liveTime*15.5)*.31+Math.sin(liveTime*24.2)*.24,.03,1):0;
+    const mouth=a.mouthEnvelope.read(measured,{speaking:!!speaking&&(!state.paused||state.speechActive===true),enabled,delta:renderDelta});
     const blinkPhase=(liveTime+1.3)%5.1,blink=id==='milo'?miloBlinkAt(liveTime):blinkPhase>.08&&blinkPhase<.28?Math.sin((blinkPhase-.08)/.20*Math.PI)**1.1:0;
     const speakerSide=state.speaking&&!speaking?(state.speakerId===state.cohostId?1:state.cohostId&&id===state.cohostId?-1:state.speakerId===state.guestId?1:0):0;
     const attention=id==='milo'&&!((state.idleMotion===false||settings.idleMotion===false)&&motion==='idle')?miloAttentionAt({speaking,listening:motion==='listen'||!!state.liveCall,speakerSide,guestSide:state.guestId&&id!==state.guestId?1:0,numberAge:performerTime-numberReactionAt}):{};

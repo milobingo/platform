@@ -1,4 +1,4 @@
-import {openCallCue,winnerAnnouncementText} from '../server/call-cues.js';
+import {openCallCue,winnerAnnouncementText,WINNER_SPEECH_VERSION} from '../server/call-cues.js';
 import {LIVE_CALL_LINES} from '../public/live-call-script.js';
 
 // The durable queue lives in the existing game document. This adapter only
@@ -8,31 +8,36 @@ export class ShowCallCues{
  get enabled(){return this.engine.game.brandId==='milo';}
  get open(){return this.enabled?(this.engine.game.callCues||[]).filter(openCallCue):[];}
  get held(){return this.open.some(c=>c.source!=='manual'&&c.status!=='deferred');}
- safe(){const e=this.engine,g=e.game;return g.status==='running'&&!g.cancelledAt&&!g.state.pending&&!e.director.pending&&e.director.flow?.kind!=='draw'&&g.state.window?.status!=='open'&&!g.state.resultId&&e.voicePhase==='idle'&&!e.magic&&!e.showCues?.holding&&!e.showRuntime?.holding;}
+ safe(){const e=this.engine,g=e.game;return g.status==='running'&&!g.cancelledAt&&!e.presentationReplay&&!g.state.pending&&!e.director.pending&&e.director.flow?.kind!=='draw'&&g.state.window?.status!=='open'&&!g.state.resultId&&e.voicePhase==='idle'&&!e.magic&&!e.showCues?.holding&&!e.showRuntime?.holding;}
  beforeBlock(index){const e=this.engine;if(!this.enabled)return true;const winner=this.open.find(c=>c.source==='winner');if(winner)return false;const pending=this.open.find(c=>c.source==='random'&&c.status!=='deferred');if(pending)return false;return true;}
  async entered(block){if(!this.enabled||block?.type!=='random-call')return;await this.engine.liveCalls?.schedule({blockId:block.id});this.engine.syncGame();}
  announce(result){const e=this.engine;if(!result?.acknowledged||!this.enabled)return false;
   const cue=(e.game.callCues||[]).find(c=>c.resultId===result.id&&c.status==='waiting-announcement');if(!cue)return false;
-  this.announcement={gameId:e.game.id,resultId:result.id,startedAt:Date.now()};
+  this.announcement={gameId:e.game.id,resultId:result.id,startedAt:Date.now(),text:cue.announcementScript?.text||winnerAnnouncementText(result),version:cue.announcementScript?.version||WINNER_SPEECH_VERSION};
   e.director.cancel(false);e.director.lastWinner=result.winner?.name||'';
   e.director.configure({round:e.game.plan.blocks.find(b=>b.id===result.roundId)?.title||'',prize:result.prize?.title||''});
   e.director.setScene('winner','portrait',true);e.motion='cheer';
-  e.speak(winnerAnnouncementText(result),e.hostId,e.voiceMode,false,{preparedOnly:!e.demo});
+  // The name and prize exist only after the immutable result. This is the one
+  // deliberate dynamic utterance; fixed scripts remain fully prepared.
+  e.speak(this.announcement.text,e.hostId,e.voiceMode,false,{preparedOnly:false});
   e.audio.cue('win');return true;
  }
+ retryAnnouncement(cueId){const e=this.engine,cue=(e.game.callCues||[]).find(item=>item.id===cueId&&item.status==='waiting-announcement');if(!cue)throw Error('Deze winnaaraankondiging staat niet meer open.');if(e.game.state.window?.status==='open'||e.game.state.resultId||e.game.state.pending||e.liveCalls?.active)throw Error('Rond eerst de officiële spelcontrole of het gesprek af.');e.stopSpeech();this.announcement=null;return this.announce(e.game.results.find(result=>result.id===cue.resultId));}
  async acknowledge(cue){const e=this.engine,announcement=this.announcement;if(!announcement||announcement.gameId!==e.game.id||announcement.resultId!==cue.resultId)return false;
   const voice=e.bridge.command,ack=e.bridge.latest?.output?.voiceAck;
   if(e.demo){if(e.voicePhase!=='idle')return false;cue.status='pending';cue.announcement={announcedAt:Date.now(),simulated:true};return true;}
-  if(!voice||voice.text!==winnerAnnouncementText()||ack?.id!==voice.id||ack.status!=='ended')return false;
-  const response=await e.liveCalls.connection.action('cue-result-announced',{resultId:cue.resultId,voiceId:voice.id});
+  if(!voice||voice.text!==announcement.text||ack?.id!==voice.id||ack.status!=='ended')return false;
+  const response=await e.liveCalls.connection.action('cue-result-announced',{resultId:cue.resultId,voiceId:voice.id,scriptVersion:announcement.version});
   e.liveCalls.acceptResponse(response);await e.liveCalls.refreshGame();this.announcement=null;return true;
  }
  fallback(value){const e=this.engine,key=e.game.id+':'+(value.cueId||value.id);if(this.fallbacks.has(key)||e.voicePhase!=='idle'||e.liveCalls?.onAir)return;
-  this.fallbacks.add(key);e.speak(LIVE_CALL_LINES.fallback,e.hostId,e.voiceMode,false,{preparedOnly:!e.demo});
+  const cue=(e.game.callCues||[]).find(cue=>cue.id===(value.cueId||value.id)),text=value.preparedLines?.fallback||cue?.fallbackText||value.fallbackText||LIVE_CALL_LINES.fallback,speaker=value.characterId||cue?.characterId||e.hostId;
+  this.fallbacks.add(key);e.speak(text,speaker,e.voiceMode,false,{preparedOnly:!e.demo});
  }
  async process(){const e=this.engine;if(!this.enabled||this.processing||e.disposed||e.isOutput||!e.runner.active||!e.liveCalls||Date.now()<(this.retryAt||0))return;
   // Only the director with the actual program route can automatically invite.
   if(!e.demo&&(!e.bridge.routing||!e.bridge.connected))return;
+  if(this.announcement&&!this.announcement.failed&&Date.now()-this.announcement.startedAt>60000){this.announcement.failed=true;e.stopSpeech();e.fail('De winnaaraankondiging is niet volledig bevestigd. Kies Opnieuw afspelen of Belmoment overslaan op de belkaart.');}
   if(!this.safe())return;this.processing=true;
   try{
    const active=e.liveCalls.call;
@@ -43,6 +48,7 @@ export class ShowCallCues{
    const winner=this.open.find(c=>c.source==='winner'),block=e.runner.block;
    let cue=winner||this.open.find(c=>c.source==='random'&&(c.status!=='deferred'||block?.id!==c.sourceBlockId&&['pause','transition','random-call'].includes(block?.type)&&e.game.plan.blocks.findIndex(b=>b.id===block.id)>e.game.plan.blocks.findIndex(b=>b.id===c.sourceBlockId)))||this.open.find(c=>c.source==='manual'&&(['pause','transition','random-call'].includes(block?.type)||block?.type==='round'&&e.game.state.goalWon));
    if(cue?.status==='waiting-announcement'){
+    if(this.announcement?.resultId===cue.resultId&&(e.failedSpeech||Date.now()-this.announcement.startedAt>60000)){if(!this.announcement.failed){this.announcement.failed=true;e.stopSpeech();e.fail('De officiële winnaaraankondiging is niet volledig bevestigd. Kies Opnieuw afspelen of Belmoment overslaan op de belkaart.');}return;}
     if(!this.announcement||this.announcement.gameId!==e.game.id||this.announcement.resultId!==cue.resultId)this.announce(e.game.results.find(r=>r.id===cue.resultId));
     else await this.acknowledge(cue);
     return;

@@ -86,9 +86,10 @@ export async function verifyObsAccess(request,env){
  return {...access,ownerId:row.owner_id,state};
 }
 
-const visualFields=['production','gameId','gameTitle','cancelledAt','audioPreparation','backgroundMusic','gameStatus','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
+const visualFields=['production','gameId','gameTitle','cancelledAt','audioPreparation','backgroundMusic','gameStatus','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','officialBall','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
 const showFields=['brandId','scene','liveCall','sceneRevision','transition','transitionMs','rules','rulePage','roundPatterns','goalIndex','patternPage','question','age','duration','flow','paused','preview','title','round','pattern','prize','pauseMinutes','countdown','number','drawnCount','claim','winner','lookAt','audience','reducedMotion','planKind','planTitle','patternCells','patternFreeCenter','patternVariant','prizeImage','prizeDescription','callSeconds','callText','externalHold','drawBlocked','kind','endAfter'];
 const visualCharacter=character=>pick(character,['id','name','color','asset','gestureEnergy','idleMotion','lipSync','defaultAnimation']);
+const officialBallView=ball=>pick(ball,['gameId','roundIndex','epoch','commitId','index','number','at','policyVersion']);
 const patternView=pattern=>pick(pattern,['id','title','cells','freeCenter','variant']);
 const entrantView=entrant=>pick(entrant,['bookId','name','ticket']);
 function showView(show){
@@ -106,7 +107,7 @@ export function obsOutputState(state,access){
  if(visible.output?.audioPreparation)visible.output.audioPreparation=pick(visible.output.audioPreparation,['fingerprint','ready','total','error']);
  if(!state||state.producer?.gameId!==access.gameId||state.snapshot?.gameId!==access.gameId)return {...visible,producer:null,output:null,seq:0,publishedAt:null};
  if(state.cancelledAt&&state.cancelledGameId===access.gameId){visible.cancelledAt=state.cancelledAt;visible.cancelledGameId=access.gameId;}
- visible.snapshot=pick(state.snapshot,visualFields);if(state.snapshot.pattern)visible.snapshot.pattern=patternView(state.snapshot.pattern);
+ visible.snapshot=pick(state.snapshot,visualFields);if(state.snapshot.officialBall)visible.snapshot.officialBall=officialBallView(state.snapshot.officialBall);if(state.snapshot.pattern)visible.snapshot.pattern=patternView(state.snapshot.pattern);
  if(state.snapshot.backgroundMusic!==undefined)visible.snapshot.backgroundMusic=state.snapshot.backgroundMusic===true;
  if(state.snapshot.gameStatus!==undefined)visible.snapshot.gameStatus=['draft','running','finished'].includes(state.snapshot.gameStatus)?state.snapshot.gameStatus:null;
  if(state.snapshot.audioPreparation)visible.snapshot.audioPreparation=pick(state.snapshot.audioPreparation,['fingerprint','total','complete']);
@@ -116,10 +117,10 @@ export function obsOutputState(state,access){
  if(Array.isArray(state.snapshot.characterSettings))visible.snapshot.characterSettings=state.snapshot.characterSettings.map(visualCharacter);
  else if(state.snapshot.characterSettings&&typeof state.snapshot.characterSettings==='object')visible.snapshot.characterSettings=state.snapshot.characterSettings.id?visualCharacter(state.snapshot.characterSettings):Object.fromEntries(Object.entries(state.snapshot.characterSettings).map(([id,value])=>[id,visualCharacter(value)]));
  visible.show=showView(state.show);if(state.snapshot.show)visible.snapshot.show=showView(state.snapshot.show);
- visible.events=(state.events||[]).map(event=>pick(event,['id','kind','at','cue']));visible.voice=pick(state.voice,['id','clip','text','duration','phase']);if(visible.voice){visible.voice.preparedOnly=state.voice.preparedOnly===true;if(typeof state.voice.preparedFingerprint==='string'&&/^[a-f0-9]{64}$/.test(state.voice.preparedFingerprint))visible.voice.preparedFingerprint=state.voice.preparedFingerprint;}visible.routing=!!state.routing;return visible;
+ visible.events=(state.events||[]).map(event=>pick(event,['id','kind','at','cue']));visible.voice=pick(state.voice,['id','clip','text','duration','phase']);if(visible.voice){if(state.voice.bingoWindow)visible.voice.bingoWindow=pick(state.voice.bingoWindow,['gameId','id','policyVersion']);if(state.voice.officialBall)visible.voice.officialBall=officialBallView(state.voice.officialBall);visible.voice.preparedOnly=state.voice.preparedOnly===true;if(typeof state.voice.preparedFingerprint==='string'&&/^[a-f0-9]{64}$/.test(state.voice.preparedFingerprint))visible.voice.preparedFingerprint=state.voice.preparedFingerprint;}visible.routing=!!state.routing;return visible;
 }
 export function obsLiveCall(call){
- if(!call)return null;const visible=pick(call,['id','version','transport','gameId','brandId','characterId','characterName','speechEngine','phase','createdAt','updatedAt','liveUntil','muted','aiMuted','drawHeld','realtimeStatus','realtimeStopped','voiceLevel','simulated','participantIdentity','guestIdentity','outputIdentity','hostIdentity','resourcesClosed','mode','source','cueId','resumeTarget','magicReadyAt','outroRequestedAt']);
+ if(!call)return null;const visible=pick(call,['id','version','transport','gameId','brandId','characterId','characterName','speechEngine','phase','createdAt','updatedAt','liveUntil','muted','aiMuted','drawHeld','realtimeStatus','realtimeStopped','voiceLevel','simulated','participantIdentity','guestIdentity','outputIdentity','hostIdentity','resourcesClosed','mode','source','cueId','resumeTarget','magicReadyAt','outroRequestedAt','sourceBlockId','preparedLines']);
  if(call.magic){visible.magic=pick(call.magic,['id','choice','chosenAt','effectId','playedAt']);if(call.magic.effectClaim)visible.magic.effectClaim=pick(call.magic.effectClaim,['id','outputId','claimedAt']);}
  visible.context={callName:call.context?.callName||call.name||'Deelnemer'};visible.media=Object.fromEntries(['player','output'].filter(role=>call.media?.[role]).map(role=>[role,pick(call.media[role],['connected','micReady','audioReady'])]));return visible;
 }
@@ -140,7 +141,7 @@ export async function handleObsRequest(request,env,{providerFetch=fetch}={}){
   const native={...env,AUTH_IDENTITY:{user:access.ownerId,admin:false,role:'output',method:'obs'},OBS_ACCESS:access,OPENAI_ENV_ONLY:true,NATIVE_PROVIDER_SETTINGS:true};
   if(path==='/api/obs/output'){
    const body=request.method==='POST'?await readBody(request):undefined;
-   if(body&&body.action!=='output-heartbeat')throw problem('Een OBS-link kan geen uitzendbeeld of regie publiceren.');
+   if(body&&!['output-heartbeat','output-audio-start'].includes(body.action))throw problem('Een OBS-link kan geen uitzendbeeld of regie publiceren.');
    const response=await handleOutput(rewritten(request,'/api/output',body),native),data=await response.json();
    access=await verifyObsAccess(request,env);if(data.state)data.state=obsOutputState(await currentOutputState(env,access.ownerId,data.state),access);return json(data,response.status);
   }
@@ -161,7 +162,7 @@ export async function handleObsRequest(request,env,{providerFetch=fetch}={}){
   if(['/api/obs/live-calls','/api/obs/live-calls/token','/api/obs/live-calls/realtime','/api/obs/live-calls/realtime-stop'].includes(path)){
    const body=request.method==='POST'?await readBody(request):undefined,role=body?.role||url.searchParams.get('role'),gameId=body?.gameId||url.searchParams.get('gameId');
    if(role!=='output'||gameId!==access.gameId)throw problem('Deze OBS-link hoort alleen bij het uitzendvenster van de gekozen show.');
-   if(request.method==='GET'&&path!=='/api/obs/live-calls'||request.method==='POST'&&path==='/api/obs/live-calls'&&!['heartbeat','fail','magic-ready','magic-claim','magic-played','finish'].includes(body.action)||path.endsWith('/token')&&body?.target!=='live')throw problem('Deze belactie is niet beschikbaar voor OBS.');
+   if(request.method==='GET'&&path!=='/api/obs/live-calls'||request.method==='POST'&&path==='/api/obs/live-calls'&&!['heartbeat','fail','magic-ready','magic-claim','magic-played','finish','winner-greeting','prepared-fallback'].includes(body.action)||path.endsWith('/token')&&body?.target!=='live')throw problem('Deze belactie is niet beschikbaar voor OBS.');
    const routed=rewritten(request,path.replace('/api/obs/','/api/'),body);
    const run=async(locked,fetcher)=>{if(request.signal.aborted)throw problem('De OBS-aanvraag is geannuleerd.',408,'cancelled');access=await verifyObsAccess(request,env);return handleLiveCalls(routed,{...locked,OBS_ACCESS:access,OBS_REVALIDATE:()=>verifyObsAccess(request,env),PROVIDER_CLEANUP_FETCH:providerFetch},fetcher);};
    let response;

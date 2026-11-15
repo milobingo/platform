@@ -11,6 +11,7 @@ import {gameCapacity} from '../server/game-capacity.js';
 import {BingoStore} from '../server/bingo-store.js';
 import {createSqliteDatabase} from '../server/node-storage.js';
 import {handleBingo} from '../server/bingo.js';
+import {STANDARD_MILO_PROFILE} from '../server/standard-show.js';
 
 function snapshot({brand='milo'}={}){
  const game=makeGame({brandId:brand,title:'Startcontrole',date:'2027-01-01T18:00:00Z',roundCount:1},'host','https://studio.example');
@@ -182,5 +183,56 @@ test('U03: fixed Program/Preview transport keeps pause and explicit voice/guest 
   const transport=h.document.querySelector('.rd-transport');assert(transport);const button=label=>h.document.querySelector(`button[aria-label="${label}"]`);
   assert.equal(button('Start show').disabled,true);h.click(button('Start show'));assert.equal(starts,0);
   h.click(button('Pauzeren'));h.click(button('Stem dempen'));h.click(button('Gast dempen'));await new Promise(resolve=>setTimeout(resolve,0));assert.equal(paused,1);assert.equal(stopped,1);assert.deepEqual(actions,[{action:'ai-mute',muted:true},{action:'mute',muted:true}]);assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('Milo regie explains an explicitly waiting showmoment and keeps the next-cue action deliberate',async()=>{
+ const h=await ui();try{
+  const s=snapshot(),operator={calls:{held:false},showCallCues:{held:false}};let advances=0;operator.nextCue=()=>advances++;
+  s.game.status='running';s.game.settings.rulesProfile=STANDARD_MILO_PROFILE;s.runner={active:true,index:s.game.plan.blocks.findIndex(block=>block.type!=='round'),phase:'waiting',kind:'call'};s.drawClock={blocked:true,remainingMs:15000};s.game.callCues=[{id:'planned-manual',source:'manual',status:'planned',name:'Fictief kindje'}];const before=structuredClone(s.game);
+  h.window.renderTest('regie',s,operator);await tick();
+  const heading=h.document.querySelector('.mf-live-heading>div>span:last-child'),timer=h.document.querySelector('.mf-live-countdown');assert.equal(heading.textContent,'Wacht op Volgende cue');assert.equal(timer.querySelector('small').textContent,'Wacht op Volgende cue');assert.equal(timer.textContent.includes('15 seconden'),false);assert.equal(timer.querySelector('.mf-live-clock-track'),null);assert.equal(advances,0);
+  const next=h.document.querySelector('.rd-transport button[aria-label="Volgende cue"]');assert(next);assert.equal(next.disabled,false);h.click(next);await tick();assert.equal(advances,1);assert.deepEqual(s.game,before);assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('Milo waiting labels retain bingo-window, result, call-hold and manual-pause priorities',async()=>{
+ const h=await ui();try{
+  const s=snapshot(),operator={calls:{held:false},showCallCues:{held:false}};s.game.status='running';s.game.settings.rulesProfile=STANDARD_MILO_PROFILE;s.runner={active:true,index:s.game.plan.blocks.findIndex(block=>block.type!=='round'),phase:'waiting'};s.drawClock={blocked:true,remainingMs:15000};
+  for(const [held,header,detail] of [
+   ['window','BINGO-meldvenster','BINGO-meldvenster'],
+   ['result','Uitslag / minigame','Uitslag / minigame'],
+   ['draw-hold','Trekking geblokkeerd · belmoment','Belblokkade · bekijk de belkaart'],
+   ['call-cue','Belmoment · bekijk de belkaart','Belmoment · bekijk de belkaart'],
+   ['call-active','Belmoment · bekijk de belkaart','Belmoment · bekijk de belkaart'],
+   ['paused','Show gepauzeerd','Gepauzeerd']
+  ]){
+   s.game.state.window=held==='window'?{id:'official-window',status:'open',endsAt:Date.now()+60000,claims:[]}:null;s.game.state.resultId=['window','result'].includes(held)?'official-result':null;s.game.state.drawHold=['window','result','draw-hold'].includes(held)?{id:'official-call-hold'}:null;s.game.state.paused=true;operator.showCallCues.held=['window','result','draw-hold','call-cue'].includes(held);operator.liveCalls=held==='call-active'?{active:true}:undefined;
+   const before=structuredClone(s.game);h.window.renderTest('regie',s,operator);await tick();assert.equal(h.document.querySelector('.mf-live-heading>div>span:last-child').textContent,header,held);const timer=h.document.querySelector('.mf-live-countdown');assert.equal(timer.querySelector('small').textContent,detail,held);assert.equal(timer.textContent.includes('15 seconden'),false);assert.deepEqual(s.game,before);
+  }
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('Milo drawing retains the official countdown and Vlampie retains its existing waiting presentation',async()=>{
+ const h=await ui();try{
+  const s=snapshot(),operator={calls:{held:false},showCallCues:{held:false}};s.game.status='running';s.game.settings.rulesProfile=STANDARD_MILO_PROFILE;s.game.state.roundIndex=0;s.game.state.goalIndex=0;s.game.state.phase='running';s.runner={active:true,index:s.game.plan.blocks.findIndex(block=>block.type==='round'),phase:'drawing',kind:'round'};s.drawClock={blocked:false,remainingMs:10500};h.window.renderTest('regie',s,operator);
+  assert.equal(h.document.querySelector('.mf-live-heading>div>span:last-child').textContent,'Bingoronde actief');const timer=h.document.querySelector('.mf-live-countdown');assert.equal(timer.querySelector('strong').textContent,'11 s');assert.equal(timer.querySelector('small').textContent,'15 seconden per officiële bal');assert(timer.querySelector('.mf-live-clock-track'));
+  const vlampie=snapshot({brand:'vlampie'});vlampie.game.status='running';vlampie.runner={active:true,index:0,phase:'waiting'};h.window.renderTest('regie',vlampie,operator);assert.equal(h.document.querySelector('.mf-live-essentials'),null);assert.equal(h.document.querySelector('.rd-console-status>div>strong').textContent,'Wachten op de regie');assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('Milo distinguishes a connected output from the selected audio route before calling',async()=>{
+ const h=await ui();try{
+  const s=snapshot(),state={call:null,cues:[{id:'planned-manual',source:'manual',status:'planned',name:'Fictieve speler'}],queue:[],busy:false,error:'',media:null,mode:'real'},operator={calls:{held:false},liveCalls:{subscribe:()=>()=>{},getSnapshot:()=>state}};
+  const before=structuredClone(s.game);s.outputConnected=true;s.outputRouting=false;
+  h.window.renderTest('regie',s,operator);await tick();
+  assert.equal(h.document.querySelector('.rd-console-status>.rd-output-missing').textContent,'Uitvoer verbonden · audio via regie');
+  assert.match(h.document.querySelector('.mcc-card [role="status"]').textContent,/Bij bellen.*bestaande uitzendvenster/);
+  s.outputRouting=true;h.window.renderTest('regie',s,operator);await tick();
+  assert.equal(h.document.querySelector('.rd-console-status>.rd-output-ready').textContent,'Beeld & geluid verbonden');assert.equal(h.document.querySelector('.mcc-card [role="status"]'),null);
+  s.outputConnected=false;h.window.renderTest('regie',s,operator);await tick();assert.equal(h.document.querySelector('.rd-console-status>.rd-output-missing').textContent,'Uitvoer niet verbonden');
+  assert.deepEqual(s.game,before);assert.deepEqual(h.errors,[]);
+  const vlampie=snapshot({brand:'vlampie'});vlampie.outputConnected=true;vlampie.outputRouting=false;h.window.renderTest('regie',vlampie,operator);await tick();assert.equal(h.document.querySelector('.rd-console-status>.rd-output-ready').textContent,'Uitvoer verbonden');
  }finally{h.close();}
 });

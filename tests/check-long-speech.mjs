@@ -92,7 +92,7 @@ test('the engine preserves a 10,001-character field and rejects before stop, pro
 });
 
 test('the browser rehearsal also speaks the complete script in bounded parts and stopping cancels future parts',t=>{
- const priorUtterance=globalThis.SpeechSynthesisUtterance,priorSynthesis=globalThis.speechSynthesis,spoken=[];t.after(()=>{globalThis.SpeechSynthesisUtterance=priorUtterance;globalThis.speechSynthesis=priorSynthesis;});globalThis.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};globalThis.speechSynthesis={getVoices:()=>[],speak:u=>{spoken.push(u);u.onstart?.();},cancel(){},resume(){},pause(){}};
+ const priorUtterance=globalThis.SpeechSynthesisUtterance,priorSynthesis=globalThis.speechSynthesis,spoken=[];t.after(()=>{globalThis.SpeechSynthesisUtterance=priorUtterance;globalThis.speechSynthesis=priorSynthesis;});globalThis.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};globalThis.speechSynthesis={getVoices:()=>[{lang:'nl-NL',name:'Fictieve Nederlandse teststem'}],speak:u=>{spoken.push(u);u.onstart?.();},cancel(){},resume(){},pause(){}};
  const e=Object.create(StudioEngine.prototype);let ended=0;Object.assign(e,{game:{status:'draft'},demo:true,speechToken:1,liveCalls:null,stopSpeech(){this.speechToken++;},emit(){},characters:[],director:{},audio:{duck(){}},speechEnded(){ended++;}});
  e.speak(script,'milo','browser');for(let index=0;index<25;index++){assert.equal(spoken.length,index+1);assert.equal(ended,0);spoken[index].onend();}assert.equal(ended,1);assert.equal(spoken.map(u=>u.text).join(''),script);
  e.speak(script,'milo','browser');e.speechToken++;spoken.at(-1).onend();assert.equal(spoken.length,26);assert.equal(ended,1);

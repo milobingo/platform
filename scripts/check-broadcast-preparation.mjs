@@ -39,7 +39,7 @@ test('disconnect during the test silences its source and cannot acknowledge a la
 
 test('reconnect restores the exact paused show, pending bingo and official history using only read and output heartbeat',async()=>{
  const h=audioFixture(),actions=[];h.bridge.isOutput=true;h.bridge.targetGameId=GAME;h.bridge.api=async body=>{actions.push(body?.action||'GET');return state();};
- await h.bridge.reconnect();assert.equal(h.bridge.targetGameId,GAME);assert.equal(h.bridge.audioReady,true);assert.equal(h.panel.hidden,true);assert.deepEqual(actions,['GET']);assert.deepEqual(h.requests.map(request=>request.action),['output-heartbeat']);const snapshot=h.received.find(event=>event.kind==='snapshot'&&!event.payload.outputWaiting).payload;assert.deepEqual(snapshot.drawn,[7,19,41]);assert.equal(snapshot.paused,true);assert.equal(snapshot.bingoPending,true);assert.equal(snapshot.lastNumber,41);assert(!actions.some(action=>/start|resume|draw|claim|publish/.test(action)));
+ await h.bridge.reconnect();assert.equal(h.bridge.targetGameId,GAME);assert.equal(h.bridge.audioReady,true);assert.equal(h.panel.hidden,true);assert.deepEqual(actions,['GET','GET']);assert.deepEqual(h.requests.map(request=>request.action),['output-heartbeat']);const snapshot=h.received.find(event=>event.kind==='snapshot'&&!event.payload.outputWaiting).payload;assert.deepEqual(snapshot.drawn,[7,19,41]);assert.equal(snapshot.paused,true);assert.equal(snapshot.bingoPending,true);assert.equal(snapshot.lastNumber,41);assert(!actions.some(action=>/start|resume|draw|claim|publish/.test(action)));
 });
 
 test('reconnect refuses a different show and a stale producer without opening audio or releasing the game',async()=>{
@@ -72,6 +72,84 @@ test('relay stores a bounded public playback acknowledgement while preserving pr
  const testId=crypto.randomUUID(),audioPlayedAt=Date.now(),output=await send({action:'output-heartbeat',clientId:h.ids.output,audioReady:true,audioPlayedAt,generation,seq:1,testAck:{id:testId,status:'played',secret:'must-not-leak'},meters:{voice:.4}});
  assert.equal(output.producer.id,published.producer.id);assert.deepEqual(output.snapshot,published.snapshot);assert.equal(output.output.audioPlayedAt,audioPlayedAt);assert.equal(output.output.testAck.id,testId);assert.equal(output.output.testAck.status,'played');assert.equal(output.output.testAck.secret,undefined);assert.equal((await h.bingo.game(h.game.id)).data.state.paused,true);const scoped=obsOutputState(output,{gameId:h.game.id});assert.equal(scoped.output.audioPlayedAt,audioPlayedAt);assert.equal(scoped.output.testAck.status,'played');assert.equal(scoped.snapshot.paused,true);
  const noProof=await send({action:'output-heartbeat',clientId:h.ids.output,audioReady:false,audioPlayedAt,generation,seq:1,testAck:{id:'invalid',status:'played'}});assert.equal(noProof.output.audioPlayedAt,null);assert.equal(noProof.output.testAck,null);
+});
+
+const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
+const turn=()=>new Promise(resolve=>setImmediate(resolve));
+function routeFixture(){
+ const id=crypto.randomUUID(),clientId=crypto.randomUUID(),game={id:crypto.randomUUID(),brandId:'milo',state:{paused:true,drawn:[7,19,41],drawHold:{callId:'kept-call'}}},requests=[],muted=[];let respond;
+ let server={producer:{id:clientId,instanceId:id,generation:4,gameId:game.id,until:Date.now()+15000},seq:9,publishedAt:Date.now(),snapshot:{gameId:game.id,paused:true,drawn:game.state.drawn},routing:false,events:[],voice:null,mixer:{voice:100,music:25,effects:50},output:{id:crypto.randomUUID(),generation:4,seq:9,until:Date.now()+7000,audioReady:true,audioPlayedAt:Date.now()}};
+ const bridge=Object.assign(Object.create(OutputBridge.prototype),{id,isOutput:false,enabled:true,offset:0,accessEpoch:0,generation:4,seq:9,claimedGame:game.id,routing:false,latest:structuredClone(server),events:[],command:null,mixer:server.mixer,getId:()=>clientId,getGame:()=>game,getSnapshot:()=>({gameId:game.id,paused:game.state.paused,drawn:game.state.drawn}),getShow:()=>null,showAudio:{setMuted:value=>muted.push(value)}});
+ bridge.api=async body=>{requests.push(structuredClone(body));if(respond)await respond(body);if(body?.action==='publish')server={...server,producer:{...server.producer,until:Date.now()+15000},seq:body.seq,publishedAt:Date.now(),snapshot:body.snapshot,routing:body.routing};bridge.latest=structuredClone(server);return bridge.latest;};
+ return {bridge,game,requests,muted,respond:fn=>{respond=fn;},server:()=>server,setServer:fn=>{server=fn(server);bridge.latest=structuredClone(server);}};
+}
+
+test('routing waits for an older in-flight packet, then for its own server-confirmed route without queuing duplicate publishes',async()=>{
+ const h=routeFixture(),old=deferred(),routed=deferred();h.respond(body=>body.routing? routed.promise:old.promise);
+ const gameBefore=structuredClone(h.game),publishing=h.bridge.publish();assert.equal(h.bridge.publish(),publishing,'other callers share the actual in-flight promise');
+ let settled=false;const routing=h.bridge.route(true).then(()=>{settled=true;});await turn();assert.equal(h.requests.length,1);assert.equal(h.requests[0].routing,false);assert.equal(h.bridge.routing,false);assert.equal(settled,false);
+ old.resolve();await publishing;await turn();assert.equal(h.requests.length,2);assert.equal(h.requests[1].routing,true);assert.equal(settled,false,'the previous false packet is not a true-route acknowledgement');assert.deepEqual(h.muted,[true]);
+ routed.resolve();await routing;assert.equal(settled,true);assert.equal(h.bridge.latest.routing,true);assert.equal(h.bridge.latest.producer.id,h.bridge.clientId);assert.deepEqual(h.muted,[true,true]);assert.deepEqual(h.game,gameBefore);
+});
+
+test('turning output routing off keeps local audio silent until the server acknowledges the new route',async()=>{
+ const h=routeFixture(),routed=deferred();h.bridge.routing=true;h.setServer(server=>({...server,routing:true}));let count=0;h.respond(()=>++count===2?routed.promise:undefined);
+ let settled=false;const routing=h.bridge.route(false).then(()=>{settled=true;});await turn();assert.equal(count,2);assert.equal(settled,false);assert.deepEqual(h.muted,[true]);assert.equal(h.server().routing,true);
+ routed.resolve();await routing;assert.equal(h.server().routing,false);assert.deepEqual(h.muted,[true,false]);
+});
+
+test('a publisher racing the route continuation cannot turn its older packet into a false route acknowledgement',async()=>{
+ const h=routeFixture(),old=deferred(),raced=deferred(),confirmed=deferred();let count=0;h.respond(()=>[old,raced,confirmed][count++]?.promise);
+ const publishing=h.bridge.publish(),competing=publishing.then(()=>h.bridge.publish());let settled=false;const routing=h.bridge.route(true).then(()=>{settled=true;});
+ old.resolve();await publishing;await turn();assert.equal(count,2);assert.equal(h.requests[1].routing,false);assert.equal(h.bridge.routing,true);assert.equal(settled,false);
+ raced.resolve();await competing;await turn();assert.equal(count,3);assert.equal(h.requests[2].routing,true);assert.equal(settled,false);confirmed.resolve();await routing;assert.equal(h.server().routing,true);assert.equal(h.requests.length,3);
+});
+
+for(const invalid of ['missing-output','expired-output','wrong-generation','wrong-producer','wrong-instance','wrong-show','wrong-route'])test(`routing fails closed for ${invalid}, without claiming another output or changing the game`,async()=>{
+ const h=routeFixture(),before=structuredClone(h.game);
+ if(invalid==='missing-output')h.setServer(server=>({...server,output:null}));
+ if(invalid==='expired-output')h.setServer(server=>({...server,output:{...server.output,until:Date.now()-1}}));
+ if(invalid==='wrong-generation')h.setServer(server=>({...server,output:{...server.output,generation:3}}));
+ if(invalid==='wrong-producer')h.setServer(server=>({...server,producer:{...server.producer,id:crypto.randomUUID()}}));
+ if(invalid==='wrong-instance')h.setServer(server=>({...server,producer:{...server.producer,instanceId:crypto.randomUUID()}}));
+ if(invalid==='wrong-show')h.setServer(server=>({...server,producer:{...server.producer,gameId:crypto.randomUUID()}}));
+ if(invalid==='wrong-route'){const api=h.bridge.api;h.bridge.api=async body=>{const result=await api(body);if(body?.routing===true)h.bridge.latest.routing=false;return result;};}
+ await assert.rejects(h.bridge.route(true),/uitzendvenster|geluidsroute/);assert.equal(h.bridge.routing,false);assert(h.muted.every(Boolean));assert(h.requests.every(body=>body.action==='publish'));assert.deepEqual(h.game,before);
+});
+
+for(const change of ['show','dispose','cancel','epoch'])test(`a route waiting on publication stops after ${change} and cannot later change or publish the route`,async()=>{
+ const h=routeFixture(),held=deferred();h.respond(()=>held.promise);const publishing=h.bridge.publish(),routing=h.bridge.route(true);const rejected=assert.rejects(routing,/uitzending/);await turn();
+ if(change==='show')h.game.id=crypto.randomUUID();if(change==='dispose')h.bridge.disposed=true;if(change==='cancel')h.bridge.cancelledGames=new Set([h.game.id]);if(change==='epoch')h.bridge.accessEpoch++;
+ await rejected;const requests=h.requests.length,muted=h.muted.length;held.resolve();await assert.rejects(publishing,/uitzending/);await turn();assert.equal(h.bridge.routing,false);assert.equal(h.requests.length,requests);assert.equal(h.muted.length,muted);assert(h.requests.every(body=>body.routing===false));
+});
+
+test('a stalled route has a bounded deadline instead of waiting forever or starting an unconfirmed route',async t=>{
+ const h=routeFixture(),held=deferred(),started=Date.now();let now=started;t.mock.method(Date,'now',()=>now);h.respond(()=>held.promise);
+ const publishing=h.bridge.publish(),routing=h.bridge.route(true),rejected=assert.rejects(routing,/nog niet door de server bevestigd/);await turn();now=started+15001;await rejected;assert.equal(h.bridge.routing,false);assert(h.muted.every(Boolean));assert.equal(h.requests.length,1);held.resolve();await publishing;assert.equal(h.bridge.routing,false);assert.equal(h.requests.length,1);
+});
+
+test('cancellation remembered for an earlier show cannot block a different show from confirming its own audio route',async()=>{
+ const h=routeFixture(),oldGame=crypto.randomUUID();h.bridge.cancelledGames=new Set([oldGame]);h.bridge.latest={...h.bridge.latest,cancelledGameId:oldGame,cancelledAt:Date.now(),snapshot:{gameId:oldGame}};
+ await h.bridge.route(true);assert.equal(h.bridge.latest.snapshot.gameId,h.game.id);assert.equal(h.bridge.latest.routing,true);assert.equal(h.bridge.routing,true);assert.equal(h.bridge.isGameCancelled(oldGame),true);assert.equal(h.bridge.isGameCancelled(h.game.id),false);
+});
+
+test('stopping the show while routing awaits a packet prevents a late route mutation or another publication',async()=>{
+ const h=routeFixture(),held=deferred();let isCurrent=true;h.respond(()=>held.promise);const publishing=h.bridge.publish(),routing=h.bridge.route(true,{isCurrent:()=>isCurrent}),rejected=assert.rejects(routing,/uitzending/);
+ await turn();isCurrent=false;await rejected;assert.equal(h.bridge.routing,false);assert.equal(h.requests.length,1);assert.deepEqual(h.muted,[]);held.resolve();await publishing;await turn();assert.equal(h.requests.length,1);assert.equal(h.bridge.routing,false);assert.deepEqual(h.muted,[]);
+});
+
+test('a stop during the initial producer read prevents the follow-up producer claim and route publication',async()=>{
+ const h=routeFixture(),held=deferred();let isCurrent=true;h.bridge.generation=null;h.respond(()=>held.promise);const routing=h.bridge.route(true,{isCurrent:()=>isCurrent}),rejected=assert.rejects(routing,/uitzending/);
+ await turn();assert.deepEqual(h.requests,[undefined]);isCurrent=false;await rejected;held.resolve();await turn();assert.deepEqual(h.requests,[undefined]);assert.equal(h.bridge.routing,false);assert.deepEqual(h.muted,[]);
+});
+
+test('a busy presenter prevents route changes before publishing or muting anything',async()=>{
+ const h=routeFixture();h.bridge.isVoiceBusy=()=>true;await assert.rejects(h.bridge.route(true),/uitspraak/);assert.deepEqual(h.requests,[]);assert.deepEqual(h.muted,[]);assert.equal(h.bridge.routing,false);
+});
+
+test('a second regular output checks the active lease before any test sound or heartbeat and never steals it',async()=>{
+ const h=audioFixture(),owner=crypto.randomUUID(),reads=[];Object.assign(h.bridge,{isOutput:true,id:crypto.randomUUID(),targetGameId:GAME,api:async body=>{reads.push(body||null);return {...state(),output:{id:owner,until:Date.now()+7000,audioReady:true,generation:4,seq:9}};}});
+ await assert.rejects(h.bridge.activate(),/ander uitzendvenster.*sluit dit extra venster/);assert.equal(h.bridge.active,false);assert.equal(h.bridge.audioReady,false);assert.equal(h.nodes.length,0);assert.deepEqual(h.requests,[]);assert.deepEqual(reads,[null]);assert.equal(h.panel.hidden,false);
 });
 
 // Render the actual preparation card without network, accounts or OBS.

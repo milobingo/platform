@@ -22,7 +22,7 @@ export function createBrowserAudioFixture({owner,getGame,characters=Object.value
   const fingerprint=createHash('sha256').update(JSON.stringify([SPEECH_POLICY_VERSION,game.id,game.preparationRevision||0,items.map(i=>[i.key,i.sources])])).digest('hex');
   return {gameId:game.id,policyVersion:SPEECH_POLICY_VERSION,fingerprint,total:items.length,ready:items.length,complete:true,items};
  }
- return {requests,manifest,async handle(route){
+ return {requests,manifest,async readClip(key){const current=await manifest();if(!current.items.some(item=>item.key===key))throw Error('Clip is outside the current isolated manifest.');return audio;},async handle(route){
   const request=route.request(),url=new URL(request.url());if(!['/api/openai/show-audio','/api/openai/speech'].includes(url.pathname)||request.method()!=='POST')return false;
   const body=request.postDataJSON(),game=await getGame();requests.push({path:url.pathname,gameId:body.gameId,characterId:body.characterId,cacheOnly:body.cacheOnly===true});
   if(body.gameId!==game.id){await route.fulfill({status:409,json:{error:{message:'Isolated audio belongs to another show.'}}});return true;}

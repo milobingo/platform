@@ -45,7 +45,7 @@ export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},on
       buffer=decoded;controller=null;remote=getRemote();if(remote){
        const start=async()=>{
         if(!current(token))return;remoteStart=null;
-        try{const playback=remote.play(prepared?.clip||response.headers.get('x-vlampie-clip'),text,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(text,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,preparedOnly:!!prepared,preparedFingerprint:prepared?.fingerprint||null,onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token))await finishChunk(token);}
+        try{const playback=remote.play(prepared?.clip||response.headers.get('x-vlampie-clip'),text,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(text,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,preparedOnly:!!prepared,preparedFingerprint:prepared?.fingerprint||null,...(presentation.officialBall?{officialBall:presentation.officialBall}:{}),...(presentation.bingoWindow?{bingoWindow:presentation.bingoWindow}:{}),onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token))await finishChunk(token);}
         catch(error){if(!current(token))return;stop();if(error.name!=='AbortError')onError(error.message||'De stem kon niet worden afgespeeld.');}
        };
        if(pauseRequested||!canPlay()){remoteStart=start;setPhase('ready');}else await start();

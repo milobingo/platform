@@ -1,4 +1,6 @@
 import {platformIdentity} from './player-identity.js';
+import {officialBallBinding,officialBallKey,sameOfficialBall,officialVoiceMatches} from '../public/official-audio.js';
+import {FIXED_SHOW_SPEECH,SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'private, no-store'}});
 const cancelledMessage='Deze show is geannuleerd.';
 function cancelledOutput(state,game){
@@ -23,7 +25,7 @@ export async function cancelGameOutput(env,owner,gameId){
  return {pending:true};
 }
 // Access hashes never belong in producer or output responses.
-export function publicOutputState(state){if(!state)return null;const {obsAccess:unused,...visible}=state;if(visible.output){const {obsAccessId:marker,...output}=visible.output;visible.output=output;}return visible;}
+export function publicOutputState(state){if(!state)return null;const {obsAccess:unused,officialAudioStarted:unusedAudioHistory,...visible}=state;if(visible.output){const {obsAccessId:marker,...output}=visible.output;visible.output=output;}return visible;}
 function assertScopedOutput(state,access,now=Date.now()){
  if(!access)return;const saved=state?.obsAccess;
  if(!saved||saved.id!==access.id||saved.hash!==access.hash||saved.gameId!==access.gameId||saved.expiresAt<=now)throw Object.assign(new Error('De OBS-link is ingetrokken of verlopen.'),{status:401});
@@ -37,11 +39,11 @@ export async function handleOutput(request,env){
   if(request.method==='GET'){const row=await env.DB.prepare('SELECT document FROM studio_outputs WHERE owner_id = ?').bind(user).first();const state=await currentOutputState(env,user,row?JSON.parse(row.document):null);assertScopedOutput(state,access);return json({state:publicOutputState(state),serverTime:Date.now()});}
   if(request.method!=='POST')return json({error:'Onbekende aanvraag.'},405);
   const raw=await request.text();if(new TextEncoder().encode(raw).length>400000)return json({error:'Uitzendbericht te groot.'},413);const body=JSON.parse(raw),id=body.clientId;
-  if(access&&body.action!=='output-heartbeat')return json({error:'Deze OBS-link kan alleen het uitzendvenster verbinden.'},403);
+  if(access&&!['output-heartbeat','output-audio-start'].includes(body.action))return json({error:'Deze OBS-link kan alleen het uitzendvenster verbinden.'},403);
   if(typeof id!=='string'||!/^[a-f0-9-]{36}$/.test(id))return json({error:'Ongeldig uitzendvenster.'},400);
   await env.DB.prepare('INSERT INTO studio_outputs (owner_id,revision,document) VALUES (?,0,?) ON CONFLICT(owner_id) DO NOTHING').bind(user,JSON.stringify({producer:null,output:null,snapshot:null,seq:0,events:[],voice:null,mixer:{voice:100,music:25,effects:50},routing:false})).run();
   for(let i=0;i<6;i++){
-   const row=await env.DB.prepare('SELECT * FROM studio_outputs WHERE owner_id = ?').bind(user).first(),s=JSON.parse(row.document),now=Date.now();let gameGuard=null;
+   const row=await env.DB.prepare('SELECT * FROM studio_outputs WHERE owner_id = ?').bind(user).first(),s=JSON.parse(row.document),now=Date.now();let gameGuard=null,audioStart=null;
    assertScopedOutput(s,access,now);
    const current=await currentOutputState(env,user,s);
    if(current?.cancelledAt&&body.action==='output-heartbeat')return json({state:publicOutputState(current),serverTime:now});
@@ -61,10 +63,17 @@ export async function handleOutput(request,env){
      if(!Number.isSafeInteger(body.seq)||body.seq<=s.seq)return json({error:'Dit beeldbericht is achterhaald en is niet gepubliceerd.'},409);
      s.producer.until=now+15000;s.seq=body.seq;s.publishedAt=now;s.snapshot=body.snapshot;s.show=body.show;s.voice=body.voice||null;s.routing=!!body.routing;s.events=(body.events||[]).filter(e=>typeof e.id==='string'&&e.at>now-10000).slice(-30);s.mixer=Object.fromEntries(['voice','music','effects'].map(k=>[k,Math.max(0,Math.min(100,Number(body.mixer?.[k])||0))]));
     }
+   }else if(body.action==='output-audio-start'){
+    if(s.output?.id!==id||s.output.until<=now||!s.output.audioReady||s.output.generation!==s.producer?.generation||!s.output.seq||s.producer.until<=now||s.voice?.id!==body.voiceId||s.voice.phase!=='play'||!s.routing||!officialVoiceMatches(s.voice,s.snapshot))return json({error:'De officiële uitspraak wacht op de huidige, geactiveerde uitzendbron.'},409);
+    const ball=s.voice.officialBall,window=s.voice.bingoWindow,game=await env.DB.prepare('SELECT owner_id,revision,document FROM bingo_games WHERE id = ?').bind(ball?.gameId||window?.gameId||'').first(),g=game?.owner_id===user?JSON.parse(game.document):null,key=ball?officialBallKey(ball):window?'window:'+window.gameId+':'+window.id:null;
+    const exact=ball&&!window?sameOfficialBall(ball,officialBallBinding(g))&&g?.audioCues?.[key]&&body.commitId===ball.commitId:window&&!ball&&window.policyVersion===SPEECH_POLICY_VERSION&&s.voice.preparedOnly===true&&s.voice.text===FIXED_SHOW_SPEECH.bingo&&g?.state.window?.id===window.id&&g.state.window.status==='open'&&g.state.window.endsAt>now&&g.audioCues?.['window:'+window.id]&&body.windowId===window.id;
+    if(!g||g.cancelledAt||g.status!=='running'||g.state.paused||g.state.drawHold||g.state.callId||!exact)return json({error:'Deze uitspraak hoort niet meer bij de actuele, vrijgegeven officiële bal of het meldvenster.'},409);
+    if(s.officialAudioStarted?.[key])return json({state:publicOutputState(s),audioStart:{allowed:false,voiceId:body.voiceId},serverTime:now});
+    gameGuard={id:g.id,revision:game.revision};s.officialAudioStarted={...(s.officialAudioStarted||{}),[key]:{at:now,voiceId:body.voiceId}};const entries=Object.entries(s.officialAudioStarted);if(entries.length>500)s.officialAudioStarted=Object.fromEntries(entries.slice(-500));audioStart={allowed:true,voiceId:body.voiceId};
    }else if(body.action==='output-heartbeat'){
     if(s.output&&s.output.id!==id&&s.output.until>now)return json({error:'Een ander uitzendvenster verzorgt het geluid.',state:publicOutputState(s)},409);
     const rendered=body.generation===s.producer?.generation&&Number.isSafeInteger(body.seq)&&body.seq>0&&body.seq<=s.seq;
-    s.output={id,...(access?{obsAccessId:access.id}:{}),until:now+7000,at:now,audioReady:!!body.audioReady,audioPlayedAt:body.audioReady&&Number.isSafeInteger(body.audioPlayedAt)&&body.audioPlayedAt>0&&body.audioPlayedAt<=now+5000?body.audioPlayedAt:null,testAck:body.testAck&&typeof body.testAck.id==='string'&&/^[a-f0-9-]{36}$/.test(body.testAck.id)&&['played','error'].includes(body.testAck.status)?{id:body.testAck.id,status:body.testAck.status,at:s.output?.testAck?.id===body.testAck.id&&s.output.testAck.status===body.testAck.status?s.output.testAck.at:now,error:String(body.testAck.error||'').slice(0,200)}:null,generation:rendered?body.generation:null,seq:rendered?body.seq:0,meters:body.meters?Object.fromEntries(['voice','music','effects'].map(k=>[k,Math.max(0,Math.min(1,Number(body.meters[k])||0))])):{},voiceAck:rendered&&body.voiceAck&&typeof body.voiceAck.id==='string'?{id:body.voiceAck.id,status:['loading','starting','ready','playing','paused','ended','error'].includes(body.voiceAck.status)?body.voiceAck.status:'error',elapsed:Math.max(0,Math.min(120000,Number(body.voiceAck.elapsed)||0)),error:String(body.voiceAck.error||'').slice(0,200)}:null};
+    s.output={id,...(access?{obsAccessId:access.id}:{}),until:now+7000,at:now,audioReady:!!body.audioReady,audioPlayedAt:body.audioReady&&Number.isSafeInteger(body.audioPlayedAt)&&body.audioPlayedAt>0&&body.audioPlayedAt<=now+5000?body.audioPlayedAt:null,testAck:body.testAck&&typeof body.testAck.id==='string'&&/^[a-f0-9-]{36}$/.test(body.testAck.id)&&['played','error'].includes(body.testAck.status)?{id:body.testAck.id,status:body.testAck.status,at:s.output?.testAck?.id===body.testAck.id&&s.output.testAck.status===body.testAck.status?s.output.testAck.at:now,error:String(body.testAck.error||'').slice(0,200)}:null,generation:rendered?body.generation:null,seq:rendered?body.seq:0,meters:body.meters?Object.fromEntries(['voice','music','effects'].map(k=>[k,Math.max(0,Math.min(1,Number(body.meters[k])||0))])):{},voiceAck:rendered&&body.voiceAck&&typeof body.voiceAck.id==='string'?{id:body.voiceAck.id,status:['loading','starting','ready','playing','paused','ended','stopped','error'].includes(body.voiceAck.status)?body.voiceAck.status:'error',elapsed:Math.max(0,Math.min(120000,Number(body.voiceAck.elapsed)||0)),error:String(body.voiceAck.error||'').slice(0,200)}:null};
     const preparation=body.audioPreparation;
     s.output.audioPreparation=preparation&&/^[a-f0-9]{64}$/.test(preparation.fingerprint)&&Number.isSafeInteger(preparation.total)&&preparation.total>=0&&preparation.total<=3000&&Number.isSafeInteger(preparation.ready)&&preparation.ready>=0&&preparation.ready<=preparation.total?{fingerprint:preparation.fingerprint,ready:preparation.ready,total:preparation.total,...(typeof preparation.error==='string'?{error:preparation.error.replace(/[\p{Cc}]/gu,' ').slice(0,160)}:{})}:null;
    }else return json({error:'Onbekende uitzendactie.'},400);
@@ -72,7 +81,7 @@ export async function handleOutput(request,env){
    // Lock and compare the actual game in the same transaction as publication.
    // Cancellation either follows this packet and removes it, or wins the CAS
    // and makes this entire stale publication roll back.
-   let saved;if(gameGuard){const result=await env.DB.batch([env.DB.prepare('UPDATE bingo_games SET revision = revision WHERE id = ? AND owner_id = ? AND revision = ? RETURNING revision').bind(gameGuard.id,user,gameGuard.revision),update]);saved=result[0]?.results?.length&&result[1]?.results?.length;}else saved=await update.first();if(saved)return json({state:publicOutputState(await currentOutputState(env,user,s)),serverTime:now});
+   let saved;if(gameGuard){const result=await env.DB.batch([env.DB.prepare('UPDATE bingo_games SET revision = revision WHERE id = ? AND owner_id = ? AND revision = ? RETURNING revision').bind(gameGuard.id,user,gameGuard.revision),update]);saved=result[0]?.results?.length&&result[1]?.results?.length;}else saved=await update.first();if(saved)return json({state:publicOutputState(await currentOutputState(env,user,s)),...(audioStart?{audioStart}:{}),serverTime:now});
   }return json({error:'De uitzendverbinding is bezig. Probeer opnieuw.'},409);
  }catch(error){return json({error:error.status?error.message:'De uitzendverbinding is onderbroken.'},error.status||503);}
 }

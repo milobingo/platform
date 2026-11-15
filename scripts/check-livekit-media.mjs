@@ -146,3 +146,7 @@ test('client API preserves host identity and player headers, rejects stale polls
  const old=api.poll();await api.action('prepare',{entryId:'child'});poll.resolve({call:{id:'c',phase:'ringing',version:2,createdAt:1}});await old;assert.equal(api.call.phase,'backstage');
  const originalFetch=globalThis.fetch;try{globalThis.fetch=fetcher;api.leave();await tick();const leave=JSON.parse(requests.at(-1).options.body);assert.equal(leave.action,'fail');assert.notEqual(leave.action,'resume-draw');assert(!Object.keys(requests.at(-1).options.headers).includes('X-Vlampie-Player'));}finally{globalThis.fetch=originalFetch;api.dispose();}
 });
+
+test('Milo host media heartbeats preserve the passively received guest track across both heartbeat sources',async()=>{
+ const f=fixture({role:'host',phase:'backstage'});f.call={...f.call,brandId:'milo'};const heartbeats=[];f.media.api.heartbeat=async body=>{heartbeats.push(body);return {call:f.call};};await f.media.connect('backstage');await f.media.heartbeat();assert.equal(heartbeats.at(-1).playerTrackReceived,false);const guest=f.remote('guest-one');f.rooms[0].emit('trackSubscribed',guest.track,guest.publication,guest.participant);await tick();await f.media.heartbeat();assert.equal(heartbeats.at(-1).playerTrackReceived,true);f.rooms[0].emit('trackUnsubscribed',guest.track,guest.publication,guest.participant);await f.media.heartbeat();assert.equal(heartbeats.at(-1).playerTrackReceived,false);await f.media.dispose();
+});

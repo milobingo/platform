@@ -104,16 +104,17 @@ test('OBS output capability bypasses Google, uses only scoped transport and clea
 for(const failureStatus of [503,409])test(`OBS starts and recovers without interaction after ${failureStatus}; real Chromium Web Audio, simulated scoped API`,async({},testInfo)=>{
  test.setTimeout(90000);
  const browser=await chromium.launch({headless:true,args:['--autoplay-policy=no-user-gesture-required']}),origin=new URL(testInfo.project.use.baseURL).origin,context=await browser.newContext({baseURL:origin,viewport:{width:1920,height:1080}}),page=await context.newPage(),gameId='qa-obs-automatic-'+failureStatus;
- let sessionAttempts=0,outputLease=null,seq=0,heartbeatFails=1,outage=false;
+ let sessionAttempts=0,outputLease=null,seq=0,heartbeatFails=1,outage=false,requestedTest=null;
  const proof={origin,gameId,autoplayPolicy:'no-user-gesture-required',sessionStatuses:[],outputFailures:[],heartbeats:[],unexpected:[],external:[],errors:[],expectedNetworkErrors:[]};
  await page.addInitScript(()=>{
-  window.__qaAudioContexts=[];window.__qaProgrammeMeasurements=[];window.__qaTrustedInteractions=0;window.__qaMicrophoneRequests=0;
+  window.__qaAudioContexts=[];window.__qaProgrammeMeasurements=[];window.__qaAudioSources=[];window.__qaTrustedInteractions=0;window.__qaMicrophoneRequests=0;
   window.__qaDeskNumbers={};const nativeFillText=CanvasRenderingContext2D.prototype.fillText;
   CanvasRenderingContext2D.prototype.fillText=function(text,...args){if(this.font.includes('13.5px')&&/^\d+$/.test(String(text))&&this.canvas.closest?.('#stage'))window.__qaDeskNumbers[String(text)]=this.fillStyle;return nativeFillText.call(this,text,...args);};
   for(const event of ['click','keydown','pointerdown'])addEventListener(event,e=>{if(e.isTrusted)window.__qaTrustedInteractions++;},true);
   const Native=window.AudioContext;
   window.AudioContext=class extends Native{
    constructor(...args){super(...args);window.__qaAudioContexts.push(this);}
+   createBufferSource(){const source=super.createBufferSource(),start=source.start.bind(source);source.start=(...args)=>{const samples=source.buffer?.getChannelData(0)||[],peak=samples.reduce((peak,value)=>Math.max(peak,Math.abs(value)),0),entry={peak,duration:source.buffer?.duration,startedAt:this.currentTime,ended:false};window.__qaAudioSources.push(entry);source.addEventListener('ended',()=>{entry.ended=true;entry.endedAt=this.currentTime;});return start(...args);};return source;}
    createMediaStreamDestination(){
     const destination=super.createMediaStreamDestination(),source=this.createMediaStreamSource(destination.stream),analyser=this.createAnalyser();analyser.fftSize=256;source.connect(analyser);
     const measurement={peak:0,context:this};window.__qaProgrammeMeasurements.push(measurement);
@@ -139,8 +140,8 @@ for(const failureStatus of [503,409])test(`OBS starts and recovers without inter
    const body=request.method()==='POST'?request.postDataJSON():null;
    if(body)expect(body.action).toBe('output-heartbeat');
    if(outage||body&&heartbeatFails-->0){proof.outputFailures.push({method:request.method(),status:failureStatus});return route.fulfill({status:failureStatus,json:{error:{message:'Tijdelijke verbindingstest'}}});}
-   if(body){proof.heartbeats.push({audioReady:body.audioReady,audioPlayedAt:body.audioPlayedAt,testAck:body.testAck,generation:body.generation,seq:body.seq});outputLease={id:body.clientId,until:Date.now()+15000,audioReady:body.audioReady,audioPlayedAt:body.audioPlayedAt,testAck:body.testAck,generation:body.generation,seq:body.seq};}
-   const state={producer:{id:'qa-auto-producer',instanceId:'qa-auto-instance',gameId,generation:1,until:Date.now()+15000},generation:1,seq:++seq,publishedAt:Date.now(),snapshot:{production:'milo',gameId,gameTitle:'QA automatisch OBS-herstel',hostId:'milo',speakerId:'milo',camera:'board',motion:'idle',paused:true,lastNumber:41,drawn:[7,19,41],roundTitle:'Ronde 2',caption:'De trekking blijft gepauzeerd.'},show:{scene:'board',title:'QA automatisch OBS-herstel',round:'Ronde 2',paused:true,drawn:[7,19,41],number:41},output:outputLease,routing:true,mixer:{voice:100,music:25,effects:50},events:[],voice:null};
+   if(body){proof.heartbeats.push({audioReady:body.audioReady,audioPlayedAt:body.audioPlayedAt,testAck:body.testAck,generation:body.generation,seq:body.seq});outputLease={id:body.clientId,until:Date.now()+7000,audioReady:body.audioReady,audioPlayedAt:body.audioPlayedAt,testAck:body.testAck,generation:body.generation,seq:body.seq};}
+   const state={producer:{id:'qa-auto-producer',instanceId:'qa-auto-instance',gameId,generation:1,until:Date.now()+15000},generation:1,seq:++seq,publishedAt:Date.now(),snapshot:{production:'milo',gameId,gameTitle:'QA automatisch OBS-herstel',hostId:'milo',speakerId:'milo',camera:'board',motion:'idle',paused:true,lastNumber:41,drawn:[7,19,41],roundTitle:'Ronde 2',caption:'De trekking blijft gepauzeerd.'},show:{scene:'board',title:'QA automatisch OBS-herstel',round:'Ronde 2',paused:true,drawn:[7,19,41],number:41},output:outputLease,routing:true,mixer:{voice:100,music:25,effects:50},events:[{id:'qa-previous-show-intro',kind:'cue',cue:'intro',at:Date.now()-500},...(requestedTest?[requestedTest]:[])],voice:{id:'qa-previous-playing-cue',clip:'f'.repeat(64),text:'Deze eerdere zin mag niet opnieuw starten.',phase:'play',preparedOnly:false}};
    return route.fulfill({json:{serverTime:Date.now(),state}});
   }
   if(url.pathname==='/api/obs/live-calls'&&request.method()==='GET')return route.fulfill({json:{call:null,serverTime:Date.now()}});
@@ -148,23 +149,25 @@ for(const failureStatus of [503,409])test(`OBS starts and recovers without inter
  });
  try{
   await page.goto('/uitzending#obs='+TOKEN);await expect(page.locator('#stage canvas')).toBeVisible({timeout:15000});
-  await expect.poll(()=>proof.heartbeats.some(item=>item.audioReady&&item.audioPlayedAt&&item.testAck?.status==='played'),{timeout:20000}).toBe(true);await expect(page.locator('.output-unlock')).toBeHidden();
+  await expect.poll(()=>proof.heartbeats.some(item=>item.audioReady&&item.audioPlayedAt),{timeout:20000}).toBe(true);await expect(page.locator('.output-unlock')).toBeHidden();
   expect(await page.evaluate(()=>window.__qaAudioContexts.some(audio=>audio.state==='running'))).toBe(true);
-  await expect.poll(()=>page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeGreaterThan(.01);
-  const firstTest=proof.heartbeats.find(item=>item.testAck?.status==='played').testAck.id;
+  expect(proof.heartbeats.some(item=>item.testAck?.status==='played')).toBe(false);await page.waitForTimeout(250);expect(await page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeLessThan(.000001);
+  proof.initialSilentProbe=await page.evaluate(()=>window.__qaAudioSources);expect(proof.initialSilentProbe.some(source=>source.ended&&source.endedAt-source.startedAt>=.06&&source.peak===0)).toBe(true);
   await page.evaluate(()=>{window.__qaDeskNumbers={};});outage=true;await expect.poll(()=>proof.outputFailures.filter(item=>item.method==='GET').length,{timeout:15000}).toBeGreaterThan(0);
   const badge=page.locator('.output-unlock--obs');await expect(badge).toBeVisible();await expect(page.getByRole('button',{name:'Opnieuw verbinden',exact:true})).toHaveCount(0);
   proof.outageBadge=await badge.evaluate(node=>{const bounds=node.getBoundingClientRect(),style=getComputedStyle(node);return {width:bounds.width,height:bounds.height,backdropFilter:style.backdropFilter,pointerEvents:style.pointerEvents};});expect(proof.outageBadge.width).toBeLessThan(600);expect(proof.outageBadge.height).toBeLessThan(300);expect(proof.outageBadge.backdropFilter).toBe('none');await screenshot(page,`obs-auto-${failureStatus}-outage`);
   await expect(page.locator('.mf-studio__sr')).toHaveText('De trekking blijft gepauzeerd.');
   await expect.poll(()=>page.evaluate(()=>Object.entries(window.__qaDeskNumbers).filter(([,color])=>['#edfff7','#36213c'].includes(color)).map(([number])=>Number(number)))).toEqual([7,19,41]);
   const beforeRecovery=proof.heartbeats.length;outage=false;
-  await expect.poll(()=>proof.heartbeats.slice(beforeRecovery).some(item=>item.audioReady&&item.testAck?.status==='played'&&item.testAck.id===firstTest),{timeout:20000}).toBe(true);await expect(badge).toBeHidden();
-  proof.recoveredWithoutAnotherActivationJingle=true;
+  await expect.poll(()=>proof.heartbeats.slice(beforeRecovery).some(item=>item.audioReady&&item.audioPlayedAt&&!item.testAck),{timeout:20000}).toBe(true);await expect(badge).toBeHidden();
+  proof.recoveredWithoutAnotherActivationJingle=true;expect(await page.evaluate(()=>window.__qaAudioSources.length)).toBe(proof.initialSilentProbe.length);expect(await page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeLessThan(.000001);
+  requestedTest={id:crypto.randomUUID(),kind:'test-sound',at:Date.now()};await expect.poll(()=>proof.heartbeats.some(item=>item.testAck?.id===requestedTest.id&&item.testAck.status==='played')).toBe(true);await expect.poll(()=>page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeGreaterThan(.01);proof.explicitTestTone={requestedBySimulatedRegie:true,id:requestedTest.id,peak:await page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))};
+  const beforeReload=proof.heartbeats.length;await page.reload();await expect(page.locator('#stage canvas')).toBeVisible();await expect.poll(()=>proof.heartbeats.slice(beforeReload).some(item=>item.audioReady&&item.audioPlayedAt&&!item.testAck),{timeout:20000}).toBe(true);await expect(badge).toBeHidden();await page.waitForTimeout(350);proof.fullReloadSilentProbe=await page.evaluate(()=>window.__qaAudioSources);expect(proof.fullReloadSilentProbe.some(source=>source.ended&&source.peak===0)).toBe(true);expect(proof.fullReloadSilentProbe.every(source=>source.peak===0)).toBe(true);expect(await page.evaluate(()=>Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)))).toBeLessThan(.000001);proof.fullReloadDoesNotReplayTestOrIntro=true;
   const pixels=await page.locator('#stage canvas').evaluate(canvas=>{const reduced=document.createElement('canvas');reduced.width=64;reduced.height=36;const drawing=reduced.getContext('2d');drawing.drawImage(canvas,0,0,64,36);const data=drawing.getImageData(0,0,64,36).data;let low=255,high=0;for(let i=0;i<data.length;i+=4){const v=(data[i]+data[i+1]+data[i+2])/3;low=Math.min(low,v);high=Math.max(high,v);}return high-low;});expect(pixels).toBeGreaterThan(20);
   proof.audio=await page.evaluate(()=>({peak:Math.max(0,...window.__qaProgrammeMeasurements.map(value=>value.peak)),states:window.__qaAudioContexts.map(audio=>audio.state),trustedInteractions:window.__qaTrustedInteractions,microphoneRequests:window.__qaMicrophoneRequests}));expect(proof.audio.trustedInteractions).toBe(0);expect(proof.audio.microphoneRequests).toBe(0);
   await expect(page.locator('.mf-studio__sr')).toHaveText('De trekking blijft gepauzeerd.');
   proof.observedDesk=await page.evaluate(()=>({drawn:Object.entries(window.__qaDeskNumbers).filter(([,color])=>['#edfff7','#36213c'].includes(color)).map(([number])=>Number(number)),lastNumber:Number(Object.entries(window.__qaDeskNumbers).find(([,color])=>color==='#36213c')?.[0]),caption:document.querySelector('.mf-studio__sr')?.textContent}));expect(proof.observedDesk.drawn).toEqual([7,19,41]);expect(proof.observedDesk.lastNumber).toBe(41);proof.actualCanvasPixelRange=pixels;
-  if(failureStatus===503)expect(proof.sessionStatuses).toEqual([503,200]);else expect(proof.sessionStatuses).toEqual([200]);expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.unexpected).toEqual([]);await noPersistedCapability(page);await screenshot(page,`obs-auto-${failureStatus}-recovered`);
+  if(failureStatus===503)expect(proof.sessionStatuses).toEqual([503,200,200]);else expect(proof.sessionStatuses).toEqual([200,200]);expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.unexpected).toEqual([]);await noPersistedCapability(page);await screenshot(page,`obs-auto-${failureStatus}-recovered`);
  }finally{await saveProof('obs-auto-'+failureStatus,{actualWebAudio:true,actualOBSInstallation:false,remainingOBSCheck:'Controleer de bronmeter en een proefopname met beeld en testgeluid op een echte OBS-installatie.',...proof});await browser.close();}
 });
 

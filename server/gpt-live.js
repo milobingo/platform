@@ -108,7 +108,7 @@ export async function synthesizeLiveScript(key,settings,text,request,fetcher=fet
     const pcm=new DataView(bytes.buffer);for(let i=0;i<bytes.length;i+=2){samples++;if(Math.abs(pcm.getInt16(i,true))>200)lastVoiced=samples;}
     if(lastVoiced&&samples-lastVoiced>21600&&normalizedScript(transcript)===expected){closing=true;clearTimeout(timer);clearInterval(feed);send({type:'session.close'});closeTimer=setTimeout(()=>fail('GPT-Live heeft het einde van dit fragment niet op tijd bevestigd.',504,'timeout'),closeTimeoutMs);}
    }
-   if(e.type==='session.closed'){if(closing)complete();else fail('De stemvoorbereiding is voortijdig gesloten en kwam niet volledig overeen met het script.',409,'speech_script_mismatch');}
+   if(e.type==='session.closed'){if(closing)complete();else if(transcript&&scriptPrefix(transcript,text))fail('Het stemfragment is afgekapt voordat de volledige Nederlandse tekst en het einde bevestigd waren. Alleen dit fragment moet opnieuw worden voorbereid.',504,'speech_truncated');else fail('De uitgesproken tekst wijkt af van het Nederlandse script. Het fragment is niet opgeslagen; controleer deze tekst.',409,'speech_script_mismatch');}
    if(e.type==='error'||e.type==='session.delegation.created')fail('GPT-Live kon dit script niet als een volledige uitspraak voorbereiden.',502,'live_rejected');
   }catch{fail('Het GPT-Live-stemfragment kon niet worden gecontroleerd.',502,'invalid_audio');}});
   socket.addEventListener('error',()=>fail('De GPT-Live-verbinding is onderbroken.'));

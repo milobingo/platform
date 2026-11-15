@@ -1,0 +1,325 @@
+{
+  "observedAt": "2026-11-15T22:48:55.637Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "actualWebAudio": true,
+  "remainingOBSCheck": "Controleer de bronmeter en een proefopname met beeld en testgeluid op een echte OBS-installatie.",
+  "origin": "http://127.0.0.1:4176",
+  "gameId": "qa-obs-automatic-409",
+  "autoplayPolicy": "no-user-gesture-required",
+  "sessionStatuses": [
+    200,
+    200
+  ],
+  "outputFailures": [
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "status": 409
+    }
+  ],
+  "heartbeats": [
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 8
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 9
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 11
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 11
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782915332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 14
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782925872,
+      "testAck": {
+        "id": "c9a72027-27ee-42a2-ad8c-1f0bcda6abf7",
+        "status": "played",
+        "at": 1794782925872,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 15
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782925872,
+      "testAck": {
+        "id": "c9a72027-27ee-42a2-ad8c-1f0bcda6abf7",
+        "status": "played",
+        "at": 1794782925872,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 15
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782925872,
+      "testAck": {
+        "id": "c9a72027-27ee-42a2-ad8c-1f0bcda6abf7",
+        "status": "played",
+        "at": 1794782925872,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 17
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782934124,
+      "testAck": null,
+      "generation": 1,
+      "seq": 30
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782934124,
+      "testAck": null,
+      "generation": 1,
+      "seq": 30
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782934124,
+      "testAck": null,
+      "generation": 1,
+      "seq": 33
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782934124,
+      "testAck": null,
+      "generation": 1,
+      "seq": 34
+    }
+  ],
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedNetworkErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    }
+  ],
+  "initialSilentProbe": [
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 0.09287981859410431,
+      "ended": true,
+      "endedAt": 0.2002721088435374
+    },
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 1.6312018140589568,
+      "ended": true,
+      "endedAt": 1.7327891156462585
+    }
+  ],
+  "outageBadge": {
+    "width": 440,
+    "height": 136.875,
+    "backdropFilter": "none",
+    "pointerEvents": "none"
+  },
+  "recoveredWithoutAnotherActivationJingle": true,
+  "explicitTestTone": {
+    "requestedBySimulatedRegie": true,
+    "id": "c9a72027-27ee-42a2-ad8c-1f0bcda6abf7",
+    "peak": 0.11552882963435823
+  },
+  "fullReloadSilentProbe": [
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 0.09287981859410431,
+      "ended": true,
+      "endedAt": 0.2002721088435374
+    }
+  ],
+  "fullReloadDoesNotReplayTestOrIntro": true,
+  "audio": {
+    "peak": 0,
+    "states": [
+      "running",
+      "running"
+    ],
+    "trustedInteractions": 0,
+    "microphoneRequests": 0
+  },
+  "observedDesk": {
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "lastNumber": 41,
+    "caption": "De trekking blijft gepauzeerd."
+  },
+  "actualCanvasPixelRange": 251
+}

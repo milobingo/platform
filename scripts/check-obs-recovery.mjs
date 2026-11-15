@@ -31,17 +31,17 @@ function fixture(t,{obs=true,blocked=false,signal=true}={}){
  Object.defineProperties(globalThis,{location:{value:{origin:'https://obs-recovery.invalid',pathname:'/uitzending',search:'?show='+GAME,hash:obs?'#obs='+TOKEN:''},configurable:true,writable:true},document:{value:document,configurable:true,writable:true},window:{value:window,configurable:true,writable:true},AudioContext:{value:Context,configurable:true,writable:true},BroadcastChannel:{value:class{postMessage(){}close(){}},configurable:true,writable:true},fetch:{value:async(path,options={})=>{const body=options.body?JSON.parse(options.body):null;requests.push({path,method:options.method||'GET',body,token:new Headers(options.headers).get('X-Milo-OBS-Token')});if(respond)return respond(path,options,body);return Response.json({state:packet(),serverTime:Date.now()});},configurable:true,writable:true}});
  const bridge=new OutputBridge({isOutput:true,getId:()=>'',showAudio:{unlock:async()=>{unlocks++;return true;},setMuted:value=>muted.push(value),setLevels(){},stop(){stops++;},pause(){},resume(){},cue(){},meters:{}},receive:message=>received.push(message)});clearInterval(bridge.timer);bridge.timer=null;
  t.after(()=>{bridge.dispose();for(const [key,descriptor]of Object.entries(originals))if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];});
- const prove=async()=>{await until(()=>!!bridge.testPlayback);await wait(25);const source=bridge.testPlayback.source;contexts.at(-1).currentTime+=.65;playing=false;source.onended?.();await until(()=>bridge.active===true||!bridge.activating);};
+ const prove=async()=>{await until(()=>!!bridge.activationProbe||!!bridge.testPlayback);await wait(25);const source=(bridge.activationProbe||bridge.testPlayback).source;contexts.at(-1).currentTime+=.65;playing=false;source.onended?.();await until(()=>bridge.active===true||!bridge.activating);};
  return {bridge,document,window,requests,received,contexts,nodes,mixConnections,muted,packet,prove,respond:fn=>{respond=fn;},advance:ms=>{clock.now+=ms;},get stops(){return stops;},get unlocks(){return unlocks;}};
 }
 
 function assertOutputOnly(requests){assert(requests.every(request=>request.path==='/api/obs/output'),'OBS recovery must use only its scoped output endpoint');assert(requests.every(request=>request.method==='GET'||request.body?.action==='output-heartbeat'),'recovery cannot publish, start, resume, release holds or draw');assert(requests.every(request=>request.token===TOKEN));}
 
-test('a new OBS source waits for verified producer state, then creates audio once and activates without a click only after measured test playback',async t=>{
+test('a new OBS source waits for verified producer state and completed silent PCM activation, with no audible jingle or test receipt',async t=>{
  const h=fixture(t);await flush();assert.equal(h.contexts.length,0,'mount alone cannot start audio before a valid producer exists');assert.equal(h.bridge.audioReady,undefined);assert.equal(h.bridge.panel.hidden,false);
  await h.bridge.tick();await until(()=>h.nodes.length===1);assert.equal(h.contexts.length,1);assert.equal(h.bridge.active,undefined);assert.equal(h.bridge.audioReady,undefined);assert.equal(h.bridge.panel.hidden,false);assert.equal(h.requests.filter(r=>r.body).length,0,'readiness is not reported before playback');
  assert(h.bridge.panel.classList.contains('output-unlock--obs'));assert([...h.bridge.panel.querySelectorAll('button')].every(button=>button.hidden));
- await h.prove();assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.active,true);assert.equal(h.bridge.panel.hidden,true);assert.equal(h.bridge.testAck.status,'played');assert.match(h.bridge.panel.querySelector('small').textContent,/Geluid afgespeeld.*OBS-mixer/);assert(h.mixConnections.some(([kind,target])=>kind==='source'&&target===h.bridge.gain));
+ await h.prove();assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.active,true);assert.equal(h.bridge.panel.hidden,true);assert.equal(h.bridge.testAck,undefined);assert(h.nodes[0].buffer.getChannelData(0).every(value=>value===0));assert.match(h.bridge.panel.querySelector('small').textContent,/Uitzendaudio geactiveerd.*OBS-mixer/);assert(h.mixConnections.some(([kind,target])=>kind==='source'&&target===h.bridge.gain));
  h.bridge.consume(h.packet({seq:10}));h.bridge.consume(h.packet({seq:11}));await flush();assert.equal(h.nodes.length,1);assert.equal(h.contexts.length,1);assertOutputOnly(h.requests);
 });
 
@@ -83,8 +83,12 @@ test('a browser that actually blocks autoplay never acknowledges audio, hides th
  for(let i=0;i<5;i++)await h.bridge.tick();assert.equal(h.unlocks,1,'polling must not spin activation attempts while backoff is active');h.advance(11000);await h.bridge.tick();await until(()=>!h.bridge.activating);assert.equal(h.unlocks,2);assert.equal(h.contexts.length,1);assert.equal(h.nodes.length,0);assertOutputOnly(h.requests);
 });
 
-test('a running audio context without a measured audible signal keeps the status visible and never reports a successful heartbeat',async t=>{
- const h=fixture(t,{signal:false});await h.bridge.tick();await h.prove();assert.equal(h.bridge.active,false);assert.equal(h.bridge.audioReady,false);assert.equal(h.bridge.panel.hidden,false);assert.equal(h.bridge.testAck.status,'error');assert.equal(h.requests.filter(r=>r.body?.audioReady).length,0);assert.match(h.bridge.panel.querySelector('small').textContent,/Geen hoorbaar testsignaal/);
+test('silent activation never claims audible test playback; an explicit missing-signal test still fails',async t=>{
+ const h=fixture(t,{signal:false});await h.bridge.tick();await h.prove();assert.equal(h.bridge.active,true);assert.equal(h.bridge.audioReady,true);assert.equal(h.bridge.testAck,undefined);
+ const testing=assert.rejects(h.bridge.playProgramTest(),/Geen hoorbaar testsignaal/);await h.prove();await testing;assert.equal(h.bridge.testAck.status,'error');assert(!h.requests.some(request=>request.body?.testAck?.status==='played'));
+});
+test('a silent probe ended callback without audio-clock progress cannot activate an OBS source',async t=>{
+ const h=fixture(t);await h.bridge.tick();await until(()=>!!h.bridge.activationProbe);h.bridge.activationProbe.source.onended();await until(()=>!h.bridge.activating);assert.equal(h.bridge.audioReady,false);assert.equal(h.bridge.active,false);assert.equal(h.bridge.panel.hidden,false);assert.equal(h.requests.filter(request=>request.body?.audioReady).length,0);assert.equal(h.bridge.testAck,undefined);
 });
 
 for(const invalid of ['mismatched-show','expired-producer','stale-publication','inconsistent-show','stale-generation'])test(`${invalid} never automatically opens audio or releases the paused show`,async t=>{

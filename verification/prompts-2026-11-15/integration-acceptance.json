@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-11-15T22:52:48.994916+00:00",
+  "baselineRevision": "a1323ef9cc45e1a3373c4c051d9858cb7d67634b",
+  "runtime": "v24.18.0",
+  "offlinePrograms": {
+    "passed": 130,
+    "failed": 0,
+    "elapsedMs": 164036
+  },
+  "lint": "passed",
+  "typecheck": "passed",
+  "browserAcceptance": {
+    "showDesign": 4,
+    "familyAndCallCard": 8,
+    "obsAndBroadcast": 8,
+    "regieIncludingVlampie": 7,
+    "audioPreparationAnd15SecondCadence": 4,
+    "backgroundMusic": 1,
+    "allPassed": true,
+    "transport": "Isolated synthetic accounts/API/media; real browser rendering and Web Audio. AI suite uses real Bingo handlers and encrypted test storage."
+  },
+  "realOpenAI": {
+    "completedValidProposals": 9,
+    "extraDirectionPreferenceTest": 1,
+    "offlineFinalCompilerRecheck": 10,
+    "realChildrenOrParticipants": false,
+    "details": [
+      "openai-provider-rehearsal.json",
+      "openai-direction-policy-v2.json"
+    ]
+  },
+  "sitesPrototype": {
+    "private": true,
+    "sourceCommit": "ab0ccd852416804e2a9b2990a7cbc52f3225f782",
+    "deploymentId": "appgdep_6afa3479b5d08191bc7cf7dfdd88b94c",
+    "scenarios": "sites-prototype-scenarios.json",
+    "actualParticipantCalls": false
+  },
+  "remainingPhysicalRehearsal": [
+    "Real OBS source meter and short recording with video and test sound, played back.",
+    "Voluntary adult test accounts: real LiveKit private/live tracks, no echo, withdrawal and reconnect."
+  ],
+  "newGitHubVariablesOrSecrets": false,
+  "schemaMigrationRequired": false,
+  "audioPolicy": "v4-once: prepare fixed show audio explicitly after deployment."
+}

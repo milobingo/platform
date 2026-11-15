@@ -4,6 +4,8 @@ import {CHARACTERS} from '../../server/characters.js';
 import {makeGame,activateBlock} from '../../server/bingo-model.js';
 import {defaultPresentation} from '../../server/presentation-model.js';
 import {obsOutputState} from '../../server/node-obs-access.js';
+import {createBrowserAudioFixture} from '../helpers/browser-audio-fixture.mjs';
+import {scopedShowAudioManifest} from '../../server/show-audio-manifest.js';
 
 // Real built UI, Canvas, Web Audio and MediaRecorder; inert authenticated and
 // scoped API transport. This is a browser recording, never an OBS acceptance.
@@ -43,6 +45,7 @@ async function fixture(context,testInfo,{outputOnly=false}={}){
  const origin=new URL(testInfo.project.use.baseURL).origin,game=makeGame({brandId:'milo',title:'QA eenvoudige uitzendvoorbereiding',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam'},'qa-preparation-regie',origin);
  game.status='running';activateBlock(game,game.plan.blocks.findIndex(block=>block.type==='round'),0);game.state.paused=true;game.state.drawn=[7,19,41];game.state.lastCommit={number:41,committedAt:Date.now()-20000};game.state.window={id:'qa-open-bingo',status:'open',startedAt:Date.now()-1000,endsAt:Date.now()+600000,announcements:[],claims:[]};game.revision=1;
  let relay=outputOnly?{producer:{id:'qa-producer',instanceId:'qa-instance',gameId:game.id,generation:1,until:Date.now()+600000},generation:1,seq:1,publishedAt:Date.now(),snapshot:{production:'milo',gameId:game.id,gameTitle:game.title,hostId:'milo',speakerId:'milo',camera:'host',motion:'idle',paused:true,lastNumber:41,drawn:[7,19,41],bingoPending:true},show:{scene:'host',paused:true,title:game.title,drawBlocked:true},output:null,routing:true,mixer:{voice:100,music:25,effects:50},events:[],voice:null}:null;
+ const audio=createBrowserAudioFixture({owner:'qa-preparation-regie',getGame:async()=>game});
  let disconnected=false;
  const evidence={origin,gameId:game.id,outputOnly,requests:[],producerActions:[],heartbeats:[],leaseHeartbeats:[],forbiddenWrites:[],external:[],unexpected:[],errors:[],expectedNetworkErrors:[],initialGameState:structuredClone(game.state)};
  const observe=page=>{page.on('pageerror',error=>evidence.errors.push(error.message));page.on('console',message=>{if(message.type()!=='error')return;const text=message.text(),url=message.location().url;if(url.startsWith(origin+'/api/obs/')&&/Failed to load resource|Failed to fetch/.test(text))evidence.expectedNetworkErrors.push(text);else evidence.errors.push({text,url});});};
@@ -52,6 +55,9 @@ async function fixture(context,testInfo,{outputOnly=false}={}){
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
   evidence.requests.push({path:url.pathname,method:request.method(),scoped});
   if(scoped){expect(request.headers()['x-milo-obs-token']).toBe(TOKEN);if(disconnected)return route.abort('failed');}
+  if(['/api/openai/show-audio','/api/openai/speech'].includes(url.pathname)&&request.method()==='POST'){if(url.pathname.endsWith('/speech'))expect(request.postDataJSON().cacheOnly).toBe(true);await audio.handle(route);return;}
+  if(url.pathname==='/api/obs/show-audio'&&request.method()==='GET')return route.fulfill({json:scopedShowAudioManifest(await audio.manifest())});
+  if(/^\/api\/obs\/clips\/[a-f0-9]{64}$/.test(url.pathname))return route.fulfill({body:await audio.readClip(url.pathname.split('/').at(-1)),headers:{'Content-Type':'audio/wav'}});
   if(scoped&&url.pathname==='/api/obs/session')return route.fulfill({json:{authenticated:true,role:'output',gameId:game.id,expiresAt:expiresAt()}});
   if(url.pathname==='/api/output'||url.pathname==='/api/obs/output'){
    if(request.method()==='POST'){
@@ -73,7 +79,8 @@ async function fixture(context,testInfo,{outputOnly=false}={}){
   else if(url.pathname===`/api/bingo/games/${game.id}/chat`||url.pathname===`/api/bingo/games/${game.id}/chat/stream`){data={...(url.searchParams.has('after')?{events:[]}:{messages:[]}),cursor:0,hasMore:false,self:{memberId:'qa-host',role:'host',canSend:true,mutedUntil:0,reason:'',profiles:[]},serverTime:Date.now()};if(url.pathname.endsWith('/stream'))return route.fulfill({body:`event: sync\ndata: ${JSON.stringify({...data,reconnect:true})}\n\n`,headers:{'Content-Type':'text/event-stream; charset=utf-8'}});}
   else if(url.pathname===`/api/bingo/games/${game.id}/chat/members`)data={members:[],serverTime:Date.now()};
   else if(url.pathname==='/api/characters')data={characters:Object.values(CHARACTERS),revision:0};
-  else if(url.pathname==='/api/openai/status'||url.pathname==='/api/livekit/settings')data={configured:false,canManage:true,source:'none',environmentConfigured:false,revision:null};
+  else if(url.pathname==='/api/openai/status')data={configured:true,canManage:true,source:'environment',environmentConfigured:true,revision:'qa-synthetic-only'};
+  else if(url.pathname==='/api/livekit/settings')data={configured:false,canManage:true,source:'none',environmentConfigured:false,revision:null};
   else if(url.pathname==='/api/live-calls'||url.pathname==='/api/obs/live-calls')data={call:null,serverTime:Date.now()};
   else if(url.pathname==='/api/presentation/document')data={document:defaultPresentation(),revision:0};
   else if(url.pathname==='/api/bingo/families')data={families:[]};
@@ -87,7 +94,7 @@ async function activate(page,evidence){
  await expect(page.locator('#stage canvas')).toBeVisible();
  await expect.poll(async()=>evidence.heartbeats.some(item=>item.audioReady)||await page.locator('.output-unlock small').textContent().then(text=>text.includes('Geluid is nog geblokkeerd'))).toBe(true);
  if(!evidence.heartbeats.some(item=>item.audioReady))await page.getByRole('button',{name:'Beeld & geluid activeren',exact:true}).click();
- await expect.poll(()=>evidence.heartbeats.some(item=>item.audioReady&&item.audioPlayedAt&&item.testAck?.status==='played')).toBe(true);await expect(page.locator('.output-unlock')).toBeHidden();
+ await expect.poll(()=>evidence.heartbeats.some(item=>item.audioReady&&item.audioPlayedAt)).toBe(true);await expect(page.locator('.output-unlock')).toBeHidden();
 }
 async function startRecording(page){
  await page.bringToFront();
@@ -137,9 +144,9 @@ test('two-page broadcast preparation plays the actual programme test, records im
  try{
   await page.goto('/#/overview');await expect(page.locator('.mf-top-show>strong')).toHaveText(h.game.title);await page.getByRole('button',{name:'Hervat regie',exact:true}).click();await expect(page).toHaveURL(/#\/live/);await page.evaluate(()=>{location.hash='#/overview';});await page.getByRole('navigation',{name:'Show voorbereiden'}).getByRole('button',{name:/Uitzending testen/}).click();const card=page.locator('.mf-panel').filter({has:page.getByRole('heading',{name:'Uitzending testen',exact:true})}).first();
   await card.getByRole('button',{name:'Opnieuw verbinden',exact:true}).click();await expect.poll(()=>h.getRelay()?.snapshot?.gameId).toBe(h.game.id);
-  await outputPage.goto('/uitzending#obs='+TOKEN);await activate(outputPage,h.evidence);await expect(card).toContainText('Geluid afgespeeld.');await expect(card).not.toContainText('OBS door jou gecontroleerd');
+  await outputPage.goto('/uitzending#obs='+TOKEN);await activate(outputPage,h.evidence);await expect(card).toContainText('Geluid in het uitzendvenster geactiveerd.');expect(h.evidence.heartbeats.some(item=>item.testAck?.status==='played')).toBe(false);await expect(card).not.toContainText('OBS door jou gecontroleerd');
   await page.bringToFront();h.evidence.recordingPreparation={focusBeforeCapture:'regie',paused:h.game.state.paused};const metadata=await startRecording(outputPage);h.evidence.recording=metadata;await card.getByRole('button',{name:'Speel testgeluid',exact:true}).click();await outputPage.bringToFront();await outputPage.evaluate(()=>window.__qaAwaitRecordingStarted());await expect(card.getByRole('button',{name:'Speel testgeluid',exact:true})).toBeEnabled();await expect(card).toContainText('Geluid afgespeeld.');
-  await expect.poll(()=>h.evidence.heartbeats.filter(item=>item.testAck?.status==='played').map(item=>item.testAck.id).filter((id,index,items)=>items.indexOf(id)===index).length).toBeGreaterThan(1);await shot(outputPage,'broadcast-programme-active');await shot(page,'broadcast-preparation-three-checks');
+  await expect.poll(()=>h.evidence.heartbeats.filter(item=>item.testAck?.status==='played').map(item=>item.testAck.id).filter((id,index,items)=>items.indexOf(id)===index).length).toBe(1);await shot(outputPage,'broadcast-programme-active');await shot(page,'broadcast-preparation-three-checks');
   await outputPage.waitForTimeout(1100);const recording=await outputPage.evaluate(()=>window.__qaFinishRecording());expect(recording.videoTracks).toBe(1);expect(recording.audioTracks).toBe(1);expect(recording.peak).toBeGreaterThan(.01);expect(recording.programRenderedFrames).toBeGreaterThan(0);expect(recording.microphoneRequests).toBe(0);expect(recording.bytes.length).toBeGreaterThan(10000);await mkdir(output,{recursive:true});await writeFile(output+'/browser-programme-test.webm',Buffer.from(recording.bytes));const decoded=await verifyRecordedClip(outputPage,{stallMainThreadMs:1200});expect(decoded.videoWidth).toBe(metadata.width);expect(decoded.videoHeight).toBe(metadata.height);expect(decoded.decodedAudioChannels).toBeGreaterThan(0);expect(decoded.decodedAudioDuration).toBeGreaterThan(1);expect(decoded.decodedPeakRms).toBeGreaterThan(.01);expect(decoded.recordedPlaybackRms).toBeGreaterThan(.01);expect(decoded.recordedPlaybackAudioFrames).toBeGreaterThan(0);expect(decoded.recordedPlaybackEnded).toBe(true);expect(decoded.recordedVideoPixelRange).toBeGreaterThan(20);h.evidence.recording={...metadata,...decoded,bytes:recording.bytes.length,peak:recording.peak,programRenderedFrames:recording.programRenderedFrames,programMainThreadSampledRms:recording.programMainThreadSampledRms,microphoneRequests:recording.microphoneRequests,actualOBSRecording:false};
   const before=structuredClone(h.game.state);delete before.control;h.disconnect(true);await expect(outputPage.locator('.output-unlock--obs')).toBeVisible();await expect(outputPage.getByRole('button',{name:'Opnieuw verbinden',exact:true})).toHaveCount(0);h.disconnect(false);await expect(outputPage.locator('.output-unlock')).toBeHidden({timeout:15000});await expect.poll(()=>h.getRelay()?.snapshot?.lastNumber).toBe(41);expect(h.getRelay().snapshot.drawn).toEqual([7,19,41]);expect(h.getRelay().snapshot.paused).toBe(true);const restored=structuredClone(h.game.state);delete restored.control;expect(restored).toEqual(before);expect(h.game.state.window.id).toBe('qa-open-bingo');await shot(outputPage,'broadcast-reconnected-existing-show');
   expect(h.evidence.forbiddenWrites).toEqual([]);expect(h.evidence.unexpected).toEqual([]);expect(h.evidence.external).toEqual([]);expect(h.evidence.errors).toEqual([]);h.evidence.finalGameState=structuredClone(h.game.state);

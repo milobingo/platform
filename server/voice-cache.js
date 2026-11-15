@@ -1,7 +1,7 @@
-import {bingoNumberText,FIXED_SHOW_SPEECH,SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
+import {bingoNumberText,FIXED_SHOW_SPEECH,SPEECH_POLICY_VERSION,bingoWindowText} from '../public/bingo-speech.js';
 import {characterLiveInstructions,liveVoice} from './characters.js';
 import {LIVE_MODEL} from './gpt-live.js';
-export const fixedSpeechFor=(brand='milo')=>[...Array.from({length:75},(_,i)=>({id:`ball-${i+1}`,text:bingoNumberText(i+1,brand)})),...Object.entries(FIXED_SHOW_SPEECH).map(([id,text])=>({id,text}))];
+export const fixedSpeechFor=(brand='milo')=>[...Array.from({length:75},(_,i)=>({id:`ball-${i+1}`,text:bingoNumberText(i+1,brand)})),...Object.entries(FIXED_SHOW_SPEECH).map(([id,text])=>({id,text:id==='bingo'?bingoWindowText(brand):text}))];
 export const FIXED_SPEECH=fixedSpeechFor();
 export async function voiceKey(user,model,voice,style,speed,text){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify([SPEECH_POLICY_VERSION,user,model,voice,style,speed,text.trim()])));return Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');}
 export const characterCacheStyle=settings=>characterLiveInstructions(settings,{scripted:true})+`\nPersonage ${settings.id}; profielversie ${settings.revision}.`;

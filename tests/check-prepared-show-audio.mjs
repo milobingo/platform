@@ -24,6 +24,56 @@ function fixture(t,{items=[item(1),item(2),item(3)],ready=[],delay=10000,minimum
  t.after(()=>{state.enabled=false;h.audio.dispose();});return h;
 }
 
+test('a running-show readiness action restores exact cached audio after reload without saving or generating',async t=>{
+ const entries=[item(1),item(2),item(3)],h=fixture(t,{items:entries,ready:entries.map(entry=>entry.key)});
+ const result=await h.audio.ensure({restoreCached:true});
+ assert.equal(result.complete,true);assert.equal(h.flushes,0);assert.equal(h.manifests,1);assert.equal(h.requests.length,3);assert.equal(h.generations.length,0);
+ assert(h.requests.every(request=>request.body.cacheOnly===true));assert(h.snapshots.some(snapshot=>snapshot.restoring));assert.equal(result.restoring,false);
+ assert.equal(h.audio.lookup(item(2).text,1,{characterId:'milo'}).key,item(2).key);
+ await h.audio.ensure({restoreCached:true});assert.equal(h.manifests,1);assert.equal(h.requests.length,3);
+});
+
+test('two cached readiness checks share a single restore and cannot duplicate downloads',async t=>{
+ const gate=defer(),h=fixture(t,{items:[item(1)],ready:[item(1).key],fetcher:async(entry,_options,h)=>{await gate.promise;return h.reply(entry);}});
+ const first=h.audio.ensure({restoreCached:true}),second=h.audio.ensure({restoreCached:true});await until(()=>h.requests.length===1);
+ assert.equal(h.manifests,1);assert.equal(h.generations.length,0);gate.resolve();assert.equal((await first).complete,true);assert.equal((await second).complete,true);assert.equal(h.requests.length,1);
+});
+
+test('cached recovery retains available audio but a missing clip never becomes a generation request',async t=>{
+ const h=fixture(t,{ready:[item(1).key,item(3).key]});
+ await assert.rejects(h.audio.ensure({restoreCached:true}),/1 van de 3.*ontbreken/);
+ assert.equal(h.audio.state.complete,false);assert.equal(h.audio.state.ready,2);assert.equal(h.requests.length,2);assert.equal(h.generations.length,0);assert.equal(h.flushes,0);
+ assert(h.requests.every(request=>request.body.cacheOnly===true));assert.match(h.audio.state.error,/spelstand blijft behouden/);assert.match(h.audio.state.error,/Resterende audio voorbereiden/);
+ await assert.rejects(h.audio.ensure(),/Resterende audio voorbereiden/);assert.equal(h.manifests,1);
+ await h.audio.prepare({retry:true});assert.equal(h.audio.state.complete,true);assert.equal(h.flushes,1);assert.deepEqual(h.generations,[item(2).key]);assert.equal(h.requests.length,3);
+});
+
+test('a clip removed after manifest enumeration reports recovery without falling back to paid speech',async t=>{
+ const h=fixture(t,{items:[item(1)],ready:[item(1).key],retryLimit:2,fetcher:async()=>Response.json({error:{code:'speech_not_prepared',message:'Oude fouttekst'}},{status:409})});
+ await assert.rejects(h.audio.ensure({restoreCached:true}),/opgeslagen stemfragment is niet meer beschikbaar/);
+ assert.equal(h.requests.length,1);assert.equal(h.generations.length,0);assert.equal(h.audio.state.complete,false);assert.match(h.audio.state.error,/spelstand blijft behouden/);
+});
+
+test('restoring after a non-audio edit verifies the manifest and reuses current bytes without another preparation action',async t=>{
+ const h=fixture(t);await h.audio.prepare();const original=h.audio.lookup(item(1).text,1,{characterId:'milo'}).bytes;
+ h.state.identity+='/non-audio-edit';h.audio.track();assert.equal(h.audio.state.phase,'stale');
+ await h.audio.ensure({restoreCached:true});assert.equal(h.audio.state.complete,true);assert.equal(h.audio.lookup(item(1).text,1,{characterId:'milo'}).bytes,original);
+ assert.equal(h.flushes,1);assert.equal(h.manifests,2);assert.equal(h.requests.length,3);assert.equal(h.generations.length,3);
+});
+
+test('a genuinely changed voice with no cached replacement never restores the older voice',async t=>{
+ const h=fixture(t,{items:[item(1)]});await h.audio.prepare();h.state.identity+='/new-voice';h.items=[item(9,item(1).text)];h.audio.track();
+ await assert.rejects(h.audio.ensure({restoreCached:true}),/ontbreken/);assert.equal(h.requests.length,1);assert.equal(h.flushes,1);assert.deepEqual(h.generations,[item(1).key]);
+ assert.equal(h.audio.lookup(item(1).text,1,{characterId:'milo'}),null);assert.equal(h.audio.state.complete,false);
+});
+
+for(const boundary of ['manifest','bytes'])test(`changing the show during cached ${boundary} recovery aborts without stale readiness or paid requests`,async t=>{
+ const gate=defer();let entered=false;
+ const h=fixture(t,{items:[item(1)],ready:[item(1).key],manifest:boundary==='manifest'?async()=>{entered=true;await gate.promise;return {fingerprint:'old',items:[{...item(1),ready:true}]};}:undefined,fetcher:async entry=>{const response=responseFor(entry);response.arrayBuffer=async()=>{entered=true;await gate.promise;return new Uint8Array([1,2,3]).buffer;};return response;}});
+ const operation=h.audio.ensure({restoreCached:true});await until(()=>entered);h.state.gameId='show-b';h.state.identity='show-b/plan-1/profile-1';h.audio.track();gate.resolve();
+ await assert.rejects(operation,error=>error.name==='AbortError');assert.equal(h.audio.state.complete,false);assert.equal(h.audio.cache.size,0);assert.equal(h.generations.length,0);assert.equal(h.flushes,0);
+});
+
 test('every manifest item is loaded with at most two requests, after the latest preparation is flushed',async t=>{
  const flushGate=defer(),waiters=[];let active=0,maxActive=0;
  const entries=Array.from({length:9},(_,i)=>item(i+1)),h=fixture(t,{items:entries,ready:entries.filter((_,i)=>i%2===0).map(entry=>entry.key),beforePrepare:()=>flushGate.promise,fetcher:async(entry,_options,h)=>{active++;maxActive=Math.max(maxActive,active);const gate=defer();waiters.push({entry,gate});await gate.promise;active--;return h.reply(entry);}});

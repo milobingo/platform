@@ -1,0 +1,13 @@
+{
+  "scenarios": [
+    "winner-success-one-effect-safe-close",
+    "declined-safe-close",
+    "no-answer-safe-close",
+    "disconnect-backstage-safe-close",
+    "finale-to-closing",
+    "mobile-random-2-incoming-call"
+  ],
+  "external": [],
+  "api": [],
+  "errors": []
+}

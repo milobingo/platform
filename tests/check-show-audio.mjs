@@ -37,8 +37,8 @@ async function fixture(t){
 test('all 75 official scripts use the fixed BINGO names and Dutch words; Vlampie retains its existing script',()=>{
  const scripts=Array.from({length:75},(_,i)=>bingoNumberText(i+1));assert.equal(new Set(scripts).size,75);
  for(let n=1;n<=75;n++){assert(scripts[n-1].startsWith(['Bernhard','Izaak','Nico','Gerard','Otto'][Math.floor((n-1)/15)]+' '));assert(!/\d/.test(scripts[n-1]));assert.equal(bingoNumberText(n,'vlampie'),`Nummer ${n}. ${n}!`);}
- assert.equal(bingoNumberText(15),'Bernhard vijftien! Vijftien!');assert.equal(bingoNumberText(16),'Izaak zestien! Zestien!');assert.equal(bingoNumberText(22),'Izaak tweeëntwintig! Tweeëntwintig!');assert.equal(dutchNumber(72),'tweeënzeventig');
- assert.equal(normalizedScript('Nico zevenendertig! Zevenendertig!'),normalizedScript('Nico 37! 37!'));assert.notEqual(normalizedScript('Nico thirty-seven! Thirty-seven!'),normalizedScript('Nico 37! 37!'));
+ assert.equal(bingoNumberText(15),'Bernhard vijftien!');assert.equal(bingoNumberText(16),'Izaak zestien!');assert.equal(bingoNumberText(22),'Izaak tweeëntwintig!');assert.equal(dutchNumber(72),'tweeënzeventig');
+ assert.equal(normalizedScript('Nico zevenendertig!'),normalizedScript('Nico 37!'));assert.notEqual(normalizedScript('Nico thirty-seven!'),normalizedScript('Nico 37!'));
  for(const n of [0,76,-1,1.5,'9'])assert.throws(()=>bingoNumberText(n));
  assert.match(characterLiveInstructions(CHARACTERS.milo,{scripted:true}),/uitsluitend natuurlijk Nederlands/);assert.match(characterLiveInstructions(CHARACTERS.milo,{scripted:true}),/enthousiasme/);
 });

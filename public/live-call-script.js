@@ -1,6 +1,9 @@
 // These fixed lines are prepared with the rest of the show. A selected child
 // is identified on screen; their name never triggers a surprise audio request.
 export const LIVE_CALL_LINES=Object.freeze({
+ winnerGreeting:'Wat knap! Van harte gefeliciteerd met je bevestigde bingo en de prijs! Ben je er blij mee?',
+ winnerQuestion:'Wat dacht je toen je die laatste bal hoorde? Vertel maar, ik luister!',
+ winnerThank:'Wat leuk dat je even met ons praatte. Geniet van je prijs! Een groot applaus voor onze winnaar. Dag!',
  greeting:'Hallo, wat fijn dat je er bent! Jij bent mijn toverassistent. Doe je mee? Tovervinger klaar!',
  choice:'Welke magie kies jij: fonkelende sterren of vrolijke bubbels? Tik op het scherm, of zeg het hardop.',
  stars:'Sterren! Wat een schitterende keuze. Iedereen thuis mag meedoen. Houd je tovervinger maar klaar!',

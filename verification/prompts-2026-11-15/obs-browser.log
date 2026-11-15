@@ -1,0 +1,15 @@
+
+Running 8 tests using 1 worker
+
+(node:293823) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/broadcast-preparation.spec.mjs:142:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay (16.1s)
+  ✓  2 tests/browser/broadcast-preparation.spec.mjs:156:1 › blocked autoplay keeps a compact activation fallback until a real programme tone finishes; simulated scoped API (4.0s)
+  ✓  3 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 390px; simulated API (2.0s)
+  ✓  4 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 1366px; simulated API (2.2s)
+  ✓  5 tests/browser/obs-source.spec.mjs:74:1 › OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API (4.5s)
+  ✓  6 tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 503; real Chromium Web Audio, simulated scoped API (22.9s)
+  ✓  7 tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 409; real Chromium Web Audio, simulated scoped API (23.8s)
+  ✓  8 tests/browser/obs-source.spec.mjs:174:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API (1.6s)
+
+  8 passed (1.3m)

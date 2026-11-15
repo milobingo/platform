@@ -1,6 +1,6 @@
 import {showBrand} from './show-brands.js?v=36';
 import {bt} from './brand-ui.js?v=37';
-import {bingoNumberText,roundSpeech,prizeSpeech,FIXED_SHOW_SPEECH} from './bingo-speech.js';
+import {bingoNumberText,roundSpeech,prizeSpeech,FIXED_SHOW_SPEECH,bingoWindowText} from './bingo-speech.js';
 export const SCENES=Object.freeze([
  {id:'still',name:'Still met showlogo',short:'Still',camera:'wide',hint:'Tussenbeeld zonder presentator',key:'S'},
  {id:'rules',name:'Spelregels',short:'Spelregels',camera:'wide',hint:'Geselecteerde spelregels',key:'R'},
@@ -97,7 +97,7 @@ export class ShowDirector{
   }
   if(step.commit&&this.requestCommit&&!this.flow.serverCommitted){
    const flow=this.flow;flow.awaiting=true;
-   Promise.resolve().then(()=>{if(this.flow!==flow)return null;if(this.drawBlocked){flow.awaiting=false;flow.drawBlocked=true;flow.firstOnResume=first;return null;}return this.requestCommit(this.pendingToken);}).then(commit=>{if(this.flow!==flow||!commit)return;this.pending=commit.number;flow.serverCommitted=true;flow.awaiting=false;if(this.paused){flow.enterOnResume=true;flow.firstOnResume=first;}else this.enter(first);}).catch(error=>{if(this.flow!==flow)return;flow.awaiting=false;flow.externalFailed=true;this.pause();this.event('external-error',{error});});return;
+   Promise.resolve().then(()=>{if(this.flow!==flow)return null;if(this.drawBlocked){flow.awaiting=false;flow.drawBlocked=true;flow.firstOnResume=first;return null;}return this.requestCommit(this.pendingToken);}).then(commit=>{if(this.flow!==flow||!commit)return;this.pending=commit.number;flow.officialBall=commit.officialBall||null;flow.serverCommitted=true;flow.awaiting=false;if(this.paused){flow.enterOnResume=true;flow.firstOnResume=first;}else this.enter(first);}).catch(error=>{if(this.flow!==flow)return;flow.awaiting=false;flow.externalFailed=true;this.pause();this.event('external-error',{error});});return;
   }
   this.lookAt=step.lookAt||'camera';
   this.setScene(step.scene,step.camera,first,false);
@@ -109,7 +109,7 @@ export class ShowDirector{
   this.event('motion',{motion:step.motion||'idle',lookAt:this.lookAt});
   if(step.sound&&this.config.sound)this.event('sound',{cue:step.sound});
   const text=typeof step.speech==='function'?step.speech():step.speech;
-  this.flow.hasSpeech=!!(text&&this.config.voice);if(this.flow.hasSpeech)this.event('speech',{text});
+  this.flow.hasSpeech=!!(text&&this.config.voice);if(this.flow.hasSpeech&&!this.flow.spokenSteps?.has(this.flow.index)){(this.flow.spokenSteps??=new Set()).add(this.flow.index);this.event('speech',{text,...(step.commit&&this.flow.officialBall?{officialBall:this.flow.officialBall}:{})});}
   this.event('change');
  }
  tick(delta,{voiceBusy=false}={}){if(this.callHold)return;
@@ -126,7 +126,7 @@ export class ShowDirector{
   if(this.flow.kind==='draw'&&step.commit&&!this.flow.numberFinished){const flow=this.flow;flow.numberFinished=true;this.event('numberfinished',{number:this.number,index:this.drawn.length-1,count:this.drawn.length});if(this.flow!==flow||this.paused||this.callHold||this.externalHold||this.drawBlocked||this.narrationHold)return;}
   if(this.flow.index+1<this.flow.steps.length){this.flow.index++;this.flow.age=0;this.enter();}
   else{const kind=this.flow.kind;this.flow=null;
-   if(kind==='rejected'&&this.suspended){this.flow=this.suspended;this.suspended=null;if(this.flow.externalFailed){this.flow.externalFailed=false;this.flow.age=0;this.enter();return;}const savedAge=this.flow.age;this.scene=this.step.scene;this.sceneAge=savedAge;if(this.config.autoCamera)this.event('camera',{camera:this.step.camera});this.lookAt=this.step.lookAt||'camera';this.event('motion',{motion:this.step.motion||'idle',lookAt:this.lookAt});const text=typeof this.step.speech==='function'?this.step.speech():this.step.speech;if(text&&this.config.voice)this.event('speech',{text});}
+   if(kind==='rejected'&&this.suspended){this.flow=this.suspended;this.suspended=null;if(this.flow.externalFailed){this.flow.externalFailed=false;this.flow.age=0;this.enter();return;}const savedAge=this.flow.age;this.scene=this.step.scene;this.sceneAge=savedAge;if(this.config.autoCamera)this.event('camera',{camera:this.step.camera});this.lookAt=this.step.lookAt||'camera';this.event('motion',{motion:this.step.motion||'idle',lookAt:this.lookAt});const text=typeof this.step.speech==='function'?this.step.speech():this.step.speech;if(text&&this.config.voice&&!this.flow.spokenSteps?.has(this.flow.index)){(this.flow.spokenSteps??=new Set()).add(this.flow.index);this.event('speech',{text,...(this.step.commit&&this.flow.officialBall?{officialBall:this.flow.officialBall}:{})});}}
    if(kind==='rejected'&&!this.flow)this.setScene('host','desk');
    this.event('change');
   }
@@ -138,7 +138,7 @@ export class ShowDirector{
   if(this.scene==='checking')return false;
   this.suspended=this.flow;this.flow=null;this.claim={name:String(name).trim().slice(0,60)||'Een deelnemer',card:String(card).trim().slice(0,40),status:'checking'};
   this.paused=false;this.lookAt='camera';this.event('cancel');this.setScene('checking','portrait',true);this.event('motion',{motion:'think',lookAt:'camera'});
-  if(this.config.voice)this.event('speech',{text:FIXED_SHOW_SPEECH.bingo});return true;
+  if(this.config.voice)this.event('speech',{text:bingoWindowText(this.brandId||this.config.brandId)});return true;
  }
  resolveBingo(approved,{checked=false}={}){
   if(this.scene!=='checking'||!this.claim||(approved&&!checked))return false;

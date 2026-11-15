@@ -3,7 +3,9 @@ const OBJECT='private/openai-key.v1';
 const AAD=new TextEncoder().encode('appgprj_6ac2dd7f3d6c819190b17cc04ae8daad/openai-key/v1');
 // Native overrides deliberately cannot import credentials from a Sites backup.
 const NATIVE_OPENAI='native-provider-openai';
-const encode=bytes=>btoa(String.fromCharCode(...new Uint8Array(bytes)));
+// Private design workspaces can exceed the engine's argument-count limit.
+// Chunking retains the existing base64 envelope for every secret size.
+const encode=bytes=>{const value=new Uint8Array(bytes),parts=[];for(let offset=0;offset<value.length;offset+=32768)parts.push(String.fromCharCode(...value.subarray(offset,offset+32768)));return btoa(parts.join(''));};
 const decode=text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0));
 export function settingsReady(env){return !!env.SETTINGS&&/^[a-f0-9]{64}$/i.test(env.VLAMPIE_SETTINGS_KEY||'');}
 async function master(env){

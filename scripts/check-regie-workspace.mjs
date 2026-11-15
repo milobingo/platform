@@ -46,7 +46,7 @@ function harness(fetcher=async()=>Response.json({}),pathname='/'){
  class Observer{observe(){}unobserve(){}disconnect(){}}
  class Channel{postMessage(){}close(){}}
  const computed=()=>new Proxy({getPropertyValue:()=>'',fontSize:'14px',display:'block',visibility:'visible',position:'static',transform:'none',opacity:'1'},{get:(t,k)=>t[k]??''});
- const speechSynthesis={pause(){},resume(){},cancel(){},getVoices(){return []},speak(u){this.lastUtterance=u;u.onstart?.();timeout(()=>u.onend?.(),20);}};
+ const speechSynthesis={pause(){},resume(){},cancel(){},getVoices(){return [{lang:'nl-NL',name:'Fictieve Nederlandse teststem'}]},speak(u){this.lastUtterance=u;u.onstart?.();timeout(()=>u.onend?.(),20);}};
  const fetch=async(url,opts={})=>{const request={url:String(url),method:opts.method||'GET',body:opts.body?JSON.parse(opts.body):null};requests.push(request);return fetcher(request);};
  const raf=fn=>timeout(()=>fn(performance.now()),16),matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){},addListener(){},removeListener(){}});
  const context={window,document,location,history:{replaceState(){}},navigator:{userAgent:'dom-qa',clipboard:{writeText:async()=>{}}},localStorage,sessionStorage,

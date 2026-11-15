@@ -10,7 +10,7 @@ export function childAvailability(entry,now=Date.now(),simulation=false){
  if(!entry)return {ready:false,label:'Nog geen kindje geselecteerd'};
  if(simulation)return {ready:true,label:'Oefenkind · gesimuleerd bereikbaar'};
  if(entry.child!==true||entry.callConsentEnabled!==true||!entry.callConsentAt||entry.parentConsent!==true)return {ready:false,label:'Geen actuele toestemming voor dit kindje'};
- if(entry.micChecked!==true||entry.connectionChecked!==true||entry.headphones!==true||!entry.technicalReadyAt||now-Number(entry.technicalReadyAt)>30*60*1000)return {ready:false,label:'Microfoon, koptelefoon en verbinding nog controleren'};
+ if(entry.micChecked!==true||entry.connectionChecked!==true||entry.headphones!==true||!entry.technicalReadyAt||entry.technicalContext&&entry.technicalContext!==entry.callPresenceContext)return {ready:false,label:'Microfoon, koptelefoon en verbinding nog controleren'};
  if(!entry.callPresenceAt||Number(entry.callPresenceAt)>now+5000||now-Number(entry.callPresenceAt)>45000)return {ready:false,label:'App niet recent bereikbaar'};
  return {ready:true,label:'Bereikbaar · toestemming en apparaat gecontroleerd'};
 }

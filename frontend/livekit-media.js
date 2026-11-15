@@ -146,7 +146,7 @@ export class LiveKitMedia{
   try{const publication=await room.localParticipant.publishTrack(local,{source:this.sdk.Track?.Source?.Microphone||'microphone',name:'presenter-audio',dtx:true,red:true,audioPreset:{maxBitrate:48000}});if(!this.current(epoch,room)||!this.sessionValid()){await room.localParticipant.unpublishTrack(local,true).catch(noop);stopTrack(clone);throw mediaError('De presentatorkoppeling hoort bij een eerdere oproep.','livekit_stale');}this.presenter.publication=publication;this.emit({audioReady:true});return publication;}catch(error){stopTrack(clone);if(this.presenter?.clone===clone)this.presenter=null;throw error;}
  }
  setAudioReady(ready){return this.emit({audioReady:!!ready&&this.state.connected});}
- async heartbeat(){if(!this.state.connected||!this.sessionValid())return;const extra={connected:true,target:this.session.target,micReady:this.role==='output'?true:this.role==='host'&&this.session.target==='live'?true:this.state.micReady,audioReady:this.state.audioReady};return this.api.heartbeat?this.api.heartbeat(extra):this.api.action?.('heartbeat',extra);}
+ async heartbeat(){if(!this.state.connected||!this.sessionValid())return;const extra={connected:true,target:this.session.target,micReady:this.role==='output'?true:this.role==='host'&&this.session.target==='live'?true:this.state.micReady,audioReady:this.state.audioReady,...(this.role==='host'&&this.session.target==='backstage'&&this.getCall()?.brandId==='milo'?{playerTrackReceived:this.remoteTracks.size>0}:{})};return this.api.heartbeat?this.api.heartbeat(extra):this.api.action?.('heartbeat',extra);}
  startHeartbeat(epoch,room){if(!this.heartbeatMs||!this.interval)return;this.heartbeatTimer=this.interval(()=>{if(!this.current(epoch,room))return;if(!this.sessionValid()){void this.disconnect();return;}void this.heartbeat().catch(error=>{if(this.current(epoch,room))this.fail(error,epoch);});},this.heartbeatMs);this.heartbeatTimer?.unref?.();}
  async closeRoom(){
   if(this.heartbeatTimer){this.clear?.(this.heartbeatTimer);this.heartbeatTimer=null;}
@@ -160,7 +160,7 @@ export class LiveKitMedia{
  async dispose(){if(this.disposed)return;this.disposed=true;this.epoch++;await this.closeRoom();this.state=Object.freeze({...this.state,phase:'disconnected',target:null,connected:false,micReady:false,micPublished:false,micMuted:true,remoteCount:0,audioReady:false,error:'',simulated:false});this.listeners.clear();this.onState=noop;this.onRemoteTrack=noop;this.onFailure=noop;}
 }
 
-export async function runLiveKitPreflight({api,gameId,profileId,onStatus=noop,onLevel=noop,signal,loadSDK=loadClient,mediaDevices=globalThis.navigator?.mediaDevices,AudioContext=globalThis.AudioContext||globalThis.webkitAudioContext,sampleMs=1500,timeoutMs=12000}={}){
+export async function runLiveKitPreflight({api,gameId,profileId,technicalContext,onStatus=noop,onLevel=noop,signal,loadSDK=loadClient,mediaDevices=globalThis.navigator?.mediaDevices,AudioContext=globalThis.AudioContext||globalThis.webkitAudioContext,sampleMs=1500,timeoutMs=12000}={}){
  if(!mediaDevices?.getUserMedia)throw mediaError('Deze browser kan geen microfoon openen. Gebruik een recente browser via HTTPS.','microphone_unavailable');
  if(signal?.aborted)throw mediaError('De verbindingstest is geannuleerd.','livekit_stale');
  let stream,context,source,analyser,room,sampleTimer,deadline,aborted=false,timedOut=false,peak=0;
@@ -178,7 +178,7 @@ export async function runLiveKitPreflight({api,gameId,profileId,onStatus=noop,on
   if(peak<.003)throw mediaError('Er is nog geen duidelijk microfoongeluid gehoord. Controleer je microfoon en probeer opnieuw.','microphone_silent');
   for(const track of stream.getTracks())stopTrack(track);source.disconnect();source=null;await context.close();context=null;
   check();onStatus('Microfoon werkt. De beveiligde internetverbinding wordt nu kort getest…');
-  const data=api?.preflight?await api.preflight(profileId):await requestPreflight(api,{gameId,profileId});check();
+  const data=api?.preflight?await api.preflight(profileId,technicalContext):await requestPreflight(api,{gameId,profileId,technicalContext});check();
   if(!data?.token||!/^wss:\/\//.test(data.url||''))throw mediaError('De LiveKit-koppeling is nog niet klaar voor een echte verbindingstest.');
   const sdk=await loadSDK();check();room=new sdk.Room({adaptiveStream:false,dynacast:true,webAudioMix:false,disconnectOnPageLeave:true});
   const openingRoom=room,connecting=room.connect(data.url,data.token,{autoSubscribe:false,maxRetries:0});connecting.then(()=>{if(aborted||timedOut||signal?.aborted)void openingRoom.disconnect(true);},noop);

@@ -15,7 +15,7 @@ function reveal(d){assert.equal(d.draw(),true);d.tick(1.15);d.tick(4.3);assert.e
 function finish(d){for(let n=0;d.flow&&n<1000;n++)d.tick(.05);assert.equal(d.flow,null);}
 
 test('all 75 live Milo number calls use exactly the prepared Dutch letter/name script',()=>{
- const boundaries={1:'Bernhard één! Één!',15:'Bernhard vijftien! Vijftien!',16:'Izaak zestien! Zestien!',30:'Izaak dertig! Dertig!',31:'Nico eenendertig! Eenendertig!',45:'Nico vijfenveertig! Vijfenveertig!',46:'Gerard zesenveertig! Zesenveertig!',60:'Gerard zestig! Zestig!',61:'Otto eenenzestig! Eenenzestig!',75:'Otto vijfenzeventig! Vijfenzeventig!'};
+ const boundaries={1:'Bernhard één!',15:'Bernhard vijftien!',16:'Izaak zestien!',30:'Izaak dertig!',31:'Nico eenendertig!',45:'Nico vijfenveertig!',46:'Gerard zesenveertig!',60:'Gerard zestig!',61:'Otto eenenzestig!',75:'Otto vijfenzeventig!'};
  for(let number=1;number<=75;number++){const {director:d,events}=directorFixture({number});reveal(d);assert.equal(d.number,number);assert.deepEqual(events.filter(e=>e.type==='speech').map(e=>e.text),[bingoNumberText(number)]);if(boundaries[number])assert.equal(bingoNumberText(number),boundaries[number]);}
 });
 

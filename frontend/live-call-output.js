@@ -117,7 +117,7 @@ export class LiveCallOutput {
   if(!this.current(call.id,token))return;
   const clip=await this.engine.bridge.preparedCallClip?.(key,call.characterId,call.id);
   if(!this.current(call.id,token))return;
-  if(!clip?.bytes||clip.text!==liveCallLine(key))throw Error('Het vaste belletje is nog niet vooraf geladen. Sluit het gesprek veilig af en laad de showaudio bij de voorbereiding.');
+  if(!clip?.bytes||clip.text!==(call.preparedLines?.[key]||liveCallLine(key)))throw Error('Het vaste belletje is nog niet vooraf geladen. Sluit het gesprek veilig af en laad de showaudio bij de voorbereiding.');
   this.transcript=clip.text;this.emit();
   await this.audio.playPrepared(clip.bytes,{isCurrent:()=>this.current(call.id,token),onStart:()=>{this.playing=true;this.emit();}});
   if(this.current(call.id,token)){this.playing=false;this.emit();}
@@ -126,10 +126,10 @@ export class LiveCallOutput {
   const call=this.call;if(call?.mode!=='prepared'||!this.sessionReady||!this.sessionCall||this.preparedTask||!live(call)||call.aiMuted)return;
   const token=this.epoch,id=call.id;
   const task=(async()=>{
-   if(!call.magicReadyAt&&!this.preparedGreetingDone){await this.playPreparedLine('greeting',call,token);await this.playPreparedLine('choice',call,token);if(!this.current(id,token))return;await this.callAction('magic-ready',{},call);this.preparedGreetingDone=true;}
+   if(!call.magicReadyAt&&!this.preparedGreetingDone){if(call.source==='winner'){try{const clip=await this.callAction('winner-greeting',{},call);if(!this.current(id,token))return;this.transcript=clip.text;await this.audio.playPrepared(Uint8Array.from(clip.bytes),{isCurrent:()=>this.current(id,token),onStart:()=>{this.playing=true;this.emit();}});this.playing=false;}catch(error){if(!this.current(id,token))return;this.error='De exacte winnaarbegroeting is niet beschikbaar. De voorbereide felicitatie wordt gebruikt.';this.emit();await this.playPreparedLine('winnerGreeting',call,token);}}else{await this.playPreparedLine('greeting',call,token);await this.playPreparedLine('choice',call,token);}if(!this.current(id,token))return;await this.callAction('magic-ready',{},call);this.preparedGreetingDone=true;}
    if(!this.current(id,token))return;
    const latest=this.call;
-   if(latest.outroRequestedAt&&!this.preparedOutroDone){await this.playPreparedLine('thank',latest,token);if(!this.current(id,token))return;this.preparedOutroDone=true;await this.callAction('finish',{},latest);return;}
+   if(latest.outroRequestedAt&&!this.preparedOutroDone){await this.playPreparedLine(latest.source==='winner'?'winnerThank':'thank',latest,token);if(!this.current(id,token))return;this.preparedOutroDone=true;await this.callAction('finish',{},latest);return;}
    const magic=latest.magic;
    if(magic&&!magic.playedAt&&this.preparedMagicId!==magic.id){
     this.preparedMagicId=magic.id;
@@ -162,9 +162,16 @@ export class LiveCallOutput {
   // GPT-Live starts from the server's greeting context, with no response.create.
   this.greetingStarted=true;this.generating=false;this.setVAD(true);
  }
+ async usePreparedFallback(){
+  if(this.fallingBack||!live(this.call)||this.call.mode!=='ai')return;this.fallingBack=true;
+  this.audio?.setListening(false);this.audio?.setSession({...this.call,aiMuted:true},{enabled:true});this.audio?.clearPresenter();this.playing=false;this.generating=false;
+  const peer=this.peer,channel=this.channel;if(peer){peer.ontrack=null;peer.onconnectionstatechange=null;}if(channel){channel.onmessage=null;channel.onclose=null;channel.onopen=null;}channel?.close?.();peer?.close?.();this.peer=null;this.channel=null;
+  try{const response=await this.callAction('prepared-fallback');if(!response?.fallback||!live(response.call))throw Error('De veilige spraakovergang is niet bevestigd.');this.call=response.call;this.sessionCall={...response.call};this.sessionReady=true;this.preparedGreetingDone=false;this.error='De spontane stem week af van het Nederlands. De voorbereide Nederlandse dialoog neemt over.';this.audio.setSession(this.call,{enabled:true,voice:(this.engine.bridge.mixer?.voice??100)/100});this.maybePrepared();this.emit();}
+  catch(error){await this.fail(error);}finally{this.fallingBack=false;}
+ }
  event(event){
   if(event.type==='session.started'){this.sessionReady=true;this.greet();}
-  if(event.type==='session.output_transcript.delta'){this.transcript=(this.transcript+String(event.delta||'')).slice(-700);if(/\b(?:je|jij|jullie)\b.{0,35}\b(?:bingo|gewonnen|winnaar|wint|winnen)\b|\b(?:prijs|bingo)\b.{0,30}\b(?:gewonnen|winnaar|voor jou|voor jullie)\b/iu.test(this.transcript)){void this.fail(Error('De vrije AI-reactie bevat een onbevestigde speluitspraak. Alleen de vaste spelserveraankondiging mag een prijs of bingo bevestigen.'));return;}}
+  if(event.type==='session.output_transcript.delta'){this.transcript=(this.transcript+String(event.delta||'')).slice(-700);if(/\b(?:hello there|how are you|congratulations|you have won|are you happy|what do you|tell me about|let us count|thank you for)\b/iu.test(this.transcript)){void this.usePreparedFallback();return;}if(/\b(?:je|jij|jullie)\b.{0,35}\b(?:bingo|gewonnen|winnaar|wint|winnen)\b|\b(?:prijs|bingo)\b.{0,30}\b(?:gewonnen|winnaar|voor jou|voor jullie)\b/iu.test(this.transcript)){if(this.call?.source==='winner'){void this.usePreparedFallback();return;}void this.fail(Error('De vrije AI-reactie bevat een onbevestigde speluitspraak. Alleen de vaste spelserveraankondiging mag een prijs of bingo bevestigen.'));return;}}
   if(event.type==='session.closed'){if(this.sessionCall)void this.fail(Error('GPT-Live heeft het gesprek beëindigd. Controleer de terugkeer naar de show.'));return;}
   if(event.type==='session.delegation.created'){
    this.send({type:'session.thinking.append',delegation_id:event.delegation_id||event.id||null,content:'Er zijn tijdens dit belmoment geen spelacties of opzoekfuncties beschikbaar. Verwijs een spelvraag kort naar de regie en hervat het vriendelijke gesprek.'});

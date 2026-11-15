@@ -154,7 +154,7 @@ export function createMiloPuppet(image,{talkImage=null,profile={}}={}){
   desired=poseSmoother.sample(desired,{deltaTime:dt,paused,seek:immediate||(!paused&&jump)||reducedMotion});
   lastPose={...desired};previous={time:Number(idleTime),motion};
   const pose=desired,face=paused&&lastFace&&!immediate?{...lastFace,mouth:speaking?lastFace.mouth:0}:{mouth:speaking?clamp(Number(mouth)||0,0,1):0,blink:reducedMotion?0:clamp(Number(blink)||0,0,1)};
-  if(lastFace&&!paused&&!immediate){const f=1-Math.exp(-dt*28);face.mouth=lastFace.mouth+(face.mouth-lastFace.mouth)*f;}
+  if(lastFace&&!paused&&!immediate){const f=1-Math.exp(-dt*(face.mouth>lastFace.mouth?36:22));face.mouth=lastFace.mouth+(face.mouth-lastFace.mouth)*f;}
   lastFace={...face};
   const scale=height/bounds.h,width=bounds.w*scale;
   let base=mul(move(x,y),mul([scale,0,0,scale,0,0],move(-bounds.x-bounds.w/2,-bounds.y-bounds.h)));
@@ -191,7 +191,7 @@ export function createMiloPuppet(image,{talkImage=null,profile={}}={}){
   paint(ctx,parts.head,head);paint(ctx,parts.hat,hat);
   if(mouthPatch&&face.mouth>.015){
    const open=clamp(face.mouth*1.45,0,1),[mx,my,mw,mh]=C.mouth;
-   ctx.save();apply(ctx,head);ctx.globalAlpha*=clamp(open*2.2,0,1);const h=mh*(.62+.38*open);ctx.drawImage(mouthPatch.canvas,mx,my+(mh-h)*.22,mw,h);ctx.restore();
+   ctx.save();apply(ctx,head);ctx.globalAlpha*=clamp(open*2.4,0,1);const h=mh*(.42+.58*open);ctx.drawImage(mouthPatch.canvas,mx,my+(mh-h)*.28,mw,h);ctx.restore();
   }
   gaze(ctx,irises,clamp((pose.eyeX||0)*C.height,-3.8,3.8),clamp((pose.eyeY||0)*C.height,-2.6,2.6),head);
   C.eyes.forEach((rect,index)=>closeLid(ctx,image,rect,face.blink,head,index));

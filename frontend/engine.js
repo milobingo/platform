@@ -23,11 +23,12 @@ import {PreparedShowAudio} from './prepared-show-audio.js';
 import {premierePlan,PREMIERE_TITLE,PREMIERE_DATE} from '../server/premiere-plan.js';
 import {manualCueAvailability,manualCuePlaybackHeld,resultSpeakingCues} from '../server/manual-cues.js';
 import {addRound,roundBlocks,roundEditAccess} from './round-editor-model.js';
-import {MILO_BANTER,NUMBER_NINE_AUDIENCE,FIXED_SHOW_SPEECH} from '../public/bingo-speech.js';
+import {MILO_BANTER,NUMBER_NINE_AUDIENCE,FIXED_SHOW_SPEECH,bingoNumberText,SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
 import {normalizeProduction} from '../server/production-model.js';
 import {normalizeShowTime} from '../server/show-time.js';
 import {ShowCallCues} from './show-call-cues.js';
-import {ensureWinnerCallCue} from '../server/call-cues.js';
+import {ensureWinnerCallCue,winnerAnnouncementText} from '../server/call-cues.js';
+import {officialBallBinding,sameOfficialBall,officialBallKey} from '../public/official-audio.js';
 
 export const cameraMap={establish:'establish',front:'host',desk:'host',portrait:'portrait',machine:'board',led:'board',tour:'dolly',audience:'wide',entrance:'guest',orbit:'orbit',crane:'crane',duo:'duo',magic:'magic',wide:'wide'};
 export const productionName=p=>p==='vlampie'?'Vlampie':'Milo & Friends';
@@ -64,7 +65,7 @@ export class StudioEngine{
   this.runner.beforeGoal=(index,goal)=>this.runner.beforeBlock(index,goal);
   this.runner.afterRound=()=>this.syncGame();
   this.director.requestPick=async()=>{if(this.disposed)throw Error('Dit regievenster is gesloten.');if(this.demo){if(this.game.status!=='running'){this.game.status='running';activateBlock(this.game,this.game.plan.blocks.findIndex(b=>b.type==='round'));}return reserveBall(this.game);}const r=await this.post('reserve');return r.pending;};
-  this.director.requestCommit=async token=>{const id=this.game.id,epoch=this.game.state.epoch,stopRevision=this.stopRevision||0,flow=this.director.flow;if(isStandardMiloGame(this.game)){const delay=Math.max(0,(this.game.state.drawClock?.nextAt||0)-this.serverNow());if(delay)await new Promise(resolve=>setTimeout(resolve,delay));if(this.disposed||stopRevision!==(this.stopRevision||0)||this.director.flow!==flow||id!==this.game.id||epoch!==this.game.state.epoch||this.director.externalHold||this.director.drawBlocked||this.showRuntime?.holding||this.showCues?.holding||this.director.paused||this.game.state.paused||this.game.state.drawHold||this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Deze trekking wacht op veilig hervatten.');}if(this.demo){const commit=commitBall(this.game,token);this.syncGame();return commit;}const r=await this.post('commit',{token});this.syncGame();return r.commit;};
+  this.director.requestCommit=async token=>{const id=this.game.id,epoch=this.game.state.epoch,stopRevision=this.stopRevision||0,flow=this.director.flow;if(isStandardMiloGame(this.game)){const delay=Math.max(0,(this.game.state.drawClock?.nextAt||0)-this.serverNow());if(delay)await new Promise(resolve=>setTimeout(resolve,delay));if(this.disposed||stopRevision!==(this.stopRevision||0)||this.director.flow!==flow||id!==this.game.id||epoch!==this.game.state.epoch||this.director.externalHold||this.director.drawBlocked||this.showRuntime?.holding||this.showCues?.holding||this.director.paused||this.game.state.paused||this.game.state.drawHold||this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Deze trekking wacht op veilig hervatten.');}if(this.demo){const commit=commitBall(this.game,token);this.syncGame();return {...commit,officialBall:officialBallBinding(this.game,commit)};}const r=await this.post('commit',{token});this.syncGame();return {...r.commit,officialBall:officialBallBinding(this.game,r.commit)};};
   this.voice=createOpenAIVoice({onState:phase=>{this.voicePhase=phase;this.emit();},onStart:(text,duration)=>{this.caption=text;this.speechDuration=duration;this.audio.duck(true);this.emit();},onEnd:()=>this.speechEnded(),onError:m=>this.speechFailed(m),getRemote:()=>this.bridge?.remote,getPrepared:(...args)=>this.preparedAudio?.lookup(...args),canPlay:()=>!this.whispers?.playback||this.whispers.playbackAllowed()});
   this.bridge=new OutputBridge({isOutput:this.isOutput,getId:()=>this.clientId,getGame:()=>this.demo?null:this.game,getSnapshot:()=>this.stage(),getShow:()=>this.stage().show||null,showAudio:this.audio,receive:e=>this.receive(e),onLost:m=>{this.pause(true);this.fail(m);},onNotice:m=>this.notify(m)});
   if(!this.isOutput)this.whispers=new DirectorWhisperRuntime(this);
@@ -73,11 +74,11 @@ export class StudioEngine{
  subscribe=fn=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
  getSnapshot=()=>this._snapshot;
  get confirmedGameTitle(){return this.serverGameTitleId===this.game.id?this.serverGameTitle:this.game.title;}
- snapshot(){return {whisper:this.whispers?.snapshot()||null,production:this.production,hostId:this.hostId,game:this.game,serverGameTitle:this.confirmedGameTitle,demo:this.demo,games:this.games,characters:this.characters,characterRevision:this.characterRevision,selectedCharacter:this.selectedCharacter,loading:this.loading,working:this.working||!!this.starting||!!this.cancelling,cancelling:!!this.cancelling,notice:this.notice,error:this.error,dirty:this.dirty,preparation:this.preparationAutosave?.state||{status:'saved'},serverStatusVerified:this.serverStatusVerified,serverCheckedAt:this.serverCheckedAt,drawClock:this.drawClock(),standardRulesAvailable:canLoadStandardMilo(this.game)&&standardMiloDiffers(this.game),outputPreparation:this.bridge?.preparationStatus||null,audioPreparation:this.preparedAudio?.state||null,backgroundMusic:this.backgroundMusic,apiStatus:this.apiStatus,voiceMode:this.voiceMode,voicePhase:this.voicePhase,voiceText:this.voiceText,stage:this.stage(),runner:this.runner?.visual?.()||{},selectedCue:this.selectedCue,previewCamera:this.previewCamera,previewSceneId:this.previewSceneId||null,showRuntime:this.showRuntime?.status||null,outputConnected:!!this.bridge?.connected,outputRouting:this.outputRouting,autoDraw:isStandardMiloGame(this.game)||this.runner?.autoDraw||false,log:this.log,now:Date.now(),settingsReady:this.settingsReady,drawHeld:!!this.game.state.drawHold||!!this.liveCalls?.drawHeld};}
+ snapshot(){return {whisper:this.whispers?.snapshot()||null,production:this.production,hostId:this.hostId,game:this.game,serverGameTitle:this.confirmedGameTitle,demo:this.demo,games:this.games,characters:this.characters,characterRevision:this.characterRevision,selectedCharacter:this.selectedCharacter,loading:this.loading,working:this.working||!!this.starting||!!this.cancelling,cancelling:!!this.cancelling,notice:this.notice,error:this.error,dirty:this.dirty,preparation:this.preparationAutosave?.state||{status:'saved'},serverStatusVerified:this.serverStatusVerified,serverCheckedAt:this.serverCheckedAt,drawClock:this.drawClock(),standardRulesAvailable:canLoadStandardMilo(this.game)&&standardMiloDiffers(this.game),outputPreparation:this.bridge?.preparationStatus||null,audioPreparation:this.preparedAudio?.state||null,backgroundMusic:this.backgroundMusic,presentationReplay:this.presentationReplay?{index:this.presentationReplay.index,title:this.presentationReplay.title}:null,apiStatus:this.apiStatus,voiceMode:this.voiceMode,voicePhase:this.voicePhase,voiceText:this.voiceText,stage:this.stage(),runner:this.runner?.visual?.()||{},selectedCue:this.selectedCue,previewCamera:this.previewCamera,previewSceneId:this.previewSceneId||null,showRuntime:this.showRuntime?.status||null,outputConnected:!!this.bridge?.connected,outputRouting:this.outputRouting,autoDraw:isStandardMiloGame(this.game)||this.runner?.autoDraw||false,log:this.log,now:Date.now(),settingsReady:this.settingsReady,drawHeld:!!this.game.state.drawHold||!!this.liveCalls?.drawHeld};}
  stage(){
   if(this.isOutput&&this.remoteStage){const remote={...this.remoteStage,...(this.remoteStage.voiceMode==='ai'&&this.remoteStage.outputRouting?{mouth:this.bridge?.meter()||0}:{})};return this.liveCalls?.stagePatch(this.calls?.stagePatch(remote)||remote)||remote;}
   const raw=this.director?.visual?.()||{},liveShow=this.showRuntime?.visual(raw)||raw,show=this.showCues?.holding?{...liveShow,scene:'host',age:this.showCues.active.elapsed,paused:this.showCues.paused}:liveShow;
-  const base={audioPreparation:this.preparedAudio?.state?{fingerprint:this.preparedAudio.state.fingerprint,total:this.preparedAudio.state.total,complete:this.preparedAudio.state.complete}:null,backgroundMusic:this.backgroundMusic,gameStatus:this.game.status,production:this.production,gameId:this.demo?null:this.game.id,gameTitle:this.game.title,cancelledAt:this.game.cancelledAt||null,hostId:this.showCues?.active?.hostId||this.hostId,guestId:this.guestId,cohostId:this.cohostId&&this.cohostId!==(this.showCues?.active?.hostId||this.hostId)?this.cohostId:null,speakerId:this.showCues?.active?.hostId||this.speakerId,camera:this.camera,movingCamera:this.movingCamera,cameraTransition:this.cameraTransition,cameraDuration:this.cameraDuration,motion:this.motion,speaking:['playing','paused'].includes(this.voicePhase),speechActive:this.voicePhase==='playing'&&(this.voiceMode!=='browser'||!globalThis.speechSynthesis?.paused),voiceMode:this.voiceMode,outputRouting:this.outputRouting,mouth:this.voiceMode==='ai'&&!this.outputRouting?this.voice?.meter||0:undefined,caption:this.caption,lastNumber:this.game.state.lastCommit?.number??null,drawn:this.game.state.drawn,roundTitle:activeGoal(this.game)?.round?.title||'Welkom op het Sterrenplein',pattern:activeGoal(this.game)?.pattern,paused:this.showCues?.holding?this.showCues.paused:this.showRuntime?.holding?!!show.paused:!!this.director?.paused||!!this.director?.externalHold,magic:this.magic?{...this.magic,elapsed:(this.magic.elapsed||0)*1000}:null,theme:this.theme,show,characterSettings:this.characters,scene:show.scene,...(this.showCues?.visual()||{})};
+  const base={audioPreparation:this.preparedAudio?.state?{fingerprint:this.preparedAudio.state.fingerprint,total:this.preparedAudio.state.total,complete:this.preparedAudio.state.complete}:null,backgroundMusic:this.backgroundMusic,gameStatus:this.game.status,production:this.production,gameId:this.demo?null:this.game.id,gameTitle:this.game.title,cancelledAt:this.game.cancelledAt||null,hostId:this.showCues?.active?.hostId||this.hostId,guestId:this.guestId,cohostId:this.cohostId&&this.cohostId!==(this.showCues?.active?.hostId||this.hostId)?this.cohostId:null,speakerId:this.showCues?.active?.hostId||this.speakerId,camera:this.camera,movingCamera:this.movingCamera,cameraTransition:this.cameraTransition,cameraDuration:this.cameraDuration,motion:this.motion,speaking:['playing','paused'].includes(this.voicePhase),speechActive:this.voicePhase==='playing'&&(this.voiceMode!=='browser'||!globalThis.speechSynthesis?.paused),voiceMode:this.voiceMode,outputRouting:this.outputRouting,mouth:this.voiceMode==='ai'&&!this.outputRouting?this.voice?.meter||0:undefined,caption:this.caption,officialBall:officialBallBinding(this.game),lastNumber:this.game.state.lastCommit?.number??null,drawn:this.game.state.drawn,roundTitle:activeGoal(this.game)?.round?.title||'Welkom op het Sterrenplein',pattern:activeGoal(this.game)?.pattern,paused:this.showCues?.holding?this.showCues.paused:this.showRuntime?.holding?!!show.paused:!!this.director?.paused||!!this.director?.externalHold,magic:this.magic?{...this.magic,elapsed:(this.magic.elapsed||0)*1000}:null,theme:this.theme,show,characterSettings:this.characters,scene:show.scene,...(this.showCues?.visual()||{})};
   return this.liveCalls?.stagePatch(this.calls?.stagePatch(base)||base)||base;
  }
  enableWorkspace(){if(this.workspaceEnabled)return;this.workspaceEnabled=true;this.showRuntime=getShowRuntime(this);this.liveCalls??=createLiveCallRuntime(this);this.calls??=createCallRuntime(this,{legacyCalls:false});this.bridge.isVoiceBusy=()=>this.calls?.held||this.liveCalls?.onAir||this.liveCalls?.held||this.voicePhase!=='idle';this.emit();}
@@ -85,7 +86,7 @@ export class StudioEngine{
  previewStage(){const base=this.stage();return {...base,camera:this.previewCamera||base.camera,movingCamera:false,cameraTransition:'cut',magic:null,showCue:null,movement:null,...(this.previewSceneId?{show:getShowRuntime(this).previewVisual(this.previewSceneId),scene:this.previewSceneId,paused:false,speaking:false,speechActive:false,caption:''}:{})};}
  async takeScene(id=this.previewSceneId){const camera=this.previewCamera;if(id)await getShowRuntime(this).scene(id);this.setCamera(camera);this.emit();this.bridge.sendLocal();}
  assertGameSwitchAvailable(){if(this.game.cancelledAt)return;if(this.liveCalls?.active||this.liveCalls?.drawHeld||this.game.state.drawHold)throw Error('Rond eerst het belmoment af, bevestig de terugkeer en hervat de trekking voordat je van show of productie wisselt.');}
- assertTimelineAvailable(){if(this.game.cancelledAt)throw Error('Deze show is geannuleerd en kan niet worden hervat.');if(this.showCues?.active)throw Error('Rond eerst het actieve showelement of gebaar af.');if(this.calls?.held||this.game.state.callId)throw Error('Rond eerst het belmoment af.');if(this.showRuntime?.holding)throw Error('Zet eerst de presentator terug live om het draaiboek of een trekking te bedienen.');}
+ assertTimelineAvailable(){if(this.presentationReplay)throw Error('Kies eerst Terug naar actuele cue. Een presentatieherhaling verandert de officiële showpositie niet.');if(this.game.cancelledAt)throw Error('Deze show is geannuleerd en kan niet worden hervat.');if(this.showCues?.active)throw Error('Rond eerst het actieve showelement of gebaar af.');if(this.calls?.held||this.game.state.callId)throw Error('Rond eerst het belmoment af.');if(this.showRuntime?.holding)throw Error('Zet eerst de presentator terug live om het draaiboek of een trekking te bedienen.');}
  setMix(key,value){const levels={...this.bridge.mixer,[key]:Number(value)};getShowRuntime(this).mix(levels);this.emit();}
 
  audioPreparationContext(){
@@ -126,6 +127,76 @@ export class StudioEngine{
    if(response.game)this.acceptGame(response.game);
    this.speak(cue.text,c.id,'ai',true,{optional:{cueId:cue.id,deadline:Math.max(this.game.state.drawClock?.nextAt||0,this.localDrawNextAt||0)-STANDARD_DRAW_LEAD_MS-500}});
   }catch{/* Optional entertainment never pauses or delays the game. */}finally{this.optionalPending=false;}
+ }
+
+ async speakOfficialBall(ball){
+  if(this.officialAnnouncement||!sameOfficialBall(ball,officialBallBinding(this.game))){this.director.pause();this.fail('Het nummerfragment hoort niet bij de huidige officiële bal. Herlaad de spelstand; de trekking blijft stil.');return;}
+  const gameId=this.game.id,flow=this.director.flow,revision=this.stopRevision||0;
+  this.officialAnnouncement=officialBallKey(ball);this.director.narrationHold=true;
+  try{
+   const response=await jsonFetch('/api/bingo/games/'+gameId+'/audio-cue',{cueId:'official-ball',commitId:ball.commitId,expectedEpoch:ball.epoch,regieId:this.clientId,requestId:crypto.randomUUID()},'POST',{'X-Vlampie-Bingo':'1'},{timeoutMs:5000});
+   if(this.disposed||gameId!==this.game.id||revision!==(this.stopRevision||0)||flow!==this.director.flow)return;
+   if(response.game)this.acceptGame(response.game);
+   if(!sameOfficialBall(ball,officialBallBinding(this.game))||!sameOfficialBall(ball,response.officialBall)||response.text!==bingoNumberText(ball.number))throw Error('De bevestigde bal en het nummerfragment komen niet overeen. De trekking blijft stil; herlaad de spelstand.');
+   if(!response.claimed){this.director.narrationHold=false;return;}
+   this.speak(response.text,this.director.config.speakerId||this.hostId,'ai',true,{preparedOnly:true,officialBall:ball});
+  }catch(error){if(gameId===this.game.id&&flow===this.director.flow){this.director.narrationHold=false;this.director.pause();this.fail(error.message||'De officiële nummeruitspraak is niet bevestigd. Herlaad de spelstand voordat je hervat.');}}
+  finally{this.officialAnnouncement=null;this.emit();}
+ }
+ async announceServerWindow(){
+  const window=this.game.state.window;
+  if(this.production!=='milo'||!this.runner?.active||window?.status!=='open'||this.director.paused||!!this.failedSpeech||this.officialAnnouncement||this.game.state.paused||this.game.state.drawHold||this.game.state.callId||this.voicePhase!=='idle'||this.windowAnnouncementPending||this.liveCalls?.active||this.showRuntime?.holding||this.showCues?.holding)return;
+  const key=this.game.id+':'+window.id;if(this.windowAnnouncementKey===key)return;
+  // Finishing the committed number is allowed while the server's claim timer
+  // runs. The window announcement never interrupts or extends that timer.
+  this.windowAnnouncementPending=true;const gameId=this.game.id;
+  try{
+   const response=this.demo?{claimed:true}:await jsonFetch('/api/bingo/games/'+gameId+'/audio-cue',{cueId:'bingo-window',windowId:window.id,regieId:this.clientId,requestId:crypto.randomUUID()},'POST',{'X-Vlampie-Bingo':'1'},{timeoutMs:5000});
+   if(gameId!==this.game.id||this.disposed)return;
+   if(response.game)this.acceptGame(response.game);
+   if(this.game.state.window?.id!==window.id||this.game.state.window?.status!=='open')return;
+   this.windowAnnouncementKey=key;
+   if(response.claimed)this.speak(FIXED_SHOW_SPEECH.bingo,this.hostId,this.voiceMode,false,{preparedOnly:!this.demo,...(!this.demo?{bingoWindow:{gameId,id:window.id,policyVersion:SPEECH_POLICY_VERSION}}:{})});
+  }catch(error){if(gameId===this.game.id){this.windowAnnouncementKey=key;this.fail('BINGO-melding ontvangen. De aankondiging kon niet starten; het officiële meldvenster loopt door. '+error.message);}}
+  finally{this.windowAnnouncementPending=false;}
+ }
+
+ async replayCue(index=this.runner.index){
+  if(this.production!=='milo'||!this.runner.active||!Number.isInteger(index)||!this.game.plan.blocks[index])throw Error('Kies een beschikbare cue van deze lopende Milo-show.');
+  if(this.game.state.pending||this.game.state.window?.status==='open'||this.game.state.resultId||this.game.state.drawHold||this.liveCalls?.active||this.calls?.held||this.director.flow?.kind==='draw')throw Error('Rond eerst de officiële bal, bingocontrole of het gesprek af. Cueherhaling geeft geen spelblokkade vrij.');
+  const block=this.game.plan.blocks[index],original=this.presentationReplay?.restore||{camera:this.camera,hostId:this.hostId,speakerId:this.speakerId,config:{...this.director.config},scene:this.director.scene,sceneAge:this.director.sceneAge,paused:this.director.paused,runnerPhase:this.runner.phase};
+  this.stopSpeech();this.showCues?.reset();this.director.cancel(false);
+  this.presentationReplay={index,title:block.title,restore:original};this.selectedCue=index;this.autoDrawBlocked=true;
+  const texts=block.type==='round'?[]:block.type==='random-call'?[]:[{text:block.text,speakerId:block.speakerId||this.game.plan.leadId},...(block.type==='guest'?block.dialogue||[]:[])];
+  this.director.configure({planTitle:'Presentatieherhaling · '+block.title,planKind:'presentation-replay'});
+  if(block.type==='round'){const patterns=(block.goals||[]).map(goal=>this.game.plan.patterns.find(pattern=>pattern.id===goal.patternId)).filter(Boolean);this.director.configure({round:block.title,roundPatterns:patterns,goalIndex:0,patternPage:0,pattern:patterns[0]?.title||'',patternCells:patterns[0]?.cells||null,prize:''});}
+  this.director.paused=false;this.director.program(texts.filter(turn=>turn.text?.trim()).map(turn=>({scene:'host',duration:2,camera:block.camera||'front',motion:block.animation||'idle',speech:()=>{this.director.configure({speakerId:turn.speakerId||this.hostId});return turn.text;},waitVoice:true})));
+  if(!texts.some(turn=>turn.text?.trim())){this.director.setScene(block.type==='round'?'patterns':'host','wide',true);this.notify('Presentatieherhaling: alleen het beeld. Rondes, prijzen, belmomenten en getallen worden niet opnieuw uitgevoerd.');}
+  this.emit();return true;
+ }
+ returnToCurrentCue(){
+  const replay=this.presentationReplay;if(!replay)return;
+  this.stopSpeech();this.showCues?.reset();this.director.cancel(false);this.presentationReplay=null;
+  Object.assign(this,{camera:replay.restore.camera,hostId:replay.restore.hostId,speakerId:replay.restore.speakerId});
+  this.director.configure(replay.restore.config);this.director.setScene(replay.restore.scene,replay.restore.camera,true);this.director.sceneAge=replay.restore.sceneAge;this.director.paused=replay.restore.paused;
+  this.runner.phase=replay.restore.runnerPhase;this.selectedCue=this.runner.index;this.autoDrawBlocked=true;this.syncGame();this.notify('Terug bij de actuele cue. De officiële spelstand is behouden; de volgende bal krijgt een nieuwe timer.');
+ }
+ async emergencyPresentation(reason){
+  if(this.recoveringPresentation)return this.recoveringPresentation;
+  const gameId=this.game.id,expectedEpoch=this.game.state.epoch,expectedBlockIndex=this.game.state.blockIndex;
+  // Stop the local/published presenter immediately; no game pause, result or
+  // draw hold is released before an authoritative response.
+  this.stopSpeech();this.director.pause();this.bridge?.controls('stop');this.autoDrawBlocked=true;
+  const stoppedVoiceId=this.bridge?.command?.id;
+  const operation=(async()=>{const response=await this.post('presentation-recover',{reason,confirmed:true,expectedEpoch,expectedBlockIndex});if(gameId!==this.game.id)throw Error('De geselecteerde show is gewijzigd.');if(!response.recovered)throw Error('Het presentatieherstel is niet bevestigd. De show blijft stil.');if(stoppedVoiceId&&this.bridge?.routing)await this.bridge.ensureVoiceStopped(stoppedVoiceId);if(gameId!==this.game.id)throw Error('De geselecteerde show is gewijzigd.');this.presentationReplay=null;this.showCues?.reset();if(this.showRuntime){this.showRuntime.generation++;this.showRuntime.manual=null;this.showRuntime.restore=null;}this.director.cancel(false);this.runner.voiceFailed=false;this.failedSpeech=null;this.magic=null;this.guestId=null;this.director.setScene('host','desk',true);this.director.pause();this.syncGame();this.notify('De vastgelopen presentatiestap is afgesloten. Kies bewust Hervat of Volgende cue; er is geen bal getrokken.');return response;})();
+  this.recoveringPresentation=operation;operation.finally(()=>{if(this.recoveringPresentation===operation)this.recoveringPresentation=null;this.emit();}).catch(()=>{});return operation;
+ }
+ async retryFailedSpeech(){
+  const failed=this.failedSpeech;if(!failed)throw Error('Er staat geen mislukte uitspraak klaar.');
+  if(this.game.state.window?.status==='open'||this.game.state.resultId||this.liveCalls?.active)throw Error('Rond eerst het meldvenster, de uitslag of het gesprek af.');
+  if(failed.options?.officialBall&&!sameOfficialBall(failed.options.officialBall,officialBallBinding(this.game)))throw Error('Deze uitspraak hoort niet meer bij de laatste officiële bal en wordt niet herhaald.');
+  if(!this.demo&&this.production==='milo'){await this.preparedAudio.ensure({restoreCached:true});if(this.bridge.routing)await this.bridge.ensurePreparedAudio(this.preparedAudio.state.fingerprint);}
+  this.runner.voiceFailed=false;this.failedSpeech=null;this.speak(failed.text,failed.id,failed.mode,false,failed.options||{});if(this.failedSpeech)return false;this.notify('De uitspraak wordt gecontroleerd opnieuw afgespeeld. De trekking blijft gepauzeerd totdat je bewust hervat.');
  }
 
  makePreparationAutosave(){return new PreparationAutosave({
@@ -174,10 +245,11 @@ export class StudioEngine{
   this.syncGame();this.notify('Standaardregels geladen: drie rondes met drie prijsstappen en een finaleronde met volle kaart.');
  }
  serverNow(){return Date.now()+(this.serverTimeOffset||0);}
- drawBlocked(){return !!this.showCallCues?.held||!this.runner?.active||this.runner.phase!=='drawing'||!!this.game.state.paused||!!this.director?.paused||!!this.director?.externalHold||!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||!!this.calls?.held||!!this.game.state.callId||this.game.state.window?.status==='open'||!!this.game.state.resultId||!!this.game.state.goalWon||!!this.showRuntime?.holding||!!this.showCues?.holding;}
+ drawBlocked(){return !!this.showCallCues?.held||!this.runner?.active||this.runner.phase!=='drawing'||!!this.game.state.paused||!!this.director?.paused||!!this.director?.externalHold||!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||!!this.calls?.held||!!this.game.state.callId||this.game.state.window?.status==='open'||!!this.game.state.resultId||!!this.game.state.goalWon||!!this.showRuntime?.holding||!!this.showCues?.holding||!!this.presentationReplay;}
  drawClock(){return drawClockStatus(this.game,{now:this.serverNow(),blocked:this.drawBlocked(),localNextAt:this.localDrawNextAt});}
  autoDrawTick(){
   if(!isStandardMiloGame(this.game)||!this.runner?.active)return;
+  if(this.presentationReplay)return;
   if(this.optionalSpeech&&(this.drawBlocked()||this.serverNow()>=this.optionalSpeech.deadline))this.stopSpeech();
   if(!this.demo&&this.preparedAudio&&!this.preparedAudio.state.complete)return;
   const blocked=this.drawBlocked(),now=this.serverNow();
@@ -226,7 +298,7 @@ export class StudioEngine{
   })();this.cancelRequest=operation;
   operation.finally(()=>{if(this.cancelRequest===operation){this.cancelRequest=null;this.cancelling=false;this.emit();}}).catch(()=>{});return operation;
  }
- syncGame(){if(!this.director)return;this.director.callCueHold=!!this.showCallCues?.held;this.director.drawBlocked=!!this.game.cancelledAt||!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||this.director.callCueHold;if(globalThis.document?.body)document.body.dataset.brand=this.production;const presentation=showPresentation(this.game);this.director.configure({drawCadence:isStandardMiloGame(this.game)?'official':undefined,rules:presentation.rules,transition:presentation.profile.transition,transitionMs:presentation.profile.transitionMs});this.cohostId=this.game.plan.cohostId||null;this.director.brandId=this.production;this.director.theme=this.production==='vlampie'?this.theme:'magico';this.director.drawn=[...this.game.state.drawn];this.director.number=this.game.state.lastCommit?.number??null;this.director.configure({title:this.game.title,brandId:this.production,speakerId:this.speakerId});}
+ syncGame(){if(!this.director)return;void this.announceServerWindow();this.director.callCueHold=!!this.showCallCues?.held;this.director.drawBlocked=!!this.game.cancelledAt||!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||this.director.callCueHold;if(globalThis.document?.body)document.body.dataset.brand=this.production;const presentation=showPresentation(this.game);this.director.configure({drawCadence:isStandardMiloGame(this.game)?'official':undefined,rules:presentation.rules,transition:presentation.profile.transition,transitionMs:presentation.profile.transitionMs});this.cohostId=this.game.plan.cohostId||null;this.director.brandId=this.production;this.director.theme=this.production==='vlampie'?this.theme:'magico';this.director.drawn=[...this.game.state.drawn];this.director.number=this.game.state.lastCommit?.number??null;this.director.configure({title:this.game.title,brandId:this.production,speakerId:this.speakerId});}
  async post(action,body={}){const id=this.game.id,r=await bingoApi('/games/'+id+(action?'/'+action:''),{method:'POST',body:{...body,regieId:this.clientId}});if(r.game&&id===this.game.id)this.acceptGame(r.game);return r;}
  async createShow(title,date,brand=this.production,source=null){this.assertGameSwitchAvailable();await this.flushPreparation();const prepared=source?preparation({...source,title,date,brandId:brand}):null;return this.task(async()=>{if(await this.stop()===false)throw Error('De huidige show kon niet veilig worden gepauzeerd.');const roundCount=prepared?.roundCount||4,r=await bingoApi('/games',{method:'POST',body:{title,date,timeZone:'Europe/Amsterdam',brandId:brand,roundCount,...(prepared||{})}});const game=r.game;this.acceptGame(game,true);this.demo=false;this.production=brand;this.dirty=false;this.games=[{...game,bookCount:0,roundCount},...this.games];this.hostId=game.plan.leadId||(brand==='vlampie'?'vlampie':'milo');this.speakerId=this.hostId;this.syncGame();},'Je nieuwe show is opgeslagen.');}
  duplicateShow(sourceId,title,date,options={}){
@@ -302,7 +374,7 @@ export class StudioEngine{
   if(!this.demo&&(this.voiceMode!=='ai'||!this.apiStatus?.configured))throw Error('Stel eerst de centrale personagestem in. De oefenstudio kan met een browserstem repeteren.');
   if(!this.demo&&this.game.status==='finished')throw Error('Deze show is afgelopen. Maak een nieuwe show om opnieuw te spelen.');
   if(this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Rond eerst de bestaande bingocontrole of uitslag af.');
-  if(!this.demo&&this.production==='milo'){await this.preparedAudio?.ensure();assertCurrent();if(this.bridge?.routing)await this.bridge.ensurePreparedAudio(this.preparedAudio.state.fingerprint);assertCurrent();}
+  if(!this.demo&&this.production==='milo'){await this.preparedAudio?.ensure({restoreCached:this.game.status==='running'});assertCurrent();if(this.bridge?.routing)await this.bridge.ensurePreparedAudio(this.preparedAudio.state.fingerprint);assertCurrent();}
   this.error='';if(await this.stopRequest===false)throw Error('De vorige stop is nog niet bevestigd. Controleer de verbinding.');assertCurrent();await this.audio.unlock();assertCurrent();
   if(this.demo){this.game.status='running';this.game.state.paused=false;}
   else {await this.flushPreparation();assertCurrent();await this.post('start',{expectedPreparationRevision:this.preparationAutosave.revision});}
@@ -324,6 +396,9 @@ export class StudioEngine{
   await this.post('heartbeat');
   if(this.game.cancelledAt)throw Error('Deze show is geannuleerd. De regie blijft gestopt.');
   if(id!==this.game.id||stopRevision!==(this.stopRevision||0)||this.game.status!=='running')throw Error('Het hervatten van de regie is gestopt. Controleer de actuele showstatus.');
+  if(!this.demo&&this.production==='milo')await this.preparedAudio?.ensure({restoreCached:true});
+  if(this.game.cancelledAt)throw Error('Deze show is geannuleerd. De regie blijft gestopt.');
+  if(this.disposed||id!==this.game.id||stopRevision!==(this.stopRevision||0)||this.game.status!=='running')throw Error('Het hervatten van de regie is gestopt. Controleer de actuele showstatus.');
   if(this.runner.active){this.syncGame();this.emit();return;}
   const state=this.game.state,index=Math.max(0,state.blockIndex),block=this.game.plan.blocks[index],goal=activeGoal(this.game);
   this.stopSpeech();this.director.cancel(false);this.runner.plan=normalizePlan(structuredClone(this.game.plan));this.runner.active=true;this.runner.index=index;this.runner.goal=state.goalIndex||0;this.runner.age=0;this.runner.approvalBase=this.director.approvals||0;this.runner.phase=block?.type==='round'?(state.goalWon?'winner':'drawing'):'waiting';
@@ -333,11 +408,12 @@ export class StudioEngine{
   this.log.unshift({at:Date.now(),text:'Regie hersteld: '+this.game.title});this.notify('Regie hersteld. Spelstand en blokkades zijn behouden. Kies bewust Hervat om de trekking vrij te geven.');
  }
 
- async cue(index){this.assertTimelineAvailable();if(this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Rond eerst het meldvenster of de uitslag af.');if(this.director.busy&&this.director.flow?.kind==='draw')throw Error('Rond eerst de lopende trekking af.');if(!this.runner.active){await this.start({blockIndex:index,goalIndex:0});return;}this.stopSpeech();this.runner.enter(index);this.emit();}
+ async cue(index){if(this.production==='milo'&&this.runner.active)return this.replayCue(index);this.assertTimelineAvailable();if(this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Rond eerst het meldvenster of de uitslag af.');if(this.director.busy&&this.director.flow?.kind==='draw')throw Error('Rond eerst de lopende trekking af.');if(!this.runner.active){await this.start({blockIndex:index,goalIndex:0});return;}this.stopSpeech();this.runner.enter(index);this.emit();}
  nextCue(){this.assertTimelineAvailable();if(!this.runner.active)throw Error('Start eerst het draaiboek.');if(this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Rond eerst het meldvenster of de uitslag af.');this.stopSpeech();this.runner.next();this.emit();}
  async draw(){if(this.game.state.drawHold||this.liveCalls?.drawHeld)throw Error('De trekking is geblokkeerd voor een belmoment. Bevestig de terugkeer en hervat vanuit Publiek & bellen.');this.assertTimelineAvailable();if(this.game.state.window?.status==='open'||this.game.state.resultId)throw Error('Rond eerst het meldvenster of de uitslag af.');if(!activeGoal(this.game)||this.game.state.phase!=='running'||this.game.state.paused||this.game.state.goalWon||this.runner.block?.type!=='round'||this.runner.phase!=='drawing')throw Error('Zet eerst een bingoronde live vanuit het draaiboek.');if(!this.director.draw())throw Error('De regie wacht nog op de vorige cue of uitspraak.');this.emit();}
  async pause(value=!this.stage().paused){
   if(this.game.cancelledAt)return false;
+  const gameId=this.game.id,stopRevision=this.stopRevision||0,current=()=>!this.disposed&&this.game.id===gameId&&!this.game.cancelledAt&&(this.stopRevision||0)===stopRevision;
   if(this.calls?.held){this.fail('Rond eerst het belmoment af voordat je het draaiboek hervat of pauzeert.');return false;}
   if(this.showCues?.holding){this.showCues.pause(value);if(value){this.audio.pause();this.bridge.controls('pause');}else{this.audio.resume();this.bridge.controls('resume');}this.emit();this.bridge.sendLocal();return true;}
   if(this.showRuntime?.holding){this.showRuntime.manual.paused=!!value;if(value){this.voice.pause();this.audio.pause();globalThis.speechSynthesis?.pause();}else{this.voice.resume();this.audio.resume();globalThis.speechSynthesis?.resume();}this.emit();this.bridge.sendLocal();return true;}
@@ -346,23 +422,23 @@ export class StudioEngine{
   else if(this.game.state.window?.status==='open'||this.game.state.resultId||this.director.externalHold){this.fail('Het meldvenster of de uitslag houdt de show nog stil.');return false;}
   const prior=this.pauseRequest;
   if(value&&this.optionalSpeech)this.stopSpeech();
-  const operation=(async()=>{try{await prior;if(this.game.cancelledAt)return false;if(!value&&!this.demo&&this.production==='milo'){await this.preparedAudio?.ensure();if(this.bridge?.routing)await this.bridge.ensurePreparedAudio(this.preparedAudio.state.fingerprint);}if(!this.demo&&this.game.status==='running')await this.post('pause',{paused:value,...(!value&&isStandardMiloGame(this.game)?{restartClock:true}:{})});if(this.game.cancelledAt)return false;if(!value){if(this.demo)this.game.state.paused=false;if(isStandardMiloGame(this.game)){this.autoDrawBlocked=true;if(this.director.flow?.kind==='draw')this.director.cancel(false);}if(this.runner.voiceFailed&&this.failedSpeech){const failed=this.failedSpeech;this.failedSpeech=null;this.runner.voiceFailed=false;if(this.director.flow)this.director.flow.age=0;this.speak(failed.text,failed.id,failed.mode,failed.planned);if(this.failedSpeech)return false;}this.director.resume();this.voice.resume();globalThis.speechSynthesis?.resume();this.audio.resume();}this.emit();return true;}catch(e){this.director.pause();this.fail(e.message);return false;}})();
+  const operation=(async()=>{try{await prior;if(!current())return false;if(!value&&!this.demo&&this.production==='milo'){await this.preparedAudio?.ensure({restoreCached:this.game.status==='running'});if(!current())return false;if(this.bridge?.routing)await this.bridge.ensurePreparedAudio(this.preparedAudio.state.fingerprint);if(!current())return false;}if(!value&&(this.game.state.window?.status==='open'||this.game.state.resultId||this.director.externalHold))throw Error('Het meldvenster of de uitslag houdt de show nog stil.');if(!this.demo&&this.game.status==='running')await this.post('pause',{paused:value,...(!value&&isStandardMiloGame(this.game)?{restartClock:true}:{})});if(!current())return false;if(!value){if(this.demo)this.game.state.paused=false;if(isStandardMiloGame(this.game)){this.autoDrawBlocked=true;if(this.director.flow?.kind==='draw')this.director.cancel(false);}if(this.runner.voiceFailed&&this.failedSpeech){const failed=this.failedSpeech;this.failedSpeech=null;this.runner.voiceFailed=false;if(this.director.flow)this.director.flow.age=0;this.speak(failed.text,failed.id,failed.mode,failed.planned,failed.options||{});if(this.failedSpeech)return false;}this.director.resume();this.voice.resume();globalThis.speechSynthesis?.resume();this.audio.resume();}this.emit();return true;}catch(e){if(current()){this.director.pause();this.fail(e.message);}return false;}})();
   this.pauseRequest=operation;this.emit();return operation;
  }
  stopSpeech({replacement=false,whisperInternal=false,silent=false}={}){this.optionalSpeech=null;if(!whisperInternal)this.whispers?.speechStopped({replacement});this.speechToken=(this.speechToken||0)+1;this.voice.stop();globalThis.speechSynthesis?.cancel();this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.failedSpeech=null;this.director.narrationHold=false;this.audio.duck(false);if(!silent)this.emit();}
  speechEnded(){this.optionalSpeech=null;this.voicePhase='idle';this.caption='';this.currentSpeech=null;this.director.narrationHold=false;this.audio.duck(false);this.whispers?.speechEnded();this.emit();}
  speechFailed(message){if(this.optionalSpeech){this.speechEnded();return;}const failed=this.currentSpeech,privateReaction=this.whispers?.speechFailed(message);this.speechEnded();this.failedSpeech=privateReaction?null:failed;this.runner.voiceFailed=!privateReaction&&!!failed;this.director.pause();this.fail(message);}
  speak(text,id=this.speakerId,mode=this.voiceMode,planned=false,options={}){
-  if(this.game.cancelledAt)throw Error('Deze show is geannuleerd. De presentator blijft stil.');
-  if(this.liveCalls?.onAir)throw Error('De live presentator voert nu het gesprek. Rond dit eerst af.');if(!text?.trim())return;assertSpeechText(text);this.stopSpeech({replacement:true});this.optionalSpeech=options.optional||null;this.speakerId=id;this.caption=text;this.voicePhase='loading';this.currentSpeech={text,id,mode,planned};const token=this.speechToken;
+  if(this.recoveringPresentation)throw Error('Het stoppen van de oude presentatiestap wordt nog gecontroleerd. Wacht op bevestiging.');if(this.game.cancelledAt)throw Error('Deze show is geannuleerd. De presentator blijft stil.');
+  if(this.liveCalls?.onAir)throw Error('De live presentator voert nu het gesprek. Rond dit eerst af.');if(!text?.trim())return;assertSpeechText(text);this.stopSpeech({replacement:true});this.optionalSpeech=options.optional||null;this.speakerId=id;this.caption=text;this.voicePhase='loading';this.currentSpeech={text,id,mode,planned,options};const token=this.speechToken;
   // Manual announcements hold the timeline, including a spin that has no own speech.
   this.director.narrationHold=!planned;this.emit();const c=this.characters.find(c=>c.id===id)||CHARACTERS[id]||CHARACTERS.milo;
   if(!this.demo&&this.game.status==='running'&&mode!=='ai'){this.speechFailed('De browserstem is alleen voor repetities. Kies de eigen personagestem voor de echte show.');return;}
-  if(mode==='ai'){if(!this.apiStatus?.configured){this.speechFailed('Stel eerst de globale OpenAI-koppeling in. Met de oefenstem kun je lokaal repeteren.');return;}this.voice.speak(text,c.speed,{characterId:id,preparedOnly:!!options.preparedOnly||!this.demo&&this.production==='milo'&&planned,...(!this.demo?{gameId:this.game.id}:{brandId:this.production})});}
+  if(mode==='ai'){if(!this.apiStatus?.configured){this.speechFailed('Stel eerst de globale OpenAI-koppeling in. Met de oefenstem kun je lokaal repeteren.');return;}this.voice.speak(text,c.speed,{characterId:id,preparedOnly:!!options.preparedOnly||!this.demo&&this.production==='milo'&&planned,...(!this.demo?{gameId:this.game.id}:{brandId:this.production}),...(options.officialBall?{officialBall:options.officialBall}:{}),...(options.bingoWindow?{bingoWindow:options.bingoWindow}:{})});}
   else {
    if(!globalThis.speechSynthesis){this.speechFailed('Deze browser heeft geen oefenstem. Stel de globale OpenAI-koppeling in.');return;}
    const parts=splitSpeechText(text).filter(part=>part.trim());let index=0;
-   const playPart=()=>{if(token!==this.speechToken||this.game.cancelledAt)return;const u=new SpeechSynthesisUtterance(parts[index]);u.lang='nl-NL';u.rate=c.speed;u.pitch=['stella','pip','bella'].includes(id)?1.12:['bruno','lola','piko'].includes(id)?.88:1;u.voice=globalThis.speechSynthesis.getVoices().find(v=>v.lang.startsWith('nl'))||null;
+   const playPart=()=>{if(token!==this.speechToken||this.game.cancelledAt)return;const u=new SpeechSynthesisUtterance(parts[index]);u.lang='nl-NL';u.rate=c.speed;u.pitch=['stella','pip','bella'].includes(id)?1.12:['bruno','lola','piko'].includes(id)?.88:1;u.voice=globalThis.speechSynthesis.getVoices().find(v=>/^nl(?:-|$)/i.test(v.lang))||null;if(!u.voice){this.speechFailed('Er is geen Nederlandse browserstem beschikbaar. Kies een Nederlandse stem of de centrale personagestem.');return;}
     u.onpause=()=>{if(token===this.speechToken){this.voicePhase='paused';this.emit();}};u.onresume=()=>{if(token===this.speechToken){this.voicePhase='playing';this.emit();}};u.onstart=()=>{if(token!==this.speechToken)return;this.caption=parts[index];this.voicePhase='playing';this.audio.duck(true);this.emit();};u.onend=()=>{if(token!==this.speechToken)return;if(++index<parts.length)playPart();else this.speechEnded();};u.onerror=e=>{if(token!==this.speechToken)return;if(e.error!=='canceled'&&e.error!=='interrupted')this.speechFailed('De oefenstem kon niet starten. Hervat probeert dezelfde uitspraak opnieuw.');};globalThis.speechSynthesis.speak(u);};playPart();
   }
  }
@@ -379,7 +455,7 @@ export class StudioEngine{
    if(this.voicePhase!=='idle'||this.director.flow?.kind==='draw'||this.showCues?.holding||this.showRuntime?.holding)throw Error('Wacht tot de huidige uitspraak, trekking of animatie klaar is.');
    if(this.liveCalls?.onAir)throw Error('De presentator voert nu een gesprek. Rond dit eerst af.');
    if(!manualCuePlaybackHeld(this.game))throw Error('Pauzeer eerst de show. De spreekkaart geeft de trekking niet automatisch vrij.');
-   if(!this.demo)await this.preparedAudio.ensure();current();
+   if(!this.demo)await this.preparedAudio.ensure({restoreCached:this.game.status==='running'});current();
    const checked=manualCueAvailability(cue,this.game,this.serverNow());if(!checked.allowed)throw Error(checked.reason);
    await this.audio.unlock();current();
    const finalAvailability=manualCueAvailability(cue,this.game,this.serverNow());if(!finalAvailability.allowed)throw Error(finalAvailability.reason);
@@ -398,7 +474,7 @@ export class StudioEngine{
   try{
    if(manual){
     current();if(this.production!=='milo'||!resultSpeakingCues(this.game).length)throw Error('Er staat geen passende voorbereide spreekkaart voor deze uitslag klaar.');
-    quiet();if(!this.demo)await this.preparedAudio.ensure();current();quiet();
+    quiet();if(!this.demo)await this.preparedAudio.ensure({restoreCached:this.game.status==='running'});current();quiet();
     const paused=await this.pause(true);current();quiet();
     if(paused!==true||!this.game.state.paused)throw Error('De serverpauze is niet bevestigd. De uitslag blijft open; probeer opnieuw.');
     if(this.game.state.resultId!==r.id||!resultSpeakingCues(this.game).length)throw Error('De uitslag is intussen gewijzigd. Controleer de actuele bingocontrole.');
@@ -421,10 +497,10 @@ export class StudioEngine{
     if(cue)globalThis.dispatchEvent?.(new CustomEvent('milo:select-manual-cue',{detail:{gameId,cueId:cue.id}}));
     return {manualCueId:cue?.id||null};
    }
-   if(applied&&!this.showCallCues?.announce(this.game.results.find(item=>item.id===r.id)||r)){this.speak(this.production==='milo'?FIXED_SHOW_SPEECH.winner:'Bingo bevestigd! Gefeliciteerd '+r.winner.name+'! Een groot applaus voor jou.',this.hostId,this.voiceMode,false,{preparedOnly:!this.demo&&this.production==='milo'});this.motion='cheer';this.audio.cue('win');}this.emit();
+   if(applied&&!this.showCallCues?.announce(this.game.results.find(item=>item.id===r.id)||r)){this.speak(this.production==='milo'?winnerAnnouncementText(this.game.results.find(item=>item.id===r.id)||r):'Bingo bevestigd! Gefeliciteerd '+r.winner.name+'! Een groot applaus voor jou.',this.hostId,this.voiceMode,false,{preparedOnly:false});this.motion='cheer';this.audio.cue('win');}this.emit();
   }finally{this.resultBusy=false;}
  }
- async routeOutput(enabled){await this.bridge.route(enabled);this.outputRouting=enabled;this.emit();}
+ async routeOutput(enabled){const gameId=this.game.id,stopRevision=this.stopRevision||0,current=()=>!this.disposed&&this.game.id===gameId&&!this.game.cancelledAt&&(this.stopRevision||0)===stopRevision;await this.bridge.route(enabled,{isCurrent:current});if(!current())throw Error('De gekozen uitzending is gewijzigd. Controleer de geluidsroute bij de juiste show.');this.outputRouting=!!this.bridge.routing;this.emit();}
  resumeAfterCall(target,call){return this.showCallCues.resume(target,call);}
  stop(){
   if(this.game.cancelledAt){this.haltCancelledGame();return Promise.resolve(true);}
@@ -442,7 +518,7 @@ export class StudioEngine{
   if(e.type==='motion')this.motion=e.motion;
   if(e.type==='sound'){this.audio.cue(e.cue);this.bridge?.cue(e.cue);}
   if(e.type==='numberfinished')void this.optionalNumberComment(e);
-  if(e.type==='speech'){this.director.narrationHold=false;this.speak(e.text,this.director.config.speakerId||this.hostId,this.voiceMode,true);}
+  if(e.type==='speech'){if(e.officialBall&&this.production==='milo'&&!this.demo)void this.speakOfficialBall(e.officialBall);else{this.director.narrationHold=false;this.speak(e.text,this.director.config.speakerId||this.hostId,this.voiceMode,true);}}
   if(e.type==='show-cue'){if(e.action==='start')this.showCues.startRundown(e);else this.showCues.reset();}
   if(e.type==='cast-cue'){if(e.action==='start'){if(e.guestId)this.guestId=e.guestId;if(e.magicId){this.magic={id:e.magicId,startedAt:Date.now(),playing:true,elapsed:0,duration:e.duration};const sound=getMagicCue(e.magicId)?.sound||'prize';this.audio.cue(sound);this.bridge?.cue(sound);}}else {this.magic=null;this.guestId=null;this.speakerId=e.returnSpeakerId||this.hostId;}}
   if(e.type==='cast-speaker'){this.speakerId=e.characterId;this.motion=e.animation;}
@@ -454,7 +530,7 @@ export class StudioEngine{
  }
  receive(e){if(e.kind==='snapshot'){this.remoteStage=e.payload;if(this.isOutput)this.demo=!e.payload.gameId;this.emit();}if(e.kind==='show'){this.remoteStage={...this.remoteStage,show:e.payload,scene:e.payload.scene};this.emit();}if(e.kind==='speech-start'){this.remoteStage={...this.remoteStage,speaking:true,caption:e.payload.text};this.emit();}if(e.kind==='stop'){this.remoteStage={...this.remoteStage,paused:true,speaking:false};this.emit();}}
  tick(){const now=performance.now(),dt=Math.min(.35,(now-this.lastFrame)/1000);this.lastFrame=now;if(this.isOutput){this.updateBackgroundAudio(now);this.emit();return;}if(this.game.cancelledAt){this.haltCancelledGame();return;}if(isStandardMiloGame(this.game))this.runner.autoDraw=false;this.showRuntime?.tick(dt);this.updateBackgroundAudio(now);if(this.demo&&this.game.state.window?.status==='open'&&Date.now()>=this.game.state.window.endsAt){settleWindow(this.game);this.director.externalHold=!!this.game.state.resultId;}
-  this.director.callCueHold=!!this.showCallCues?.held;this.director.drawBlocked=!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||this.director.callCueHold;const hold=this.game.state.window?.status==='open'||!!this.game.state.resultId;this.director.externalHold=hold;this.whispers?.tick();const cueWasHolding=this.showCues?.holding;this.showCues?.tick(dt);if(!hold&&!this.showRuntime?.holding&&!this.calls?.held&&!cueWasHolding){this.director.tick(dt,{voiceBusy:this.voicePhase!=='idle'});this.runner.tick(dt);}void this.showCallCues?.process();this.autoDrawTick();if(this.magic&&!this.magic.manual&&!this.director.paused&&!hold){this.magic.elapsed=(this.magic.elapsed||0)+dt;}if(now-(this.lastEmit||0)>240){this.lastEmit=now;this.emit();}if(!this.demo&&this.game.status==='running'&&this.runner.active&&now-(this.lastHeartbeat||0)>5000){this.lastHeartbeat=now;this.post('heartbeat').catch(e=>{this.director.pause();this.fail(e.message);});}
+  void this.announceServerWindow();this.director.callCueHold=!!this.showCallCues?.held;this.director.drawBlocked=!!this.game.state.drawHold||!!this.liveCalls?.drawHeld||this.director.callCueHold;const hold=this.game.state.window?.status==='open'||!!this.game.state.resultId;this.director.externalHold=hold;this.whispers?.tick();const cueWasHolding=this.showCues?.holding;this.showCues?.tick(dt);if(this.presentationReplay)this.director.tick(dt,{voiceBusy:this.voicePhase!=='idle'});if(!this.presentationReplay&&!hold&&!this.showRuntime?.holding&&!this.calls?.held&&!cueWasHolding){this.director.tick(dt,{voiceBusy:this.voicePhase!=='idle'});this.runner.tick(dt);}void this.showCallCues?.process();this.autoDrawTick();if(this.magic&&!this.magic.manual&&!this.director.paused&&!hold){this.magic.elapsed=(this.magic.elapsed||0)+dt;}if(now-(this.lastEmit||0)>240){this.lastEmit=now;this.emit();}if(!this.demo&&this.game.status==='running'&&this.runner.active&&now-(this.lastHeartbeat||0)>5000){this.lastHeartbeat=now;this.post('heartbeat').catch(e=>{this.director.pause();this.fail(e.message);});}
  }
  dispose(){this.disposed=true;this.preparedAudio?.dispose();this.whispers?.dispose();this.showCues?.reset();this.liveCalls?.dispose();this.calls?.dispose();this.showRuntime?.dispose();clearInterval(this.timer);clearInterval(this.refreshTimer);this.voice.stop();this.bridge.dispose();this.audio.dispose();this.preparationAutosave?.dispose();}
 }

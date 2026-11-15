@@ -1,5 +1,5 @@
 // One script source for preparation, live direction and cache identity.
-export const SPEECH_POLICY_VERSION='milo-dutch-bingo-v3';
+export const SPEECH_POLICY_VERSION='milo-dutch-bingo-v4-once';
 const units=['nul','één','twee','drie','vier','vijf','zes','zeven','acht','negen'];
 const teens=['tien','elf','twaalf','dertien','veertien','vijftien','zestien','zeventien','achttien','negentien'];
 const tens=['','','twintig','dertig','veertig','vijftig','zestig','zeventig'];
@@ -12,13 +12,13 @@ export function bingoNumberText(number,brand='milo'){
  if(!Number.isInteger(number)||number<1||number>75)throw Error('Kies een bingogetal van één tot vijfenzeventig.');
  if(brand==='vlampie')return `Nummer ${number}. ${number}!`;
  const letter=['Bernhard','Izaak','Nico','Gerard','Otto'][Math.floor((number-1)/15)],word=dutchNumber(number);
- return `${letter} ${word}! ${word[0].toLocaleUpperCase('nl-NL')+word.slice(1)}!`;
+ return `${letter} ${word}!`;
 }
 export const getBingoSpeech=bingoNumberText;
 export const roundSpeech=(round,pattern)=>`We gaan verder met ${round}. We spelen voor: ${pattern}. Veel plezier!`;
 export const prizeSpeech=prize=>`Kijk eens wat we deze ronde kunnen winnen! ${prize}.`;
 export const FIXED_SHOW_SPEECH=Object.freeze({
- bingo:'Bingo! Wat spannend! We pauzeren even, zodat de regie de kaart kan controleren.',
+ bingo:'Jaaa, we hebben een BINGO-melding! We zetten de ballen even stil. Heb jij ook bingo? Meld het nu, terwijl wij de kaart controleren!',
  false:'Deze kaart is nog niet helemaal compleet. Geeft niks! We spelen gezellig verder.',
  pause:'We nemen even pauze. Leg je kaarten klaar, we gaan zo weer verder.',
  wait:'Een klein momentje. De regie zorgt dat alles weer klaarstaat.',
@@ -26,6 +26,7 @@ export const FIXED_SHOW_SPEECH=Object.freeze({
  winner:'Bingo bevestigd! Gefeliciteerd! Een groot applaus voor jou!',
  thanks:'Wat een fantastische bingoavond! Bedankt voor het meespelen. Een groot applaus voor jullie allemaal!',
 });
+export const bingoWindowText=(brand='milo')=>brand==='vlampie'?'Bingo! Wat spannend! We pauzeren even, zodat de regie de kaart kan controleren.':FIXED_SHOW_SPEECH.bingo;
 export const NUMBER_NINE_AUDIENCE=Object.freeze({id:'number-nine-audience',text:'Ben jij ook negen jaar? Dan is deze vrolijke zwaai voor jou!'});
 export const MILO_BANTER=Object.freeze([
  {id:'hat-bananas',text:'Mijn hoed zit weer vol bananen. Typisch!'},

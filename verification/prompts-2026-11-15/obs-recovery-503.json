@@ -1,0 +1,290 @@
+{
+  "observedAt": "2026-11-15T22:48:31.812Z",
+  "actualBrowserRendering": true,
+  "simulatedAuthAndApiTransport": true,
+  "actualAccountAcceptance": false,
+  "actualBackendWrites": false,
+  "actualOBSInstallation": false,
+  "actualProviderAcceptance": false,
+  "actualWebAudio": true,
+  "remainingOBSCheck": "Controleer de bronmeter en een proefopname met beeld en testgeluid op een echte OBS-installatie.",
+  "origin": "http://127.0.0.1:4176",
+  "gameId": "qa-obs-automatic-503",
+  "autoplayPolicy": "no-user-gesture-required",
+  "sessionStatuses": [
+    503,
+    200,
+    200
+  ],
+  "outputFailures": [
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "status": 503
+    }
+  ],
+  "heartbeats": [
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 5
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 8
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 9
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 11
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 11
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782893394,
+      "testAck": null,
+      "generation": 1,
+      "seq": 14
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782902926,
+      "testAck": {
+        "id": "d100b0b6-4b4c-4d1c-a0b6-1b5bf7dca5f5",
+        "status": "played",
+        "at": 1794782902926,
+        "error": ""
+      },
+      "generation": 1,
+      "seq": 15
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782910332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 28
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782910332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 28
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782910332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 31
+    },
+    {
+      "audioReady": true,
+      "audioPlayedAt": 1794782910332,
+      "testAck": null,
+      "generation": 1,
+      "seq": 32
+    }
+  ],
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedNetworkErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/session"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4176/api/obs/output"
+    }
+  ],
+  "initialSilentProbe": [
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 0.08126984126984127,
+      "ended": true,
+      "endedAt": 0.18285714285714286
+    },
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 1.6224943310657596,
+      "ended": true,
+      "endedAt": 1.7211791383219954
+    }
+  ],
+  "outageBadge": {
+    "width": 440,
+    "height": 136.875,
+    "backdropFilter": "none",
+    "pointerEvents": "none"
+  },
+  "recoveredWithoutAnotherActivationJingle": true,
+  "explicitTestTone": {
+    "requestedBySimulatedRegie": true,
+    "id": "d100b0b6-4b4c-4d1c-a0b6-1b5bf7dca5f5",
+    "peak": 0.11538427915279599
+  },
+  "fullReloadSilentProbe": [
+    {
+      "peak": 0,
+      "duration": 0.08,
+      "startedAt": 0.07256235827664399,
+      "ended": true,
+      "endedAt": 0.18285714285714286
+    }
+  ],
+  "fullReloadDoesNotReplayTestOrIntro": true,
+  "audio": {
+    "peak": 0,
+    "states": [
+      "running",
+      "running"
+    ],
+    "trustedInteractions": 0,
+    "microphoneRequests": 0
+  },
+  "observedDesk": {
+    "drawn": [
+      7,
+      19,
+      41
+    ],
+    "lastNumber": 41,
+    "caption": "De trekking blijft gepauzeerd."
+  },
+  "actualCanvasPixelRange": 251
+}

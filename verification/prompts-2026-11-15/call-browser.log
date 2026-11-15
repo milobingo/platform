@@ -1,0 +1,15 @@
+
+Running 8 tests using 1 worker
+
+(node:277563) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/call-card.spec.mjs:56:1 › fixed director call card: immediate manual planning retains failed input, survives reload, and creates one safe invitation for the selected child (1.3s)
+  ✓  2 tests/browser/call-card.spec.mjs:61:1 › mobile director: passive guest track, separate parent and regie live consent, single magic choice and safe deliberate finale continuation (1.3s)
+  ✓  3 tests/browser/call-card.spec.mjs:69:1 › random call 2 of 2 without a reachable child becomes visibly skipped with no invitation, no draw hold and no reroll (714ms)
+  ✓  4 tests/browser/family-calls.spec.mjs:35:30 › Milo family 320px: saved preflight, explicit parent live agreement, unchanged video and one magic choice (1.2s)
+  ✓  5 tests/browser/family-calls.spec.mjs:35:30 › Milo family 390px: saved preflight, explicit parent live agreement, unchanged video and one magic choice (1.6s)
+  ✓  6 tests/browser/family-calls.spec.mjs:42:1 › Milo mobile: refusal leaves video untouched and the hold stays until safe regie closure (646ms)
+  ✓  7 tests/browser/family-calls.spec.mjs:46:1 › Milo mobile: unanswered timeout keeps viewing untouched without a return form or automatic draw release (564ms)
+  ✓  8 tests/browser/family-calls.spec.mjs:50:1 › Milo mobile: private disconnect and reload keep the hold and original video settings with no checklist (767ms)
+
+  8 passed (8.9s)

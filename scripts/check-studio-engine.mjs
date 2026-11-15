@@ -55,6 +55,15 @@ async function rig({live=false,goal=0}={}){
  const until=async predicate=>{for(let i=0;i<250&&!predicate();i++)await tick();assert(predicate(),'show did not reach expected phase');};
  return {e,server,calls,round,tick,until};
 }
+function cachedAudio(e,{ready=true,beforeClip=async()=>{}}={}){
+ const original=router,requests=[],speaker=e.characters.find(character=>character.id==='milo'),item={key:'a'.repeat(64),clip:'a'.repeat(64),text:'Bernhard vijftien! Vijftien!',characterId:'milo',speed:speaker.speed,durationMs:100},state={ready};
+ router=async(url,options={})=>{
+  if(url==='/api/openai/show-audio'){requests.push({action:'manifest',body:JSON.parse(options.body)});return Response.json({version:1,gameId:e.game.id,fingerprint:'engine-restored-cache',items:[{...item,ready:state.ready}],total:1,ready:state.ready?1:0,complete:state.ready});}
+  if(url==='/api/openai/speech'){const body=JSON.parse(options.body);requests.push({action:'clip',body});assert.equal(body.cacheOnly,true,'live recovery must never generate audio');assert.equal(body.expectedKey,item.key);await beforeClip();return new Response(new Uint8Array([1,2,3]),{headers:{'Content-Type':'audio/wav','X-Vlampie-Clip':item.key,'X-Milo-Audio-Duration-Ms':'100'}});}
+  return original(url,options);
+ };
+ return {state,requests,item};
+}
 after(()=>{globalThis.setInterval=intervals;globalThis.clearInterval=clearIntervals;});
 
 test('stage restores cohost and all saved settings, mouth follows the active audio owner, magic uses renderer milliseconds',async()=>{
@@ -72,15 +81,52 @@ test('starting a real draft requires configured AI and never silently falls back
  e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
  }finally{e.dispose();}
 });
-test('starting and resuming never generate fixed audio until the director explicitly prepares it',async()=>{
- const {e,server,calls}=await rig({live:true});try{
-  const original=router;let manifests=0;router=(url,options)=>{if(url.endsWith('/show-audio'))manifests++;return original(url,options);};
-  e.preparedAudio.reset(null);e.emit();server.status='draft';e.game=hostCopy(server);
-  await assert.rejects(e.start(),/klik op ‘Audio voorbereiden’/);assert.equal(manifests,0);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
-  server.status='running';server.state.paused=true;e.game=hostCopy(server);assert.equal(await e.pause(false),false);assert.equal(manifests,0);assert.equal(calls.some(call=>call.action==='pause'&&call.body.paused===false),false);assert.equal(server.state.paused,true);
-  await e.prepareShowAudio();assert.equal(manifests,1);assert.equal(e.preparedAudio.state.complete,true);assert.equal(e.error,'');assert.equal(await e.pause(false),true);assert.equal(manifests,1);assert.equal(server.state.paused,false);
-  e.characterRevision++;e.emit();await assert.rejects(e.preparedAudio.ensure(),/Gewijzigde audio voorbereiden/);assert.equal(manifests,1);
+test('an audio route acknowledgement for the old show cannot update the selected show',async()=>{
+ const {e}=await rig({live:true});try{
+  let release,entered;const gate=new Promise(resolve=>{release=resolve;}),arrived=new Promise(resolve=>{entered=resolve;});
+  e.outputRouting=false;e.bridge.route=async()=>{entered();await gate;e.bridge.routing=true;};
+  const pending=e.routeOutput(true);await arrived;e.game={...e.game,id:'different-selected-show'};release();
+  await assert.rejects(pending,/gekozen uitzending is gewijzigd/);assert.equal(e.outputRouting,false);
  }finally{e.dispose();}
+});
+test('draft start requires explicit audio preparation while live resume restores only the existing server cache',async()=>{
+ const {e,server,calls}=await rig({live:true});try{
+  const cache=cachedAudio(e,{ready:false});
+  e.preparedAudio.reset(null);e.emit();server.status='draft';e.game=hostCopy(server);
+  await assert.rejects(e.start(),/klik op ‘Audio voorbereiden’/);assert.equal(cache.requests.length,0);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
+  server.status='running';server.state.paused=true;e.game=hostCopy(server);assert.equal(await e.pause(false),false);assert.deepEqual(cache.requests.map(request=>request.action),['manifest']);assert.equal(calls.some(call=>call.action==='pause'&&call.body.paused===false),false);assert.equal(server.state.paused,true);
+  cache.state.ready=true;assert.equal(await e.pause(false),true);assert.equal(e.preparedAudio.state.complete,true);assert.equal(server.state.paused,false);assert.deepEqual(cache.requests.map(request=>request.action),['manifest','manifest','clip']);assert.equal(cache.requests.at(-1).body.cacheOnly,true);
+  e.characterRevision++;e.emit();await assert.rejects(e.preparedAudio.ensure(),/Gewijzigde audio voorbereiden/);assert.equal(cache.requests.length,3);
+ }finally{e.dispose();}
+});
+test('two resume-regie clicks share cache-only recovery and preserve every existing game hold without starting or drawing',async()=>{
+ const {e,server,calls,round}=await rig({live:true,goal:1});let release;
+ try{
+  let arrived;const entered=new Promise(resolve=>arrived=resolve),gate=new Promise(resolve=>release=resolve);
+  Object.assign(server.state,{paused:true,drawn:[7,15],lastCommit:{number:15,index:2,at:Date.now()-20000},drawHold:{id:'durable-call-hold',reason:'Wacht op terugkeer'},resultId:'official-result',window:{id:'official-window',status:'open',endsAt:Date.now()+60000}});server.audioCues={nine:{at:123}};e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();
+  const cache=cachedAudio(e,{beforeClip:async()=>{arrived();await gate;}}),before=structuredClone(server),a=e.resumeRegie(),b=e.resumeRegie();assert.equal(a,b);await entered;assert.equal(e.runner.active,false);assert.equal(e.preparedAudio.state.complete,false);release();await a;
+  assert.equal(e.preparedAudio.state.complete,true);assert.deepEqual(cache.requests.map(request=>request.action),['manifest','clip']);assert.equal(cache.requests[1].body.cacheOnly,true);assert.equal(e.runner.index,round);assert.equal(e.runner.goal,1);assert.equal(e.director.paused,true);assert.equal(e.director.externalHold,true);assert.equal(e.director.drawBlocked,true);assert.equal(e.autoDrawBlocked,true);assert.equal(e.localDrawNextAt,0);assert.deepEqual(server,before);assert.deepEqual(calls.map(call=>call.action),[server.id,'heartbeat']);
+ }finally{release?.();e.dispose();}
+});
+test('missing cached live audio leaves regie and server untouched and does not start a paid request',async()=>{
+ const {e,server,calls}=await rig({live:true});try{
+  server.state.paused=true;server.state.drawHold={id:'existing-call-hold'};e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();const cache=cachedAudio(e,{ready:false}),before=structuredClone(server);
+  await assert.rejects(e.resumeRegie(),/audio|fragment/i);assert.equal(e.runner.active,false);assert.equal(e.preparedAudio.state.complete,false);assert.deepEqual(server,before);assert.deepEqual(cache.requests.map(request=>request.action),['manifest']);assert.deepEqual(calls.map(call=>call.action),[server.id,'heartbeat']);
+ }finally{e.dispose();}
+});
+test('changing shows during cached resume cannot release the next show or resume its local director',async()=>{
+ const {e,server,calls}=await rig({live:true});let release;
+ try{
+  let arrived;const entered=new Promise(resolve=>arrived=resolve),gate=new Promise(resolve=>release=resolve);server.state.paused=true;e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();const cache=cachedAudio(e,{beforeClip:async()=>{arrived();await gate;}}),pending=e.pause(false);await entered;
+  const next=makeGame({brandId:'milo',title:'Andere show',date:'2027-11-01T14:00',timeZone:'Europe/Amsterdam'},'test',location.origin);next.status='running';next.state.paused=true;e.game=next;e.director.pause();e.emit();release();assert.equal(await pending,false);assert.equal(next.state.paused,true);assert.equal(e.director.paused,true);assert.equal(server.state.paused,true);assert.equal(calls.some(call=>call.action==='pause'),false);assert.deepEqual(cache.requests.map(request=>request.action),['manifest','clip']);
+ }finally{release?.();e.dispose();}
+});
+test('a bingo window observed while cached audio loads prevents resume from releasing the pause',async()=>{
+ const {e,server,calls}=await rig({live:true});let release;
+ try{
+  let arrived;const entered=new Promise(resolve=>arrived=resolve),gate=new Promise(resolve=>release=resolve);server.state.paused=true;e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();cachedAudio(e,{beforeClip:async()=>{arrived();await gate;}});const pending=e.pause(false);await entered;
+  server.state.window={id:'newly-opened-window',status:'open',endsAt:Date.now()+60000};e.acceptGame(hostCopy(server));e.emit();release();assert.equal(await pending,false);assert.equal(server.state.paused,true);assert.equal(e.director.paused,true);assert.equal(e.game.state.window.id,'newly-opened-window');assert.match(e.error,/meldvenster/);assert.equal(calls.some(call=>call.action==='pause'),false);
+ }finally{release?.();e.dispose();}
 });
 test('only a deliberately added unplanned call presenter invalidates preparation; finishing cues preserves the bank',async()=>{
  const {e,calls}=await rig({live:true});try{
@@ -103,11 +149,12 @@ test('a manual speaking card checks fresh server state and uses prepared audio w
   assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);assert.deepEqual(spoken,[[cue.text,'milo','ai',false,{preparedOnly:true}]]);assert.equal(JSON.stringify(server),before);assert.equal(e.game.state.paused,true);assert.equal(calls.some(call=>['start','activate','pause'].includes(call.action)),false);
  }finally{e.dispose();}
 });
-test('an unprepared manual speaking card requests no audio and keeps the show paused',async()=>{
+test('a missing cached manual speaking card requests no generated audio and keeps the show paused',async()=>{
  const {e,server}=await rig({live:true});try{
   server.plan.manualCues=[{id:'manual-not-ready',condition:'always',text:'Deze tekst is nog niet voorbereid.',speakerId:'milo'}];server.state.paused=true;e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();
+  const cache=cachedAudio(e,{ready:false});
   const requests=[],original=router;router=(url,options)=>{requests.push({url,method:options.method||'GET'});return original(url,options);};e.speak=()=>assert.fail('An unprepared cue must stay silent');
-  await assert.rejects(e.playManualCue('manual-not-ready'),/Audio voorbereiden/);assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);assert.equal(server.state.paused,true);
+  await assert.rejects(e.playManualCue('manual-not-ready'),/audio|fragment/i);assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'},{url:'/api/openai/show-audio',method:'POST'}]);assert.deepEqual(cache.requests.map(request=>request.action),['manifest']);assert.equal(server.state.paused,true);
  }finally{e.dispose();}
 });
 test('a confirmed finale can deliberately pause, choose prepared B7, and advance only after an explicit resume',async()=>{
@@ -479,4 +526,25 @@ test('overview snapshot always exposes the active presenter identity',async()=>{
 });
 test('invalid character settings and voice-design calls cannot emit undefined API routes',async()=>{
  const {e}=await rig();try{router=()=>{throw Error('must not call the API');};await assert.rejects(e.saveCharacter('undefined',{}),/geldig personage/);await assert.rejects(e.designVoice(undefined),/geldig personage/);}finally{e.dispose();}
+});
+test('a server bingo window waits for the official number and announces once without moving the reporting deadline',async t=>{
+ const {e}=await rig();try{
+  e.runner.active=true;e.director.paused=false;const speech=[];t.mock.method(e,'speak',(text,...options)=>speech.push({text,options}));
+  e.game.state.window={id:'one-official-window',status:'open',endsAt:Date.now()+30000,claims:[]};const state=structuredClone(e.game.state);
+  e.voicePhase='playing';await e.announceServerWindow();assert.equal(speech.length,0,'A currently spoken official number must finish first');
+  e.voicePhase='idle';e.officialAnnouncement='pending-number-claim';await e.announceServerWindow();assert.equal(speech.length,0);e.officialAnnouncement=null;
+  await e.announceServerWindow();await e.announceServerWindow();assert.equal(speech.length,1);assert.match(speech[0].text,/BINGO-melding/);assert.doesNotMatch(speech[0].text,/winnaar|gewonnen/);assert.deepEqual(e.game.state,state);
+  e.game.state.window.id='next-official-window';await e.announceServerWindow();assert.equal(speech.length,2);
+ }finally{e.dispose();}
+});
+test('cue replay and previous-cue navigation only repeat presentation and retain the current official round and board',async()=>{
+ const {e,round,calls}=await rig();try{
+  e.runner.active=true;e.runner.plan=structuredClone(e.game.plan);e.runner.index=round;e.runner.goal=0;e.runner.phase='drawing';e.director.paused=false;e.game.state.drawn=[7,19,41];e.game.state.lastCommit={token:'stable-server-ball',number:41,index:3,at:Date.now()};e.syncGame();
+  const before=structuredClone(e.game),current=e.runner.index;await e.replayCue(0);assert.equal(e.presentationReplay.index,0);assert.equal(e.runner.index,current);assert.equal(e.drawClock().blocked,true);assert.equal(e.director.flow?.steps.some(step=>step.commit||step.pick),undefined);assert.deepEqual(e.game,before);assert.equal(calls.length,0);
+  assert.throws(()=>e.nextCue(),/Terug naar actuele cue/);await e.cue(Math.max(0,round-1));assert.equal(e.runner.index,current);assert.deepEqual(e.game,before);e.returnToCurrentCue();assert.equal(e.presentationReplay,null);assert.equal(e.runner.index,current);assert.equal(e.runner.phase,'drawing');assert.deepEqual(e.game,before);assert.equal(e.autoDrawBlocked,true);assert.equal(calls.length,0);
+  e.game.state.window={id:'must-finish',status:'open'};const blocked=structuredClone(e.game);await assert.rejects(e.replayCue(0),/officiële bal/);assert.deepEqual(e.game,blocked);
+ }finally{e.dispose();}
+});
+test('a missing Dutch browser voice blocks rehearsal speech instead of silently selecting an English voice',async t=>{
+ const {e}=await rig();try{t.mock.method(globalThis.speechSynthesis,'getVoices',()=>[{lang:'en-US'}]);const before=utterances.length;e.speak('Dit is een Nederlandse proef.','milo','browser');assert.equal(utterances.length,before);assert.match(e.error,/geen Nederlandse browserstem/);assert.equal(e.voicePhase,'idle');assert.equal(e.director.paused,true);}finally{e.dispose();}
 });

@@ -26,7 +26,7 @@ export function premierePlan(){
   }
   if(type==='round'){
    const final=roundIndex++===3;
-   Object.assign(block,{interval:15,newBoard:true,goals:(final?['patroon-vol']:['patroon-hoeken','patroon-boven-onder','patroon-vol']).map(patternId=>({id:newId('doel'),patternId,prizeId:final?'prijs-hoofdprijs':'prijs-verrassing'}))});
+   Object.assign(block,{interval:15,newBoard:true,callFullCardWinner:true,goals:(final?['patroon-vol']:['patroon-hoeken','patroon-boven-onder','patroon-vol']).map(patternId=>({id:newId('doel'),patternId,prizeId:final?'prijs-hoofdprijs':'prijs-verrassing'}))});
   }
   plan.blocks.push(block);
  }

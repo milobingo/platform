@@ -1,0 +1,568 @@
+{
+  "startedAt": "2026-11-15T22:37:07.801Z",
+  "model": "gpt-4.1-2025-04-14",
+  "purpose": "Fictitious design proposals only; no audio, media, participants, app or game mutation.",
+  "limits": {
+    "pilotRequestsAlreadyStarted": 3,
+    "maximumAdditionalRequests": 9,
+    "maximumTotalRequests": 12,
+    "deadlinePerRequestSeconds": 120,
+    "maxOutputTokensPerRequest": 12000,
+    "parallelRequests": 1,
+    "automaticRepairRequests": 0
+  },
+  "sourceHashes": {
+    "bingo-model.js": "ba875923c383c95e9c4e1809b14240c591c7d621b86aea06ee05abd35e1a88ce",
+    "call-rundown.js": "8b924ec7d65f4b8efff32e23e100a6bff3e0afa914318051cb93f175bf38df75",
+    "characters.js": "58e91565e9919644ecd92583f172942b2632a7c318e7b5efeb50e9071bd3cd67",
+    "game-capacity.js": "917e0ddfc777ff44628cf08feb3d0f268c7d5f0dbfa0c30ee5a712f937632623",
+    "game-rules.js": "36c9dd995a5c86a5d1f7581404b6a973afd04970f79e7ee2e1324d73b962745f",
+    "magic-cues.js": "da4c41b08adfc36fccbbb18862eb4d9d8a16194d4e786d4462c081526ed171d7",
+    "manual-cues.js": "e8c52b7a1f06b493a340c2320a716880cc384115617f95d1dff9d58e691c54f6",
+    "node-game-queue.js": "26678af6912ad7712e4262a06461fef99120c88aab5712d923ac15c1fd3ba259",
+    "node-postgres-tls.js": "50b4a483a7995cc3c92ed869989aa8d9882d7dadfdef4766c3110f198f254af9",
+    "node-storage.js": "5aefa3adc04812e285c69ca660e2be59df22048684b25da7ef1e55af2d8a5644",
+    "plan-model.js": "b76abdc36f3e9c1b9afd8e380be5558bf6fc0bd19147520e3a155dfeae493c78",
+    "production-model.js": "ebd1c1699cfd4fcc19b6a185c1067a13c3b9f33446f212396e1aaf102abaadaf",
+    "secrets.js": "468a51acd200ea398169854fc62d6f7dbde0e32bc0fcf9b86f35fc9728a75fda",
+    "show-brands.js": "78544507d29617acb486f47dc97328997381e3f9ce4c4b40fd8624494f25a2d4",
+    "show-cues.js": "9c2451e68cb4ce31ee278b65438eef08ec731a72b62c05704d4a8e82125c12c4",
+    "show-design-model.js": "4333cd45e814525f5324af5799e86d232de95db93a5965ac8fbd0ba08dff7c0d",
+    "show-design-prompt.js": "6ef9377b3453e8f80379f8c6db497603b094abafd403eaee8488fee93d8ec62a",
+    "show-design-provider.js": "9a528d5ed2bf95ed160f3704962268a10c395695767f924d2c60fce315c9f8ea",
+    "show-time.js": "8c83c8b000d53142b4850b11b44ec53d92a9ab930e62d87e24cfcff128ef3763",
+    "speech-text.js": "4618deda264d8ab5d49e23da51991cbe029a01f6d5669d1a2c4ed87f1e8b49c9",
+    "standard-show.js": "bfa2b97913c17d3c9a3f6a3bea075eee137307daf66069569ecd501e043ddf01",
+    "../public/speech-text.js": "78869d797bcfcb194e1d26a2ff31eb3032c72508cbfe831c4899f2a48fd12e8f"
+  },
+  "requests": [
+    {
+      "number": 4,
+      "briefingId": "stars-piko",
+      "direction": "avontuur",
+      "startedAt": "2026-11-15T22:37:08.351Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7419,
+        "outputTokens": 4929
+      },
+      "durationMs": 26827,
+      "title": "Het Sterzoekavontuur",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "f988f2a131ee10d5cb4fc9fbab9224d669e38d64788100a6c55ddbeceff61252"
+    },
+    {
+      "number": 5,
+      "briefingId": "stars-piko",
+      "direction": "publiek",
+      "startedAt": "2026-11-15T22:37:54.338Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7427,
+        "outputTokens": 5058
+      },
+      "durationMs": 26585,
+      "title": "Het Magische Sterrenzoekfeest",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "dd3d93ea81a6438dd1498797953d1a7c75b0d98db69f0fb8951e9aa9954e5358"
+    },
+    {
+      "number": 6,
+      "briefingId": "stars-piko",
+      "direction": "komedie",
+      "startedAt": "2026-11-15T22:38:20.925Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7433,
+        "outputTokens": 5181
+      },
+      "durationMs": 27924,
+      "title": "De Magische Sterrenzoekshow",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "01c04892ad3accf2a808700543b49128a10932ddd21c40effd87de659719f216"
+    },
+    {
+      "number": 7,
+      "briefingId": "participation-revue",
+      "direction": "avontuur",
+      "startedAt": "2026-11-15T22:38:48.850Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7114,
+        "outputTokens": 4345
+      },
+      "durationMs": 20324,
+      "title": "Milo & Pip en het Mysterie van de Verdwenen Ster",
+      "validation": {
+        "sceneCount": 22,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "81b6b5cf4785c3191df52914798c770a75f8d52b1d13d0637cc5fa9261e49988"
+    },
+    {
+      "number": 8,
+      "briefingId": "participation-revue",
+      "direction": "publiek",
+      "startedAt": "2026-11-15T22:39:09.177Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7122,
+        "outputTokens": 3789
+      },
+      "durationMs": 18209,
+      "title": "Publieksspektakel: Sterren en Bubbels!",
+      "validation": {
+        "sceneCount": 22,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "694078cc656cf77e9b94184ecc3f13ccf52bf08238b11ecba1fa85f5b4462c2c"
+    },
+    {
+      "number": 9,
+      "briefingId": "participation-revue",
+      "direction": "komedie",
+      "startedAt": "2026-11-15T22:39:27.388Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7128,
+        "outputTokens": 5010
+      },
+      "durationMs": 24201,
+      "title": "Sterren en Bubbels – Samen klappen naar de hoofdprijs!",
+      "validation": {
+        "sceneCount": 22,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "08e298072747346732f2a2d43f1ba4eb4921be4856b9e70f255211a09f2be5b2"
+    },
+    {
+      "number": 10,
+      "briefingId": "stella-warm-closing",
+      "direction": "avontuur",
+      "startedAt": "2026-11-15T22:39:51.590Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7571,
+        "outputTokens": 5350
+      },
+      "durationMs": 36895,
+      "title": "Het Grote Sterrenmysterie",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "2b670407915582cb4c129b242d449643554b220eb112803fd093dee3c340cd43"
+    },
+    {
+      "number": 11,
+      "briefingId": "stella-warm-closing",
+      "direction": "publiek",
+      "startedAt": "2026-11-15T22:40:28.488Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7579,
+        "outputTokens": 5045
+      },
+      "durationMs": 33192,
+      "title": "Samen Schitteren! – De Milo & Friends BingoShow",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "9c7494e036ea22da4709403f18dd6946886ad0b7c4aa590f7aee45f1c8b45604"
+    },
+    {
+      "number": 12,
+      "briefingId": "stella-warm-closing",
+      "direction": "komedie",
+      "startedAt": "2026-11-15T22:41:01.682Z",
+      "status": "passed",
+      "usage": {
+        "inputTokens": 7585,
+        "outputTokens": 5087
+      },
+      "durationMs": 32882,
+      "title": "Samen Schitteren! – De Grote Sterrenbingo",
+      "validation": {
+        "sceneCount": 23,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "freeCenter": true,
+        "newBoardPerRound": true,
+        "endsWithFinale": true,
+        "distinctFromEarlierDirections": true
+      },
+      "rawFixtureSha256": "549d1dc4349017865f3bda487c962c8d89a903138a423ef6f611ecbf927e7ea5"
+    }
+  ],
+  "status": "passed",
+  "credentials": {
+    "configured": true,
+    "source": "environment"
+  },
+  "updatedAt": "2026-11-15T22:41:34.566Z",
+  "additionalRequests": 9,
+  "totalStartedRequests": 12,
+  "successfulProposals": 9,
+  "totalKnownUsage": {
+    "inputTokens": 66378,
+    "outputTokens": 43794
+  },
+  "modelMaintenance": {
+    "model": "gpt-4.1-2025-04-14",
+    "deprecated": true,
+    "announcedShutdownDate": "2027-01-14",
+    "checkedAt": "2026-11-15",
+    "modelDocumentation": "https://developers.openai.com/api/docs/models/gpt-4.1",
+    "shutdownDateSource": "https://developers.openai.com/api/reference/resources/responses/methods/create",
+    "deprecations": "https://developers.openai.com/api/docs/deprecations"
+  },
+  "limitations": [
+    "Uses the real central staging OpenAI key and actual new provider/domain/compiler functions in an isolated host process, not a browser-authenticated durable job.",
+    "No application/database/account/game/media/configuration writes were made.",
+    "No speech audio, real LiveKit conversation, OBS, real participants or children were used.",
+    "Three initial requests were started before the strict-schema repair: two completed invalid proposals, one terminated during generation; usage for the terminated request is unknown.",
+    "One generated adventure direction did not honor the explicit no-search-story preference. This was reported for a separate direction-policy correction; the nine proposals here use the recorded pre-correction hashes."
+  ],
+  "knownPilotUsage": {
+    "inputTokens": 6115,
+    "outputTokens": 8939
+  },
+  "latencyMs": {
+    "minimum": 18209,
+    "maximum": 36895,
+    "median": 26827
+  },
+  "pilot": {
+    "startedRequests": 3,
+    "completedFailures": [
+      {
+        "number": 1,
+        "code": "incomplete_proposal",
+        "durationMs": 26770,
+        "usage": {
+          "inputTokens": 3040,
+          "outputTokens": 3775
+        }
+      },
+      {
+        "number": 2,
+        "code": "invalid_speaker",
+        "durationMs": 32115,
+        "usage": {
+          "inputTokens": 3075,
+          "outputTokens": 5164
+        }
+      }
+    ],
+    "cancelledDuringGeneration": 1,
+    "cancelledRequestUsageKnown": false,
+    "strictSchemaCorrection": "Required scene keys, role-specific speakers and shaped guest/random dialogue; existing domain validation retained."
+  },
+  "followup": "A separately authorized thirteenth request verified the direction-policy correction; see openai-direction-policy-v2.json.",
+  "rawFixtureLocation": "Complete fictitious proposal texts were retained only in temporary local rehearsal evidence, not committed.",
+  "knownCompletedUsageIncludingPilotAndCorrection": {
+    "inputTokens": 79826,
+    "outputTokens": 56985
+  },
+  "totalRequestsIncludingCorrection": 13,
+  "offlineCanonicalReplay": {
+    "kind": "Offline replay of actual parsed fictitious OpenAI proposals",
+    "checkedAt": "2026-11-15T22:49:14.609Z",
+    "status": "passed",
+    "paidRequests": 0,
+    "networkAttempts": 0,
+    "compilerHashes": {
+      "server/show-design-model.js": "e56cae86d2a40bbfbd6cc8c282bcfa1ecc9b9c46ca0cf7549a8def5b89410e6b",
+      "server/show-design-provider.js": "0d2916363553f2a4fb67638feed8138d9a71aebf4e949e0151f4fd61461e28e1",
+      "server/show-design-prompt.js": "0e32a198785d588d3dd572d9447e8bfbc15494d996bb8a5910cce69580e30b0d",
+      "server/show-audio-manifest.js": "a96792d96ba81315be32427668b333c1d3a08913177cbfe909b42e194476c2a8",
+      "public/bingo-speech.js": "511f385b0cd8ad356bda22a1d1c70a7e4b4dd13ba0e366bb192d535ea2463334"
+    },
+    "controlSpeechVersion": "milo-design-control-v1",
+    "fixtures": [
+      {
+        "name": "raw-participation-revue-avontuur.json",
+        "rawSha256": "81b6b5cf4785c3191df52914798c770a75f8d52b1d13d0637cc5fa9261e49988",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 22,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-participation-revue-komedie.json",
+        "rawSha256": "08e298072747346732f2a2d43f1ba4eb4921be4856b9e70f255211a09f2be5b2",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 22,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-participation-revue-publiek.json",
+        "rawSha256": "694078cc656cf77e9b94184ecc3f13ccf52bf08238b11ecba1fa85f5b4462c2c",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 22,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-policy-v2-participation-revue.json",
+        "rawSha256": "a30bd60701d25ba412efa0cb17ddd1ba4f93a019791ae03ca3383d7300ff3c13",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 22,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": true,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stars-piko-avontuur.json",
+        "rawSha256": "f988f2a131ee10d5cb4fc9fbab9224d669e38d64788100a6c55ddbeceff61252",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stars-piko-komedie.json",
+        "rawSha256": "01c04892ad3accf2a808700543b49128a10932ddd21c40effd87de659719f216",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stars-piko-publiek.json",
+        "rawSha256": "dd3d93ea81a6438dd1498797953d1a7c75b0d98db69f0fb8951e9aa9954e5358",
+        "status": "passed",
+        "lead": "milo",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stella-warm-closing-avontuur.json",
+        "rawSha256": "2b670407915582cb4c129b242d449643554b220eb112803fd093dee3c340cd43",
+        "status": "passed",
+        "lead": "stella",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stella-warm-closing-komedie.json",
+        "rawSha256": "549d1dc4349017865f3bda487c962c8d89a903138a423ef6f611ecbf927e7ea5",
+        "status": "passed",
+        "lead": "stella",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      },
+      {
+        "name": "raw-stella-warm-closing-publiek.json",
+        "rawSha256": "9c7494e036ea22da4709403f18dd6946886ad0b7c4aa590f7aee45f1c8b45604",
+        "status": "passed",
+        "lead": "stella",
+        "scenes": 23,
+        "conditionalScenes": 8,
+        "previewEqualsExecutableCards": true,
+        "originalModelControlTextEditorialOnly": true,
+        "checkingExactCanonical": true,
+        "patternKeepsCurrentRoundAndDrawnNumbers": true,
+        "finaleReturnsToClosing": true,
+        "rounds": 4,
+        "goals": 10,
+        "randomCalls": 2,
+        "intervalSeconds": 15,
+        "canonicalRulesPreserved": true,
+        "idempotentCompilation": true,
+        "knownBadControlQuotesExcluded": false,
+        "preparedAudioScriptEqualsExecutableCards": true
+      }
+    ],
+    "totalFixtures": 10,
+    "totalCanonicalControlScenes": 80,
+    "exactCheckingText": "Jaaa, we hebben een BINGO-melding! We zetten de ballen even stil. Heb jij ook bingo? Meld het nu, terwijl wij de kaart controleren!",
+    "exactPatternText": "We gaan door naar het volgende patroon binnen dezelfde ronde. De getrokken nummers blijven op het bord staan. Kijk in de app welk patroon nu geldt.",
+    "scope": "Offline validation of proposal structure, displayed cue text, executable cue text and prepared-audio SCRIPT text; no audio generated or played."
+  }
+}

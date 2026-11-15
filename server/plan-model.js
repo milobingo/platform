@@ -81,7 +81,7 @@ export function normalizePlan(input){
   if(b.animation!==undefined){if(!ANIMATIONS.includes(b.animation))throw new Error('Kies een beschikbare beweging.');out.animation=b.animation;}
   if(['countdown','pause','call','random-call'].includes(b.type)){out.seconds=number(b.seconds,1,86400,'de timer');out.unit=b.unit==='minutes'?'minutes':'seconds';}
   if(['welcome','explanation','story','finale','call','random-call','magic','guest'].includes(b.type))out.text=speechText(b.text,'Presentatietekst');
-  if(b.type==='random-call'){if(input.leadId==='vlampie'||input.studioId&&input.studioId!=='sterrenplein'&&input.studioId!=='magico')throw new Error('Willekeurige belmomenten horen bij Milo & Friends.');out.fallbackText=speechText(b.fallbackText??'Dit keer doe ik de truc zelf. Tover allemaal gezellig mee!','Brug bij een overgeslagen belletje');out.advance='manual';}
+  if(b.type==='random-call'){if(input.leadId==='vlampie'||input.studioId&&input.studioId!=='sterrenplein'&&input.studioId!=='magico')throw new Error('Willekeurige belmomenten horen bij Milo & Friends.');out.fallbackText=speechText(b.fallbackText??'Dit keer doe ik de truc zelf. Tover allemaal gezellig mee!','Brug bij een overgeslagen belletje');out.advance='manual';if(b.preparedCallLines!==undefined){if(!b.preparedCallLines||typeof b.preparedCallLines!=='object'||Array.isArray(b.preparedCallLines)||Object.keys(b.preparedCallLines).some(key=>!['greeting','choice','thank','fallback'].includes(key)))throw new Error('De voorbereide belteksten zijn ongeldig.');out.preparedCallLines={};for(const key of ['greeting','choice','thank','fallback']){const value=text(b.preparedCallLines[key],500,'Voorbereide beltekst');if(!value||/\[[^\]]+\]|\{[^}]+\}/.test(value))throw new Error('Vul volledige voorbereide belteksten zonder invulhaken in.');out.preparedCallLines[key]=value;}}}
   if(b.type==='explanation'&&b.explanationSteps!==undefined)out.explanationSteps=list(b.explanationSteps,10,'Uitlegstappen').map(step=>{
    if(!step||typeof step.patternId!=='string'||step.patternId.length>80)throw new Error('Kies voor elke uitlegstap een geldig patroon.');
    return {patternId:step.patternId,text:speechText(step.text,'Tekst uitlegstap')};
@@ -113,7 +113,7 @@ export function normalizePlan(input){
    return row;
   });unique(out.manualCues,'Microfoonteksten');
  }
- const scripts=blocks.flatMap(block=>[...(block.explanationSteps?.length?block.explanationSteps.map(step=>step.text):[block.text]),block.fallbackText,...(block.dialogue||[]).map(turn=>turn.text)]).concat((out.manualCues||[]).map(cue=>cue.text));
+ const scripts=blocks.flatMap(block=>[...(block.explanationSteps?.length?block.explanationSteps.map(step=>step.text):[block.text]),block.fallbackText,...Object.values(block.preparedCallLines||{}),...(block.dialogue||[]).map(turn=>turn.text)]).concat((out.manualCues||[]).map(cue=>cue.text));
  if(scripts.reduce((count,value)=>count+(value?.trim()?splitSpeechText(value).length:0),0)>MAX_PLAN_SPEECH_CHUNKS)throw new Error('Het draaiboek bevat te veel stemfragmenten. Verdeel de teksten over meerdere shows.');
  if(input.leadId!==undefined){if(!ALL_CHARACTER_IDS.includes(input.leadId))throw new Error('Kies een bestaande hoofdhost.');out.leadId=input.leadId;}
  out.cohostId=input.cohostId??null;

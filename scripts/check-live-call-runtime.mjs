@@ -34,7 +34,7 @@ function fixture({demo=true,Connection=SilentConnection,Media,Output}={}){
 const prepare=({runtime,queue},name='Sophie',character='milo')=>runtime.prepare(queue().find(e=>e.name===name).id,{callName:name,pronunciation:'Sofie',reason:'Een gezellig showgesprek',note:'Begin met een makkelijke vraag.',confirmedFacts:[{confirmed:true,prize:'Verzonnen prijs'}]},90,character);
 async function backstage(f){await prepare(f);await f.runtime.action('ring');await f.runtime.action('simulate',{outcome:'answer'});}
 async function stage(f){await f.runtime.action('backstage-ready',{soundChecked:true,explanationGiven:true});await f.runtime.action('stage');if(!f.runtime.call.liveAgreement?.agreedAt){await assert.rejects(f.runtime.action('go-live',{contextConfirmed:true}),/gezin.*toestemming/);await f.runtime.action('simulate',{outcome:'agree-live'});}}
-async function completeReturn(f,{manual=false}={}){if(!manual)await f.runtime.action('simulate',{outcome:'returned'});await f.runtime.action('confirm-return',{confirmed:true,...(manual?{manual:true,note:'Ouder bevestigt dat YouTube weer zichtbaar en hoorbaar is.'}:{})});assert(f.runtime.drawHeld);await f.runtime.action('resume-draw');}
+async function completeReturn(f,{manual=false}={}){await f.runtime.action('simulate',{outcome:'returned'});await f.runtime.action('confirm-return',{confirmed:true,...(manual?{manual:true,note:'Ouder bevestigt dat YouTube weer zichtbaar en hoorbaar is.'}:{})});assert(f.runtime.drawHeld);await f.runtime.action('resume-draw');}
 
 // All nine steps use the actual runtime and the shared server model.
 {
@@ -49,7 +49,7 @@ async function completeReturn(f,{manual=false}={}){if(!manual)await f.runtime.ac
  await assert.rejects(r.action('go-live'),/gastkaart/);e.voicePhase='speaking';await assert.rejects(r.action('go-live',{contextConfirmed:true}),/entertainmentmoment/);e.voicePhase='idle';e.magic={kind:'test'};await assert.rejects(r.action('go-live',{contextConfirmed:true}),/entertainmentmoment/);e.magic=null;
  let returnedToShow=0;e.showRuntime={manual:true,returnToShow:()=>returnedToShow++};await r.action('go-live',{contextConfirmed:true});assert.equal(r.call.phase,'live');assert.equal(returnedToShow,1);assert.equal(r.call.activeContext.callName,'Sofie');await assert.rejects(r.action('context',{context:{callName:'Ander kind'}}),/gastkaart staat vast/);assert.equal(r.call.activeContext.callName,'Sofie');assert.equal(r.call.characterId,'milo');assert.equal(e.director.scene,'call');assert.equal(e.camera,'host');assert(e.director.callHold);assert(f.calls.find(c=>c.method==='stopSpeech'));assert(r.stagePatch({show:{}}).liveCall.simulated);
  await r.action('mute',{muted:true});assert(r.call.muted);await r.action('finish');assert.equal(r.call.phase,'returning');assert(r.drawHeld);assert.equal(e.director.scene,'entertainment');assert.equal(e.director.sceneAge,12);assert.equal(e.camera,'wide');assert.equal(e.director.callHold,false);
- await assert.rejects(r.action('resume-draw'),/belstap/);await assert.rejects(r.action('confirm-return',{confirmed:true}),/bevestiging/);await completeReturn(f);assert.equal(r.call.phase,'completed');assert.equal(r.drawHeld,false);assert.equal(e.runner.autoDraw,false);assert.deepEqual(e.game.state.drawn,original);assert.equal(f.realRequests.length,0);assert.equal(r.connection.actions.length,0);
+ await assert.rejects(r.action('resume-draw'),/belstap/);await assert.rejects(r.action('confirm-return',{confirmed:true}),/veilig gesloten/);await completeReturn(f);assert.equal(r.call.phase,'completed');assert.equal(r.drawHeld,false);assert.equal(e.runner.autoDraw,false);assert.deepEqual(e.game.state.drawn,original);assert.equal(f.realRequests.length,0);assert.equal(r.connection.actions.length,0);
  await prepare(f,'Daan');assert.equal(r.call.context.callName,'Daan');assert.deepEqual(r.call.context.confirmedFacts,[]);assert.equal(r.call.activeContext,undefined);r.dispose();
 }
 
@@ -62,6 +62,55 @@ for(const outcome of ['declined','missed','mic-denied','disconnected']){
 for(const kind of ['pending','director-pending','draw-flow','window','result']){
  const f=fixture();if(kind==='pending')f.engine.game.state.pending={number:8};if(kind==='director-pending')f.engine.director.pending={number:8};if(kind==='draw-flow')f.engine.director.flow={kind:'draw'};if(kind==='window')f.engine.game.state.window={status:'open'};if(kind==='result')f.engine.game.state.resultId='result-one';
  await assert.rejects(prepare(f),/lopende trekking/);assert.equal(f.runtime.call,null);assert.equal(f.engine.game.state.drawHold,undefined);assert.equal(f.engine.runner.autoDraw,true);f.runtime.dispose();
+}
+
+// Explicit call actions select an already active output route. These injected
+// boundaries never open a window, join a media room, or invite a real family.
+for(const method of ['inviteCue','prepare']){
+ const make=()=>{
+  class ConfirmedConnection extends SilentConnection{async action(name,body={}){this.actions.push({name,body});return {};}}
+  const f=fixture({demo:false,Connection:ConfirmedConnection});f.runtime.refreshGame=async()=>{};f.routeChanges=[];
+  f.engine.routeOutput=async enabled=>{f.routeChanges.push(enabled);f.engine.bridge.routing=enabled;f.engine.outputRouting=enabled;};
+  f.invoke=()=>method==='inviteCue'?f.runtime.inviteCue('manual:output-route'):f.runtime.prepare(f.queue()[0].id,{callName:'Sophie'});
+  return f;
+ };
+ {
+  const f=make(),original=[...f.engine.game.state.drawn];f.engine.bridge.routing=false;
+  await f.invoke();assert.deepEqual(f.routeChanges,[true]);assert.equal(f.engine.bridge.routing,true);assert.equal(f.engine.outputRouting,true);assert.deepEqual(f.runtime.connection.actions.map(a=>a.name),[method==='inviteCue'?'cue-invite':'prepare']);assert.equal(f.engine.director.paused,false);assert.deepEqual(f.engine.game.state.drawn,original);assert.equal(f.engine.game.state.drawHold,undefined);f.runtime.dispose();
+ }
+ {
+  const f=make();await f.invoke();assert.deepEqual(f.routeChanges,[]);assert.equal(f.runtime.connection.actions.length,1);f.runtime.dispose();
+ }
+ {
+  const f=make();f.engine.bridge.connected=false;f.engine.bridge.routing=false;
+  await assert.rejects(f.invoke(),/bestaande OBS-bron/);assert.deepEqual(f.routeChanges,[]);assert.equal(f.runtime.connection.actions.length,0);assert.equal(f.engine.game.state.drawHold,undefined);f.runtime.dispose();
+ }
+ {
+  const f=make();f.engine.bridge.routing=false;f.engine.routeOutput=async()=>{throw Error('De server heeft de geluidsroute niet bevestigd.');};
+  await assert.rejects(f.invoke(),/geluidsroute niet bevestigd/);assert.equal(f.runtime.connection.actions.length,0);assert.equal(f.engine.bridge.routing,false);f.runtime.dispose();
+ }
+ {
+  const f=make();f.engine.bridge.routing=false;f.engine.routeOutput=async()=>{};
+  await assert.rejects(f.invoke(),/Audio via uitzendvenster/);assert.equal(f.runtime.connection.actions.length,0);f.runtime.dispose();
+ }
+ {
+  const f=make();f.engine.bridge.routing=false;f.engine.routeOutput=async()=>{f.engine.bridge.routing=true;f.engine.bridge.connected=false;};
+  await assert.rejects(f.invoke(),/verbinding.*onderbroken/);assert.equal(f.runtime.connection.actions.length,0);f.runtime.dispose();
+ }
+ for(const interruption of ['stop','show-change']){
+  const f=make(),gate=deferred(),entered=deferred();f.engine.bridge.routing=false;f.engine.routeOutput=async()=>{entered.resolve();await gate.promise;f.engine.bridge.routing=true;};
+  const pending=f.invoke(),rejected=assert.rejects(pending,/geannuleerd/);await entered.promise;
+  if(interruption==='stop')await f.runtime.stop();else f.engine.game={...f.engine.game,id:'other-show'};
+  gate.resolve();await rejected;assert.equal(f.runtime.connection.actions.length,0);assert.equal(f.runtime.drawHeld,false);assert.equal(f.runtime.getSnapshot().busy,false);f.runtime.dispose();
+ }
+ {
+  const f=make(),gate=deferred(),entered=deferred();f.engine.bridge.routing=false;f.engine.routeOutput=async()=>{entered.resolve();await gate.promise;f.engine.bridge.routing=true;};
+  const pending=f.invoke();await entered.promise;await assert.rejects(f.invoke(),/huidige belstap/);gate.resolve();await pending;assert.equal(f.runtime.connection.actions.length,1);f.runtime.dispose();
+ }
+ {
+  const f=make(),gate=deferred(),entered=deferred();f.engine.bridge.routing=false;f.engine.bridge.connect=async()=>{entered.resolve();await gate.promise;};
+  const pending=f.invoke(),rejected=assert.rejects(pending,/bestaande belmoment/);await entered.promise;f.runtime.connection.call={id:'other-active-call',gameId:f.engine.game.id,phase:'backstage'};gate.resolve();await rejected;assert.deepEqual(f.routeChanges,[]);assert.equal(f.runtime.connection.actions.length,0);f.runtime.dispose();
+ }
 }
 
 // A stop while output-window readiness is pending must never create a server call.
@@ -85,7 +134,7 @@ for(const kind of ['pending','director-pending','draw-flow','window','result']){
 {
  let f,refreshes=0;
  class ImmediateConnection extends SilentConnection {
-  async action(name,body={}){this.actions.push({name,body});if(name==='prepare'){const e=f.engine,entry=e.game.participation[0];this.call=makeLiveCall(e.game,entry,{clientId:e.clientId,outputId:e.bridge.id,character:CHARACTERS.milo,presenter:CHARACTERS.milo,context:body.context,maxSeconds:90});e.game.state.drawHold={id:this.call.id,callId:this.call.id};}else{transitionLiveCall(this.call,name,'host',body);if(name==='resume-draw')f.engine.game.state.drawHold=null;}this.options.onChange(this.call);return {game:f.engine.game,call:this.call};}
+  async action(name,body={}){this.actions.push({name,body});if(name==='prepare'){const e=f.engine,entry=e.game.participation[0];this.call=makeLiveCall(e.game,entry,{clientId:e.clientId,outputId:e.bridge.id,character:CHARACTERS.milo,presenter:CHARACTERS.milo,context:body.context,maxSeconds:90});e.game.state.drawHold={id:this.call.id,callId:this.call.id};}else{transitionLiveCall(this.call,name,'host',body);if(name==='cancel')this.call.resourcesClosed=true;if(name==='resume-draw')f.engine.game.state.drawHold=null;}this.options.onChange(this.call);return {game:f.engine.game,call:this.call};}
  }
  f=fixture({demo:false,Connection:ImmediateConnection});f.engine.fetchLiveCallGame=async id=>{assert.equal(id,f.engine.game.id);refreshes++;return {game:f.engine.game};};await f.runtime.prepare(f.queue()[0].id,{callName:'Sophie'});assert.equal(refreshes,1);await f.runtime.action('cancel');await f.runtime.action('confirm-return',{confirmed:true,manual:true,note:'Ouder is terug bij YouTube; beeld en geluid gecontroleerd.'});await f.runtime.action('resume-draw');assert.equal(refreshes,2);assert.equal(f.runtime.drawHeld,false);assert.equal(f.engine.runner.autoDraw,false);assert(f.notices[0].includes('trekking is vrijgegeven'));f.runtime.dispose();
 }
@@ -129,4 +178,4 @@ for(const outcome of ['success','declined','disconnected']){
  assert.equal(r.call.phase,'returning');assert(r.drawHeld);await assert.rejects(r.action('resume-draw'),/belstap/);await completeReturn(f,{manual:outcome!=='success'});assert.equal(r.call.phase,'completed');assert.equal(cue.status,'completed');assert.equal(r.drawHeld,false);assert.equal(resumeTarget,'ending');assert.equal(e.runner.autoDraw,false);assert.deepEqual(e.game.state.drawn,[3,7,42]);assert.equal(f.realRequests.length,0);assert.equal(r.connection.actions.length,0);r.dispose();
 }
 
-console.log('✓ Live-call runtime: guarded legacy flow and three complete scheduled Milo demos (success, refusal, disconnect), confirmed context, checked finale return, protected prepare/cancel races and no provider calls');
+console.log('✓ Live-call runtime: guarded legacy flow, three complete scheduled Milo demos, confirmed existing-output routing, blocked output/cancel/show-change races, checked finale return and no provider calls');
