@@ -12,6 +12,8 @@ import { BingoStore } from '../server/bingo-store.js';
 import { ChatStore } from '../server/chat-store.js';
 import { PresentationStore } from '../server/presentation-store.js';
 import { handleMailAPI } from '../server/mail-api.js';
+import { makeGame, generateBooks } from '../server/bingo-model.js';
+import { duplicateShowDraft } from '../server/show-duplicate.js';
 
 const game = (id = randomUUID()) => ({ id, ownerId: 'host', books: [], ops: [], status: 'draft', counter: 0 });
 const execFileAsync = promisify(execFile);
@@ -40,6 +42,39 @@ async function persistenceContract(DB) {
   await bingo.family('lookup-family', 'family@example.test');
   const match = await DB.prepare("SELECT account_id FROM bingo_families WHERE lower(json_extract(document,'$.email'))=?").bind('family@example.test').first();
   assert.equal(match.account_id, 'lookup-family');
+}
+
+async function duplicationContract(DB) {
+  const store = new BingoStore(DB), ownerId = 'native-duplicate-host';
+  const source = makeGame({ brandId: 'milo', title: 'Native bronshow', date: '2027-11-15T18:30:00Z' }, ownerId, 'https://fixture.example.test');
+  generateBooks(source, 1, randomUUID());
+  source.books[0].accountId = 'old-family'; source.books[0].issueStatus = 'sold';
+  source.status = 'running'; source.preparationRevision = 3;
+  source.state.drawn = [9, 15]; source.state.drawHold = { callId: 'old-private-call' };
+  source.production = { levels: { voice: 85, music: 12, effects: 40 }, checks: { sound: true } };
+  await store.create(source);
+  const before = await store.game(source.id), id = randomUUID();
+  const body = { title: 'Native schone kopie', date: '2027-11-22T18:30:00Z', requestId: randomUUID(), expectedPreparationRevision: 3 };
+  const copy = (next = {}) => duplicateShowDraft({ store, source: structuredClone(source), ownerId, origin: 'https://fixture.example.test', now: Date.now(), body: { ...body, ...next }, id });
+  const simultaneous = await Promise.all([copy(), copy()]);
+  assert.equal(simultaneous.filter(result => !result.replayed).length, 1, 'concurrent INSERTs create exactly one draft');
+  const saved = await store.game(id);
+  assert.equal(saved.data.status, 'draft'); assert.equal(saved.data.books.length, 0);
+  assert.deepEqual(saved.data.state.drawn, []); assert.equal(saved.data.state.drawHold, undefined);
+  assert.deepEqual(saved.data.production.levels, { voice: 85, music: 12, effects: 40 });
+  assert.equal(saved.data.production.checks.sound, false);
+  assert.deepEqual(await store.game(source.id), before, 'copying never writes the running source or releases its call hold');
+  await assert.rejects(copy({ title: 'Andere intentie' }), error => error.code === 'request_conflict');
+  await store.mutate(source.id, {}, game => { game.preparationRevision++; });
+  assert.equal((await copy()).game.id, id, 'a completed request replays even after the source is edited');
+  await assert.rejects(duplicateShowDraft({ store, source: (await store.game(source.id)).data, ownerId, origin: 'https://fixture.example.test', now: Date.now(), body: { ...body, requestId: randomUUID() }, id: randomUUID() }), error => error.code === 'preparation_conflict');
+  const staleId = randomUUID(), staleRequest = randomUUID();
+  await assert.rejects(duplicateShowDraft({ store, source, ownerId, origin: 'https://fixture.example.test', now: Date.now(), body: { ...body, requestId: staleRequest }, id: staleId }), error => error.code === 'preparation_conflict');
+  assert.equal(await store.game(staleId), null, 'the INSERT itself rejects a stale source snapshot');
+  const unguardedId = randomUUID();
+  const unguarded = await duplicateShowDraft({ store, source: (await store.game(source.id)).data, ownerId, origin: 'https://fixture.example.test', now: Date.now(), body: { title: 'Kopie vanuit de showlijst', date: body.date, requestId: randomUUID() }, id: unguardedId });
+  assert.equal(unguarded.game.id, unguardedId); assert.equal(unguarded.game.books.length, 0);
+  assert.equal(unguarded.replayed, false, 'list duplication supports the INSERT without a preparation revision guard');
 }
 
 async function atomicContract(DB) {
@@ -183,7 +218,7 @@ test('Supabase object reads preserve bucket, permission, server and malformed-re
 
 test('durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior', async t => {
   const { DB, SETTINGS } = await localFixture(t);
-  await persistenceContract(DB); await atomicContract(DB); await chatContract(DB); await objectContract(SETTINGS);
+  await persistenceContract(DB); await duplicationContract(DB); await atomicContract(DB); await chatContract(DB); await objectContract(SETTINGS);
 });
 
 test('local data, private objects and roles survive a new storage instance', async t => {
@@ -256,7 +291,7 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
   source.searchParams.set('options', `-c search_path=${schema}`);
   directory = await mkdtemp(join(tmpdir(), 'milo-pg-objects-'));
   storage = await createStorageEnvironment({ DATABASE_URL: source.toString(), OBJECT_STORAGE_PATH: directory });
-  await persistenceContract(storage.DB); await atomicContract(storage.DB); await chatContract(storage.DB);
+  await persistenceContract(storage.DB); await duplicationContract(storage.DB); await atomicContract(storage.DB); await chatContract(storage.DB);
   await assert.rejects(storage.DB.withObjectLock('invalid-timeout',()=>assert.fail('Invalid lease must not execute'),{idleTimeoutMs:180001}),RangeError);
   await storage.DB.withObjectLock('bounded-lease',async lease=>{
     assert.equal(lease.signal.aborted,false);
@@ -312,6 +347,7 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
     await backendStore.create(backendGame);
     await backendStore.mutate(backendGame.id, { accountId: 'backend-family' }, (current, family) => { current.counter++; family.counter = 1; current.books.push({ code: randomUUID() }); });
     assert.equal((await backendStore.game(backendGame.id)).data.counter, 1);
+    await duplicationContract(restricted.DB);
     await assert.rejects(restricted.DB.prepare('DROP TABLE bingo_games').run(), error => error.code === '42501');
   } finally { await restricted.close(); }
 });

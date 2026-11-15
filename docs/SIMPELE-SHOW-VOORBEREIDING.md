@@ -4,6 +4,8 @@ Open de gewenste Milo-show en gebruik **Overzicht → Voorbereiden → Uitzendin
 
 ## Voorbereiden
 
+Wil je een bestaande show als basis gebruiken? Kies **Dupliceren** bij **Mijn shows**, of **Draaiboek kopiëren** in het draaiboek. De nieuwe conceptshow neemt de voorbereiding en instellingen over en begint zonder boekjes, bestellingen, deelnemers of spelverloop. Zie [Shows en draaiboeken opnieuw gebruiken](SHOWS-KOPIEREN.md).
+
 Nieuwe Milo-shows krijgen automatisch dit profiel:
 
 | Rondekaart | Prijsstappen, in volgorde |

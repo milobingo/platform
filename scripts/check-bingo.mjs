@@ -44,7 +44,9 @@ test('simultaneous creation retries make one show and retain legacy retry identi
  assert.equal(new Set(data.map(d=>d.game.id)).size,1);
  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM bingo_games').get().n,1);
  assert(data.every(d=>!('deck' in d.game.state)));
- const retry=await h.call('/games',{method:'POST',body:{...body,title:'A changed retry must not overwrite the show'}});
+ const conflict=await h.call('/games',{method:'POST',body:{...body,title:'A changed retry must not overwrite the show'}},409);
+ assert.equal(conflict.error.code,'request_conflict');
+ const retry=await h.call('/games',{method:'POST',body});
  assert.equal(retry.game.title,'Eén kinderbingo');
  const other=await h.call('/games',{method:'POST',body:{...body,requestId:'different-create-request'}},201);
  assert.notEqual(other.game.id,retry.game.id);

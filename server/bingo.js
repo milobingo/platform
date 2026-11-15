@@ -18,6 +18,7 @@ import {recordResultMailEvent,dispatchPublishedPrizeMail} from './mail-domain-ev
 import {broadcastSettings,normalizeYoutubeId} from './broadcast-settings.js';
 import {optionalSpeechCue,NUMBER_NINE_AUDIENCE} from '../public/bingo-speech.js';
 import {activeOrders,orderShow,assertOrderStartReady,assertOrderBookIntegrity} from './bingo-order-model.js';
+import {duplicateShowDraft,freshProduction,freshOrdering,showCreateBinding} from './show-duplicate.js';
 const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>Response.json(data,{status,headers});
 const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);copy.capacity=gameCapacity(game);copy.preparationRevision=game.preparationRevision||0;copy.broadcastRevision=broadcastSettings(game).revision;copy.serverTime=Date.now();delete copy.state.deck;delete copy.chat;return copy;};
@@ -60,14 +61,16 @@ export async function handleBingo(request,env={}){
    requireHost();const id=await creationId(user,requestId);
    // Keep retries of shows created before stable IDs working as well.
    const existing=await store.game(id)||(await store.games()).find(r=>r.data.createRequestId===requestId&&r.owner_id===user);
-   if(existing&&existing.owner_id===user&&existing.data.createRequestId===requestId)return json({game:hostGame(existing.data)});
-   const game=makeGame(body,user,url.origin,now);game.id=id;game.createRequestId=requestId;if(automaticRules(game))prepareAutomaticRules(game,now);
+   if(existing?.owner_id===user&&existing.data.createRequestId===requestId&&!existing.data.creationBinding)return json({game:hostGame(existing.data)});
+   const binding=await showCreateBinding(body);
+   if(existing){if(existing.owner_id!==user||existing.data.createRequestId!==requestId||existing.data.creationBinding&&existing.data.creationBinding!==binding)throw new BingoError('Dit verzoek is al met andere invoer gebruikt. Maak een nieuw verzoek voor deze show.',409,'request_conflict');return json({game:hostGame(existing.data)});}
+   const game=makeGame(body,user,url.origin,now);game.id=id;game.createRequestId=requestId;game.creationBinding=binding;if(body.production!==undefined)game.production=freshProduction(body.production,{identity:game,sourceDate:game.date,date:game.date});if(body.ordering!==undefined)game.ordering=freshOrdering(body.ordering,{sourceDate:game.date,date:game.date});if(automaticRules(game))prepareAutomaticRules(game,now);
    const presentation=await new PresentationStore(env.DB).read(user);game.presentationSelection=presentationValue(()=>presentationSelection(body.presentationSelection,presentation.document));
    try{await store.create(game);}catch(error){
     // An identical in-flight request may have won the insert. Never report a
     // successful retry unless the persisted row belongs to this exact request.
     const winner=await store.game(id);
-    if(winner?.owner_id===user&&winner.data.createRequestId===requestId)return json({game:hostGame(winner.data)});
+    if(winner){if(winner.owner_id!==user||winner.data.createRequestId!==requestId||winner.data.creationBinding&&winner.data.creationBinding!==binding)throw new BingoError('Dit verzoek is al met andere invoer gebruikt. Maak een nieuw verzoek voor deze show.',409,'request_conflict');return json({game:hostGame(winner.data)});}
     throw error;
    }
    return json({game:hostGame(game)},201);
@@ -80,6 +83,11 @@ export async function handleBingo(request,env={}){
    const scopedId=`${user}:${request.method}:${path}:${requestId}`,options={requestId:scopedId,authorize:assertShowNotCancelled},ownOptions={requestId:scopedId,accountId:user,email};
    const preparationCheck=game=>{if(body.expectedPreparationRevision!==undefined&&(!Number.isSafeInteger(body.expectedPreparationRevision)||body.expectedPreparationRevision!==(game.preparationRevision||0)))throw new BingoError('Het draaiboek is in een ander venster gewijzigd. Jouw invoer is bewaard. Vergelijk de actuele voorbereiding voordat je opnieuw opslaat.',409,'preparation_conflict');};
    const control=(game,now)=>{assertShowNotCancelled(game);if(game.status==='finished')throw new BingoError('Deze show is afgelopen. Maak een nieuwe show.',409,'show_finished');const client=cleanText(body.regieId,100,'regievenster');if(game.state.control&&game.state.control.id!==client&&game.state.control.until>now)throw new BingoError('Dit spel wordt al vanuit een ander regievenster bestuurd. Sluit dat venster of wacht 15 seconden.',409,'control_busy');game.state.control={id:client,until:now+15000};};
+   if(action==='duplicate'&&request.method==='POST'){
+    requireHost();if(!/^application\/json(?:;|$)/i.test(request.headers.get('content-type')||''))throw new BingoError('Verstuur de nieuwe showgegevens als JSON.',415,'content_type');
+    const duplicated=await duplicateShowDraft({store,source:row.data,ownerId:user,origin:url.origin,now,body,id:await creationId(user,body.requestId)});
+    return json({...duplicated,game:hostGame(duplicated.game)},duplicated.replayed?200:201);
+   }
    if(!action&&request.method==='GET'){
     let game=row.data;if(game.status!=='finished'&&game.state.window?.status==='open'&&Date.now()>=game.state.window.endsAt)game=(await store.mutate(id,{},(g,_family,now)=>settleWindow(g,now))).game;
     return json({game:admin&&url.searchParams.get('player')!=='1'?await hostGameWithCleanup(game,env):playerGame(game,user),serverTime:Date.now()});

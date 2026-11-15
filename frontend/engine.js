@@ -24,6 +24,8 @@ import {premierePlan,PREMIERE_TITLE,PREMIERE_DATE} from '../server/premiere-plan
 import {manualCueAvailability,manualCuePlaybackHeld,resultSpeakingCues} from '../server/manual-cues.js';
 import {addRound,roundBlocks,roundEditAccess} from './round-editor-model.js';
 import {MILO_BANTER,NUMBER_NINE_AUDIENCE,FIXED_SHOW_SPEECH} from '../public/bingo-speech.js';
+import {normalizeProduction} from '../server/production-model.js';
+import {normalizeShowTime} from '../server/show-time.js';
 
 export const cameraMap={establish:'establish',front:'host',desk:'host',portrait:'portrait',machine:'board',led:'board',tour:'dolly',audience:'wide',entrance:'guest',orbit:'orbit',crane:'crane',duo:'duo',magic:'magic',wide:'wide'};
 export const productionName=p=>p==='vlampie'?'Vlampie':'Milo & Friends';
@@ -216,6 +218,42 @@ export class StudioEngine{
  syncGame(){if(!this.director)return;this.director.drawBlocked=!!this.game.cancelledAt||!!this.game.state.drawHold||!!this.liveCalls?.drawHeld;if(globalThis.document?.body)document.body.dataset.brand=this.production;const presentation=showPresentation(this.game);this.director.configure({drawCadence:isStandardMiloGame(this.game)?'official':undefined,rules:presentation.rules,transition:presentation.profile.transition,transitionMs:presentation.profile.transitionMs});this.cohostId=this.game.plan.cohostId||null;this.director.brandId=this.production;this.director.theme=this.production==='vlampie'?this.theme:'magico';this.director.drawn=[...this.game.state.drawn];this.director.number=this.game.state.lastCommit?.number??null;this.director.configure({title:this.game.title,brandId:this.production,speakerId:this.speakerId});}
  async post(action,body={}){const id=this.game.id,r=await bingoApi('/games/'+id+(action?'/'+action:''),{method:'POST',body:{...body,regieId:this.clientId}});if(r.game&&id===this.game.id)this.acceptGame(r.game);return r;}
  async createShow(title,date,brand=this.production,source=null){this.assertGameSwitchAvailable();await this.flushPreparation();const prepared=source?preparation({...source,title,date,brandId:brand}):null;return this.task(async()=>{if(await this.stop()===false)throw Error('De huidige show kon niet veilig worden gepauzeerd.');const roundCount=prepared?.roundCount||4,r=await bingoApi('/games',{method:'POST',body:{title,date,timeZone:'Europe/Amsterdam',brandId:brand,roundCount,...(prepared||{})}});const game=r.game;this.acceptGame(game,true);this.demo=false;this.production=brand;this.dirty=false;this.games=[{...game,bookCount:0,roundCount},...this.games];this.hostId=game.plan.leadId||(brand==='vlampie'?'vlampie':'milo');this.speakerId=this.hostId;this.syncGame();},'Je nieuwe show is opgeslagen.');}
+ duplicateShow(sourceId,title,date,options={}){
+  const current=sourceId===this.game.id,demo=current&&this.demo,source=current?this.game:this.games.find(game=>game.id===sourceId),timeZone=source?.timeZone||'Europe/Amsterdam';
+  if(typeof sourceId!=='string'||!sourceId)return Promise.reject(Error('Kies eerst het draaiboek dat je wilt dupliceren.'));
+  if(typeof title!=='string'||!title.trim()||typeof date!=='string'||!date.trim())return Promise.reject(Error('Vul een naam en datum voor de kopie in.'));
+  const requestId=typeof options==='string'?options:options?.requestId;
+  if(requestId!==undefined&&(typeof requestId!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(requestId)))return Promise.reject(Error('Open de kopieeractie opnieuw; de aanvraag is niet meer geldig.'));
+  const input={title:title.trim(),date:date.trim(),timeZone},key=JSON.stringify([sourceId,demo,input,requestId||null]);
+  this.duplicateRequests??=new Map();let intent=this.duplicateRequests.get(key);
+  if(intent?.pending)return intent.pending;
+  if(intent?.game)return Promise.resolve(intent.game);
+  if(!intent){intent={requestId:requestId||crypto.randomUUID()};this.duplicateRequests.set(key,intent);}
+  const operation=(async()=>{
+   // Duplicating a running show is read-only for its source. In particular it
+   // must never use the create/select helpers that stop the current director.
+   if(!intent.body){
+    if(current&&(demo||this.game.status==='draft')){await this.flushPreparation();if(this.game.id!==sourceId||this.demo!==demo)throw Error('De geselecteerde bron is gewijzigd. Open de juiste kopieeractie opnieuw.');}
+    if(demo){
+     const prepared=preparation({...this.game,...input,brandId:this.production});
+     prepared.plan.title=prepared.title;
+     intent.path='/games';intent.body={...input,...prepared,brandId:this.production,requestId:intent.requestId,...(this.game.production?{production:normalizeProduction(this.game.production)}:{}),...(this.game.presentationSelection?{presentationSelection:structuredClone(this.game.presentationSelection)}:{}),...(this.game.ordering?{ordering:structuredClone(this.game.ordering)}:{})};
+     const production=intent.body.production,ordering=intent.body.ordering;
+     if(production?.lobby.startAt||ordering?.deadline){
+      const delta=Date.parse(prepared.date)-Date.parse(normalizeShowTime(this.game.date,{timeZone}).date),shift=value=>new Date(Date.parse(normalizeShowTime(value,{timeZone}).date)+delta).toISOString();
+      if(production?.lobby.startAt)production.lobby.startAt=shift(this.game.production.lobby.startAt);
+      if(ordering?.deadline)ordering.deadline=shift(ordering.deadline);
+     }
+    }else{
+     intent.path='/games/'+encodeURIComponent(sourceId)+'/duplicate';intent.body={...input,requestId:intent.requestId,...(current&&this.game.status==='draft'?{expectedPreparationRevision:this.preparationAutosave.revision}:{})};
+    }
+   }
+   const response=await bingoApi(intent.path,{method:'POST',body:intent.body}),game=response.game;
+   if(!game||game.id===sourceId||game.status!=='draft')throw Error('De server heeft de nieuwe conceptshow nog niet bevestigd. Je invoer blijft bewaard; probeer dezelfde kopie opnieuw.');
+   intent.game=game;if(!requestId)this.duplicateRequests.delete(key);const roundCount=game.plan.blocks.filter(block=>block.type==='round').length;
+   this.games=[{...game,bookCount:game.books?.length||0,roundCount},...this.games.filter(item=>item.id!==game.id)];this.emit();return game;
+  })();intent.pending=operation;operation.finally(()=>{if(intent.pending===operation)intent.pending=null;}).catch(()=>{});return operation;
+ }
  async savePremiere(){return this.createShow(this.game.title,this.game.date,this.production,{plan:structuredClone(this.game.plan),settings:structuredClone(this.game.settings)});}
  async createPremiereShow(){
   if(this.production!=='milo'||this.game.status==='running')throw Error('Open eerst een Milo-concept om een nieuw première-draaiboek te maken.');
