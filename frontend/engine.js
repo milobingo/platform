@@ -21,7 +21,7 @@ import {PreparationAutosave,preparationFields,preparationFingerprint,drawClockSt
 import {isStandardMiloGame,standardMiloDiffers,canLoadStandardMilo,loadStandardMiloPlan,STANDARD_MILO_PROFILE,STANDARD_DRAW_LEAD_MS} from '../server/standard-show.js';
 import {PreparedShowAudio} from './prepared-show-audio.js';
 import {premierePlan,PREMIERE_TITLE,PREMIERE_DATE} from '../server/premiere-plan.js';
-import {manualCueAvailability,manualCuePlaybackHeld} from '../server/manual-cues.js';
+import {manualCueAvailability,manualCuePlaybackHeld,resultSpeakingCues} from '../server/manual-cues.js';
 import {addRound,roundBlocks,roundEditAccess} from './round-editor-model.js';
 import {MILO_BANTER,NUMBER_NINE_AUDIENCE,FIXED_SHOW_SPEECH} from '../public/bingo-speech.js';
 
@@ -342,15 +342,36 @@ export class StudioEngine{
  }
  magicMoment(id){return this.showCues.magic(id);}
  async demoBingo(){if(!this.demo)throw Error('Echte spelers melden via de familie-app.');const b=this.game.books.find(b=>b.accountId);const f=this.demoFamily??=familyDefault();f.profiles=[{name:b.name}];beginBingo(this.game,f,b.accountId,crypto.randomUUID());claimBook(this.game,f,b.accountId,b.id);this.director.externalHold=true;this.notify('Oefenmelding ontvangen; de serverregels bepalen of de kaart compleet is.');}
- async resultNext(){
+ async resultNext({manual=false}={}){
   if(this.resultBusy||!this.game.state.resultId)return;const gameId=this.game.id,stopRevision=this.stopRevision||0,r=this.game.results.find(r=>r.id===this.game.state.resultId);if(!r)return;this.resultBusy=true;
+  const current=()=>{if(this.disposed||gameId!==this.game.id||this.game.cancelledAt||this.game.status!=='running'||stopRevision!==(this.stopRevision||0))throw Error('De uitslag hoort niet meer bij deze actieve show.');};
+  const quiet=()=>{if(this.voicePhase!=='idle'||this.showRuntime?.holding||this.showCues?.holding||this.liveCalls?.onAir)throw Error('Rond eerst de actieve uitspraak, het beslisspel, showmoment of gesprek af.');};
   try{
+   if(manual){
+    current();if(this.production!=='milo'||!resultSpeakingCues(this.game).length)throw Error('Er staat geen passende voorbereide spreekkaart voor deze uitslag klaar.');
+    quiet();if(!this.demo)await this.preparedAudio.ensure();current();quiet();
+    const paused=await this.pause(true);current();quiet();
+    if(paused!==true||!this.game.state.paused)throw Error('De serverpauze is niet bevestigd. De uitslag blijft open; probeer opnieuw.');
+    if(this.game.state.resultId!==r.id||!resultSpeakingCues(this.game).length)throw Error('De uitslag is intussen gewijzigd. Controleer de actuele bingocontrole.');
+   }
    let applied=!r.acknowledged;
    if(this.demo){r.acknowledged=true;this.game.state.resultId=null;this.game.state.phase=r.type==='bingo'?'running':r.returnPhase||'interlude';}
    else {const result=await this.post('finish-result',{resultId:r.id});applied=result.applied!==false;}
+   if(manual)current();
    if(gameId!==this.game.id||stopRevision!==(this.stopRevision||0))return;
    // A valid bingo invalidates the unfinished visual draw, not its authoritative committed history.
    this.director.cancel(false);this.director.externalHold=false;this.syncGame();if(applied&&r.type==='bingo')this.director.approvals++;
+   if(manual){
+    const official=this.game.results.find(item=>item.id===r.id),goal=activeGoal(this.game);
+    this.director.pause();this.director.claim=null;this.director.lastWinner='';
+    if(!official?.acknowledged||!this.game.state.paused)throw Error('De bevestigde uitslag staat niet veilig gepauzeerd. Controleer de serverstand voordat je verdergaat.');
+    if(goal)this.director.configure({round:goal.round.title,pattern:goal.pattern.title,patternCells:[...goal.pattern.cells],patternFreeCenter:goal.pattern.freeCenter,patternVariant:goal.pattern.variant,prize:goal.prize.title,prizeImage:goal.prize.image,prizeDescription:goal.prize.description});
+    this.director.setScene('winner','portrait',true);
+    const cue=(this.game.plan.manualCues||[]).filter(item=>['confirmed-finale','round-complete','confirmed-bingo','confirmed-consolation'].includes(item.condition)&&manualCueAvailability(item,this.game,this.serverNow()).allowed).sort((a,b)=>['confirmed-finale','round-complete','confirmed-bingo','confirmed-consolation'].indexOf(a.condition)-['confirmed-finale','round-complete','confirmed-bingo','confirmed-consolation'].indexOf(b.condition))[0];
+    this.notify('De officiële uitslag is bevestigd. Speel je voorbereide spreekkaart af en kies daarna bewust Hervat.');
+    if(cue)globalThis.dispatchEvent?.(new CustomEvent('milo:select-manual-cue',{detail:{gameId,cueId:cue.id}}));
+    return {manualCueId:cue?.id||null};
+   }
    if(applied){this.speak(this.production==='milo'?FIXED_SHOW_SPEECH.winner:'Bingo bevestigd! Gefeliciteerd '+r.winner.name+'! Een groot applaus voor jou.',this.hostId,this.voiceMode,false,{preparedOnly:!this.demo&&this.production==='milo'});this.motion='cheer';this.audio.cue('win');}this.emit();
   }finally{this.resultBusy=false;}
  }

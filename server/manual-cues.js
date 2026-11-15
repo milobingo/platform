@@ -18,6 +18,16 @@ export const MANUAL_CUE_CONDITIONS=Object.freeze({
 // second manual pause in order to explain what is happening to the audience.
 export const manualCuePlaybackHeld=game=>!!(game?.state?.paused||game?.state?.window?.status==='open'||game?.state?.resultId||game?.state?.drawHold);
 
+const confirmedConditions=['confirmed-finale','round-complete','confirmed-bingo','confirmed-consolation'];
+// Preview only the already selected server result's acknowledgement. This
+// chooses a presentation route, never a winner, prize or replacement result.
+export function resultSpeakingCues(game){
+ const result=game?.results?.find(item=>item.id===game.state?.resultId);
+ if(!result||result.type!=='bingo'||result.acknowledged||!game.state.goalWon||game.state.window?.status==='open')return [];
+ const projected={...game,state:{...game.state,resultId:null},results:game.results.map(item=>item.id===result.id?{...item,acknowledged:true}:item)};
+ return (game.plan.manualCues||[]).filter(cue=>confirmedConditions.includes(cue.condition)&&manualCueAvailability(cue,projected).allowed).sort((a,b)=>confirmedConditions.indexOf(a.condition)-confirmedConditions.indexOf(b.condition));
+}
+
 export function manualCueAvailability(cue,game,now=Date.now()){
  const denied=reason=>({allowed:false,reason}),allowed={allowed:true,reason:''};
  if(!game||!cue)return denied('Kies eerst een opgeslagen show en een microfoontekst.');

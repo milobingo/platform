@@ -1,11 +1,13 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import {Plus,Trash2,Volume2,BookOpen} from 'lucide-react';
 import {Button,Field,Panel} from './components.jsx';
 import {MANUAL_CUE_CONDITIONS,manualCueAvailability,manualCuePlaybackHeld} from '../server/manual-cues.js';
 import './rundown-editor.css';
 
 export default function ManualCueBank({s,operator,run,live=false}){
- const [selected,setSelected]=useState('');if(s.production!=='milo')return null;
+ const [selected,setSelected]=useState(''),bank=useRef(null);
+ useEffect(()=>{if(!live)return;const select=event=>{if(event.detail?.gameId!==s.game.id)return;setSelected(event.detail.cueId);if(bank.current){bank.current.open=true;bank.current.scrollIntoView?.({behavior:'smooth',block:'start'});}};globalThis.addEventListener('milo:select-manual-cue',select);return()=>globalThis.removeEventListener('milo:select-manual-cue',select);},[live,s.game.id]);
+ if(s.production!=='milo')return null;
  const cues=s.game.plan.manualCues||[],cue=cues.find(item=>item.id===selected)||cues[0],readonly=s.working||(!s.demo&&s.game.status!=='draft'),busy=s.voicePhase!=='idle';
  const edit=patch=>run(()=>operator.editPlan(plan=>{const item=plan.manualCues?.find(item=>item.id===cue.id);if(item)Object.assign(item,patch);}));
  const availability=cue?manualCueAvailability(cue,s.game):{allowed:false,reason:'Voeg eerst een spreekkaart toe.'};
@@ -25,5 +27,5 @@ export default function ManualCueBank({s,operator,run,live=false}){
    {live&&<><Button icon={Volume2} disabled={s.working||!!playbackIssue||!availability.allowed||!cue.text.trim()} onClick={()=>run(()=>operator.playManualCue(cue.id))}>Afspelen</Button><p role="status">{playbackIssue||availability.reason||'Deze tekst past bij de actuele serverstand. De trekking blijft gepauzeerd.'}</p></>}
   </>:<p>Er zijn nog geen spreekkaarten. Voeg een eigen tekst toe of maak het première-draaiboek uit de bijlage.</p>}
  </div>;
- return live?<details className="mf-live-manual-cues"><summary><BookOpen size={18}/> Voorbereide spreekkaarten ({cues.length})</summary>{content}</details>:<Panel title="Spreekkaarten voor live regie" subtitle="Patroonwissels, meldingen en reserveteksten staan klaar buiten de tijdlijn.">{content}</Panel>;
+ return live?<details ref={bank} className="mf-live-manual-cues"><summary><BookOpen size={18}/> Voorbereide spreekkaarten ({cues.length})</summary>{content}</details>:<Panel title="Spreekkaarten voor live regie" subtitle="Patroonwissels, meldingen en reserveteksten staan klaar buiten de tijdlijn.">{content}</Panel>;
 }

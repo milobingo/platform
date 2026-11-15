@@ -20,6 +20,8 @@ Spreektekst en elke dialoogbeurt hebben maximaal 10.000 tekens. Dialoogbeurten h
 
 De tab **Spreekkaarten** bevat de losse A-, B- en C-teksten uit de bijlage, plus een aparte afsluittekst voor de volle kaart van een gewone ronde: twintig kaarten. Ze zijn geen nieuwe rondes of automatische tijdlijnmomenten. Je kunt eigen kaarten toevoegen. In live regie vind je ze onder **Voorbereide spreekkaarten**. Pauzeer eerst of gebruik een bestaande bingo-, uitslag- of belblokkade en speel de passende kaart bewust af; hervatten blijft een aparte regiehandeling.
 
+Bij een klaargezette uitslag kun je **Bevestigen en spreekkaart kiezen** gebruiken. De server pauzeert eerst en bevestigt daarna de officiële uitslag. De passende spreekkaart opent; de standaard felicitatietekst en volgende prijsstap starten dan niet vanzelf. Speel je tekst af en kies daarna bewust Hervat. De bestaande knop voor de gewone uitslagpresentatie blijft beschikbaar.
+
 Uitslagteksten gebruiken de officiële serverstand. Een gelijkspel-, troostprijs- of finale-uitspraak komt pas beschikbaar bij de juiste bevestigde status. De afspeelactie controleert de server opnieuw. Een live gesprek houdt zijn bestaande bediening en audiomix; een spreekkaart kan dat gesprek niet overnemen. De kaart zegt geen vooraf ingevulde winnaarsnaam.
 
 ## Audio pas na een klik
