@@ -1,0 +1,97 @@
+verify	Browser acceptance	﻿2026-11-15T14:11:18.5536317Z ##[group]Run pnpm test:browser
+verify	Browser acceptance	2026-11-15T14:11:18.5536840Z ^[[36;1mpnpm test:browser^[[0m
+verify	Browser acceptance	2026-11-15T14:11:18.5579701Z shell: /usr/bin/bash -e {0}
+verify	Browser acceptance	2026-11-15T14:11:18.5580124Z env:
+verify	Browser acceptance	2026-11-15T14:11:18.5580438Z   CI: true
+verify	Browser acceptance	2026-11-15T14:11:18.5580785Z   NEXT_TELEMETRY_DISABLED: 1
+verify	Browser acceptance	2026-11-15T14:11:18.5581680Z   MILO_TEST_DATABASE_URL: ***127.0.0.1:5432/milo_storage_test
+verify	Browser acceptance	2026-11-15T14:11:18.5582370Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+verify	Browser acceptance	2026-11-15T14:11:18.5582940Z   MILO_TEST_VISUDO: /usr/sbin/visudo.ws
+verify	Browser acceptance	2026-11-15T14:11:18.5583385Z ##[endgroup]
+verify	Browser acceptance	2026-11-15T14:11:19.0155144Z $ playwright test
+verify	Browser acceptance	2026-11-15T14:11:24.6387823Z 
+verify	Browser acceptance	2026-11-15T14:11:24.6388849Z Running 44 tests using 2 workers
+verify	Browser acceptance	2026-11-15T14:11:24.6389513Z 
+verify	Browser acceptance	2026-11-15T14:11:41.4377024Z   ✓   2 tests/browser/audio-preparation.spec.mjs:74:1 › saved Milo automatically loads the full bank on overview, refreshes edited script/dialogue and starts after the last audio byte; isolated API (13.9s)
+verify	Browser acceptance	2026-11-15T14:12:41.4759721Z   ✓   1 tests/browser/audio-preparation.spec.mjs:86:1 › prepared live Milo speaks two official balls 15 seconds apart with no hot speech requests, then pause/reload preserves the show; isolated API (1.2m)
+verify	Browser acceptance	2026-11-15T14:12:57.7042367Z   ✓   4 tests/browser/broadcast-preparation.spec.mjs:141:1 › blocked autoplay keeps a compact activation fallback until a real programme tone finishes; simulated scoped API (16.1s)
+verify	Browser acceptance	2026-11-15T14:13:06.4372069Z   ✓   5 tests/browser/broadcast-settings.spec.mjs:42:31 › YouTube autosave 1366px: running paused show, failed storage, retry, reload, conflict and terminal read-only; real isolated Bingo API (8.7s)
+verify	Browser acceptance	2026-11-15T14:13:15.3516694Z   ✓   6 tests/browser/broadcast-settings.spec.mjs:42:31 › YouTube autosave 390px: running paused show, failed storage, retry, reload, conflict and terminal read-only; real isolated Bingo API (8.8s)
+verify	Browser acceptance	2026-11-15T14:13:21.7156277Z   ✓   7 tests/browser/family.spec.mjs:5:3 › family demo 320px: five tabs, fixed player, balls and no provider access (6.3s)
+verify	Browser acceptance	2026-11-15T14:13:28.5955603Z   ✓   8 tests/browser/family.spec.mjs:5:3 › family demo 390px: five tabs, fixed player, balls and no provider access (6.8s)
+verify	Browser acceptance	2026-11-15T14:13:35.5579150Z   ✓   9 tests/browser/family.spec.mjs:5:3 › family demo 430px: five tabs, fixed player, balls and no provider access (6.9s)
+verify	Browser acceptance	2026-11-15T14:13:42.2436712Z   ✓  10 tests/browser/family.spec.mjs:5:3 › family demo 768px: five tabs, fixed player, balls and no provider access (6.7s)
+verify	Browser acceptance	2026-11-15T14:13:47.7638956Z   ✓  11 tests/browser/family.spec.mjs:5:3 › family demo 1280px: five tabs, fixed player, balls and no provider access (5.5s)
+verify	Browser acceptance	2026-11-15T14:13:47.8463270Z   ✓  12 tests/browser/family.spec.mjs:40:1 › real API rejects forged Sites identity and demo flag (56ms)
+verify	Browser acceptance	2026-11-15T14:13:47.9030029Z   ✓  13 tests/browser/family.spec.mjs:46:1 › production cannot create a local regie session (37ms)
+verify	Browser acceptance	2026-11-15T14:13:49.3215676Z   ✓  14 tests/browser/family.spec.mjs:54:1 › ordinary family entry uses real sign-in, legacy link preserves selected show (1.4s)
+verify	Browser acceptance	2026-11-15T14:13:52.9875839Z   ✘   3 tests/browser/broadcast-preparation.spec.mjs:127:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay (2.0m)
+verify	Browser acceptance	2026-11-15T14:14:42.9538359Z   ✓  15 tests/browser/handoff-v6.spec.mjs:113:2 › handoff v6 actual browser 390px: routes, nested tabs and controls; simulated transport (53.6s)
+verify	Browser acceptance	2026-11-15T14:14:46.7236826Z   ✓  17 tests/browser/handoff-v6.spec.mjs:165:1 › handoff v6 short-screen workspace and family modals; simulated transport (3.7s)
+verify	Browser acceptance	2026-11-15T14:14:51.1625971Z   ✓  16 tests/browser/handoff-v6.spec.mjs:113:2 › handoff v6 actual browser 1366px: routes, nested tabs and controls; simulated transport (56.7s)
+verify	Browser acceptance	2026-11-15T14:14:51.6156375Z   ✓  18 tests/browser/handoff-v6.spec.mjs:186:1 › handoff v6 family orders, retained broadcast and whisper dialog; simulated transport (4.8s)
+verify	Browser acceptance	2026-11-15T14:15:02.6326317Z   ✓  20 tests/browser/handoff-v6.spec.mjs:219:1 › handoff v6 actual tour transport, new magic reveal and order detail; simulated transport (11.0s)
+verify	Browser acceptance	2026-11-15T14:15:07.3612143Z   ✓  21 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 320px: real BINGO from Books, retained show and one shared countdown (4.6s)
+verify	Browser acceptance	2026-11-15T14:15:11.8280399Z   ✓  22 tests/browser/handoff-v70.spec.mjs:31:31 › v70 family demo 1366px: real BINGO from Books, retained show and one shared countdown (4.4s)
+verify	Browser acceptance	2026-11-15T14:15:16.1506666Z   ✓  23 tests/browser/handoff-v70.spec.mjs:54:1 › v70 family dialog stays bound to the shown goal after a real browser poll installs a newer simulated snapshot (4.3s)
+verify	Browser acceptance	2026-11-15T14:15:19.7102401Z   ✓  24 tests/browser/handoff-v70.spec.mjs:92:1 › v70 mobile family newsletter preferences default to opt-out and stay separate for Milo and Vlampie (3.5s)
+verify	Browser acceptance	2026-11-15T14:15:24.9926944Z   ✓  25 tests/browser/handoff-v70.spec.mjs:105:1 › v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions (5.2s)
+verify	Browser acceptance	2026-11-15T14:15:25.0961559Z   ✓  26 tests/browser/handoff-v70.spec.mjs:119:1 › v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences (64ms)
+verify	Browser acceptance	2026-11-15T14:15:27.1577194Z   ✓  19 tests/browser/handoff-v6.spec.mjs:211:1 › handoff v6 Vlampie retains all seven console modules and its manual draw controls; simulated transport (35.9s)
+verify	Browser acceptance	2026-11-15T14:15:28.6296125Z   ✓  27 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 390px; simulated API (3.5s)
+verify	Browser acceptance	2026-11-15T14:15:32.8498624Z   ✓  28 tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 1366px; simulated API (5.6s)
+verify	Browser acceptance	2026-11-15T14:15:40.6401957Z   ✓  29 tests/browser/obs-source.spec.mjs:74:1 › OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API (12.0s)
+verify	Browser acceptance	2026-11-15T14:15:55.7932667Z   ✓  30 tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 503; real Chromium Web Audio, simulated scoped API (22.9s)
+verify	Browser acceptance	2026-11-15T14:15:56.9140695Z   ✓  32 tests/browser/obs-source.spec.mjs:166:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API (1.1s)
+verify	Browser acceptance	2026-11-15T14:15:59.1472531Z   ✓  31 tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 409; real Chromium Web Audio, simulated scoped API (18.5s)
+verify	Browser acceptance	2026-11-15T14:16:15.5412818Z   ✓  34 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1366px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (16.3s)
+verify	Browser acceptance	2026-11-15T14:16:18.3875667Z   ✓  33 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1920px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (20.3s)
+verify	Browser acceptance	2026-11-15T14:16:31.8426356Z   ✓  35 tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API (16.3s)
+verify	Browser acceptance	2026-11-15T14:16:38.4216975Z   ✓  36 tests/browser/regie-refresh.spec.mjs:106:1 › regie refresh preserves the separate Vlampie console and all seven modules (20.0s)
+verify	Browser acceptance	2026-11-15T14:16:49.1200805Z   ✓  37 tests/browser/regie-refresh.spec.mjs:125:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 1366px; isolated real Bingo API (17.2s)
+verify	Browser acceptance	2026-11-15T14:16:57.3606934Z   ✓  38 tests/browser/regie-refresh.spec.mjs:125:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 390px; isolated real Bingo API (18.9s)
+verify	Browser acceptance	2026-11-15T14:16:58.0819673Z   ✓  39 tests/browser/regie-refresh.spec.mjs:155:1 › presenter inputs preserve ten thousand characters and explain an oversized paste without truncation (8.9s)
+verify	Browser acceptance	2026-11-15T14:17:14.1696245Z   ✓  40 tests/browser/regie-settings.spec.mjs:160:2 › saved-show mail recovery and encrypted Resend CRUD 390px; isolated native API (16.7s)
+verify	Browser acceptance	2026-11-15T14:17:14.8528634Z   ✓  42 tests/browser/show-audio.spec.mjs:17:1 › original Milo music renders continuously, ducks for speech/numbers and stops at pause (540ms)
+verify	Browser acceptance	2026-11-15T14:17:16.2096635Z   ✓  41 tests/browser/regie-settings.spec.mjs:160:2 › saved-show mail recovery and encrypted Resend CRUD 1366px; isolated native API (18.0s)
+verify	Browser acceptance	2026-11-15T14:17:18.1608281Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:18.6152489Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:18.8476479Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:19.1390553Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:19.4935427Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:19.7464506Z Bingoadministratie: Error
+verify	Browser acceptance	2026-11-15T14:17:26.7712181Z   ✓  43 tests/browser/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API (11.8s)
+verify	Browser acceptance	2026-11-15T14:17:27.8690197Z   ✓  44 tests/browser/start-rules.spec.mjs:81:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API (11.6s)
+verify	Browser acceptance	2026-11-15T14:17:28.2102313Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2108076Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2120361Z   1) tests/browser/broadcast-preparation.spec.mjs:127:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay 
+verify	Browser acceptance	2026-11-15T14:17:28.2121845Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2122167Z     Test timeout of 100000ms exceeded.
+verify	Browser acceptance	2026-11-15T14:17:28.2124047Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2124911Z     Error: page.evaluate: Test timeout of 100000ms exceeded.
+verify	Browser acceptance	2026-11-15T14:17:28.2125455Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2125692Z       87 | }
+verify	Browser acceptance	2026-11-15T14:17:28.2126216Z       88 | async function startRecording(page){
+verify	Browser acceptance	2026-11-15T14:17:28.2126882Z     > 89 |  return page.evaluate(async()=>{
+verify	Browser acceptance	2026-11-15T14:17:28.2127451Z          |              ^
+verify	Browser acceptance	2026-11-15T14:17:28.2132269Z       90 |   const first=window.__qaProgramDestinations[0],canvas=document.querySelector('#stage canvas');if(!first?.destination?.stream||!canvas?.captureStream)throw Error('Actual canvas/programme audio is missing');
+verify	Browser acceptance	2026-11-15T14:17:28.2136751Z       91 |   const analyser=first.context.createAnalyser();analyser.fftSize=256;const source=first.context.createMediaStreamSource(first.destination.stream),meter=await window.__qaCreateRenderMeter(first.context),silent=first.context.createGain();silent.gain.value=0;source.connect(meter.node);meter.node.connect(analyser);analyser.connect(silent);silent.connect(first.context.destination);let peak=0;
+verify	Browser acceptance	2026-11-15T14:17:28.2141939Z       92 |   // Pull the measurement branch on the audio thread without duplicating the
+verify	Browser acceptance	2026-11-15T14:17:28.2143459Z         at startRecording (/home/runner/work/platform/platform/tests/browser/broadcast-preparation.spec.mjs:89:14)
+verify	Browser acceptance	2026-11-15T14:17:28.2145378Z         at /home/runner/work/platform/platform/tests/browser/broadcast-preparation.spec.mjs:133:24
+verify	Browser acceptance	2026-11-15T14:17:28.2146142Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2146933Z     Error Context: test-results/broadcast-preparation-two--71e0a-aused-bingo-simulated-relay/error-context.md
+verify	Browser acceptance	2026-11-15T14:17:28.2147814Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2148685Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+verify	Browser acceptance	2026-11-15T14:17:28.2151638Z     test-results/broadcast-preparation-two--71e0a-aused-bingo-simulated-relay/trace.zip
+verify	Browser acceptance	2026-11-15T14:17:28.2152624Z     Usage:
+verify	Browser acceptance	2026-11-15T14:17:28.2152912Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2153895Z         pnpm exec playwright show-trace test-results/broadcast-preparation-two--71e0a-aused-bingo-simulated-relay/trace.zip
+verify	Browser acceptance	2026-11-15T14:17:28.2155135Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2155808Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+verify	Browser acceptance	2026-11-15T14:17:28.2156384Z 
+verify	Browser acceptance	2026-11-15T14:17:28.2156632Z   1 failed
+verify	Browser acceptance	2026-11-15T14:17:28.2158293Z     tests/browser/broadcast-preparation.spec.mjs:127:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay 
+verify	Browser acceptance	2026-11-15T14:17:28.2162519Z   43 passed (6.1m)
+verify	Browser acceptance	2026-11-15T14:17:28.2570233Z [ELIFECYCLE] Command failed with exit code 1.
+verify	Browser acceptance	2026-11-15T14:17:28.2807058Z ##[error]Process completed with exit code 1.
