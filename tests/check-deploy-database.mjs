@@ -115,6 +115,50 @@ test('audit verifies the actual TLS peer for direct and pooled connections indep
   assert.equal(queried, false); assert.equal(closed, true);
 });
 
+test('Storage audit recognizes only the bounded legacy HTTP400 bucket-not-found envelope', async t => {
+  const { socket } = await tlsFixture(t), manifest = await loadManifest();
+  const missing = { statusCode: '404', error: 'Bucket not found', message: 'Bucket not found' };
+  let closed = 0;
+  const queries = [], poolFactory = () => ({ async end() { closed++; }, async connect() {
+    return { connection: { stream: socket }, release() {}, async query(sql) {
+      queries.push(sql);
+      if (sql.includes('FROM pg_roles r WHERE r.rolname=current_user')) return { rows: [{ user: 'migration', database: 'postgres', version: 170011, superuser: false, createrole: true, bypassrls: true, schema_create: true, backendTls: true, databaseSizeBytes: '123456' }] };
+      return { rows: [] };
+    } };
+  } });
+  const audit = response => auditDatabase({ env: configuration(), expectedProjectRef: projectRef, manifest, poolFactory, fetcher: async () => response });
+  for (const response of [new Response('{}', { status: 404 }), Response.json(missing, { status: 400 })]) {
+    const result = await audit(response);
+    assert.deepEqual(result.storage, { exists: false, ready: false, reasons: ['bucket_missing'] });
+    assert.ok(result.blockers.includes('bucket_missing'));
+    assert.ok(result.blockers.every(reason => reason === 'bucket_missing' || reason.startsWith('migration_pending:')));
+  }
+  const sentinel = 'private-provider-diagnostic-must-not-leak';
+  for (const response of [
+    Response.json({ statusCode: '400', error: 'Invalid Input', message: sentinel }, { status: 400 }),
+    Response.json({ ...missing, statusCode: '403' }, { status: 400 }),
+    Response.json({ ...missing, error: 'Unauthorized' }, { status: 400 }),
+    Response.json({ ...missing, message: sentinel }, { status: 400 }),
+    Response.json({ ...missing, statusCode: 404 }, { status: 400 }),
+    Response.json(missing, { status: 401 }),
+    Response.json(missing, { status: 403 }),
+    Response.json(missing, { status: 500 }),
+    new Response('invalid-json-' + sentinel, { status: 400 }),
+  ]) await assert.rejects(audit(response), error => {
+    assert.equal(error.code, 'storage_audit_failed'); assert.ok(!error.message.includes(sentinel)); return true;
+  });
+  let cancelled = false, reads = 0;
+  const oversized = new ReadableStream({
+    pull(controller) { reads++; controller.enqueue(new TextEncoder().encode(reads === 1 ? JSON.stringify(missing) : ' '.repeat(8192))); },
+    cancel() { cancelled = true; },
+  });
+  await assert.rejects(audit(new Response(oversized, { status: 400 })), error => error.code === 'storage_audit_failed');
+  assert.equal(cancelled, true, 'oversized provider response is cancelled rather than buffered to completion');
+  assert.ok(reads <= 3, 'provider diagnostics are bounded to the first 8 KiB plus stream read-ahead');
+  assert.equal(closed, 12, 'every successful or rejected audit closes its database pool');
+  assert.ok(queries.every(sql => sql.startsWith('SELECT') || ['BEGIN READ ONLY', 'COMMIT'].includes(sql)), 'bucket preflight remains read-only');
+});
+
 test('apply fails before any connection when backup, scratch restore or reviewed manifest is missing', async () => {
   const never = () => assert.fail('an incomplete apply must not open a database connection');
   for (const overrides of [

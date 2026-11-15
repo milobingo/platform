@@ -91,16 +91,25 @@ jobs:
     environment: production
     timeout-minutes: 5
     steps:
+      # The reviewed workflow may be newer than the staging-accepted app.
+      # Keep its verifier/profile separate from the exact candidate assets.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          path: production-control
+          persist-credentials: false
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ needs.release-gate.outputs.release_sha }}
+          path: application-source
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 24.18.0
       - name: Verify exact public production release and access boundaries
+        working-directory: application-source
         env:
           RELEASE_SHA: ${{ needs.release-gate.outputs.release_sha }}
           RELEASE_ID: ${{ github.run_id }}-${{ github.run_attempt }}
           CONFIG_ID: ${{ inputs.config_id }}
-        run: node scripts/deploy/protected-production-root-gate.mjs public --profile=infra/production/profile.json
+        run: node ../production-control/scripts/deploy/protected-production-root-gate.mjs public --profile=../production-control/infra/production/profile.json

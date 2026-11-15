@@ -1,0 +1,231 @@
+{
+  "format": "milo-production-preparation-v1",
+  "observedAt": "2026-11-15T20:32:12Z",
+  "status": "prepared-not-publicly-activated",
+  "origin": "https://milo.dgwebservices.nl",
+  "host": "dg-nxttrack-01",
+  "port": 4178,
+  "applicationReleaseDuringPreparation": "17fa1d32cc0c77cfeec544316f215a635c70705b",
+  "productionAppActive": false,
+  "productionCaddyFragmentImported": false,
+  "productionWorkflowDispatched": false,
+  "accounts": {
+    "app-mil-prd": {
+      "gid": 955,
+      "uid": 961
+    },
+    "build-mil-prd": {
+      "gid": 956,
+      "uid": 962
+    },
+    "run-mil-prd": {
+      "gid": 957,
+      "uid": 963
+    }
+  },
+  "runner": {
+    "id": 22,
+    "name": "dg-nxttrack-01-milobingo-production",
+    "version": "2.338.2",
+    "archiveSha256": "baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40",
+    "onlineAndServiceActiveVerified": true
+  },
+  "protectedHost": {
+    "manifestSha256": "96cc0fbb4749ee29dd7606657099c20cb839f33db9361fa073068a5972cc77ee",
+    "profileDigest": "efee2c3639ed1e59e24b3ec6f6bd741b1341a67416f8abaa07c58ce526a429d0",
+    "guardRequiredByAppAndRunner": true,
+    "guardRulesForOwnUids": 6,
+    "publicFragmentPreparedOutsideLiveImport": true
+  },
+  "database": {
+    "projectRef": "msupvdycmtbycaonqgan",
+    "tableCount": 23,
+    "allRlsEnabled": true,
+    "migrationManifestDigest": "183e6712a781c64992bffe5c195931995350ffdfb2f1e6eb098fb2d61c937c4b",
+    "appliedMigrations": [
+      {
+        "filename": "20261104115830_milo_friends_server_schema.sql",
+        "checksum": "8451a8aaf928dd7d58114d71741d4a76acb917c26c9d5e205d0436d5e306cc16"
+      },
+      {
+        "filename": "20261109122605_studio_mail_v70.sql",
+        "checksum": "a67dc3b97288f7fa68d1a3a48eb71e8dfeaf65e7e209eb7f083924ace392366d"
+      }
+    ],
+    "pending": [],
+    "blockers": [],
+    "privateBucket": "milo-private",
+    "bucketCreatedByUnchangedHistoricalMigration": true,
+    "bucketFileSizeLimit": null,
+    "global100MiBLimitConfirmed": false,
+    "runtime": {
+      "ok": true,
+      "role": "milobingo_production_runtime",
+      "projectRef": "msupvdycmtbycaonqgan",
+      "readableTables": 23,
+      "runtimeVerified": true,
+      "independentVerification": true,
+      "credentialsPrinted": false
+    },
+    "caSha256": "700723581420dd1ac98fd7e9ac529f0ef210eadcaf87fc868a3ad7d114c2f3b7"
+  },
+  "backup": {
+    "backupId": "milo-msupvdycmtbycaonqgan-20261115T202021639Z-ce203ef6-2386-4889-9a02-112438c3869f",
+    "restoreVerified": true,
+    "sourceAndRestoredDataIdentical": true,
+    "sourceAndRestoredSecurityIdentical": true,
+    "encryptedCopyOutsideTargetVerified": true,
+    "files": {
+      ".proof.json": {
+        "bytes": 1538,
+        "sha256": "03b24037eefb17d8d8f88a2b7fc41c5cc5169aaae4cc7a21602c296879b90e30"
+      },
+      ".dump.aesgcm": {
+        "bytes": 396939,
+        "sha256": "93af14f9490e5ac2dfc7b725501bee0a3fb19203629d60965ef754c10f7510b7"
+      },
+      ".extensions.json.aesgcm": {
+        "bytes": 171064,
+        "sha256": "335b771f32e5a9126a621152d5eab88636724929702c6f182aefb7f222a8bdcd"
+      }
+    },
+    "backupEncryptionKeyTransferredOffTarget": false,
+    "keyEscrowOutsideTargetConfirmed": false
+  },
+  "restoreProof": {
+    "format": 1,
+    "projectRef": "msupvdycmtbycaonqgan",
+    "releaseSha": "17fa1d32cc0c77cfeec544316f215a635c70705b",
+    "backupId": "milo-msupvdycmtbycaonqgan-20261115T202021639Z-ce203ef6-2386-4889-9a02-112438c3869f",
+    "encryptedSha256": "93af14f9490e5ac2dfc7b725501bee0a3fb19203629d60965ef754c10f7510b7",
+    "extensionMetadata": {
+      "format": 1,
+      "filename": "milo-msupvdycmtbycaonqgan-20261115T202021639Z-ce203ef6-2386-4889-9a02-112438c3869f.extensions.json.aesgcm",
+      "encryptedSha256": "335b771f32e5a9126a621152d5eab88636724929702c6f182aefb7f222a8bdcd",
+      "metadataSha256": "ce6efcfa8e6816a416b0b6439e26c1f0837907aa9b5830a39758b451682e5cca",
+      "relations": 4,
+      "extensions": 5,
+      "eventTriggers": 7,
+      "schemas": 11,
+      "schemaGrants": 66,
+      "relationGrants": 990
+    },
+    "postgresMajor": 17,
+    "sourceProof": {
+      "tables": 42,
+      "digest": "1a0aa5e96ad34d8d9d0d252f95badd4252297b8e370c3a46f33b706930686d07"
+    },
+    "restoredProof": {
+      "tables": 42,
+      "digest": "1a0aa5e96ad34d8d9d0d252f95badd4252297b8e370c3a46f33b706930686d07"
+    },
+    "sourceSecurity": {
+      "relations": 48,
+      "digest": "0691c59e7f1e6f6c01819b3cd94224eb1857d85abfc779cd8b2ce1de95cd93a9"
+    },
+    "restoredSecurity": {
+      "relations": 48,
+      "digest": "0691c59e7f1e6f6c01819b3cd94224eb1857d85abfc779cd8b2ce1de95cd93a9"
+    },
+    "capacity": {
+      "sourceDatabaseBytes": "11122355",
+      "backupAvailableBytes": "84097609728",
+      "backupRequiredBytes": "559115622"
+    },
+    "verifiedAt": "2026-11-15T20:21:04.846Z",
+    "restoreVerified": true
+  },
+  "runtimeBundle": {
+    "stored": true,
+    "created": false,
+    "configId": "production-2026-11-15-v1",
+    "rootPolicyValidationPassed": true,
+    "runtimeUser": "milobingo_production_runtime",
+    "runtimeKeyNames": [
+      "APP_URL",
+      "DATABASE_URL",
+      "SUPABASE_DB_CA_BASE64",
+      "SUPABASE_PUBLISHABLE_KEY",
+      "SUPABASE_SECRET_KEY",
+      "SUPABASE_STORAGE_BUCKET",
+      "SUPABASE_URL",
+      "VLAMPIE_SETTINGS_KEY"
+    ],
+    "mailEnvironment": "production",
+    "mailModeConfiguredThroughRegie": true,
+    "credentialsPrinted": false,
+    "validationOnly": true,
+    "productionActivated": false
+  },
+  "openAiLiveKitResendKeysInRuntimeEnvironment": false,
+  "githubConfiguration": {
+    "publicVariableCount": 4,
+    "permanentSecretCount": 0,
+    "existingProductionEnvironmentUsed": true
+  },
+  "productionAuthObserved": {
+    "googleEnabled": false,
+    "emailEnabled": true,
+    "emailConfirmationRequired": true,
+    "smtpAndRedirectsVerified": false
+  },
+  "temporaryRestoreInfrastructure": {
+    "ownContainersRemoved": true,
+    "ownInternalNetworkRemoved": true,
+    "workerAndHostRelaysClosed": true,
+    "scratchCredentialsRemovedFromBothHosts": true,
+    "runtimeAndEncryptedBackupsRetained": true
+  },
+  "existingHostAppsChecks": {
+    "servicesUnchanged": true,
+    "caddyFragmentsUnchanged": true,
+    "caddyFileSha256Unchanged": true,
+    "applicationHealthUnchanged": true,
+    "applicationListenersUnchanged": true,
+    "releaseMetadataUnchanged": true,
+    "allExistingApplicationsHealthy": true
+  },
+  "technicalTests": {
+    "allLocalCheckScriptsPassed": 124,
+    "nativeDatabaseChecksPassed": 11,
+    "nativeProductionRuntimeChecksPassed": 7,
+    "productionBootstrapChecksPassed": 6,
+    "relationGrantChecksPassed": 5,
+    "hostChecksPassed": 11,
+    "productionContractsPassed": 22,
+    "lintPassed": true,
+    "realFamilyMailAudioObsAcceptanceRecorded": true,
+    "realStagingAcceptanceReportedBy": "user",
+    "realStagingAcceptanceIndependentlyObservedByCodex": false
+  },
+  "reviewedSourceHashes": {
+    "infra/production/prepare-host.py": "25e788c97f3c0314f7e28b2760538d126b0a0004850e5bd611b367d72233c330",
+    "infra/production/bootstrap-database.mjs": "87eb91fae21faf4b48b694c45c0152fa6961a0bcea1e02cea91796374824b857",
+    "infra/production/provision-runtime.mjs": "ee704d8712c3b824fffb38cc868fa8543226e297b66a48a2f5d33d8f5474c2d8",
+    "scripts/deploy/database.mjs": "5263cd7e5792e7e55a0ba2235528534ff94c45f5003ddd56334ed1a0fa562d34"
+  },
+  "remaining": [
+    "Configure and verify project global Storage limit >=104857600 bytes, then set explicit private-bucket limit. User deferred this dashboard change with \"Straks\".",
+    "Configure and test production OAuth, Auth site URL/redirects and SMTP using the Supabase dashboard.",
+    "Commit and push reviewed production control source and require its CI to pass; retain the already accepted staging application SHA.",
+    "Publish reviewed own Caddy fragment and run protected production workflow for accepted app 17fa1d32cc0c77cfeec544316f215a635c70705b only after the required gates pass."
+  ],
+  "privateCredentialValuesPrintedOrTransferredOffTarget": false,
+  "stagingAcceptance": {
+    "file": "verification/production-bootstrap/staging-user-acceptance-17fa.json",
+    "releaseSha": "17fa1d32cc0c77cfeec544316f215a635c70705b",
+    "releaseId": "43754522473-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "reportedBy": "user",
+    "rootAcceptanceInstalled": true,
+    "doesNotAcceptNewApplicationSha": true
+  },
+  "productionControlSource": {
+    "reviewedWorkflowMayBeNewerThanAcceptedApplication": true,
+    "applicationCandidateSha": "17fa1d32cc0c77cfeec544316f215a635c70705b",
+    "publicVerifierUsesControlSource": true,
+    "publicAssetHashesUseApplicationCandidate": true,
+    "newControlCommitCiStillRequired": true,
+    "stagingRedeployRequired": false
+  }
+}

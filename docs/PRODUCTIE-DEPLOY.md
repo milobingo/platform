@@ -5,13 +5,23 @@ GitHub start een beoordeelde release, de doel-VPS bewaart infrastructuurgeheimen
 en de Milo-regie beheert OpenAI, LiveKit en Resend. Er is geen lange lijst met
 GitHub-runtimevariabelen of blijvende GitHub-secrets nodig.
 
-**Actualisatie 15 november 2026:** de beheerder heeft de productie-Storage-key
-inmiddels via de verborgen serverprompt ingevoerd. Een nieuwe controle tegen
-het vaste productieproject slaagde; de sleutel bleef op de doel-VPS. De
-[actuele voorbereiding](PRODUCTIE-VOORBEREIDING-2026-11-15.md) bevat het concrete
-openbare voorstel en de nieuwe host-/projectinventaris. Poort `4176` is inmiddels
-bezet; het voorstel gebruikt de opnieuw gecontroleerde vrije poort `4178`.
-Er is met dit voorstel nog geen productie-inrichting of vrijgave uitgevoerd.
+**Stand 15 november 2026: productie is nog niet vrijgegeven.** De eigen
+hostaccounts, beschermde deploybroker, appunit en afzonderlijke runner zijn
+voorbereid. Het productie-Caddyfragment staat buiten de live import; de app is
+niet gestart. De afzonderlijke runner is online en de eigen service actief.
+Een volledige versleutelde backup met echte restore, de twee ongewijzigde
+schema-initialisaties en de beperkte runtime-login zijn uitgevoerd. De echte
+PostgreSQL-controles met `verify-full` slaagden; alle 23 tabellen hebben RLS en
+de database-audit heeft geen openstaande migraties of blockers. De eigen
+root-only runtimebundel is opgeslagen en door de werkelijk geïnstalleerde
+broker gevalideerd. De gebruiker heeft de vijf praktijktests van de bestaande
+stagingrelease bevestigd; die verklaring is aan precies die release gebonden
+vastgelegd. De nieuwe controlebron moet nog CI doorlopen en publieke
+productieactivatie ontbreekt. Het
+[operationele resultaat](PRODUCTIE-RESULTAAT-2026-11-15.md) legt
+de uitgevoerde handelingen en resterende blokkades vast; de
+[voorbereiding](PRODUCTIE-VOORBEREIDING-2026-11-15.md) beschrijft de eigen
+hostindeling en credentialoverdracht.
 
 Het productiedomein **`https://milo.dgwebservices.nl`** en het afzonderlijke
 Supabase-project **`msupvdycmtbycaonqgan`** (`milobingo-production`, `eu-west-1`)
@@ -20,37 +30,44 @@ zijn bevestigd. Het project is via het bestaande gekoppelde account
 nodig. De read-only [productie-inventaris](../verification/provider-management/production-inventory.json)
 legt de controle van 11 november 2026 vast.
 
-Deze bestemming is nog geen actieve productieomgeving. DNS wijst naar
-`128.140.93.95` op `dg-nxttrack-01`, maar er is geen Milo-productiehostfragment
-waargenomen en HTTPS faalt tijdens de TLS-handshake. Het nieuwe backendproject
-bevat nog geen publieke tabellen, Milo-databaserollen, buckets of gebruikers.
+De bestemming gebruikt `128.140.93.95` op `dg-nxttrack-01` en de eigen
+loopbackpoort `4178`. Het project bevat nu de 23 beheerde Milo-tabellen en de
+private bucket `milo-private`; er zijn nog geen Auth-gebruikers of
+Storage-objecten. Beheer- en app-login zijn afzonderlijk ingericht.
 Google-login staat uit; e-mailregistratie staat aan met bevestiging vereist.
-Private SMTP- en redirectinstellingen zijn nog niet gecontroleerd.
+Private SMTP- en redirectinstellingen zijn via de beschikbare connector niet
+te inspecteren of te wijzigen en zijn nog niet geaccepteerd.
 
 Een renderer maakt alleen beoordeelbare bestanden; zij installeert niets. Het
 incomplete [voorbeeldprofiel](../infra/production/profile.example.json) kan geen
-productiedeployment activeren. Er is nog geen actief productieprofiel, geen
-productiepoort gereserveerd en geen productieworkflow geïnstalleerd. De actuele
-release- en hoststatus staat in [PROJECTPROFIEL.json](../PROJECTPROFIEL.json) en
-[STAGING-RESULTAAT.md](STAGING-RESULTAAT.md).
+productiedeployment activeren. Het concrete openbare
+[productieprofiel](../infra/production/profile.json) en de
+[productieworkflow](../.github/workflows/deploy-production.yml) staan nu klaar
+in de bron. Hun aanwezigheid bewijst geen geslaagde productie-uitrol. Commit
+deze controlebron en controleer haar CI; behoud voor deze promotie de al
+geaccepteerde appcommit en huidige stagingrelease. Doorloop daarna de
+onderstaande vrijgave. Het operationele resultaat is leidend voor de
+werkelijk uitgevoerde productievoorbereiding.
 
 ## Het bevestigde doel verder inrichten
 
-Leg het volledige openbare productieprofiel vast volgens
+Het volledige openbare productieprofiel is vastgelegd volgens
 [production-profile.mjs](../scripts/deploy/production-profile.mjs). Het profiel
-bevat geen secretwaarden. De origin en het project hierboven zijn bekend;
-controleer of leg daarnaast vast:
+bevat geen secretwaarden. De concrete site, identities, paden en UID/GID-paren
+staan in de voorbereiding. De ontbrekende onderdelen zijn:
 
-- de eigen site-ID en de koppeling aan de bevestigde origin en doelhost;
-- afzonderlijke runnernaam, runner-, build- en appaccounts, werkelijke UID/GID,
-  paden en beheergroep voor de gedeelde buildlock;
-- een werkelijk vrije loopbackpoort, eigen systemd-service en uitsluitend het
-  eigen Caddy-hostfragment;
-- de private bucket, beperkte runtime-login, publieke CA en Auth-configuratie
-  binnen het bevestigde Supabase-productieproject, plus een eigen stabiele
-  productie-masterkey; behoud de oorspronkelijke key exact als later bestaande
-  versleutelde productiedata wordt overgenomen;
-- veilige configuratie-IDs, waaronder de openbare profielversie.
+- de gewenste globale Storage-limiet van ten minste 100 MiB;
+- de productie-Auth-inrichting, geslaagde CI van de nieuwe controlebron en
+  gecontroleerde productieactivatie.
+
+De oorspronkelijke schema-initialisatie heeft de private bucket `milo-private`
+aangemaakt met `file_size_limit=null`: de globale projectlimiet is dan leidend.
+De private-bucketcontrole slaagt, maar dat bewijst geen capaciteit van 100 MiB.
+Een eerdere expliciete aanmaakpoging met `104857600` bytes is afgewezen omdat de
+globale limiet lager staat. De gevraagde verhoging naar minimaal `104857600`
+bytes staat nog open in het Supabase-dashboard van het productieproject; de
+gebruiker antwoordde hiervoor “Straks”.
+Hiervoor is geen extra GitHub-variable of secret nodig.
 
 Gebruik geen stagingproject, stagingcredentials of de Milo-stagingaccounts voor
 productie. Maak evenmin een nieuw Supabase-project wanneer al een geschikt eigen
@@ -104,6 +121,18 @@ Storage-secretkey en stabiele `VLAMPIE_SETTINGS_KEY`. De broker voegt identiteit
 loopbackpoort en de vaste `MAIL_ENVIRONMENT=production` toe. Een gebruikt
 configuratie-ID is onveranderbaar; bewaar de actieve en benodigde vorige bundels.
 
+De bundel `production-2026-11-15-v1` is inmiddels atomair zonder overschrijven
+opgeslagen in
+`/etc/dg-sites/milobingo-production/configs/production-2026-11-15-v1/runtime.json`.
+De geïnstalleerde, vastgepinde broker heeft zijn eigen policy, native dependency
+en deze bundel werkelijk herlezen en geaccepteerd. De acht infrastructuurvelden
+bevatten geen OpenAI-, LiveKit- of Resendkeys en geen `MAIL_MODE`; die sleutels
+en het mailbeleid blijven in de versleutelde regie-instellingen. De runtime-login
+is ook onafhankelijk opnieuw met echte `verify-full`-authenticatie, alle 23
+tabellen en de verboden
+bevoegdheden gecontroleerd. Een gevalideerde bundel start of publiceert de app
+niet.
+
 De bestaande Supabase-koppeling heeft SQL-beheerrechten voor de afzonderlijk
 beoordeelde schema- en rolbootstrap. De huidige connector kan geen private
 server-API-key of bestaande databasewachtwoorden ophalen of beheren. Richt de
@@ -119,6 +148,29 @@ regisseur kan bewust een ontvangerlijst of productieverzending kiezen. De
 nieuwe bundel bevat geen `MAIL_MODE`, `MAIL_ALLOWED_RECIPIENTS` of
 `SEND_EMAIL_HOOK_SECRET` als verplichte gatewayroute. Zie
 [REGIE-SLEUTELS.md](REGIE-SLEUTELS.md).
+
+### Productieaanmelding afmaken
+
+Deze dashboardactie staat nog open. Gebruik het eigen productieproject
+`msupvdycmtbycaonqgan`:
+
+1. Zet in **Supabase → Authentication → Sign In / Providers → Google** de
+   bedoelde Google-provider aan met de eigen client-ID en clientsecret.
+2. Zet bij **Authentication → URL Configuration** de Site URL op
+   `https://milo.dgwebservices.nl` en voeg als redirect toe
+   `https://milo.dgwebservices.nl/auth/callback**`. De `**` laat ook de gebruikte
+   `next`-query op deze callback toe.
+3. Voeg in **Google Cloud → APIs & Services → Credentials → de OAuth-client →
+   Authorized redirect URIs** exact
+   `https://msupvdycmtbycaonqgan.supabase.co/auth/v1/callback` toe.
+4. Test daarna een echte productieaanmelding en terugkeer. Koppel pas na die
+   eerste aanmelding expliciet de regierol aan de bevestigde juiste identiteit.
+   Er zijn nu nul productie-Auth-gebruikers; er is nog geen identiteit om
+   veilig regietoegang aan toe te kennen.
+
+Dit configureert geen Supabase Auth SMTP. De SMTP-/mailroute is nog niet
+werkelijk op productie getest en vereist een eigen controle. De
+gebruikersverklaring over staging bewijst die productie-instellingen niet.
 
 ### Eenmalig de Supabase-serversleutel invoeren
 
@@ -155,10 +207,10 @@ codehash en controles staan in
 
 De tijdelijke invoerbestemming is
 `/root/milo-production-bootstrap/supabase-storage-key.json` (`root:root 0600`
-in een `0700`-map). Dit is nog geen actieve runtimebundel. De invoeropdracht
+in een `0700`-map). Dit invoerbestand is geen runtimebundel. De invoeropdracht
 overschrijft geen andere bestaande sleutel en start geen service of deployment.
-Bij de verdere productie-inrichting neemt een beheerder de waarde rechtstreeks
-op de doelhost over in de eigen beschermde runtimebundel. Geen geheime waarde
+Bij de uitgevoerde productie-inrichting is de waarde rechtstreeks op de doelhost
+overgenomen in de eigen beschermde runtimebundel. Geen geheime waarde
 hoeft daarvoor via GitHub of de dev-VPS te lopen.
 
 De helper beheert geen databasewachtwoord of encryptiemasterkey. Die worden
@@ -169,6 +221,17 @@ Migratie-/backup-/restorecredentials staan in een apart beschermd beheerpad en
 komen niet bij runner, build of app. Schemawijzigingen vereisen een afzonderlijke
 backup en werkelijke herstelproef. De gewone broker voert geen automatische
 migratie of databaserestore uit.
+
+De geslaagde productiebackup, versleutelde extensiemetadata en herstelbewijs
+zijn ook beschermd buiten de doel-VPS gekopieerd; alle hashes zijn tegen het
+werkelijke bewijs gecontroleerd. De backup-encryptiesleutel heeft de doel-VPS
+niet verlaten. Afzonderlijk sleutelherstel buiten die host is nog niet
+bevestigd en moet door beheer worden georganiseerd; alleen de versleutelde
+kopie bewijst geen herstelmogelijkheid na verlies van de host én sleutel.
+De tijdelijke herstelcontainers, het interne testnetwerk, relays en
+herstelcredentials zijn opgeruimd. Backup, masterkeys en runtimebundel zijn
+behouden. De nacontrole bevestigt alle zeven bestaande apps gezond en hun
+services, Caddyfragmenten, listeners en release-identiteiten ongewijzigd.
 
 ## Productie vereist echte stagingacceptatie
 
@@ -181,7 +244,7 @@ volledig zijn geslaagd.
 
 Daarnaast leest de geïnstalleerde gate een root-only acceptatierecord op het
 vaste pad `staging-acceptance/<sha>.json`. Dit record is aan die exacte app-SHA,
-stagingrun/poging en release-ID gebonden, is na de betreffende uitrol waargenomen
+stagingrun/poging en release-ID gebonden, is na de betreffende uitrol vastgelegd
 en bevat vijf daadwerkelijk geslaagde controles met veilige bewijsverwijzingen:
 
 | Controle-ID | Werkelijk te bewijzen |
@@ -202,12 +265,34 @@ de gekozen applicatie-SHA. De gate controleert beide main-bronnen afzonderlijk
 en koppelt staging aan de echte health-/runidentiteit. Zij behandelt de
 workflow-SHA niet als bewijs van het SHA-inputveld.
 
+Voor de huidige promotie antwoordde de gebruiker “Ja alles is getest” op de
+vijf praktijktests van appcommit
+`17fa1d32cc0c77cfeec544316f215a635c70705b`, stagingrelease `43754522473-1` en
+configuratie `staging-2026-11-11-v2`. Deze gebruikersverklaring is in het
+root-only acceptatierecord vastgelegd. Codex heeft Google-/mail-/LiveKit-/OBS-
+apparatuur of providers niet zelf gerepeteerd. De verklaring wordt niet
+stilzwijgend aan een nieuwe appcommit of andere stagingrun gekoppeld.
+
 ## Een normale productierelease na volledige inrichting
 
-Commit de beoordeelde openbare profiel-/workflowbron, wacht op geslaagde CI van
-de exacte applicatie-SHA en accepteer diezelfde bron werkelijk op staging.
-Installeer/verifieer het root-only acceptatierecord. Start dan de gerenderde
-`deploy-production.yml` handmatig op `main` met `release_sha` en `config_id`.
+Commit de beoordeelde openbare profiel-/workflowbron en wacht op haar geslaagde
+CI. Voor deze promotie blijft `release_sha` de al geaccepteerde
+`17fa1d32cc0c77cfeec544316f215a635c70705b`; de huidige stagingrelease en het
+bijbehorende root-only acceptatierecord blijven behouden. Een nieuwe
+staging-uitrol van de controlecommit is hiervoor niet nodig.
+
+De publieke verificatie haalt de controlecode en het productieprofiel uit
+`github.sha` onder `production-control`. Zij haalt afzonderlijk de gekozen
+appcommit op onder `application-source` en voert de controle daar uit, zodat
+assetvergelijkingen tegen de werkelijk geaccepteerde appbron gebeuren. De
+beschermde deployjob zelf checkt geen code uit. De rootgate en broker controleren
+main-afstamming, exacte app-CI, actuele stagingidentiteit en het daaraan gebonden
+acceptatierecord ongewijzigd. Start daarna de gerenderde
+`deploy-production.yml` handmatig op `main` met deze `release_sha` en
+`config_id=production-2026-11-15-v1`.
+
+Een latere wijziging van de appcommit vereist wel eigen geslaagde CI, een
+staging-uitrol en een nieuwe aan die release gebonden praktijkacceptatie.
 
 Het GitHub-environment `production` bevat al de volgende vier publieke
 variabelen en nul secrets. De publishable key is intern exact vergeleken met

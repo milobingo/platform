@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,readFile,writeFile,rm,cp} from 'node:fs/promises';
+import {mkdtemp,readFile,writeFile,mkdir,rm,cp} from 'node:fs/promises';
 import {readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,dirname,resolve} from 'node:path';
@@ -60,7 +60,13 @@ test('review bundle binds production paths, root profile pin, helper hashes and 
  const b=await bundle(),paths=protectedProductionPaths(profile),policy=JSON.parse(b.files['protected-deploy.json'].content);assert.equal(b.manifest.installed,false);assert.equal(b.manifest.credentialsIncluded,false);assert.equal(b.manifest.profileDigest,profileDigest(profile));assert.equal(policy.productionProfileSha256,profileDigest(profile));assert.equal(policy.legacySha256,sha256(b.files['legacy-deploy-helper.py'].content));
  for(const [key,file] of [['gateSha256','release-gate.mjs'],['extractorSha256','extract-source.py'],['guardianSha256','lock-guardian.py']])assert.equal(policy[key],sha256(b.files[file].content));
  assert(b.files['deploy-entry.py'].content.includes(sha256(b.files['deploy-helper.py'].content)));assert.equal(b.files['deploy-entry.py'].path,paths.entry);assert.equal(b.files['deploy-helper.py'].path,paths.helper);assert.equal(b.files['legacy-deploy-helper.py'].path,paths.legacyHelper);
- const workflow=b.files['deploy-production.yml'].content;assert(!workflow.includes('secrets.'));assert(!workflow.includes('vars.'));assert(!workflow.includes('DG_STAGING_ACCEPTANCE_JSON'));assert(workflow.includes('github.token'));assert(workflow.includes('inputs.release_sha'));assert(workflow.includes('inputs.config_id'));assert(workflow.includes('test "$RUNNER_NAME" = \''+profile.runnerName+'\''));assert.equal((workflow.match(/actions\/checkout@/g)||[]).length,2,'Only hosted gates check out code');
+ const workflow=b.files['deploy-production.yml'].content;assert(!workflow.includes('secrets.'));assert(!workflow.includes('vars.'));assert(!workflow.includes('DG_STAGING_ACCEPTANCE_JSON'));assert(workflow.includes('github.token'));assert(workflow.includes('inputs.release_sha'));assert(workflow.includes('inputs.config_id'));assert(workflow.includes('test "$RUNNER_NAME" = \''+profile.runnerName+'\''));assert.equal((workflow.match(/actions\/checkout@/g)||[]).length,3,'Only hosted gates check out code; public verification separates control from application source');
+ const deploy=workflow.split('\n  deploy:\n')[1].split('\n  verify-public:\n')[0];assert(!deploy.includes('actions/checkout@'),'The protected self-hosted deploy job never checks out either source');
+ const verification=workflow.split('\n  verify-public:\n')[1];
+ assert.match(verification,/ref: \$\{\{ github\.sha \}\}\n\s+path: production-control\n\s+persist-credentials: false/);
+ assert.match(verification,/ref: \$\{\{ needs\.release-gate\.outputs\.release_sha \}\}\n\s+path: application-source\n\s+persist-credentials: false/);
+ assert.match(verification,/working-directory: application-source/);
+ assert.match(verification,/run: node \.\.\/production-control\/scripts\/deploy\/protected-production-root-gate\.mjs public --profile=\.\.\/production-control\/infra\/production\/profile\.json/);
  assert(b.files['service.unit'].content.includes('User='+profile.appUser));assert(b.files['service.unit'].content.includes('/srv/sites/'+profile.siteId+'/current/.runtime.env'));assert(b.files['site.caddy'].content.includes('reverse_proxy 127.0.0.1:'+profile.port));
  for(const [name,pin] of Object.entries(PROTECTED_PRODUCTION_TEMPLATE_PINS))assert.equal(sha256(await readFile(new URL('../'+name,import.meta.url))),pin);
  assert(b.manifest.sourcePins['scripts/deploy/protected-production-root-gate.mjs']);assert(b.manifest.sourcePins['scripts/deploy/production-profile.mjs']);assert(!/from ["'](?:pg|\.{1,2}\/)/.test(b.files['release-gate.mjs'].content),'Installed root code has no pg or mutable repository dependency');
@@ -113,7 +119,14 @@ test('the actual installed gate subprocess has one production CLI and consumes s
 test('root-only record reader refuses a runner-owned file or symbolic path rather than accepting writable evidence',async t=>{
  const dir=await mkdtemp(join(tmpdir(),'milo-untrusted-record-'));t.after(()=>rm(dir,{recursive:true,force:true}));const path=join(dir,'acceptance.json');await writeFile(path,JSON.stringify(acceptance()),{mode:0o600});assert.throws(()=>readProtectedProductionFile(path));
 });
-test('public production verifier binds health to the chosen config ID and preserves anonymous auth/asset checks without providers',async()=>{
- const fetchFn=async(target,options={})=>{const url=new URL(target);assert.equal(url.origin,profile.appUrl);assert.equal(options.redirect,'error');if(url.pathname==='/api/health')return Response.json({status:'ok',revision:sha,releaseId:'300-1',configVersion:'fixture-v3'});if(url.pathname==='/spelen')return new Response('<script src="/_next/static/fixture.js"></script>');if(url.pathname.startsWith('/_next/'))return new Response('script');if(url.pathname.startsWith('/assets/'))return new Response(readFileSync(resolve('public'+url.pathname)));if(url.pathname==='/api/auth/session')return options.headers?.Origin?new Response(null,{status:403}):Response.json({authenticated:false,localAvailable:false,configured:true});if(url.pathname==='/api/bingo/games')return new Response(null,{status:401});if(url.pathname==='/auth/local')return new Response(null,{status:403});throw Error('Unexpected request');};
- assert.equal((await verifyProtectedProductionPublic(profile,{releaseSha:sha,releaseId:'300-1',configId:'fixture-v3',fetchFn})).status,'passed');await assert.rejects(verifyProtectedProductionPublic(profile,{releaseSha:sha,releaseId:'300-1',configId:'wrong-config',fetchFn}),/identity/);
+test('public production verifier binds config and exact candidate assets even when the control checkout is newer',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'milo-production-public-source-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ const applicationSource=join(dir,'application-source'),controlSource=join(dir,'production-control');
+ const assets=['/assets/milo-friends/logo.png','/assets/milo-friends/characters/milo.png'];
+ for(const root of [applicationSource,controlSource])for(const asset of assets){const path=resolve(root,'public'+asset);await mkdir(dirname(path),{recursive:true});await writeFile(path,root===applicationSource?'accepted-candidate-'+asset:'newer-control-'+asset);}
+ const fetchFn=async(target,options={})=>{const url=new URL(target);assert.equal(url.origin,profile.appUrl);assert.equal(options.redirect,'error');if(url.pathname==='/api/health')return Response.json({status:'ok',revision:sha,releaseId:'300-1',configVersion:'fixture-v3'});if(url.pathname==='/spelen')return new Response('<script src="/_next/static/fixture.js"></script>');if(url.pathname.startsWith('/_next/'))return new Response('script');if(url.pathname.startsWith('/assets/'))return new Response(readFileSync(resolve(applicationSource,'public'+url.pathname)));if(url.pathname==='/api/auth/session')return options.headers?.Origin?new Response(null,{status:403}):Response.json({authenticated:false,localAvailable:false,configured:true});if(url.pathname==='/api/bingo/games')return new Response(null,{status:401});if(url.pathname==='/auth/local')return new Response(null,{status:403});throw Error('Unexpected request');};
+ const options={releaseSha:sha,releaseId:'300-1',configId:'fixture-v3',fetchFn,sourceRoot:applicationSource};
+ assert.equal((await verifyProtectedProductionPublic(profile,options)).status,'passed');
+ await assert.rejects(verifyProtectedProductionPublic(profile,{...options,sourceRoot:controlSource}),/asset differs/);
+ await assert.rejects(verifyProtectedProductionPublic(profile,{...options,configId:'wrong-config'}),/identity/);
 });

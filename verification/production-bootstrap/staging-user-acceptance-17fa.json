@@ -1,0 +1,53 @@
+{
+  "format": "milo-staging-user-acceptance-v1",
+  "observedAt": "2026-11-15T20:29:28Z",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "17fa1d32cc0c77cfeec544316f215a635c70705b",
+  "stagingRunId": 43754522473,
+  "stagingReleaseId": "43754522473-1",
+  "configVersion": "staging-2026-11-11-v2",
+  "source": "User response in this Codex conversation",
+  "question": "Zijn op de huidige stagingversie de echte gezinslogin, regietoegang, bestelling met PDF, mailontvangst en showaudio/bellen al getest? Geef aan wat gelukt is en wat nog niet.",
+  "userResponse": "Ja alles is getest",
+  "checks": {
+    "familyAuth": {
+      "status": "passed",
+      "scope": "Echte gezinslogin",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "regieAuthorization": {
+      "status": "passed",
+      "scope": "Regietoegang",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "ordersAndPdf": {
+      "status": "passed",
+      "scope": "Bestelling met PDF",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "mailGateway": {
+      "status": "passed",
+      "scope": "Werkelijke mailontvangst",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "showAudioAndLiveCall": {
+      "status": "passed",
+      "scope": "Showaudio/bellen",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    }
+  },
+  "binding": "The current staging health and completed successful deployment were checked again after the response. This acceptance applies only to the exact SHA and staging release above.",
+  "productionAuthVerified": false,
+  "productionStorageLimitUserResponse": "Straks",
+  "newApplicationSourceAccepted": false
+}

@@ -161,9 +161,33 @@ async function history(client) {
   } catch { fail('history_invalid', 'De bestaande migratiehistorie heeft geen leesbaar, bekend contract.'); }
 }
 
+async function missingBucketResponse(response) {
+  if (response.status === 404) return true;
+  if (response.status !== 400) return false;
+  // Supabase's legacy Storage envelope can carry its 404 inside HTTP 400.
+  // Accept only that precise bucket error, never arbitrary validation/Auth
+  // errors. Read a bounded body rather than buffering provider diagnostics.
+  let reader;
+  try {
+    reader = response.body?.getReader();
+    if (!reader) return false;
+    const chunks = []; let bytes = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > 8192) { await reader.cancel(); return false; }
+      chunks.push(value);
+    }
+    const value = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    return value?.statusCode === '404' && value.error === 'Bucket not found' && value.message === 'Bucket not found';
+  } catch { return false; }
+  finally { reader?.releaseLock(); }
+}
+
 async function bucketStatus(target, env, fetcher) {
   const response = await fetcher(`${target.apiOrigin}/storage/v1/bucket/${encodeURIComponent(target.bucket)}`, { headers: { apikey: env.SUPABASE_SECRET_KEY }, signal: AbortSignal.timeout(15_000) });
-  if (response.status === 404) return { exists: false, ready: false, reasons: ['bucket_missing'] };
+  if (await missingBucketResponse(response)) return { exists: false, ready: false, reasons: ['bucket_missing'] };
   if (!response.ok) fail('storage_audit_failed', `Storage-preflight is afgewezen met HTTP ${response.status}; er zijn geen sleutelwaarden gelogd.`);
   const value = await response.json();
   const reasons = [];
@@ -341,6 +365,28 @@ async function schemaPermissions(client) {
   return { schemas, grants };
 }
 
+export async function relationGrantInventory(client) {
+  return (await client.query(`SELECT n.nspname AS schema,c.relname AS name,c.relkind AS kind,
+    pg_get_userbyid(a.grantor) AS grantor,CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END AS grantee,a.privilege_type,a.is_grantable
+    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+    CROSS JOIN LATERAL aclexplode(coalesce(c.relacl,acldefault(CASE WHEN c.relkind='S' THEN 's'::"char" ELSE 'r'::"char" END,c.relowner))) a
+    WHERE left(n.nspname,3)<>'pg_' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','v','S','f')
+    ORDER BY n.nspname,c.relname,grantor,grantee,a.privilege_type`)).rows;
+}
+
+const relationGrantKey = row => stable([row.schema, row.name, row.kind, row.grantor, row.grantee, row.privilege_type, row.is_grantable]);
+function validRelationGrants(rows) {
+  const identifier = value => typeof value === 'string' && value && !value.includes('\0') && Buffer.byteLength(value) <= 63;
+  const fields = ['grantee', 'grantor', 'is_grantable', 'kind', 'name', 'privilege_type', 'schema'];
+  return Array.isArray(rows) && rows.length <= 20000 && rows.every(row => row && stable(Object.keys(row).sort()) === stable(fields)
+    && ['schema', 'name', 'grantor', 'grantee'].every(key => identifier(row[key]))
+    && !row.schema.startsWith('pg_') && row.schema !== 'information_schema' && row.grantor !== 'PUBLIC'
+    && ['r', 'p', 'm', 'v', 'S', 'f'].includes(row.kind) && typeof row.is_grantable === 'boolean'
+    && !(row.grantee === 'PUBLIC' && row.is_grantable)
+    && (row.kind === 'S' ? ['USAGE', 'SELECT', 'UPDATE'] : ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER', 'MAINTAIN']).includes(row.privilege_type))
+    && new Set(rows.map(relationGrantKey)).size === rows.length;
+}
+
 export async function readExtensionMetadata(path, key, expected) {
   if (!expected || !/^[a-f0-9]{64}$/.test(expected.encryptedSha256 || '') || !/^[a-f0-9]{64}$/.test(expected.metadataSha256 || '') || await fileDigest(path) !== expected.encryptedSha256) fail('extension_metadata_hash', 'De versleutelde extensiemetadata wijkt af van het vastgelegde herstelbewijs.');
   const chunks = []; let bytes = 0;
@@ -361,11 +407,59 @@ export async function readExtensionMetadata(path, key, expected) {
     if (!Array.isArray(metadata.eventTriggers) || metadata.eventTriggers.length !== expected.eventTriggers || metadata.eventTriggers.some(row => !row || ['name', 'owner', 'function_schema', 'function_name'].some(key => !identifier(row[key])) || typeof row.event !== 'string' || !row.event || !['O', 'D', 'R', 'A'].includes(row.enabled) || typeof row.function_arguments !== 'string' || row.function_arguments.length > 65536 || row.tags !== null && (!Array.isArray(row.tags) || row.tags.some(tag => typeof tag !== 'string' || tag.length > 512))) || new Set(metadata.eventTriggers.map(row => row.name)).size !== metadata.eventTriggers.length) fail('extension_metadata_invalid', 'De eventtriggermetadata heeft geen geldig, uniek contract.');
     const permissions = metadata.schemaPermissions;
     if (!permissions || !Array.isArray(permissions.schemas) || permissions.schemas.length !== expected.schemas || permissions.schemas.some(row => !row || !identifier(row.name) || !identifier(row.owner) || row.name.startsWith('pg_') || row.name === 'information_schema') || new Set(permissions.schemas.map(row => row.name)).size !== permissions.schemas.length || !Array.isArray(permissions.grants) || permissions.grants.length !== expected.schemaGrants || permissions.grants.some(row => !row || !permissions.schemas.some(schema => schema.name === row.name) || !identifier(row.grantor) || !identifier(row.grantee) || !['USAGE', 'CREATE'].includes(row.privilege_type) || typeof row.is_grantable !== 'boolean') || new Set(permissions.grants.map(row => stable(row))).size !== permissions.grants.length) fail('extension_metadata_invalid', 'De schemarechtenmetadata heeft geen geldig, uniek broncontract.');
+    // Version-1 sidecars remain readable. New sidecars additionally preserve the
+    // complete relation ACL provenance omitted or normalized by pg_restore.
+    if (Object.hasOwn(metadata, 'relationGrants') && (!validRelationGrants(metadata.relationGrants)
+        || Object.hasOwn(expected, 'relationGrants') && metadata.relationGrants.length !== expected.relationGrants)
+        || Object.hasOwn(expected, 'relationGrants') && !Object.hasOwn(metadata, 'relationGrants')) fail('extension_metadata_invalid', 'De versleutelde relatiegrants hebben geen volledig, uniek broncontract.');
     return metadata;
   } catch (error) {
     if (error instanceof DatabaseGateError) throw error;
     fail('extension_metadata_invalid', 'De versleutelde extensiemetadata kon niet geauthenticeerd en gevalideerd worden.');
   }
+}
+
+export async function restoreRelationGrants(restoreClient, metadata, restoreUrl) {
+  if (!Object.hasOwn(metadata, 'relationGrants')) return { changed: 0, legacyMetadata: true };
+  if (!validRelationGrants(metadata.relationGrants)) fail('relation_restore_metadata', 'Relatiegrants vereisen de volledige gevalideerde bronmetadata.');
+  const url = restoreUrl instanceof URL ? restoreUrl : undefined;
+  if (!url || !['postgres:', 'postgresql:'].includes(url.protocol) || !loopback(url.hostname)
+      || [...url.searchParams.keys()].some(key => connectionAuthorityKeys.has(key.toLowerCase()))) fail('relation_restore_target', 'Relatiegrants mogen uitsluitend op de bevestigde loopback-hersteltestdatabase worden hersteld.');
+  const database = (await restoreClient.query('SELECT current_database() AS database')).rows[0].database;
+  if (!/^milo_restore_test_[a-z0-9_]+$/.test(database) || decodeURIComponent(url.pathname.slice(1)) !== database) fail('relation_restore_target', 'Relatiegrants mogen uitsluitend op de afzonderlijke hersteltestdatabase worden hersteld.');
+  await restoreClient.query('BEGIN');
+  try {
+    const expected = metadata.relationGrants, actual = await relationGrantInventory(restoreClient);
+    const permissions = rows => [...new Set(rows.map(({ schema, name, kind, grantee, privilege_type, is_grantable }) => stable([schema, name, kind, grantee, privilege_type, is_grantable])))].sort();
+    if (stable(permissions(actual)) !== stable(permissions(expected))) fail('relation_restore_permissions', 'Herstelde relatiepermissies, ontvangers of grant options wijken af; alleen grantorherstel is toegestaan.');
+    const expectedKeys = new Set(expected.map(relationGrantKey)), actualKeys = new Set(actual.map(relationGrantKey));
+    const missing = expected.filter(row => !actualKeys.has(relationGrantKey(row)));
+    const extra = actual.filter(row => !expectedKeys.has(relationGrantKey(row)));
+    // First restore the original grantor's identical privilege. The recipient
+    // keeps its existing effective access throughout this scratch transaction.
+    for (const row of missing) {
+      const privilegeFunction = row.kind === 'S' ? 'has_sequence_privilege' : 'has_table_privilege';
+      const relation = `${quote(row.schema)}.${quote(row.name)}`;
+      const rights = (await restoreClient.query(`SELECT ${privilegeFunction}($1,$2,$3) AS allowed`, [row.grantor, relation, row.privilege_type + ' WITH GRANT OPTION'])).rows[0];
+      if (!rights?.allowed) fail('relation_restore_grantor', 'De oorspronkelijke grantor heeft op de scratchdatabase geen bestaande grant option; er worden geen rollen of rechten verhoogd.');
+      await restoreClient.query(`SET LOCAL ROLE ${quote(row.grantor)}`);
+      await restoreClient.query(`GRANT ${row.privilege_type} ON ${row.kind === 'S' ? 'SEQUENCE' : 'TABLE'} ${relation} TO ${row.grantee === 'PUBLIC' ? 'PUBLIC' : quote(row.grantee)}${row.is_grantable ? ' WITH GRANT OPTION' : ''}`);
+      await restoreClient.query('RESET ROLE');
+    }
+    const replayed = new Set((await relationGrantInventory(restoreClient)).map(relationGrantKey));
+    if (expected.some(row => !replayed.has(relationGrantKey(row)))) fail('relation_restore_grantor', 'PostgreSQL heeft de oorspronkelijke grantor niet exact hersteld; bestaande scratchgrants worden niet ingetrokken.');
+    // Remove only the duplicate provenance for that same privilege/grantee.
+    // RESTRICT refuses dependent grants; no CASCADE or broad REVOKE is used.
+    for (const row of extra) {
+      await restoreClient.query(`SET LOCAL ROLE ${quote(row.grantor)}`);
+      await restoreClient.query(`REVOKE ${row.privilege_type} ON ${row.kind === 'S' ? 'SEQUENCE' : 'TABLE'} ${quote(row.schema)}.${quote(row.name)} FROM ${row.grantee === 'PUBLIC' ? 'PUBLIC' : quote(row.grantee)} RESTRICT`);
+      await restoreClient.query('RESET ROLE');
+    }
+    const exact = rows => rows.map(relationGrantKey).sort();
+    if (stable(exact(await relationGrantInventory(restoreClient))) !== stable(exact(expected))) fail('relation_restore_mismatch', 'De herstelde relatie-ACLs wijken nog af van de volledige bronmetadata.');
+    await restoreClient.query('COMMIT');
+    return { changed: missing.length + extra.length, legacyMetadata: false };
+  } catch (error) { await restoreClient.query('ROLLBACK'); throw error; }
 }
 
 async function restoreSchemaPermissions(restoreClient, metadata) {
@@ -466,10 +560,10 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     let sourceProof, sourceSecurity, extensionMetadata;
     try {
       const snapshot = (await sourceClient.query('SELECT pg_export_snapshot() AS id')).rows[0].id;
-      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient), eventTriggers: await eventTriggerInventory(sourceClient), schemaPermissions: await schemaPermissions(sourceClient) };
+      const metadata = { format: 1, projectRef: target.projectRef, releaseSha: env.RELEASE_SHA, backupId, extensions: await extensionInventory(sourceClient), owners: await extensionOwners(sourceClient), eventTriggers: await eventTriggerInventory(sourceClient), schemaPermissions: await schemaPermissions(sourceClient), relationGrants: await relationGrantInventory(sourceClient) };
       const metadataBody = stable(metadata);
       await encryptBackup(Readable.from(metadataBody), extensionPath, env.BACKUP_ENCRYPTION_KEY);
-      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length, eventTriggers: metadata.eventTriggers.length, schemas: metadata.schemaPermissions.schemas.length, schemaGrants: metadata.schemaPermissions.grants.length };
+      extensionMetadata = { format: 1, filename: `${backupId}.extensions.json.aesgcm`, encryptedSha256: await fileDigest(extensionPath), metadataSha256: hash(metadataBody), relations: metadata.owners.length, extensions: metadata.extensions.length, eventTriggers: metadata.eventTriggers.length, schemas: metadata.schemaPermissions.schemas.length, schemaGrants: metadata.schemaPermissions.grants.length, relationGrants: metadata.relationGrants.length };
       const dump = startTool('pg_dump', ['--format=custom', `--snapshot=${snapshot}`], pgEnvironment(env.DATABASE_URL, rootCertFile), spawnTool);
       dump.child.stdin.end();
       try { await Promise.all([encryptBackup(dump.child.stdout, encryptedPath, env.BACKUP_ENCRYPTION_KEY), dump.done]); }
@@ -492,6 +586,7 @@ export async function backupAndRestore({ env, target, sourceClient, sourceVersio
     if (stable(await eventTriggerInventory(restoreClient)) !== stable(metadata.eventTriggers)) fail('event_restore_mismatch', 'De herstelde eventtriggers wijken af in eigenaar, functie, status of tags.');
     await restoreExtensionOwners(restoreClient, metadata);
     await restoreSchemaPermissions(restoreClient, metadata);
+    await restoreRelationGrants(restoreClient, metadata, prerequisites.restore);
     await restoreClient.query('BEGIN READ ONLY');
     const restoredProof = await dataProof(restoreClient), restoredSecurity = await securityProof(restoreClient); await restoreClient.query('COMMIT');
     if (stable(sourceProof) !== stable(restoredProof)) fail('restore_proof_mismatch', 'De teruggezette database wijkt af in tabelaantallen of gegevenschecksums.');
