@@ -4,23 +4,23 @@ const abortError=()=>Object.assign(Error('De audiovoorbereiding is gewijzigd.'),
 const identityOf=(text,speed,characterId)=>JSON.stringify([characterId,Number(speed),text.trim()]);
 const MAX_AUDIO_BYTES=256*1024*1024;
 
-// All fixed scripts are fetched before the show, without playing or unlocking
-// sound. Bytes stay in this tab; only the current utterance is decoded by the
-// voice player. The durable server cache is shared by later shows and reloads.
+// Only the director's explicit preparation action may request fixed scripts.
+// Tracking edits and checking readiness must never start paid generation.
+// Bytes stay in this tab; the durable server cache is reused after that action.
 export class PreparedShowAudio{
- constructor({read,beforePrepare=async()=>{},onChange=()=>{},manifest=body=>apiJSON('show-audio',body),fetcher=(...args)=>globalThis.fetch(...args),delay=800,minimumGenerationGap=2200}={}){
-  Object.assign(this,{read,beforePrepare,onChange,manifest,fetcher,delay,minimumGenerationGap});this.epoch=0;this.cache=new Map();this.entries=new Map();this.bytes=0;this.phase='idle';this.error='';this.ready=0;this.total=0;this.fingerprint=null;this.controllers=new Set();this.nextGenerationAt=0;
+ constructor({read,beforePrepare=async()=>{},onChange=()=>{},manifest=body=>apiJSON('show-audio',body),fetcher=(...args)=>globalThis.fetch(...args),minimumGenerationGap=2200}={}){
+  Object.assign(this,{read,beforePrepare,onChange,manifest,fetcher,minimumGenerationGap});this.epoch=0;this.cache=new Map();this.entries=new Map();this.bytes=0;this.phase='idle';this.error='';this.ready=0;this.total=0;this.fingerprint=null;this.controllers=new Set();this.nextGenerationAt=0;
  }
  get state(){return {gameId:this.gameId||null,phase:this.phase,ready:this.ready,total:this.total,error:this.error,fingerprint:this.fingerprint,complete:this.phase==='ready'&&this.ready===this.total};}
  track(){
   const current=this.read();
   if(!current?.enabled){if(this.identity!==null&&this.identity!==undefined)this.reset(null);return;}
   if(current.identity===this.identity)return;
-  this.reset(current.identity);this.gameId=current.gameId;this.phase='loading';this.error='';this.onChange();
-  this.timer=setTimeout(()=>{this.timer=null;void this.prepare().catch(()=>{});},this.delay);
+  const changed=this.gameId===current.gameId&&this.phase!=='idle';
+  this.reset(current.identity);this.gameId=current.gameId;this.phase=changed?'stale':'idle';this.onChange();
  }
  reset(identity){
-  clearTimeout(this.timer);this.timer=null;this.epoch++;for(const controller of this.controllers)controller.abort();this.controllers.clear();this.identity=identity;this.pending=null;this.entries.clear();this.items=[];this.phase='idle';this.error='';this.ready=0;this.total=0;this.fingerprint=null;
+  this.epoch++;for(const controller of this.controllers)controller.abort();this.controllers.clear();this.identity=identity;this.pending=null;this.entries.clear();this.items=[];this.phase='idle';this.error='';this.ready=0;this.total=0;this.fingerprint=null;
  }
  lookup(text,speed,selection={}){
   if(!this.identity||this.read()?.identity!==this.identity)return null;
@@ -28,7 +28,7 @@ export class PreparedShowAudio{
  }
  knows(text,speed,characterId){return this.entries.has(identityOf(text,speed,characterId));}
  async prepare({retry=false}={}){
-  clearTimeout(this.timer);this.timer=null;this.track();clearTimeout(this.timer);this.timer=null;
+  this.track();
   if(!this.identity)return;
   if(this.pending)return this.pending;
   if(this.phase==='ready'&&!retry)return this.state;
@@ -65,6 +65,13 @@ export class PreparedShowAudio{
   })();this.pending=operation;return operation;
  }
  wait(ms,epoch){return new Promise((resolve,reject)=>{setTimeout(()=>this.epoch===epoch?resolve():reject(abortError()),ms);});}
- async ensure(){await this.prepare();if(this.phase!=='ready'||this.read()?.identity!==this.identity)throw Error(this.error||'De showaudio is nog niet volledig ingeladen. Wacht op de voorbereiding en probeer opnieuw.');return this.state;}
+ async ensure(){
+  this.track();
+  // A start/resume may wait for an action already chosen by the director,
+  // but it is never an alternative entry point for generation.
+  if(this.pending)await this.pending;
+  if(this.phase!=='ready'||this.read()?.identity!==this.identity)throw Error(this.error||(this.phase==='stale'?'Het draaiboek of een stem is gewijzigd. Open Voorbereiden en klik op ‘Gewijzigde audio voorbereiden’.':'De vaste showaudio is nog niet voorbereid. Open Voorbereiden en klik op ‘Audio voorbereiden’.'));
+  return this.state;
+ }
  dispose(){this.reset(null);this.cache.clear();this.bytes=0;}
 }

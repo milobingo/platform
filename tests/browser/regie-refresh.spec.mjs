@@ -66,6 +66,7 @@ for(const width of [1920,1366,390]){
   test.setTimeout(90000);await page.setViewportSize({width,height:width===1920?1080:width===1366?900:844});await page.emulateMedia({reducedMotion:'reduce'});
   const h=await fixture(page,testInfo),{evidence}=h;
   try{
+   await page.goto('/#/overview');const prep=page.locator('section[aria-label="Audio voorbereiden"]');await prep.getByRole('button',{name:'Audio voorbereiden',exact:true}).click();await expect(prep.locator(':scope>p').first()).toContainText(/Alle \d+ vaste stemfragmenten zijn ingeladen/,{timeout:30000});
    await page.goto('/#/live');const main=page.locator('main#mf-main'),workspace=main.locator('.rd-workspace'),essentials=workspace.locator('.mf-live-essentials'),timer=essentials.getByRole('timer',{name:'Volgende officiële bal'}),advanced=workspace.locator('.mf-live-advanced');
    await expect(workspace).toBeVisible();await expect(workspace.getByRole('heading',{name:'Live regie',exact:true})).toBeVisible();await expect(page.locator('.mf-top-show>strong')).toHaveText(h.game.title);
    await expect(essentials).toContainText('Ronde 2');await expect(essentials).toContainText('Prijsstap 2 / 3');await expect(essentials).toContainText('Bovenste én onderste rij');await expect(essentials.locator('.mf-live-ball')).toHaveText('41');

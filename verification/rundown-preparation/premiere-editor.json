@@ -1,0 +1,31 @@
+{
+  "errors": [],
+  "unexpected": [],
+  "writes": [
+    {
+      "status": 200
+    }
+  ],
+  "external": [],
+  "premiere": {
+    "moments": 26,
+    "roundGoalCounts": [
+      3,
+      3,
+      3,
+      1
+    ],
+    "guestTurnsRetained": 5,
+    "explanationPatterns": 3,
+    "cueCards": 20,
+    "noAudioBeforeButton": true,
+    "audioTotal": 162,
+    "notesExcludedFromSpeech": true
+  },
+  "audioRequests": {
+    "total": 163,
+    "speech": 162,
+    "uniqueSpeechKeys": 1,
+    "cacheOnly": 162
+  }
+}

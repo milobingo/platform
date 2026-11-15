@@ -1,0 +1,337 @@
+{
+  "observedAt": "2026-11-15T15:13:34.176Z",
+  "actualBrowserRendering": true,
+  "actualWebAudioDecodeAndPlayback": true,
+  "actualBingoHandlers": true,
+  "actualSQLiteCAS": true,
+  "coldBrowserMemory": true,
+  "serverPreparedAudioIsSyntheticFixture": true,
+  "syntheticWavDurationMs": 100,
+  "actualProviderCalls": false,
+  "actualAccountWrites": false,
+  "actualOBSInstallation": false,
+  "scope": "All transport is intercepted; mutations exist only in this test in-memory database.",
+  "origin": "http://127.0.0.1:8343",
+  "gameId": "69f59574-26e9-4539-b30e-24afc00099aa",
+  "errors": [],
+  "unexpected": [],
+  "external": [],
+  "forbiddenWrites": [],
+  "bingo": [
+    {
+      "path": "/api/bingo/games",
+      "method": "GET",
+      "at": 1794755557987,
+      "status": 200,
+      "completedAt": 1794755557992
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755558024,
+      "status": 200,
+      "completedAt": 1794755558026
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755559595,
+      "status": 200,
+      "completedAt": 1794755559596
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755559613,
+      "status": 200,
+      "completedAt": 1794755559616
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/pause",
+      "method": "POST",
+      "at": 1794755560122,
+      "status": 200,
+      "completedAt": 1794755560125
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755561463,
+      "status": 200,
+      "completedAt": 1794755561464
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755562866,
+      "status": 200,
+      "completedAt": 1794755562868
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755564969,
+      "status": 200,
+      "completedAt": 1794755564971
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755567969,
+      "status": 200,
+      "completedAt": 1794755567971
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755568464,
+      "status": 200,
+      "completedAt": 1794755568465
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/reserve",
+      "method": "POST",
+      "at": 1794755570967,
+      "status": 200,
+      "completedAt": 1794755570969
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755571963,
+      "status": 200,
+      "completedAt": 1794755571965
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755573066,
+      "status": 200,
+      "completedAt": 1794755573068
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/commit",
+      "method": "POST",
+      "at": 1794755575264,
+      "status": 200,
+      "completedAt": 1794755575266
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755575466,
+      "status": 200,
+      "completedAt": 1794755575467
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755578166,
+      "status": 200,
+      "completedAt": 1794755578168
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/audio-cue",
+      "method": "POST",
+      "at": 1794755578567,
+      "status": 200,
+      "completedAt": 1794755578569
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755578963,
+      "status": 200,
+      "completedAt": 1794755578965
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755582464,
+      "status": 200,
+      "completedAt": 1794755582465
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755583267,
+      "status": 200,
+      "completedAt": 1794755583268
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755585966,
+      "status": 200,
+      "completedAt": 1794755585967
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/reserve",
+      "method": "POST",
+      "at": 1794755586064,
+      "status": 200,
+      "completedAt": 1794755586066
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755588366,
+      "status": 200,
+      "completedAt": 1794755588367
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755589464,
+      "status": 200,
+      "completedAt": 1794755589465
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/commit",
+      "method": "POST",
+      "at": 1794755590364,
+      "status": 200,
+      "completedAt": 1794755590366
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/pause",
+      "method": "POST",
+      "at": 1794755590870,
+      "status": 200,
+      "completedAt": 1794755590872
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755592963,
+      "status": 200,
+      "completedAt": 1794755592965
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755593364,
+      "status": 200,
+      "completedAt": 1794755593365
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755596467,
+      "status": 200,
+      "completedAt": 1794755596468
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755598464,
+      "status": 200,
+      "completedAt": 1794755598465
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755599963,
+      "status": 200,
+      "completedAt": 1794755599964
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755603464,
+      "status": 200,
+      "completedAt": 1794755603465
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755603564,
+      "status": 200,
+      "completedAt": 1794755603565
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755606996,
+      "status": 200,
+      "completedAt": 1794755606997
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa/heartbeat",
+      "method": "POST",
+      "at": 1794755608564,
+      "status": 200,
+      "completedAt": 1794755608566
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755610463,
+      "status": 200,
+      "completedAt": 1794755610464
+    },
+    {
+      "path": "/api/bingo/games",
+      "method": "GET",
+      "at": 1794755610967,
+      "status": 200,
+      "completedAt": 1794755610968
+    },
+    {
+      "path": "/api/bingo/games/69f59574-26e9-4539-b30e-24afc00099aa",
+      "method": "GET",
+      "at": 1794755611011,
+      "status": 200,
+      "completedAt": 1794755611012
+    }
+  ],
+  "cadence": {
+    "first": {
+      "number": 9,
+      "at": 1794755575265
+    },
+    "second": {
+      "number": 10,
+      "at": 1794755590365
+    },
+    "gapMs": 15100,
+    "fullBrowserAndServerWallClock": true,
+    "hotSpeechRequests": 0,
+    "numberNineReceipt": {
+      "at": 1794755578568,
+      "by": "qa-show-audio",
+      "requestId": "d28f35b3-216a-4b95-8649-bc3960a523c5",
+      "epoch": "a401e503-e42c-4acb-86d6-216ac41904d1",
+      "number": 9
+    }
+  },
+  "pauseHeldAcrossAnEntireInterval": true,
+  "syntheticBingoWindow": true,
+  "reload": {
+    "sameGame": true,
+    "sameRoundEpoch": true,
+    "sameDrawn": true,
+    "paused": true,
+    "openBingoWindowPreserved": true,
+    "noAutomaticReloadGeneration": true,
+    "manuallyReloadedCachedBank": true,
+    "numberNineReceiptPreserved": true
+  },
+  "audioPreparationRequestsSummary": {
+    "count": 248
+  },
+  "beforeReloadAudioSummary": {
+    "decodes": 3,
+    "starts": 3
+  },
+  "audioRenderingSummary": {
+    "decodes": 0,
+    "starts": 0
+  },
+  "audioRequests": {
+    "total": 248,
+    "speech": 246,
+    "uniqueSpeechKeys": 123,
+    "cacheOnly": 246
+  }
+}

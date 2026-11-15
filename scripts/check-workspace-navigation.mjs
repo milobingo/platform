@@ -87,12 +87,20 @@ try{
   if(id==='overview'){const steps=main().querySelector('nav[aria-label="Show voorbereiden"]');assert(steps);assert.deepEqual([...steps.querySelectorAll('button')].map(button=>button.textContent.replace(/^\d/,'')),['Voorbereiden','Uitzending testen','Start show']);assert.equal(main().querySelectorAll('.mf-standard-rounds>section>ol>li').length,10);}
   if(id==='shows'){expect('input');assert(buttons().some(b=>b.textContent.includes('Nieuwe show')));}
   if(id==='script'){
-   const labels=['Draaiboek','Cast & stemmen','Rondes & patronen','Prijzen','Startcheck'];
+   const labels=['Draaiboek','Cast & stemmen','Rondes & patronen','Prijzen','Spreekkaarten','Startcheck'];
    for(const label of labels){const tab=buttons('[role=tab]').find(b=>b.textContent.trim()===label);assert(tab,'Missing script tab '+label);h.event(tab,'click');await wait(240);assert.equal(tab.getAttribute('aria-selected'),'true');nested++;
     if(label==='Draaiboek'){expect('input');assert(buttons().some(b=>b.textContent.includes('Repeteer dit moment')));}
     if(label==='Cast & stemmen')expect('select');
-    if(label==='Rondes & patronen')expect('select[aria-label="Prijs bij dit patroon"]');
+    if(label==='Rondes & patronen'){
+     expect('[data-round-goals]');const editor=main().querySelector('[data-round-goals]'),row=editor.querySelector('.mf-round-step-list>li'),roundId=editor.getAttribute('data-round-goals'),goalId=row.getAttribute('data-goal-id');
+     const priceLabel=[...row.querySelectorAll('label')].find(control=>control.querySelector('span')?.textContent==='Prijs prijsstap 1'),price=priceLabel?.querySelector('select');assert(price,'Every round step must expose its own labelled prize selector');
+     const options=[...price.querySelectorAll('option')],next=options.find(option=>option.value!==price.value);assert(next,'The fixture must provide another real prize');
+     Object.defineProperty(price,'value',{value:next.value,writable:true,configurable:true});h.event(price,'change');await wait(850);
+     const saved=JSON.parse(h.context.localStorage.getItem('mf-rehearsal-plan-milo')||'null'),savedRound=saved?.plan.blocks.find(block=>block.id===roundId);assert(savedRound,'Editing a round prize must autosave the rehearsal');assert.equal(savedRound.goals.find(goal=>goal.id===goalId)?.prizeId,next.value,'The selected prize must persist on this exact round and goal');
+     assert(buttons().some(button=>button.textContent.includes('Ronde toevoegen')),'Round insertion must be reachable');assert(buttons().some(button=>button.textContent.includes('Patroon en prijs toevoegen')),'Ordered pattern insertion must be reachable');
+    }
     if(label==='Prijzen')assert(buttons().some(b=>b.textContent.includes('Prijs toevoegen')));
+    if(label==='Spreekkaarten')assert(buttons().some(b=>b.textContent.includes('Spreekkaart toevoegen')));
     if(label==='Startcheck')assert(buttons().some(b=>/Start de (?:repetitie|show)/.test(b.textContent)));
    }
   }

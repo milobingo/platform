@@ -1,0 +1,22 @@
+✔ rundown text and every guest dialogue turn retain 10,000 characters and private notes (10.255658ms)
+✔ operator notes and manual cue notes never become generated speech or family data (3.933962ms)
+✔ open-window and checking texts follow actual server deadline and matching epoch (0.437025ms)
+✔ an invalid bingo announcement needs a closed window without any valid claim (0.185327ms)
+✔ prize, tie and consolation announcements cannot promise an unconfirmed outcome (0.269393ms)
+✔ round and finale announcements need the acknowledged last goal, never a saved name or another round (0.139984ms)
+✔ six scoped pattern transitions need the acknowledged prior step and never reset the board (0.477771ms)
+✔ call text requires a server draw hold and cancellation silences every cue (0.171778ms)
+✔ 60-second countdown and 90-second pause hold the timeline with no official balls (2.306592ms)
+✔ custom magic words wait for both the full trick and actual voice before a complete five-turn guest visit (1.136783ms)
+✔ closing thanks finish speaking before the complete ten-second slotapplaus and show completion (0.673923ms)
+✔ pattern explanation steps preserve long text and require complete patterns without weakening the ordinary fallback (2.190731ms)
+✔ three explanation patterns speak once in order, wait for the voice and a visual pause, and never activate or draw a round (1.538138ms)
+✔ explanation pattern graphics identify rehearsal instructions while official round labels remain unchanged (1.364999ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.997325

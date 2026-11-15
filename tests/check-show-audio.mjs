@@ -15,6 +15,7 @@ import {synthesizeLiveScript,normalizedScript} from '../server/gpt-live.js';
 import {fakeLiveSocket} from '../scripts/gpt-live-fixture.mjs';
 import {splitSpeechText} from '../public/speech-text.js';
 import {bingoNumberText,dutchNumber,SPEECH_POLICY_VERSION,MILO_BANTER,NUMBER_NINE_AUDIENCE,roundSpeech,prizeSpeech} from '../public/bingo-speech.js';
+import {premierePlan} from '../server/premiere-plan.js';
 
 const origin='https://studio.example',noProvider=()=>assert.fail('A read-only/cache-only route contacted a provider');
 async function fixture(t){
@@ -49,6 +50,37 @@ test('the show manifest covers every runner goal, prize, long block, guest turn,
  for(const round of game.plan.blocks.filter(block=>block.type==='round'))for(const goal of round.goals){const pattern=game.plan.patterns.find(item=>item.id===goal.patternId),prize=game.plan.prizes.find(item=>item.id===goal.prizeId);assert(manifest.items.some(item=>item.text===roundSpeech(round.title,pattern.title)));assert(manifest.items.some(item=>item.text===prizeSpeech(prize.title)));}
  for(const cue of [...MILO_BANTER,NUMBER_NINE_AUDIENCE])assert(manifest.items.some(item=>item.text===cue.text));
  assert.equal(new Set(manifest.items.map(item=>item.key)).size,manifest.total);assert(manifest.items.every(item=>Array.from(item.text).length<=400));
+});
+
+test('all premiere manual speaking cards are prepared but private operator directions and condition labels are never speech',async t=>{
+ const h=await fixture(t),plan=premierePlan();assert.equal(plan.manualCues.length,20);
+ const privateNote='VERTROUWELIJK: controleer eerst de officiële serveruitslag.',conditionTitle='ALLEEN BIJ BEVESTIGDE WINNAAR';
+ for(const block of plan.blocks)block.operatorNotes=privateNote;
+ for(const cue of plan.manualCues){cue.notes=privateNote;cue.conditionLabel=conditionTitle;}
+ // Force a multi-part speaking card: every character of its text belongs in
+ // the bank, while technical directions must remain exclusively with regie.
+ plan.manualCues[0].text='Dit is een lange voorbereide spreekkaart. '.repeat(24);
+ await h.store.mutate(h.game.id,{},game=>{game.plan=plan;});
+ const manifest=await h.manifest(),saved=(await h.store.game(h.game.id)).data,scripts=showAudioScripts(saved);
+ for(const cue of plan.manualCues){
+  const expected=splitSpeechText(cue.text).map(part=>part.trim()),actual=scripts.filter(item=>item.kind==='manual'&&item.id===cue.id);
+  assert.deepEqual(actual.map(item=>item.text),expected);assert(actual.every(item=>item.characterId===cue.speakerId));
+  for(const [index,text]of expected.entries())assert(manifest.items.some(item=>item.text===text&&item.sources.some(source=>source.kind==='manual'&&source.id===cue.id&&source.chunkIndex===index)));
+ }
+ assert(!scripts.some(item=>item.text.includes(privateNote)||item.text.includes(conditionTitle)));
+ assert(!manifest.items.some(item=>item.text.includes(privateNote)||item.text.includes(conditionTitle)));
+ assert.equal(new Set(manifest.items.map(item=>item.key)).size,manifest.total);
+});
+
+test('an explanation prepares the individual visible pattern steps instead of repeating the combined block text',async t=>{
+ const h=await fixture(t),steps=[{patternId:'patroon-hoeken',text:'Eerst spelen we voor de vier hoekjes.'},{patternId:'patroon-boven-onder',text:'Daarna de bovenste én onderste rij. '.repeat(20)},{patternId:'patroon-vol',text:'Tot slot de volle kaart, met het vrije middenvak.'}],combined='Dit is de gecombineerde bewerktekst en mag niet extra worden uitgesproken.',privateNote='Alleen regie: wissel het patroon na elke zin.';
+ await h.store.mutate(h.game.id,{},game=>{game.plan.blocks.splice(2,0,{id:'pattern-explanation',type:'explanation',speakerId:'milo',text:combined,operatorNotes:privateNote,explanationSteps:steps.map(step=>({...step,notes:privateNote}))});});
+ const manifest=await h.manifest(),scripts=showAudioScripts((await h.store.game(h.game.id)).data);
+ for(const[index,step]of steps.entries()){
+  const id='pattern-explanation-'+index,expected=splitSpeechText(step.text).map(part=>part.trim());assert.deepEqual(scripts.filter(item=>item.id===id).map(item=>item.text),expected);
+  for(const[chunkIndex,text]of expected.entries())assert(manifest.items.some(item=>item.text===text&&item.sources.some(source=>source.id===id&&source.kind==='explanation'&&source.chunkIndex===chunkIndex)));
+ }
+ assert(!scripts.some(item=>item.text===combined||item.text.includes(privateNote)));assert(!manifest.items.some(item=>item.text===combined||item.text.includes(privateNote)));
 });
 
 test('preparation validates all 75 number transcripts before cached readiness and excludes unverified old metadata',async t=>{

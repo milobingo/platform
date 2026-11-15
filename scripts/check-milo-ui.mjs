@@ -83,7 +83,7 @@ async function checkAdmin(){
   const update=h.requests.find(r=>r.url==='/api/characters/milo'&&r.method==='PUT');assert.equal(update?.body.settings.voice,'cedar');assert.equal(update?.body.revision,0);assert.equal(characters[0].voice,'cedar');assert.equal(h.requests.filter(r=>r.url==='/api/characters/milo'&&r.method==='PUT').length,1,'Saving the selected voice performs one revision-checked update');
   await h.navigate('script');h.click('Draaiboek');await wait(30);
   const cues=h.document.querySelectorAll('.mf-cue-list>button').length;assert.ok(cues>0,'Initial show cues missing');
-  for(let i=0;i<cues;i++){h.click('Verwijderen');await wait(25);}await wait(40);
+  for(let i=0;i<cues;i++){h.event(h.document.querySelector('.mf-cue-editor .mf-editor-small-actions>button.danger'),'click');await wait(25);}await wait(40);
   assert.ok(h.body().includes('Een nieuw verhaal begint met één moment.'),'Deleting the last cue must render the empty timeline');
   assert.ok(!h.body().includes('De studio kon niet starten.'),'Deleting the last cue crashed the app');
   h.click('Voeg een showmoment toe');await wait(25);h.click('Magiemoment');await wait(60);assert.equal(h.document.querySelectorAll('.mf-cue-list>button').length,1,'Adding a cue after an empty timeline failed');

@@ -8,6 +8,7 @@ await cp('server/show-brands.js','public/show-brands.js');
 await cp('server/characters.js','public/characters.js');
 await cp('server/production-model.js','public/production-model.js');
 await cp('server/plan-model.js','public/plan-model.js');
+await cp('server/manual-cues.js','public/manual-cues.js');
 await cp('server/presentation-model.js','public/presentation-model.js');
 await cp('server/bingo-model.js','public/bingo-model.js');
 await cp('server/standard-show.js','public/standard-show.js');

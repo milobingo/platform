@@ -43,6 +43,14 @@ export class ShowRunner{
    const cue=getShowCue(b.showCueId);this.showCue={id:cue.id,instanceId:`${b.id}-${crypto.randomUUID()}`,hostId:b.speakerId||this.plan.leadId||'milo'};
    d.event('show-cue',{action:'start',...this.showCue});
    d.program([{scene:'host',duration:cue.duration,camera:cue.shots?.[0]?.camera||cue.camera,motion:cue.motion,sound:cue.sound}]);
+  }else if(b.type==='explanation'&&b.explanationSteps?.length){
+   // A visual explanation is not a bingo round. Only the existing block sync
+   // runs; no goal is activated and no board or official draw state is changed.
+   const patterns=b.explanationSteps.map(step=>this.plan.patterns.find(pattern=>pattern.id===step.patternId));
+   d.program(b.explanationSteps.flatMap((step,index)=>[
+    {scene:'round',duration:2,camera:b.camera||'wide',motion:b.animation||'point',speech:()=>{const pattern=patterns[index];d.configure({round:b.title,roundPatterns:patterns,goalIndex:index,patternPage:Math.floor(index/3),pattern:pattern.title,patternCells:[...pattern.cells],patternFreeCenter:pattern.freeCenter,patternVariant:pattern.variant,prize:''});return step.text;},waitVoice:true},
+    {scene:'round',duration:1,camera:b.camera||'wide',motion:'idle'},
+   ]));
   }else if(['magic','guest'].includes(b.type)){
    this.castCue={cueId:b.id,kind:b.type,speakerId:b.speakerId||this.plan.leadId||'milo',guestId:b.guestId||null,magicId:b.magicId||null,duration:b.duration};
    const turns=[{speakerId:this.castCue.speakerId,text:b.text,animation:b.animation||'idle'},...(b.type==='guest'?b.dialogue:[])];

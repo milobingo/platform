@@ -1,0 +1,331 @@
+{
+  "title": "Milo’s Magische Première",
+  "date": "2026-12-02T13:30",
+  "cues": [
+    {
+      "number": 1,
+      "type": "Countdown",
+      "title": "We gaan zo beginnen",
+      "text": "",
+      "notes": "60 seconden. Rustige wachtkamermuziek. Wie kijkt, kan vast het boekje pakken. Nog geen trekking."
+    },
+    {
+      "number": 2,
+      "type": "Showelement",
+      "title": "Welkom op het Sterrenplein",
+      "text": "",
+      "notes": "Kies “Welkom op het Sterrenplein”. Totaalshot naar Milo, korte jingle, dan terug onder de stem."
+    },
+    {
+      "number": 3,
+      "type": "Welkomstwoord",
+      "title": "Mijn allereerste show",
+      "text": "Hééé, daar zijn jullie! Welkom bij Milo & Friends BingoShow! Ik ben Milo Magico, en dit is mijn állereerste Bingoshow. Vanochtend heb ik mijn welkomstzin zó vaak geoefend dat mijn spiegel hem nu ook kent. Maar die spiegel kan niet juichen. Jullie wel! Zwaaien jullie even terug? Wát fijn dat jullie er zijn. Welkom op het Sterrenplein. Dit is Milo’s Magische Première!",
+      "notes": "Milo zwaait. Laat na “Zwaaien jullie even terug?” een tel ruimte. Feestelijk, verstaanbaar, geen jingle onder de shownaam."
+    },
+    {
+      "number": 4,
+      "type": "Welkomstwoord",
+      "title": "Milo én zijn vrienden",
+      "text": "Ik heet dan wel Milo, maar die “& Friends” staat er met een reden. Ik maak deze show samen met mijn vriendjes. Soms komt er eentje zomaar om de hoek kijken. Soms heeft iemand een trucje of een veel beter idee dan ik. En bij een volgende show kan een van hen zelfs de héle show presenteren! Ik had mijn hoed al gevraagd of hij ook wilde presenteren. Hij zei niks. Dus vandaag hebben jullie mij!",
+      "notes": "Milo kijkt even naar zijn hoed. Vermijd een harde belofte over de gast die vandaag verschijnt."
+    },
+    {
+      "number": 5,
+      "type": "Uitleg",
+      "title": "Pak je juiste kaart",
+      "text": "Pak je bingoboekje en iets om af te strepen. Speel je digitaal? Open je boekje in de spelersapp. Vraag gerust iemand thuis om te helpen. We spelen vier rondes: drie gewone rondes en daarna de finale. Elke ronde heeft een eigen kaart. Pak nu die van ronde één. Hoor je een nummer en staat het op je kaart? Streep het af. Staat het er niet op? Dan wacht je lekker op de volgende bal.",
+      "notes": "Laat ronde 1 zien. Als een gezin nog niet gekoppeld is, help privé; laat codes nooit voorlezen op de stream."
+    },
+    {
+      "number": 6,
+      "type": "Uitleg",
+      "title": "Drie opdrachten op dezelfde kaart",
+      "text": "In de eerste drie rondes doen we steeds hetzelfde. Eerst de vier hoekjes: linksboven, rechtsboven, linksonder en rechtsonder. Dan boven én onder: de hele bovenste rij én de hele onderste rij. Eén rij is dus nog niet genoeg! Daarna gaan we voor een volle kaart. Het vakje precies in het midden is vrij; daar hoef je geen nummer voor te horen. Voor deze drie opdrachten houd je steeds dezelfde kaart en laat je al je streepjes staan.",
+      "notes": "Toon achtereenvolgens de drie patronen. Geef zichtbaar de tijd om boven en onder aan te wijzen. Voor een volle kaart zijn alle 24 nummervakken nodig; het midden is al vrij."
+    },
+    {
+      "number": 7,
+      "type": "Uitleg",
+      "title": "Zo meld je bingo",
+      "text": "Heb je precies het patroon dat nú in beeld staat? Druk op BINGO in de spelersapp, kies je juiste boekje en bevestig je melding. Dan kijkt ons spelteam of het klopt. Er is even tijd voor andere spelers om hun bingo ook te melden. De ballen wachten dan. Houd je kaart dus bij de hand. En heb je een nummer niet goed gehoord? Kijk bij de getrokken nummers in de spelersapp. Misschien stond het gewoon al op je te wachten.",
+      "notes": "Toon de BINGO-knop en het ballenbord. Zeg niet dat hard roepen of een chatbericht als melding telt."
+    },
+    {
+      "number": 8,
+      "type": "Uitleg",
+      "title": "Eerlijk spelen en de finale",
+      "text": "Je hoeft geen supersnelle vingers te hebben. Van de geldige meldingen die op tijd binnenkomen, telt wanneer je patroon compleet was. Was dat voor meer spelers op hetzelfde, vroegste nummer? Dan bepaalt een loting wie wint. In de finale pakken we een nieuwe kaart en slaan we de hoekjes en de rijen over. Dan gaan we meteen voor die éne, volle kaart. Lukt het nog niet? Geen zorgen. Je speelt gewoon gezellig mee.",
+      "notes": "Gebruik de zin over loting alleen met de afgesproken bestaande afhandeling. Een eventueel beslisspel onthult de uitkomst; het vervangt de officiële uitslag niet."
+    },
+    {
+      "number": 9,
+      "type": "Uitleg",
+      "title": "Nog één keer samen",
+      "text": "Even kijken of ík het snap. Ik hoor een nummer. Ik kijk op mijn kaart. Staat het erop, dan streep ik het af. Krijg ik het patroon dat nú in beeld staat, dan meld ik bingo. En mijn hoed? Die mag intussen helemaal niks afstrepen. Want die heeft geen vingers.",
+      "notes": "Eén korte glimlachpauze. Nog geen spelnummer noemen bij de uitleg."
+    },
+    {
+      "number": 10,
+      "type": "Verhaallijn",
+      "title": "Er rammelt iets",
+      "text": "Ik wilde voor mijn eerste show één ster boven het Sterrenplein laten branden. Ik heb overal gezocht. Achter het gordijn, onder mijn tafel, zelfs in de zak waar ik altijd mijn reservekoekje bewaar. Nergens een ster. En toen hoorde ik iets rammelen. Hier, vlak boven mijn oren. Denken jullie wat ik denk?",
+      "notes": "Close shot; Milo wijst naar de hoed. Geen gesproken reactie van kinderen nodig."
+    },
+    {
+      "number": 11,
+      "type": "Magiemoment",
+      "title": "De zwevende sterrenhoed",
+      "text": "Hoge hoed, laat eens zien wat je verstopt. Tel maar mee. Drie, twee, één… Sterrenplein… straal!",
+      "notes": "Houd de precieze onthulling bij de animatie. Wacht tot de truc klaar is; ga dan pas naar cue 12."
+    },
+    {
+      "number": 12,
+      "type": "Uitleg",
+      "title": "Ronde één, kaart één",
+      "text": "Daar is ie! Onze eerste premièrester. Ik ben blij dat er een ster uitkwam. Een verdwaalde boterham zou toch minder feestelijk zijn. Goed, kaart één erbij! Kijk alleen naar de vier hoekjes. De vakjes ertussen hebben nog even vrij. Wij zijn klaar voor onze allereerste échte bingobal!",
+      "notes": "Beeld terug naar kaart 1 en vier hoeken. Pauzeer de stem zodra de echte nummeraankondiging start."
+    },
+    {
+      "number": 13,
+      "type": "Bingoronde",
+      "title": "Ronde 1",
+      "text": "",
+      "notes": "Gebruik A1–A2 voor de overgang naar de volgende prijsstap als er ruimte is voor handspraak. Bij iedere melding: volg B. Sluit de ronde pas af nadat de uitslag van de volle kaart bevestigd en getoond is."
+    },
+    {
+      "number": 14,
+      "type": "Uitleg",
+      "title": "Door naar ronde twee",
+      "text": "De eerste ronde zit erop! En als je nu denkt: “Milo, ik was bijna zover” — ik snap je. Gelukkig hebben we nog heel wat bingo voor ons. Leg kaart één opzij. Pak kaart twee. We beginnen met een leeg bord en zoeken weer eerst de vier hoekjes. Dit is een nieuwe kans, met nieuwe nummers om af te strepen. Mijn hoed blijft gewoon op zijn plek. Dat heb ik even met hem afgesproken.",
+      "notes": "Cue ná afgehandelde uitslag. Controleer dat kaart 2 bij het officiële bord hoort. De nummers uit ronde 1 tellen niet mee op kaart 2."
+    },
+    {
+      "number": 15,
+      "type": "Bingoronde",
+      "title": "Ronde 2",
+      "text": "",
+      "notes": "Overgangen A3–A4. Meldingen via B. Geef daarna een korte pauze."
+    },
+    {
+      "number": 16,
+      "type": "Uitleg",
+      "title": "Even rekken en strekken",
+      "text": "Poeh, mijn afstreeppootje kan wel een pauze gebruiken. Jullie misschien ook? Haal gerust wat water of beweeg even met je vingers. We gaan zo verder met kaart drie. Laat je boekje lekker openliggen. En als er hier in de tussentijd iemand op bezoek komt… dan probeer ik héél verbaasd te kijken.",
+      "notes": "Klaar voor pauzescherm. Ronde 2 en alle resultaten zijn afgehandeld."
+    },
+    {
+      "number": 17,
+      "type": "Pauze",
+      "title": "Even op adem komen",
+      "text": "",
+      "notes": "90 seconden, of rond af volgens de timer die in beeld staat. Geen ballen tijdens de pauze. Begin pas na de terugkeer met de volgende cue."
+    },
+    {
+      "number": 18,
+      "type": "Gastbezoek",
+      "title": "Professor Piko rekent mee",
+      "text": "Hoorde ik daar een tikje bij de sterrenpoort? Professor Piko! Wat gezellig. Je komt precies op tijd om mij te overhoren.",
+      "notes": "Gast weg vóór de volgende speluitleg. Als gast of stem niet klaarstaat: sla deze cue over. Gebruik de korte reservebrug C1 vóór cue 19. Geen belronde noodzakelijk.",
+      "dialogue": [
+        {
+          "speakerId": "piko",
+          "text": "Overhoren? Ik kom mijn bril zoeken. Ik heb overal gekeken. Als ik hem straks vind, zal ik meteen even goed zoeken.",
+          "animation": "think"
+        },
+        {
+          "speakerId": "milo",
+          "text": "Die bril staat op je neus, professor. Nu je weer alles ziet: weet je nog wat boven én onder betekent op een bingokaart?",
+          "animation": "wave"
+        },
+        {
+          "speakerId": "piko",
+          "text": "De bovenste rij helemaal vol én de onderste rij helemaal vol. Allebei. Het betekent dus niet dat jij bóven op je desk moet gaan staan, Milo.",
+          "animation": "think"
+        },
+        {
+          "speakerId": "milo",
+          "text": "Goed dat je het zegt. Ik had mijn stoel al bijna opzijgeschoven. Bij een volgende show mag jij hier ook eens presenteren. Deal?",
+          "animation": "wave"
+        },
+        {
+          "speakerId": "piko",
+          "text": "Deal! Dan neem ik mijn bril mee. Kijk eens aan: die heb ik alvast klaar. Veel plezier met kaart drie, allemaal!",
+          "animation": "think"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "type": "Uitleg",
+      "title": "Ronde drie, nog één keer die hoekjes",
+      "text": "Pak kaart drie maar vast. Dit is de laatste ronde waarin we met hoekjes beginnen. Daarna komen boven én onder en dan de volle kaart. Wijs even die vier hoekjes aan. Je hoeft ze nog niet af te strepen; daar wachten we natuurlijk op de nummers. Klaar? Dan gaat ons bord weer helemaal leeg voor ronde drie.",
+      "notes": "Laat het nieuwe bord en de juiste kaart zien; niet op de oude ronde doortrekken."
+    },
+    {
+      "number": 20,
+      "type": "Bingoronde",
+      "title": "Ronde 3",
+      "text": "",
+      "notes": "Overgangen A5–A6. Meldingen via B. Pas na de bevestigde volle kaart naar het tweede magiemoment."
+    },
+    {
+      "number": 21,
+      "type": "Verhaallijn",
+      "title": "De premièrester krijgt gezelschap",
+      "text": "Weten jullie die ster nog, van mijn hoed? Ze heeft de hele show boven het Sterrenplein gewacht. Nu dacht ik: vlak vóór onze finale verdient die ster wat gezelschap. Ik heb hier twee linten. Gewone linten, zou je zeggen. Maar ik heb ze net zien wiebelen. Volgens mij willen ze wegvliegen. Zullen we eens kijken wat ze kunnen?",
+      "notes": "Nog niet overschakelen naar de trekking. Neem één korte stilte voor de muziek van de truc."
+    },
+    {
+      "number": 22,
+      "type": "Magiemoment",
+      "title": "Van lint naar sterrenvlinder",
+      "text": "Linten, zijn jullie klaar om te vliegen? Daar gaan we. Drie, twee, één… Sterrenplein… straal!",
+      "notes": "Laat eerst de vlinder te zien zijn. Geen nummer- of prijsjingle door de onthulling heen. Sla de cue over als de truc niet is gerepeteerd; cue 23 blijft bruikbaar."
+    },
+    {
+      "number": 23,
+      "type": "Uitleg",
+      "title": "De finalekaart",
+      "text": "En nu… de finale! Pak de laatste kaart uit je boekje, de kaart waar “finale” bij staat. We beginnen opnieuw met lege handen en een leeg bord. Deze keer bestaat er maar één opdracht: de volle kaart. Alle vakjes met een nummer, en het midden is vrij. Geen losse hoekjes, geen aparte rijen. Heb je álles? Meld dan bingo in de app. Als jullie er klaar voor zijn, ben ik dat ook. Daar gaan we!",
+      "notes": "Toon patroon Volle kaart. Zet het finalebord pas in gang als de uitleg klaar is en de kaart zichtbaar is."
+    },
+    {
+      "number": 24,
+      "type": "Bingoronde",
+      "title": "Finaleronde",
+      "text": "",
+      "notes": "Bij de eerste melding gaat de trekking in wachtstand. Bewaak het volledige meldvenster. Kondig de prijs en winnaar pas aan na de officiële bevestiging. Laat de uitslag lang genoeg in beeld. Gebruik B7 na bevestiging; geen opgeschreven naam alvast afspelen."
+    },
+    {
+      "number": 25,
+      "type": "Finale",
+      "title": "Bedankt voor mijn eerste show",
+      "text": "Een groot applaus voor onze winnaars, en geef jezelf thuis ook een applausje. Of je nou één hoekje had of een helemaal volle kaart: jij was erbij op mijn allereerste show. Vanochtend was ik bang dat ik mijn welkomstzin zou vergeten. Nu weet ik vooral dat ik déze middag nooit vergeet. Bedankt voor het meespelen, ook namens al mijn vriendjes. Ik zie jullie heel graag terug op het Sterrenplein. Daaaag!",
+      "notes": "Heeft er nog geen geldige einduitslag plaatsgevonden? Gebruik B8 en sluit alleen af na besluit van regie. Laat de laatste zin en de zwaai uitspelen."
+    },
+    {
+      "number": 26,
+      "type": "Showelement",
+      "title": "Het grote slotapplaus",
+      "text": "",
+      "notes": "Kies “Het grote slotapplaus” (10 sec) direct na het dankwoord. Laat de outro afronden voordat je afsluit. Als jouw Finale-blok de show meteen sluit, zet dit slotapplaus vlak vóór cue 25 of speel het handmatig als outro. Test die volgorde in de repetitie."
+    }
+  ],
+  "manualCues": [
+    {
+      "code": "A1",
+      "title": "Ronde 1 · van hoekjes naar boven én onder",
+      "text": "Onze hoekjes zijn gevonden! Blijf op diezelfde kaart. Kijk nu naar de hele bovenste rij én de hele onderste rij. Samen zijn dat twee volle rijen. Laat staan wat je al hebt afgestreept. Die vakjes doen gewoon mee.",
+      "notes": ""
+    },
+    {
+      "code": "A2",
+      "title": "Ronde 1 · naar volle kaart",
+      "text": "Nu mag elk vakje een streepje krijgen. De bovenkant, de onderkant en álles ertussen. Het midden is vrij. Houd kaart één nog even vast, want nu gaan we voor de volle kaart!",
+      "notes": ""
+    },
+    {
+      "code": "A3",
+      "title": "Ronde 2 · van hoekjes naar boven én onder",
+      "text": "We gaan van buitenhoekjes naar buitenrijen. Leg je vinger bovenaan… en nu onderaan. Die twee hele rijen zoeken we. Niet de rijen in het midden. Je streepjes van ronde twee mogen lekker blijven staan.",
+      "notes": ""
+    },
+    {
+      "code": "A4",
+      "title": "Ronde 2 · naar volle kaart",
+      "text": "Tijd voor de volle kaart van ronde twee. Kijk eens rustig welke vakjes nog open zijn. Alle nummers tellen mee, behalve het vrije middenvak: dat had je vanaf het begin al cadeau.",
+      "notes": ""
+    },
+    {
+      "code": "A5",
+      "title": "Ronde 3 · van hoekjes naar boven én onder",
+      "text": "Professor Piko zou trots zijn: de hoekjes zijn klaar. Nu de bovenste én de onderste rij. En ja, ik blijf keurig achter mijn desk staan. De streepjes die er al staan, laat je staan.",
+      "notes": ""
+    },
+    {
+      "code": "A6",
+      "title": "Ronde 3 · naar volle kaart",
+      "text": "Nog even op kaart drie blijven. We gaan nu voor alles: alle vakjes met een getal, groot of klein, boven of onder. Als die allemaal zijn afgestreept, mag je bingo melden.",
+      "notes": ""
+    },
+    {
+      "code": "B1",
+      "title": "Venster open",
+      "text": "Er is bingo gemeld! We wachten even met de volgende bal. Heb jij óók het patroon dat nu in beeld staat? Meld het dan in de spelersapp zolang het meldvenster open is. Houd je boekje erbij. Ons spelteam kijkt intussen mee.",
+      "notes": ""
+    },
+    {
+      "code": "B2",
+      "title": "Controle duurt even",
+      "text": "De ballen staan nog even stil terwijl we de meldingen controleren. Laat je kaart liggen zoals die ligt. Zelfs mijn hoge hoed is nu heel even stil. Dat is voor hem best knap.",
+      "notes": ""
+    },
+    {
+      "code": "B3",
+      "title": "Geen geldige bingo voor deze opdracht",
+      "text": "Voor deze opdracht gaan we nog even verder. Geeft niks; die patronen lijken soms meer op elkaar dan je denkt. Laat al je streepjes staan. We spelen door met dezelfde kaart en dezelfde opdracht.",
+      "notes": ""
+    },
+    {
+      "code": "B4",
+      "title": "Bevestigde prijsstap, naam niet nodig",
+      "text": "Ja hoor, de bingo is bevestigd! Gefeliciteerd met deze prijs. Geef thuis maar een applausje. En iedereen die nog bezig is: blijf erbij, er komt zo weer een volgende opdracht aan!",
+      "notes": "Vervang de laatste zin na de volle kaart door “Leg deze kaart even opzij. Ik vertel zo welke kaart we hierna pakken.”"
+    },
+    {
+      "code": "B5",
+      "title": "Gelijke vroegste bingo",
+      "text": "Meer spelers waren op hetzelfde nummer als eerste klaar. Daarom volgt nu een loting tussen deze geldige bingo’s. Jullie hebben het allemaal goed gedaan. We laten de uitkomst zo zien.",
+      "notes": "Alleen als de server gelijkstand bevestigt. Als je een beslisspel inzet, kun je toevoegen: “Het beslisspel onthult wie de loting heeft gewonnen.” Nooit opnieuw loten voor spanning."
+    },
+    {
+      "code": "B6",
+      "title": "Optionele troostprijs",
+      "text": "Er is ook een troostprijs bevestigd. Gefeliciteerd! Kijk na de show in je eigen spelersapp voor de informatie die bij jouw uitslag hoort.",
+      "notes": "Alleen bij een echte, bevestigde troostprijs in deze show. Geen belofte doen over mail of verzending als dat nog niet geregeld is."
+    },
+    {
+      "code": "B7",
+      "title": "Officiële finaleprijs bekend",
+      "text": "En die finale-bingo is bevestigd! Een heel groot applaus voor onze finalewinnaar. En ook eentje voor iedereen die thuis bleef zoeken tot het laatste vakje. Jullie hebben die laatste ronde spannend gemaakt.",
+      "notes": "Gebruik een voornaam alleen als die is vrijgegeven voor de uitzending. Laat de officiële uitslag in beeld staan."
+    },
+    {
+      "code": "B8",
+      "title": "Uitslag of techniek vraagt langer",
+      "text": "We nemen even de tijd om dit goed te controleren. Laat je kaart en streepjes staan. Als we weer verder kunnen, vertel ik eerst op welke kaart en voor welk patroon we spelen.",
+      "notes": "Toon zo nodig het pauzebeeld. Geen onzekere uitslag aankondigen, niet resetten, niet doortrekken. Als doorspelen onmogelijk blijkt, vertel rustig dat de organisatie de status via de afgesproken route meldt."
+    },
+    {
+      "code": "C1",
+      "title": "Piko blijft vandaag achter de schermen",
+      "text": "Ik dacht even dat er iemand aankwam. Het was geloof ik mijn eigen staart. Nou ja, mijn vrienden komen graag een andere keer langs. Vandaag help ik jullie nog even: bij boven én onder heb je straks echt beide buitenste rijen nodig.",
+      "notes": ""
+    },
+    {
+      "code": "C2",
+      "title": "Voorbereid belmoment na een afgehandelde ronde",
+      "text": "Wat gezellig, we hebben iemand die even “hallo” wil zeggen vanaf de bank thuis. Leg je kaart zolang rustig neer. De getallen wachten; je mist dus geen nieuwe bal terwijl we praten.",
+      "notes": "Gebruik dit blok alleen als het gesprek getest en vooraf afgestemd is, met spelserver geblokkeerd. Alleen een goedgekeurde voornaam. Vraag niets privés, beloof geen prijs, geef het kind tijd en laat “nee” gewoon goed zijn."
+    },
+    {
+      "code": "C3",
+      "title": "Vraag aan gast thuis",
+      "text": "Wat leuk dat je er bent! Wat vond je leuker om te zien: de hoed die ging zweven of het moment dat de ster verscheen?",
+      "notes": "Eén vraag is genoeg. Nodig uit, wacht en rond vriendelijk af."
+    },
+    {
+      "code": "C4",
+      "title": "Belmoment afronden",
+      "text": "Dank je wel dat je even langskwam. Zwaai maar lekker mee naar iedereen thuis! We wachten tot je weer bij de uitzending bent. Daarna gaan we samen verder met bingo.",
+      "notes": "Hervat pas zodra terugkeer is bevestigd en de regie de trekkingsblokkade bewust vrijgeeft."
+    },
+    {
+      "code": "C5",
+      "title": "Geen gesprek mogelijk",
+      "text": "We laten het belmoment vandaag even zitten. Dan kan iedereen lekker rustig thuis blijven kijken. Pak zo de juiste kaart erbij; ik zeg zo meteen welke we nodig hebben.",
+      "notes": ""
+    }
+  ]
+}

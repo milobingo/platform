@@ -10,11 +10,13 @@ De server maakt voor de opgeslagen show één manifest uit dezelfde teksthelpers
 - De vaste opening, bingocontrole, afwijzing, winnaar, pauze en afsluiting.
 - Ronde- en prijsintroducties uit de werkelijke patronen en prijzen van het draaiboek.
 - De teksten van draaiboekblokken en alle spreekbeurten uit gastdialogen.
+- Bij een uitleg met opeenvolgende patroonbeelden wordt iedere stap afzonderlijk voorbereid; de gecombineerde bewerktekst wordt niet dubbel uitgesproken.
+- De teksten van alle handmatige spreekkaarten, met hun eigen spreker. Privé-regienotities en voorwaarden worden nooit als spraak voorbereid.
 - De vaste introducties van Milo’s goocheltrucs, korte grapjes en de reactie op nummer negen.
 
 Gelijke fragmenten worden samengevoegd. De opslagidentiteit bevat onder meer eigenaar, spraakbeleid, stemmodel, personageprofiel, profielversie, snelheid en exacte tekst. Een passend bestaand fragment wordt opnieuw gebruikt; een gewijzigd personage of script krijgt een nieuwe identiteit.
 
-Na wijzigingen begint de voorbereiding automatisch. Twee workers laden fragmenten; ontbrekende fragmenten worden met een onderlinge startpauze gegenereerd. De regie toont voortgang en bewaart geslaagde fragmenten bij een fout. Starten en hervatten wachten op volledige voorbereiding. De browser bewaart audiobytes en decodeert alleen het fragment dat aan de beurt is. Lange teksten worden in stukken van maximaal 400 tekens verwerkt; de invoerlimiet blijft 10.000 tekens.
+De regisseur kiest zelf **Audio voorbereiden** nadat het draaiboek klaar is. Laden, selecteren, bewerken, starten en hervatten genereren geen vaste audio. Na wijzigingen verschijnt **Gewijzigde audio voorbereiden**; eerder gemaakte, passende fragmenten worden hergebruikt. Ook na herladen vraagt de regie deze bewuste actie; serverfragmenten kunnen dan zonder nieuwe generatie worden ingeladen. Twee workers laden fragmenten; ontbrekende fragmenten worden met een onderlinge startpauze gegenereerd. De regie toont voortgang en bewaart geslaagde fragmenten bij een fout. Starten en hervatten controleren de voorbereiding: ze wachten op een al gekozen actie of tonen de knop die nog nodig is. De browser bewaart audiobytes en decodeert alleen het fragment dat aan de beurt is. Lange teksten worden in stukken van maximaal 400 tekens verwerkt; de invoerlimiet blijft 10.000 tekens.
 
 Vaste Milo-spraak gebruikt tijdens de show uitsluitend voorbereide fragmenten. Een ontbrekend verplicht fragment geeft een herstelbare fout en pauze. Vrije regietekst, kijkersvragen en goedgekeurde regiereacties kunnen wel nieuwe spraak vereisen. Deze handmatige spraak houdt de trekking tegen.
 

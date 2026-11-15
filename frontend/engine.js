@@ -20,6 +20,9 @@ import {DirectorWhisperRuntime} from './director-whisper-runtime.js';
 import {PreparationAutosave,preparationFields,preparationFingerprint,drawClockStatus} from './show-preparation.js';
 import {isStandardMiloGame,standardMiloDiffers,canLoadStandardMilo,loadStandardMiloPlan,STANDARD_MILO_PROFILE,STANDARD_DRAW_LEAD_MS} from '../server/standard-show.js';
 import {PreparedShowAudio} from './prepared-show-audio.js';
+import {premierePlan,PREMIERE_TITLE,PREMIERE_DATE} from '../server/premiere-plan.js';
+import {manualCueAvailability,manualCuePlaybackHeld} from '../server/manual-cues.js';
+import {addRound,roundBlocks,roundEditAccess} from './round-editor-model.js';
 import {MILO_BANTER,NUMBER_NINE_AUDIENCE,FIXED_SHOW_SPEECH} from '../public/bingo-speech.js';
 
 export const cameraMap={establish:'establish',front:'host',desk:'host',portrait:'portrait',machine:'board',led:'board',tour:'dolly',audience:'wide',entrance:'guest',orbit:'orbit',crane:'crane',duo:'duo',magic:'magic',wide:'wide'};
@@ -80,7 +83,7 @@ export class StudioEngine{
  setMix(key,value){const levels={...this.bridge.mixer,[key]:Number(value)};getShowRuntime(this).mix(levels);this.emit();}
 
  audioPreparationContext(){return {enabled:!this.disposed&&!this.isOutput&&!this.demo&&this.production==='milo'&&this.settingsReady&&!!this.apiStatus?.configured&&!this.game.cancelledAt&&this.game.status!=='finished',gameId:this.game.id,identity:JSON.stringify([this.game.id,this.game.preparationRevision||0,this.game.plan,this.characterRevision,this.characters.map(c=>[c.id,c.revision,c.speed,c.voice,c.customVoiceId])])};}
- prepareShowAudio(){return this.preparedAudio?.prepare({retry:true});}
+ async prepareShowAudio(){const id=this.game.id;await this.flushPreparation();if(this.game.id!==id)throw Error('De gekozen show is gewijzigd. Open de voorbereiding van de juiste show.');const prepared=await this.preparedAudio?.prepare({retry:true});this.error='';this.emit();return prepared;}
  setBackgroundMusic(value){this.backgroundMusic=!!value;localStorage.setItem('mf-background-music',value?'on':'off');this.audio?.enableBackground?.(value&&this.game.status==='running'&&!this.game.cancelledAt);this.emit();this.bridge?.sendLocal();}
  updateBackgroundAudio(now){
   const stage=this.stage(),show=this.gameAudioClock.read(stage.show,now),outputReady=!this.isOutput||this.bridge?.active&&this.bridge?.audioReady&&!this.bridge?.liveCallActive&&!stage.outputWaiting;
@@ -214,9 +217,13 @@ export class StudioEngine{
  async post(action,body={}){const id=this.game.id,r=await bingoApi('/games/'+id+(action?'/'+action:''),{method:'POST',body:{...body,regieId:this.clientId}});if(r.game&&id===this.game.id)this.acceptGame(r.game);return r;}
  async createShow(title,date,brand=this.production,source=null){this.assertGameSwitchAvailable();await this.flushPreparation();const prepared=source?preparation({...source,title,date,brandId:brand}):null;return this.task(async()=>{if(await this.stop()===false)throw Error('De huidige show kon niet veilig worden gepauzeerd.');const roundCount=prepared?.roundCount||4,r=await bingoApi('/games',{method:'POST',body:{title,date,timeZone:'Europe/Amsterdam',brandId:brand,roundCount,...(prepared||{})}});const game=r.game;this.acceptGame(game,true);this.demo=false;this.production=brand;this.dirty=false;this.games=[{...game,bookCount:0,roundCount},...this.games];this.hostId=game.plan.leadId||(brand==='vlampie'?'vlampie':'milo');this.speakerId=this.hostId;this.syncGame();},'Je nieuwe show is opgeslagen.');}
  async savePremiere(){return this.createShow(this.game.title,this.game.date,this.production,{plan:structuredClone(this.game.plan),settings:structuredClone(this.game.settings)});}
+ async createPremiereShow(){
+  if(this.production!=='milo'||this.game.status==='running')throw Error('Open eerst een Milo-concept om een nieuw première-draaiboek te maken.');
+  return this.createShow(PREMIERE_TITLE,PREMIERE_DATE,'milo',{plan:premierePlan(),settings:{rulesProfile:STANDARD_MILO_PROFILE,mode:'auto'}});
+ }
  async savePlan(options={}){this.preparationSaveOptions=options;try{await this.flushPreparation();}finally{this.preparationSaveOptions=null;}}
- editPlan(mutator){if(this.starting)throw Error('De show wordt gestart. Wacht tot de start is bevestigd voordat je verder bewerkt.');if(this.game.status!=='draft'&&!this.demo)throw Error('De show is gestart; gebruik de live regie.');if(this.runner.active)throw Error('Stop eerst de repetitie voordat je het draaiboek bewerkt.');this.game=structuredClone(this.game);mutator(this.game.plan);this.dirty=true;this.emit();}
- addBlock(type){if(type==='show'&&this.production!=='milo')throw Error('Deze showelementen horen bij Milo & Friends.');this.editPlan(plan=>{const b=createBlock(type,{...plan,leadId:this.hostId},this.production);b.speakerId=type==='magic'?'milo':this.hostId;if(type==='magic')b.magicId='star-hat';plan.blocks.splice(Math.max(0,plan.blocks.length-1),0,b);this.selectedCue=plan.blocks.indexOf(b);});}
+ editPlan(mutator){if(this.starting)throw Error('De show wordt gestart. Wacht tot de start is bevestigd voordat je verder bewerkt.');if(this.game.status!=='draft'&&!this.demo)throw Error('De show is gestart; gebruik de live regie.');if(this.runner.active)throw Error('Stop eerst de repetitie voordat je het draaiboek bewerkt.');const next=structuredClone(this.game),access=roundEditAccess(this.game,{demo:this.demo});mutator(next.plan);if(access.structureLocked&&JSON.stringify(roundBlocks(this.game.plan).map(b=>[b.id,b.title]))!==JSON.stringify(roundBlocks(next.plan).map(b=>[b.id,b.title])))throw Error(access.message);if(access.goalsLocked&&JSON.stringify([roundBlocks(this.game.plan).map(b=>[b.id,b.goals,b.interval,b.newBoard]),this.game.plan.patterns,this.game.plan.prizes])!==JSON.stringify([roundBlocks(next.plan).map(b=>[b.id,b.goals,b.interval,b.newBoard]),next.plan.patterns,next.plan.prizes]))throw Error(access.message);this.game=next;this.dirty=true;this.emit();}
+ addBlock(type){if(type==='show'&&this.production!=='milo')throw Error('Deze showelementen horen bij Milo & Friends.');this.editPlan(plan=>{if(type==='round'){const round=addRound(plan,{production:this.production,speakerId:this.hostId});this.selectedCue=plan.blocks.indexOf(round);return;}const b=createBlock(type,{...plan,leadId:this.hostId},this.production);b.speakerId=type==='magic'?'milo':this.hostId;if(type==='magic')b.magicId='star-hat';plan.blocks.splice(Math.max(0,plan.blocks.length-1),0,b);this.selectedCue=plan.blocks.indexOf(b);});}
  async generate(count,mode='color'){return this.task(async()=>{await this.flushPreparation();if(this.demo){generateBooks(this.game,count,crypto.randomUUID(),Date.now(),{mode});return;}await this.post('generate',{count,printMode:mode});},this.demo?'Unieke oefenboekjes gegenereerd.':'Unieke boekjes en printbatch aangemaakt.');}
  async saveCharacter(id,settings){if(!ALL_CHARACTER_IDS.includes(id))throw Error('Open eerst een geldig personage via Personages.');return this.task(async()=>{const r=await jsonFetch('/api/characters/'+id,{settings,revision:this.characterRevision},'PUT',{'X-Milo-Characters':'1'});this.characters=r.characters;this.characterRevision=r.revision;this.settingsReady=true;},'Personage-instellingen opgeslagen.');}
  async designVoice(id){if(!ALL_CHARACTER_IDS.includes(id))throw Error('Open eerst een geldig personage via Personages.');return this.task(async()=>{
@@ -309,6 +316,29 @@ export class StudioEngine{
    const playPart=()=>{if(token!==this.speechToken||this.game.cancelledAt)return;const u=new SpeechSynthesisUtterance(parts[index]);u.lang='nl-NL';u.rate=c.speed;u.pitch=['stella','pip','bella'].includes(id)?1.12:['bruno','lola','piko'].includes(id)?.88:1;u.voice=globalThis.speechSynthesis.getVoices().find(v=>v.lang.startsWith('nl'))||null;
     u.onpause=()=>{if(token===this.speechToken){this.voicePhase='paused';this.emit();}};u.onresume=()=>{if(token===this.speechToken){this.voicePhase='playing';this.emit();}};u.onstart=()=>{if(token!==this.speechToken)return;this.caption=parts[index];this.voicePhase='playing';this.audio.duck(true);this.emit();};u.onend=()=>{if(token!==this.speechToken)return;if(++index<parts.length)playPart();else this.speechEnded();};u.onerror=e=>{if(token!==this.speechToken)return;if(e.error!=='canceled'&&e.error!=='interrupted')this.speechFailed('De oefenstem kon niet starten. Hervat probeert dezelfde uitspraak opnieuw.');};globalThis.speechSynthesis.speak(u);};playPart();
   }
+ }
+ async playManualCue(id){
+  if(this.manualCueRequest)return this.manualCueRequest;
+  const gameId=this.game.id,stopRevision=this.stopRevision||0;
+  const current=()=>{if(this.disposed||this.game.id!==gameId||this.game.cancelledAt||this.game.status==='finished'||(this.stopRevision||0)!==stopRevision)throw Error('Deze spreekkaart hoort niet meer bij de actieve show.');};
+  const operation=(async()=>{
+   await this.flushPreparation();current();
+   if(!this.demo){const fresh=await bingoApi('/games/'+gameId);current();this.acceptGame(fresh.game);this.syncGame();}
+   current();const cue=this.game.plan.manualCues?.find(item=>item.id===id),availability=manualCueAvailability(cue,this.game,this.serverNow());
+   if(!availability.allowed)throw Error(availability.reason);
+   if(!this.demo&&this.game.status!=='running')throw Error('Start eerst de show om deze spreekkaart in de uitzending af te spelen.');
+   if(this.voicePhase!=='idle'||this.director.flow?.kind==='draw'||this.showCues?.holding||this.showRuntime?.holding)throw Error('Wacht tot de huidige uitspraak, trekking of animatie klaar is.');
+   if(this.liveCalls?.onAir)throw Error('De presentator voert nu een gesprek. Rond dit eerst af.');
+   if(!manualCuePlaybackHeld(this.game))throw Error('Pauzeer eerst de show. De spreekkaart geeft de trekking niet automatisch vrij.');
+   if(!this.demo)await this.preparedAudio.ensure();current();
+   const checked=manualCueAvailability(cue,this.game,this.serverNow());if(!checked.allowed)throw Error(checked.reason);
+   await this.audio.unlock();current();
+   const finalAvailability=manualCueAvailability(cue,this.game,this.serverNow());if(!finalAvailability.allowed)throw Error(finalAvailability.reason);
+   if(!manualCuePlaybackHeld(this.game)||this.voicePhase!=='idle'||this.director.flow?.kind==='draw'||this.showCues?.holding||this.showRuntime?.holding||this.liveCalls?.onAir)throw Error('De showstand is gewijzigd. Pauzeer en controleer deze spreekkaart opnieuw.');
+   this.speak(cue.text,cue.speakerId||this.game.plan.leadId||this.hostId,this.voiceMode,false,{preparedOnly:!this.demo});
+   return true;
+  })();this.manualCueRequest=operation;
+  try{return await operation;}finally{if(this.manualCueRequest===operation)this.manualCueRequest=null;}
  }
  magicMoment(id){return this.showCues.magic(id);}
  async demoBingo(){if(!this.demo)throw Error('Echte spelers melden via de familie-app.');const b=this.game.books.find(b=>b.accountId);const f=this.demoFamily??=familyDefault();f.profiles=[{name:b.name}];beginBingo(this.game,f,b.accountId,crypto.randomUUID());claimBook(this.game,f,b.accountId,b.id);this.director.externalHold=true;this.notify('Oefenmelding ontvangen; de serverregels bepalen of de kaart compleet is.');}

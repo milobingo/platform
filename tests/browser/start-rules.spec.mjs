@@ -99,6 +99,8 @@ for(const width of [390,1366]){
    h.state.failSaves=false;await main.getByRole('button',{name:'Opnieuw proberen',exact:true}).click();await expect(main.locator('[data-save-status="saved"]')).toContainText('Opgeslagen');await expect(title).toHaveValue(edited);expect((await h.read()).plan.blocks[0].title).toBe(edited);
    const finalTitle='Laatste wijziging vóór start '+width;await title.fill(finalTitle);await main.getByRole('tab',{name:'Startcheck',exact:true}).click();
    const start=main.getByRole('button',{name:'Start show',exact:true});await expect(start).toBeEnabled();await expect(main.locator('[data-rules-state="readonly"]')).toBeVisible();
+   await main.locator('section[aria-label="Audio voorbereiden"]').getByRole('button',{name:'Audio voorbereiden',exact:true}).click();
+   await expect.poll(()=>evidence.audioTransport.some(request=>request.path==='/api/openai/show-audio')).toBe(true);
    await start.dblclick({force:true});
    // Start waits for the whole cold-tab audio bank. Its 118 cache responses
    // can exceed the ordinary 5s navigation budget on the two-core CI runner.

@@ -35,7 +35,7 @@ export function drawShowGraphics(c,state,props={}){
  }else if(scene==='round'){
   dim(c,.22);
   if(Array.isArray(s.patternCells)){
-   panel(c,760,290,1050,490);tag(c,`STAP ${(s.goalIndex||0)+1} VAN ${s.roundPatterns?.length||1} · WE SPELEN VOOR`,1285,344,'center');text(c,s.round,1285,414,70,'#ffe1a1','center',930);patternGrid(c,s,822,471,215);text(c,s.pattern,1410,529,48,'#fff8e8','center',675);text(c,s.patternVariant==='doubleRows'?'Twee complete horizontale rijen':s.patternVariant==='rows'?'Een complete horizontale rij':'Alle gemarkeerde vakjes',1410,596,29,'#bdcde6','center',650);text(c,s.prize,1410,680,31,'#edd0a0','center',665);
+   panel(c,760,290,1050,490);tag(c,`STAP ${(s.goalIndex||0)+1} VAN ${s.roundPatterns?.length||1} · ${s.planKind==='explanation'?'UITLEG VAN HET PATROON':'WE SPELEN VOOR'}`,1285,344,'center');text(c,s.round,1285,414,70,'#ffe1a1','center',930);patternGrid(c,s,822,471,215);text(c,s.pattern,1410,529,48,'#fff8e8','center',675);text(c,s.patternVariant==='doubleRows'?'Twee complete horizontale rijen':s.patternVariant==='rows'?'Een complete horizontale rij':'Alle gemarkeerde vakjes',1410,596,29,'#bdcde6','center',650);text(c,s.prize,1410,680,31,'#edd0a0','center',665);
   }else{panel(c,760,355,1050,335);tag(c,'WE SPELEN VOOR',1285,411,'center');text(c,s.round,1285,482,86,'#ffe1a1','center',930);text(c,s.pattern,1285,592,46,'#fff8e8','center',930);}
  }else if(scene==='prize'){
   dim(c,.24);panel(c,775,200,1040,675);tag(c,'DE PRIJS VAN DEZE RONDE',1295,253,'center');

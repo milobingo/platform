@@ -18,9 +18,11 @@ export function showAudioScripts(game){
   if(block.type==='round'){
    roundSpeakers.add(speaker);
    for(const goal of block.goals){const pattern=plan.patterns.find(item=>item.id===goal.patternId),prize=plan.prizes.find(item=>item.id===goal.prizeId);if(pattern)add(roundSpeech(block.title,pattern.title),speaker,'round',goal.id);if(prize)add(prizeSpeech(prize.title),speaker,'prize',goal.id);}
-  }else if(block.type!=='show')add(block.text,speaker,'plan',block.id);
+  }else if(block.type==='explanation'&&block.explanationSteps?.length){for(const [index,step]of block.explanationSteps.entries())add(step.text,speaker,'explanation',block.id+'-'+index);}
+  else if(block.type!=='show')add(block.text,speaker,'plan',block.id);
   if(block.type==='guest')for(const [index,turn] of (block.dialogue||[]).entries())add(turn.text,turn.speakerId||speaker,'dialogue',block.id+'-'+index);
  }
+ for(const cue of plan.manualCues||[])add(cue.text,cue.speakerId||lead,'manual',cue.id);
  for(const speaker of roundSpeakers){for(const item of fixedSpeechFor(brand))add(item.text,speaker,item.id.startsWith('ball-')?'number':'fixed',item.id);if(brand==='milo'){for(const cue of MILO_BANTER)add(cue.text,speaker,'banter',cue.id);add(NUMBER_NINE_AUDIENCE.text,speaker,'banter',NUMBER_NINE_AUDIENCE.id);}}
  if(brand==='milo')for(const cue of MAGIC_CUES)add(cue.intro,'milo','magic',cue.id);
  return scripts;

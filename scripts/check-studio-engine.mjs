@@ -50,6 +50,7 @@ async function rig({live=false,goal=0}={}){
   else throw Error('Unexpected test action '+action);
   server.revision++;return Response.json({...result,...(action==='reserve'?{}:{game:hostCopy(server)})});
  };
+ if(live)await e.prepareShowAudio();
  const tick=async(seconds=.5)=>{e.director.tick(seconds,{voiceBusy:e.voicePhase!=='idle'});e.runner.tick(seconds);await flush();};
  const until=async predicate=>{for(let i=0;i<250&&!predicate();i++)await tick();assert(predicate(),'show did not reach expected phase');};
  return {e,server,calls,round,tick,until};
@@ -70,6 +71,71 @@ test('starting a real draft requires configured AI and never silently falls back
  e.voiceMode='browser';await assert.rejects(()=>e.start(),/browserstem/);assert.equal(calls.some(call=>call.action==='start'),false);
  e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
  }finally{e.dispose();}
+});
+test('starting and resuming never generate fixed audio until the director explicitly prepares it',async()=>{
+ const {e,server,calls}=await rig({live:true});try{
+  const original=router;let manifests=0;router=(url,options)=>{if(url.endsWith('/show-audio'))manifests++;return original(url,options);};
+  e.preparedAudio.reset(null);e.emit();server.status='draft';e.game=hostCopy(server);
+  await assert.rejects(e.start(),/klik op ‘Audio voorbereiden’/);assert.equal(manifests,0);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
+  server.status='running';server.state.paused=true;e.game=hostCopy(server);assert.equal(await e.pause(false),false);assert.equal(manifests,0);assert.equal(calls.some(call=>call.action==='pause'&&call.body.paused===false),false);assert.equal(server.state.paused,true);
+  await e.prepareShowAudio();assert.equal(manifests,1);assert.equal(e.preparedAudio.state.complete,true);assert.equal(e.error,'');assert.equal(await e.pause(false),true);assert.equal(manifests,1);assert.equal(server.state.paused,false);
+  e.characterRevision++;e.emit();await assert.rejects(e.preparedAudio.ensure(),/Gewijzigde audio voorbereiden/);assert.equal(manifests,1);
+ }finally{e.dispose();}
+});
+test('a manual speaking card checks fresh server state and uses prepared audio without unpausing or mutating the show',async()=>{
+ const {e,server,calls}=await rig({live:true});try{
+  const cue={id:'manual-ready',title:'Een gezellige reservetekst',condition:'always',text:'Wat gezellig dat jullie er zijn!',speakerId:'milo'};
+  server.plan.manualCues=[cue];server.state.paused=true;e.game=hostCopy(server);e.emit();await e.prepareShowAudio();
+  // The local state is intentionally older than the server: the fresh GET,
+  // rather than a stale UI decision, must determine whether this cue is safe.
+  e.game.state.paused=false;const spoken=[],requests=[],original=router;router=(url,options)=>{requests.push({url,method:options.method||'GET'});return original(url,options);};e.speak=(...args)=>spoken.push(args);
+  const before=JSON.stringify(server);assert.equal(await e.playManualCue(cue.id),true);
+  assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);assert.deepEqual(spoken,[[cue.text,'milo','ai',false,{preparedOnly:true}]]);assert.equal(JSON.stringify(server),before);assert.equal(e.game.state.paused,true);assert.equal(calls.some(call=>['start','activate','pause'].includes(call.action)),false);
+ }finally{e.dispose();}
+});
+test('an unprepared manual speaking card requests no audio and keeps the show paused',async()=>{
+ const {e,server}=await rig({live:true});try{
+  server.plan.manualCues=[{id:'manual-not-ready',condition:'always',text:'Deze tekst is nog niet voorbereid.',speakerId:'milo'}];server.state.paused=true;e.game=hostCopy(server);e.preparedAudio.reset(null);e.emit();
+  const requests=[],original=router;router=(url,options)=>{requests.push({url,method:options.method||'GET'});return original(url,options);};e.speak=()=>assert.fail('An unprepared cue must stay silent');
+  await assert.rejects(e.playManualCue('manual-not-ready'),/Audio voorbereiden/);assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);assert.equal(server.state.paused,true);
+ }finally{e.dispose();}
+});
+test('an open official bingo window permits its prepared announcement while paused is false and preserves the whole hold',async()=>{
+ const {e,server}=await rig({live:true});try{
+  const cue={id:'manual-open-window',condition:'window-open',text:'De ballen wachten even. Meld je bingo in de app.',speakerId:'milo'};server.plan.manualCues=[cue];server.state.paused=false;server.state.phase='window';server.state.window={id:'manual-official-window',status:'open',endsAt:Date.now()+60000,epoch:server.state.epoch,frozenAt:server.state.drawn.length,claims:[]};e.game=hostCopy(server);e.emit();await e.prepareShowAudio();
+  const spoken=[],requests=[],original=router;router=(url,options)=>{requests.push({url,method:options.method||'GET'});return original(url,options);};e.speak=(...args)=>spoken.push(args);const before=JSON.stringify(server);
+  assert.equal(await e.playManualCue(cue.id),true);assert.deepEqual(spoken,[[cue.text,'milo','ai',false,{preparedOnly:true}]]);assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);assert.equal(JSON.stringify(server),before);assert.equal(e.game.state.paused,false);assert.deepEqual(e.game.state.window,server.state.window);assert.equal(e.game.state.phase,'window');
+ }finally{e.dispose();}
+});
+test('manual speaking cards reject unpaused, active draw, cancelled and expired server conditions before speech',async t=>{
+ for(const reason of ['unpaused','active-draw','voice-busy','cancelled','expired-window'])await t.test(reason,async()=>{
+  const {e,server}=await rig({live:true});try{
+   const cue={id:'manual-guard',condition:reason==='expired-window'?'window-open':'always',text:'Alleen op het juiste moment.',speakerId:'milo'};server.plan.manualCues=[cue];server.state.paused=true;e.game=hostCopy(server);e.emit();await e.prepareShowAudio();
+   if(reason==='unpaused')server.state.paused=false;
+   if(reason==='active-draw')e.director.flow={kind:'draw',index:0,steps:[],age:0};
+   if(reason==='voice-busy')e.voicePhase='playing';
+   if(reason==='cancelled'){server.status='finished';server.cancelledAt=Date.now();}
+   if(reason==='expired-window')server.state.window={id:'expired-manual-window',status:'open',endsAt:Date.now()-1,epoch:server.state.epoch};
+   e.speak=()=>assert.fail('An unavailable manual card must stay silent');const before=JSON.stringify(server),requests=[],original=router;router=(url,options)=>{requests.push({url,method:options.method||'GET'});return original(url,options);};
+   await assert.rejects(e.playManualCue(cue.id));assert.equal(JSON.stringify(server),before);assert.deepEqual(requests,[{url:'/api/bingo/games/'+server.id,method:'GET'}]);
+  }finally{e.dispose();}
+ });
+});
+test('manual cue conditions are checked again after audio activation; late expiry, unpause and draw stay silent',async t=>{
+ for(const change of ['expiry','unpause','draw'])await t.test(change,async()=>{
+  const {e,server}=await rig({live:true});try{
+   const cue={id:'manual-late',condition:change==='expiry'?'window-open':'always',text:'Deze tekst mag alleen nu.',speakerId:'milo'};server.plan.manualCues=[cue];server.state.paused=true;if(change==='expiry')server.state.window={id:'late-manual-window',status:'open',endsAt:Date.now()+60000,epoch:server.state.epoch};e.game=hostCopy(server);e.emit();await e.prepareShowAudio();
+   let release,activated;const activation=new Promise(resolve=>{activated=resolve;});e.audio={...noAudio,unlock:()=>{activated();return new Promise(resolve=>{release=resolve;});}};e.speak=()=>assert.fail('A stale condition must be rechecked after audio unlock');
+   const pending=e.playManualCue(cue.id);await activation;if(change==='expiry')e.game.state.window.endsAt=Date.now()-1;else if(change==='unpause')e.game.state.paused=false;else e.director.flow={kind:'draw',index:0,steps:[],age:0};release();await assert.rejects(pending);
+  }finally{e.dispose();}
+ });
+});
+test('the premiere attachment creates a separate saved draft and preserves every existing game and book',async()=>{
+ const {e,server}=await rig(),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),requests=[];try{
+  server.status='draft';server.title='Bestaand draaiboek blijft bewaard';generateBooks(server,1,'premiere-existing-book');await store.create(server);const before=structuredClone((await store.game(server.id)).data);e.game=hostCopy(before);e.demo=true;e.production='milo';e.dirty=false;
+  router=async(url,options)=>{requests.push({url,method:options.method||'GET'});return handleBingo(new Request(location.origin+url,{...options,headers:{...options.headers,Origin:location.origin}}),{DB:db,AUTH_IDENTITY:{user:'test',email:'host@example.test',admin:true}});};
+  await e.createPremiereShow();const saved=(await store.game(e.game.id)).data;assert.notEqual(saved.id,before.id);assert.equal(saved.status,'draft');assert.equal(saved.plan.blocks.length,26);assert.equal(saved.plan.manualCues.length,20);assert.equal(saved.plan.blocks.filter(block=>block.type==='round').length,4);assert.equal(saved.plan.blocks.filter(block=>block.type==='round').reduce((sum,round)=>sum+round.goals.length,0),10);assert.equal(saved.books.length,0);assert.deepEqual((await store.game(before.id)).data,before);assert.equal(e.demo,false);assert.deepEqual(requests,[{url:'/api/bingo/games',method:'POST'}]);assert.equal(e.preparedAudio.state.phase,'idle');assert.equal(e.preparedAudio.state.complete,false);
+ }finally{e.dispose();await db.close();}
 });
 test('an explicit successful retry clears the failed-start error while preserving input and never starts the show',async()=>{
  const {e}=await rig({live:true}),db=createSqliteDatabase(':memory:'),store=new BingoStore(db),requests=[];

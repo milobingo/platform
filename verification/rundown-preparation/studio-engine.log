@@ -1,0 +1,68 @@
+✔ stage restores cohost and all saved settings, mouth follows the active audio owner, magic uses renderer milliseconds (58.466643ms)
+✔ starting a real draft requires configured AI and never silently falls back to a browser voice (24.777768ms)
+✔ starting and resuming never generate fixed audio until the director explicitly prepares it (24.398744ms)
+✔ a manual speaking card checks fresh server state and uses prepared audio without unpausing or mutating the show (17.655715ms)
+✔ an unprepared manual speaking card requests no audio and keeps the show paused (20.716931ms)
+✔ an open official bingo window permits its prepared announcement while paused is false and preserves the whole hold (12.858037ms)
+▶ manual speaking cards reject unpaused, active draw, cancelled and expired server conditions before speech
+  ✔ unpaused (19.860106ms)
+  ✔ active-draw (13.179674ms)
+  ✔ voice-busy (16.005332ms)
+  ✔ cancelled (20.159279ms)
+  ✔ expired-window (17.123409ms)
+✔ manual speaking cards reject unpaused, active draw, cancelled and expired server conditions before speech (88.224752ms)
+▶ manual cue conditions are checked again after audio activation; late expiry, unpause and draw stay silent
+  ✔ expiry (22.470907ms)
+  ✔ unpause (11.002811ms)
+  ✔ draw (10.697349ms)
+✔ manual cue conditions are checked again after audio activation; late expiry, unpause and draw stay silent (45.158233ms)
+✔ the premiere attachment creates a separate saved draft and preserves every existing game and book (29.980275ms)
+✔ an explicit successful retry clears the failed-start error while preserving input and never starts the show (22.467501ms)
+▶ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly
+  ✔ bingo-window (28.598923ms)
+  ✔ call-hold (21.461119ms)
+✔ a second tab keeps its unsaved input when the show starts elsewhere and adopts the live state only explicitly (50.762595ms)
+✔ live recovery restores the current goal and keeps the server and local director paused until explicit resume (13.693995ms)
+✔ real reserve and commit stay authoritative; pausing the spin cannot commit or duplicate a number (23.920853ms)
+▶ a delayed official reveal rechecks cancellation and every local hold before sending a commit
+  ✔ pause (41.811013ms)
+  ✔ cancel (40.548225ms)
+  ✔ minigame (42.835849ms)
+  ✔ show-cue (49.462679ms)
+  ✔ window (40.827532ms)
+✔ a delayed official reveal rechecks cancellation and every local hold before sending a commit (216.925698ms)
+✔ acknowledging a claim cancels the interrupted draw and advances only after winner speech ends (14.382378ms)
+✔ a failed browser phrase is retried on resume and stale callbacks cannot end its replacement (10.608606ms)
+✔ cast cue timing pauses, ends cleanly, preserves cohost, and Vlampie keeps native cameras (17.686828ms)
+✔ an old polling response cannot rewind a newer commit (11.065179ms)
+▶ a confirmed forced cancellation defeats late start and recovery acknowledgements
+  ✔ start (12.908498ms)
+  ✔ heartbeat (12.146143ms)
+✔ a confirmed forced cancellation defeats late start and recovery acknowledgements (25.709326ms)
+✔ call responses preserve unsaved preparation while accepting cancellation and rejecting stale state (19.109035ms)
+✔ forced cancellation binds the authoritative shown title while retaining an unsaved local title (12.05855ms)
+✔ cancellation during audio activation cannot reopen a manual show scene (10.867905ms)
+▶ a cancelled show preserves unsaved preparation and allows another or a new show without a terminal PUT
+  ✔ select (14.786906ms)
+  ✔ create (22.998546ms)
+✔ a cancelled show preserves unsaved preparation and allows another or a new show without a terminal PUT (38.477291ms)
+✔ stop waits for pending activation before pausing the server and never leaves the old block running (12.858858ms)
+✔ output snapshots retain the authoritative director scene through the bridge show channel (10.080926ms)
+✔ saved rehearsal survives reload and production switches, then becomes a real show with edited plan/settings and no demo players (37.727712ms)
+✔ stop during a pending result acknowledgement cannot start late winner speech or progression (12.86669ms)
+✔ the local call demonstration is explicitly reachable without replacing real books or bypassing an active hold (19.258173ms)
+✔ manual show cue holds automatic drawing, publishes the same clock, and restores without unpausing an idle show (24.340753ms)
+✔ rundown show cue can feature another friend, clears previews, and stopping it does not draw (11.091515ms)
+✔ manual speech animates the presenter above a paused rundown without releasing game state (9.885876ms)
+✔ slow voice design survives the normal settings deadline and saves the returned profile once (11.359875ms)
+✔ voice design timeout gives a recovery message and never automatically creates another voice (10.79221ms)
+✔ overview snapshot always exposes the active presenter identity (20.00085ms)
+✔ invalid character settings and voice-design calls cannot emit undefined API routes (10.931243ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1011.703788

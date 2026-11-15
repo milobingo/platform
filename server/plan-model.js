@@ -3,6 +3,9 @@ import {ALL_CHARACTER_IDS,ANIMATIONS,CAMERA_IDS,MAGIC_IDS,CHARACTERS} from './ch
 import {showBrand} from './show-brands.js';
 import {getShowCue} from './show-cues.js';
 import {getMagicCue} from './magic-cues.js';
+import {MANUAL_CUE_CONDITIONS} from './manual-cues.js';
+import {MAX_SPEECH_CHARACTERS,speechCharacterCount,splitSpeechText} from './speech-text.js';
+export const MAX_PLAN_SPEECH_CHUNKS=2200;
 export const BLOCK_TYPES=Object.freeze({
  countdown:{name:'Countdown',short:'Aftellen',icon:'i-rest',description:'Een timer vóór de show of een ronde.'},
  welcome:{name:'Welkomstwoord',short:'Welkom',icon:'i-wave',description:'De presentator verwelkomt het publiek met jouw tekst.'},
@@ -70,18 +73,23 @@ export function normalizePlan(input){
  const blocks=list(input.blocks,100,'De tijdlijn').map(b=>{
   if(!b||!Object.hasOwn(BLOCK_TYPES,b.type))throw new Error('De tijdlijn bevat een onbekend showblok.');
   const out={id:b.id,type:b.type,title:text(b.title,60,'Bloktitel')};
+  if(b.operatorNotes!==undefined)out.operatorNotes=text(b.operatorNotes,10000,'Regienotities');
   if(b.speakerId!==undefined){if(!ALL_CHARACTER_IDS.includes(b.speakerId))throw new Error('Kies een bestaand sprekend personage.');out.speakerId=b.speakerId;}
   if(b.camera!==undefined){if(!CAMERA_IDS.includes(b.camera))throw new Error('Kies een beschikbare camera.');out.camera=b.camera;}
   if(b.animation!==undefined){if(!ANIMATIONS.includes(b.animation))throw new Error('Kies een beschikbare beweging.');out.animation=b.animation;}
   if(['countdown','pause','call'].includes(b.type)){out.seconds=number(b.seconds,1,86400,'de timer');out.unit=b.unit==='minutes'?'minutes':'seconds';}
-  if(['welcome','explanation','story','finale','call','magic','guest'].includes(b.type))out.text=text(b.text,500,'Presentatietekst');
+  if(['welcome','explanation','story','finale','call','magic','guest'].includes(b.type))out.text=speechText(b.text,'Presentatietekst');
+  if(b.type==='explanation'&&b.explanationSteps!==undefined)out.explanationSteps=list(b.explanationSteps,10,'Uitlegstappen').map(step=>{
+   if(!step||typeof step.patternId!=='string'||step.patternId.length>80)throw new Error('Kies voor elke uitlegstap een geldig patroon.');
+   return {patternId:step.patternId,text:speechText(step.text,'Tekst uitlegstap')};
+  });
   if(['welcome','explanation','story','finale','magic','guest'].includes(b.type))out.hold=number(b.hold,0,60,'de wachttijd');
   if(['magic','guest'].includes(b.type))out.duration=number(b.duration??(b.type==='magic'?getMagicCue(b.magicId)?.duration:undefined),2,180,'de cue-duur');
   if(b.type==='show'){const cue=getShowCue(b.showCueId);if(!cue)throw new Error('Kies een bestaand showelement.');if((input.studioId&&input.studioId!=='sterrenplein')||(!input.studioId&&(!input.leadId||input.leadId==='vlampie'))||input.leadId==='vlampie'||out.speakerId==='vlampie')throw new Error('Showelementen horen bij de Milo & Friends-productie.');if(cue.hostId)out.speakerId=cue.hostId;out.showCueId=cue.id;out.duration=cue.duration;out.hold=0;}
   if(b.type==='magic'){if(!MAGIC_IDS.includes(b.magicId))throw new Error('Kies een bestaand magiemoment.');if(out.speakerId&&out.speakerId!=='milo')throw new Error('Milo voert deze goocheltruc uit.');out.speakerId='milo';out.magicId=b.magicId;}
   if(b.type==='guest'){
    if(!ALL_CHARACTER_IDS.includes(b.guestId))throw new Error('Kies een bestaand gastpersonage.');out.guestId=b.guestId;
-   out.dialogue=list(b.dialogue||[],12,'Dialoogbeurten').map(turn=>{if(!turn||!ALL_CHARACTER_IDS.includes(turn.speakerId))throw new Error('Kies voor elke dialoogbeurt een spreker.');if(turn.animation!==undefined&&!ANIMATIONS.includes(turn.animation))throw new Error('Kies een beschikbare dialoogbeweging.');return {speakerId:turn.speakerId,text:text(turn.text,500,'Dialoogtekst'),...(turn.animation?{animation:turn.animation}:{})};});
+   out.dialogue=list(b.dialogue||[],12,'Dialoogbeurten').map(turn=>{if(!turn||!ALL_CHARACTER_IDS.includes(turn.speakerId))throw new Error('Kies voor elke dialoogbeurt een spreker.');if(turn.animation!==undefined&&!ANIMATIONS.includes(turn.animation))throw new Error('Kies een beschikbare dialoogbeweging.');return {speakerId:turn.speakerId,text:speechText(turn.text,'Dialoogtekst'),...(turn.animation?{animation:turn.animation}:{})};});
   }
   if(b.type==='call')out.advance=b.advance==='auto'?'auto':'manual';
   if(b.type==='round'){
@@ -91,6 +99,18 @@ export function normalizePlan(input){
   }return out;
  });unique(blocks,'De tijdlijn');
  const out={version:1,title:text(input.title,60,'Showtitel'),patterns,prizes,blocks};
+ if(input.manualCues!==undefined){
+  out.manualCues=list(input.manualCues,80,'Microfoonteksten').map(cue=>{
+   if(!cue||!Object.hasOwn(MANUAL_CUE_CONDITIONS,cue.condition||'always'))throw new Error('Kies een geldige afspeelvoorwaarde voor de microfoontekst.');
+   const row={id:cue.id,title:text(cue.title,90,'Naam microfoontekst'),text:speechText(cue.text,'Microfoontekst'),condition:cue.condition||'always'};
+   if(cue.speakerId!==undefined){if(!ALL_CHARACTER_IDS.includes(cue.speakerId))throw new Error('Kies een bestaand sprekend personage.');row.speakerId=cue.speakerId;}
+   if(cue.notes!==undefined)row.notes=text(cue.notes,10000,'Regienotities');
+   for(const name of ['roundIndex','goalIndex'])if(cue[name]!==undefined){if(!Number.isSafeInteger(cue[name])||cue[name]<0||cue[name]>(name==='roundIndex'?99:9))throw new Error('Koppel de microfoontekst aan een geldige ronde en prijsstap.');row[name]=cue[name];}
+   return row;
+  });unique(out.manualCues,'Microfoonteksten');
+ }
+ const scripts=blocks.flatMap(block=>[...(block.explanationSteps?.length?block.explanationSteps.map(step=>step.text):[block.text]),...(block.dialogue||[]).map(turn=>turn.text)]).concat((out.manualCues||[]).map(cue=>cue.text));
+ if(scripts.reduce((count,value)=>count+(value?.trim()?splitSpeechText(value).length:0),0)>MAX_PLAN_SPEECH_CHUNKS)throw new Error('Het draaiboek bevat te veel stemfragmenten. Verdeel de teksten over meerdere shows.');
  if(input.leadId!==undefined){if(!ALL_CHARACTER_IDS.includes(input.leadId))throw new Error('Kies een bestaande hoofdhost.');out.leadId=input.leadId;}
  out.cohostId=input.cohostId??null;
  if(out.cohostId!==null&&!ALL_CHARACTER_IDS.includes(out.cohostId))throw new Error('Kies een bestaande copresentator.');
@@ -98,12 +118,18 @@ export function normalizePlan(input){
  if(input.studioId!==undefined){if(!['sterrenplein','showtime','sinterklaas','royale','magico'].includes(input.studioId))throw new Error('Kies een bestaande studio.');out.studioId=input.studioId;}
  return out;
 }
+function speechText(value,label){if(typeof value!=='string'||speechCharacterCount(value)>MAX_SPEECH_CHARACTERS)throw new Error(`${label}: gebruik maximaal 10.000 tekens.`);return value.trim();}
 export function planIssues(document){
  const issues=[];if(!document.title.trim())issues.push('Geef de show een titel.');if(!document.blocks.length)issues.push('Voeg een showblok toe.');
  for(const b of document.blocks){
   const name=b.title||BLOCK_TYPES[b.type].name;
   if(!b.title.trim())issues.push('Geef elk showblok een titel.');
-  if(['welcome','explanation','story','finale','magic','guest'].includes(b.type)&&!b.text.trim())issues.push(`${name}: vul de presentatietekst in.`);
+  if(['welcome','explanation','story','finale','magic','guest'].includes(b.type)&&!b.text.trim()&&!b.explanationSteps?.length)issues.push(`${name}: vul de presentatietekst in.`);
+  if(b.type==='explanation')for(const step of b.explanationSteps||[]){
+   const pattern=document.patterns.find(item=>item.id===step.patternId);
+   if(!pattern||!pattern.title.trim()||!pattern.cells.some(cell=>cell!==12||!pattern.freeCenter))issues.push(`${name}: kies voor elke uitlegstap een compleet patroon.`);
+   if(!step.text.trim())issues.push(`${name}: vul de tekst van elke uitlegstap in.`);
+  }
   if(b.type==='guest'&&b.dialogue?.some(turn=>!turn.text.trim()))issues.push(`${name}: vul elke dialoogbeurt in.`);
   if(b.type==='round'){
    if(!b.goals.length)issues.push(`${name}: voeg een patroon en prijs toe.`);
@@ -113,7 +139,9 @@ export function planIssues(document){
     if(!prize||!prize.title)issues.push(`${name}: kies een prijs.`);
    }
   }
- }return [...new Set(issues)];
+ }
+ for(const cue of document.manualCues||[]){if(!cue.title.trim())issues.push('Geef elke microfoontekst een naam.');if(!cue.text.trim())issues.push(`${cue.title||'Microfoontekst'}: vul de presentatietekst in.`);}
+ return [...new Set(issues)];
 }
 export function moveBlock(document,id,beforeId=null){
  const from=document.blocks.findIndex(b=>b.id===id);if(from<0||id===beforeId)return false;
