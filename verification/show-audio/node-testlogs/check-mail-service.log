@@ -1,0 +1,24 @@
+✔ mail administration and writes require organizer identity and exact-origin CSRF protection; preview never trusts client facts (55.257945ms)
+✔ newsletter feature defaults enabled while account consent defaults off; own verified address is authoritative and historical consent survives withdrawal (3.863241ms)
+✔ public unsubscribe GET is harmless; token POST withdraws all matching-brand subscriptions and raw tokens are never stored (4.628669ms)
+✔ real dispatch is durable and idempotent per event, adult email and production; encrypted snapshots never enter admin responses (17.194329ms)
+✔ ambiguous provider receipt is never retried, while a definitive rejection reuses the identical frozen sender/payload (7.638609ms)
+✔ a missing native adapter preserves a recoverable encrypted message and a later explicit retry uses the frozen content (4.147503ms)
+✔ campaigns deduplicate parent addresses, send in explicit batches of five and recheck brand consent after preparation (18.924011ms)
+✔ show campaigns use owned server show facts, reject sample fallbacks and never permit arbitrary prize announcements (9.502947ms)
+✔ test mails can only target the authenticated organizer and contain an unremovable fictitious-data label (5.933863ms)
+✔ show emails preserve an offsetless Amsterdam wall time while explicit UTC timestamps are converted (4.256595ms)
+✔ invalid public unsubscribe links return friendly HTML without changing preferences or revealing account data (1.782915ms)
+✔ MAIL-01 expired pre-contact claims recover once under parallel workers, while a lost offering remains uncertain (4.294127ms)
+✔ MAIL-01 retry rechecks disabled module and withdrawn brand consent; unrelated service mail stays usable (10.604739ms)
+✔ MAIL-02 durable domain markers repair missing enqueue and only published results target the adult winner once (14.605831ms)
+✔ MAIL-01 domain recovery repairs missing encrypted preparation once after configuration or object-storage failure, without replaying provider attempts (17.93266ms)
+✔ MAIL-01 preparation recovery refuses offering, uncertain, previously contacted and mismatched event records (8.248932ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.889047

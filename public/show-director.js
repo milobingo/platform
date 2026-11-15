@@ -1,5 +1,6 @@
 import {showBrand} from './show-brands.js?v=36';
 import {bt} from './brand-ui.js?v=37';
+import {bingoNumberText,roundSpeech,prizeSpeech,FIXED_SHOW_SPEECH} from './bingo-speech.js';
 export const SCENES=Object.freeze([
  {id:'still',name:'Still met showlogo',short:'Still',camera:'wide',hint:'Tussenbeeld zonder presentator',key:'S'},
  {id:'rules',name:'Spelregels',short:'Spelregels',camera:'wide',hint:'Geselecteerde spelregels',key:'R'},
@@ -59,9 +60,9 @@ export class ShowDirector{
    {scene:'host',duration:3,camera:'front',motion:'wave',speech:['royale','magico'].includes(this.theme)?showBrand(this.brandId||this.config.brandId).intro:this.theme==='sinterklaas'?bt('Hallo allemaal! Welkom bij Vlampie’s pakjesavondbingo! Pak je kaart erbij, we maken er samen een gezellige show van.'):bt('Hallo allemaal! Welkom bij Vlampie’s Bingo! Pak je kaart erbij en speel gezellig mee.'),waitVoice:true},
    {scene:'host',duration:1,camera:'desk',motion:'idle'},
   ]);
-  else if(scene==='round')this.run('round',[{scene:'round',duration:5,camera:'wide',motion:'welcome',sound:'round',speech:`We gaan verder met ${this.config.round}. We spelen voor: ${this.config.pattern}. Veel plezier!`,waitVoice:true},{scene:'host',duration:1,camera:'desk',motion:'idle'}]);
-  else if(scene==='prize')this.run('prize',[{scene:'prize',duration:6,camera:'wide',motion:'welcome',sound:'prize',speech:`Kijk eens wat we deze ronde kunnen winnen! ${this.config.prize}.`,waitVoice:true}]);
-  else if(scene==='finale')this.run('finale',[{scene:'finale',duration:7,camera:'wide',motion:'cheer',sound:'finale',speech:'Wat een fantastische bingoavond! Bedankt voor het meespelen. Een groot applaus voor jullie allemaal!',waitVoice:true},{scene:'finale',duration:4,camera:'front',motion:'bow'}]);
+  else if(scene==='round')this.run('round',[{scene:'round',duration:5,camera:'wide',motion:'welcome',sound:'round',speech:roundSpeech(this.config.round,this.config.pattern),waitVoice:true},{scene:'host',duration:1,camera:'desk',motion:'idle'}]);
+  else if(scene==='prize')this.run('prize',[{scene:'prize',duration:6,camera:'wide',motion:'welcome',sound:'prize',speech:prizeSpeech(this.config.prize),waitVoice:true}]);
+  else if(scene==='finale')this.run('finale',[{scene:'finale',duration:7,camera:'wide',motion:'cheer',sound:'finale',speech:FIXED_SHOW_SPEECH.thanks,waitVoice:true},{scene:'finale',duration:4,camera:'front',motion:'bow'}]);
   else {const target=SCENES.find(s=>s.id===scene);this.lookAt='camera';this.setScene(scene,target.camera,true);this.event('motion',{motion:scene==='host'?'idle':scene==='audience'?'welcome':'idle',lookAt:'camera'});if(scene==='audience'&&this.config.audience)this.event('sound',{cue:'applause'});}
   return true;
  }
@@ -70,12 +71,13 @@ export class ShowDirector{
   if(this.paused&&this.flow?.kind==='draw'){this.resume();return true;}
   if(this.busy||this.drawn.length>=75)return false;
   this.cancel(false);this.paused=false;this.started=true;this.event('resume');
+  const milo=(this.brandId||this.config.brandId)==='milo',official=milo&&this.config.drawCadence==='official';
   this.run('draw',[
    {scene:'host',duration:1.15,camera:this.drawn.length%3===2?'portrait':'desk',motion:'look',lookAt:'machine'},
    {scene:'draw',duration:4.3,camera:'machine',motion:'idle',sound:'spin',pick:true},
-   {scene:'reveal',duration:3.2,camera:'machine',motion:'point',sound:'reveal',commit:true,speech:()=>`Nummer ${this.number}. ${this.number}!`,waitVoice:true},
-   {scene:'board',duration:2.2,camera:'led',motion:'point',lookAt:'board'},
-   {scene:'host',duration:2.8,camera:'desk',motion:this.drawn.length%5===4?'welcome':'idle',speech:()=>this.config.comments&&this.drawn.length%5===0?(comments[this.theme]||comments.showtime)[Math.floor(this.drawn.length/5-1)%3]:'',waitVoice:true},
+   {scene:'reveal',duration:3.2,camera:'machine',motion:'point',sound:'reveal',commit:true,speech:()=>bingoNumberText(this.number,milo?'milo':'vlampie'),waitVoice:true},
+   {scene:'board',duration:official?.45:2.2,camera:'led',motion:'point',lookAt:'board'},
+   {scene:'host',duration:official?.45:2.8,camera:'desk',motion:!milo&&this.drawn.length%5===4?'welcome':'idle',speech:()=>!milo&&this.config.comments&&this.drawn.length%5===0?(comments[this.theme]||comments.showtime)[Math.floor(this.drawn.length/5-1)%3]:'',waitVoice:true},
   ]);return true;
  }
  run(kind,steps){this.flow={kind,steps,index:0,age:0};this.enter(true);}
@@ -111,7 +113,7 @@ export class ShowDirector{
   this.event('change');
  }
  tick(delta,{voiceBusy=false}={}){if(this.callHold)return;
-  if(this.paused||this.narrationHold||!Number.isFinite(delta)||delta<=0)return;
+  if(this.paused||this.externalHold||this.narrationHold||!Number.isFinite(delta)||delta<=0)return;
   if(this.drawBlocked&&this.flow?.kind==='draw')return;
   if(this.flow?.drawBlocked){this.flow.drawBlocked=false;this.enter(this.flow.firstOnResume);return;}
   this.sceneAge+=delta;
@@ -119,6 +121,9 @@ export class ShowDirector{
   if(this.flow.awaiting||this.flow.externalFailed)return;
   this.flow.age+=delta;
   const step=this.step;if(this.flow.age<step.duration||(step.waitVoice&&this.flow.hasSpeech&&voiceBusy))return;
+  // Optional remarks run outside the required draw flow. Announce the opening
+  // only after the official number has finished, never while a claim is held.
+  if(this.flow.kind==='draw'&&step.commit&&!this.flow.numberFinished){const flow=this.flow;flow.numberFinished=true;this.event('numberfinished',{number:this.number,index:this.drawn.length-1,count:this.drawn.length});if(this.flow!==flow||this.paused||this.callHold||this.externalHold||this.drawBlocked||this.narrationHold)return;}
   if(this.flow.index+1<this.flow.steps.length){this.flow.index++;this.flow.age=0;this.enter();}
   else{const kind=this.flow.kind;this.flow=null;
    if(kind==='rejected'&&this.suspended){this.flow=this.suspended;this.suspended=null;if(this.flow.externalFailed){this.flow.externalFailed=false;this.flow.age=0;this.enter();return;}const savedAge=this.flow.age;this.scene=this.step.scene;this.sceneAge=savedAge;if(this.config.autoCamera)this.event('camera',{camera:this.step.camera});this.lookAt=this.step.lookAt||'camera';this.event('motion',{motion:this.step.motion||'idle',lookAt:this.lookAt});const text=typeof this.step.speech==='function'?this.step.speech():this.step.speech;if(text&&this.config.voice)this.event('speech',{text});}
@@ -133,15 +138,15 @@ export class ShowDirector{
   if(this.scene==='checking')return false;
   this.suspended=this.flow;this.flow=null;this.claim={name:String(name).trim().slice(0,60)||'Een deelnemer',card:String(card).trim().slice(0,40),status:'checking'};
   this.paused=false;this.lookAt='camera';this.event('cancel');this.setScene('checking','portrait',true);this.event('motion',{motion:'think',lookAt:'camera'});
-  if(this.config.voice)this.event('speech',{text:'Bingo! Wat spannend! We pauzeren even, zodat de regie de kaart kan controleren.'});return true;
+  if(this.config.voice)this.event('speech',{text:FIXED_SHOW_SPEECH.bingo});return true;
  }
  resolveBingo(approved,{checked=false}={}){
   if(this.scene!=='checking'||!this.claim||(approved&&!checked))return false;
   this.paused=false;this.event('cancel');
   if(approved){
    this.pending=null;this.suspended=null;this.claim.status='approved';this.lastWinner=this.claim.name;this.approvals++;
-   this.run('winner',[{scene:'winner',duration:6,camera:'portrait',motion:'cheer',sound:'win',speech:`Bingo bevestigd! Gefeliciteerd ${this.claim.name}! Een groot applaus voor jou!`,waitVoice:true},...(this.config.audience?[{scene:'audience',duration:2,camera:'audience',motion:'welcome',sound:'applause'}]:[]),{scene:'winner',duration:5,camera:'wide',motion:'cheer'}]);
-  }else{this.claim.status='rejected';this.run('rejected',[{scene:'rejected',duration:3.5,camera:'desk',motion:'welcome',sound:'friendly',speech:'Deze kaart is nog niet helemaal compleet. Geeft niks! We spelen gezellig verder.',waitVoice:true}]);}
+   this.run('winner',[{scene:'winner',duration:6,camera:'portrait',motion:'cheer',sound:'win',speech:(this.brandId||this.config.brandId)==='milo'?FIXED_SHOW_SPEECH.winner:`Bingo bevestigd! Gefeliciteerd ${this.claim.name}! Een groot applaus voor jou!`,waitVoice:true},...(this.config.audience?[{scene:'audience',duration:2,camera:'audience',motion:'welcome',sound:'applause'}]:[]),{scene:'winner',duration:5,camera:'wide',motion:'cheer'}]);
+  }else{this.claim.status='rejected';this.run('rejected',[{scene:'rejected',duration:3.5,camera:'desk',motion:'welcome',sound:'friendly',speech:FIXED_SHOW_SPEECH.false,waitVoice:true}]);}
   return true;
  }
  reset(){this.cancel(false);this.drawn=[];this.pending=null;this.number=null;this.claim=null;this.lastWinner='';this.approvals=0;this.paused=false;this.lookAt='camera';this.setScene('host','desk',true);this.event('motion',{motion:'idle',lookAt:'camera'});this.event('change');}

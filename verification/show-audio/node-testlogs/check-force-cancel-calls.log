@@ -1,0 +1,20 @@
+✔ force cancellation closes only its issued LiveKit rooms and known AI session while retaining the terminal game checkpoint (75.42876ms)
+✔ an unknown in-flight AI start remains unresolved after forced cancellation instead of fabricating closure (18.842627ms)
+✔ confirmed cleanup completes the cancelled call and permits preparation for a different show without altering old history (28.717988ms)
+✔ failed provider cleanup remains pending and an explicit retry confirms closure without releasing the hold (25.225191ms)
+✔ cancelling an older show never rewrites or contacts provider resources of a newer call belonging to the same owner (12.007359ms)
+✔ a LiveKit prepare waiting before its atomic insert cannot install a call after cancellation (9.379726ms)
+✔ legacy call admission batch rejects cancellation committed after the fresh game check and before the game row lock (9.159741ms)
+✔ LiveKit atomic preparation loses to cancellation before its game-and-call batch (12.215916ms)
+✔ a LiveKit token request paused after room reservation returns no token once the show is cancelled (18.781082ms)
+✔ a Live AI response arriving after force cancellation is recorded and hung up without returning SDP or releasing the draw hold (29.375997ms)
+✔ a legacy AI response arriving after cancellation remains recoverable, closes the known session and retains the terminal call hold (15.746197ms)
+✔ a whisper attach delayed until after cancellation never sends a director instruction (29.229955ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 292.527995

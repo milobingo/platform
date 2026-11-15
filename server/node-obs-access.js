@@ -3,6 +3,8 @@ import {authOrigin,checkSameOrigin} from './node-auth.js';
 import {handleOutput,currentOutputState} from './output.js';
 import {handleLiveCalls} from './live-calls.js';
 import {voicePath} from './voice-cache.js';
+import {buildShowAudioManifest,scopedShowAudioManifest} from './show-audio-manifest.js';
+import {SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
 import {withProviderSettingsLock} from './node-provider-settings.js';
 import {assertProviderSettingsLease} from './secrets.js';
 
@@ -84,7 +86,7 @@ export async function verifyObsAccess(request,env){
  return {...access,ownerId:row.owner_id,state};
 }
 
-const visualFields=['production','gameId','gameTitle','cancelledAt','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
+const visualFields=['production','gameId','gameTitle','cancelledAt','audioPreparation','backgroundMusic','gameStatus','hostId','guestId','cohostId','speakerId','camera','movingCamera','cameraTransition','cameraDuration','motion','speaking','speechActive','voiceMode','outputRouting','mouth','caption','lastNumber','drawn','roundTitle','pattern','paused','magic','theme','scene','showCue','movement','gestureEnergy','idleMotion','lipSync','blink','effects','lightShow','lookAt','bingoPending','bingoElapsed','bingoDrawn','bingoNumber','outputVersion','sceneRevision'];
 const showFields=['brandId','scene','liveCall','sceneRevision','transition','transitionMs','rules','rulePage','roundPatterns','goalIndex','patternPage','question','age','duration','flow','paused','preview','title','round','pattern','prize','pauseMinutes','countdown','number','drawnCount','claim','winner','lookAt','audience','reducedMotion','planKind','planTitle','patternCells','patternFreeCenter','patternVariant','prizeImage','prizeDescription','callSeconds','callText','externalHold','drawBlocked','kind','endAfter'];
 const visualCharacter=character=>pick(character,['id','name','color','asset','gestureEnergy','idleMotion','lipSync','defaultAnimation']);
 const patternView=pattern=>pick(pattern,['id','title','cells','freeCenter','variant']);
@@ -99,18 +101,22 @@ function showView(show){
  return result;
 }
 export function obsOutputState(state,access){
- const visible={producer:pick(state?.producer,['id','instanceId','generation','gameId','until']),output:pick(state?.output,['id','until','at','audioReady','audioPlayedAt','testAck','generation','seq','meters','voiceAck']),generation:state?.generation||0,seq:state?.seq||0,publishedAt:state?.publishedAt||null,snapshot:null,show:null,events:[],voice:null,mixer:pick(state?.mixer,['voice','music','effects']),routing:false};
+ const visible={producer:pick(state?.producer,['id','instanceId','generation','gameId','until']),output:pick(state?.output,['id','until','at','audioReady','audioPlayedAt','testAck','generation','seq','meters','voiceAck','audioPreparation']),generation:state?.generation||0,seq:state?.seq||0,publishedAt:state?.publishedAt||null,snapshot:null,show:null,events:[],voice:null,mixer:pick(state?.mixer,['voice','music','effects']),routing:false};
  if(visible.output?.testAck)visible.output.testAck=pick(visible.output.testAck,['id','status','at','error']);
+ if(visible.output?.audioPreparation)visible.output.audioPreparation=pick(visible.output.audioPreparation,['fingerprint','ready','total','error']);
  if(!state||state.producer?.gameId!==access.gameId||state.snapshot?.gameId!==access.gameId)return {...visible,producer:null,output:null,seq:0,publishedAt:null};
  if(state.cancelledAt&&state.cancelledGameId===access.gameId){visible.cancelledAt=state.cancelledAt;visible.cancelledGameId=access.gameId;}
  visible.snapshot=pick(state.snapshot,visualFields);if(state.snapshot.pattern)visible.snapshot.pattern=patternView(state.snapshot.pattern);
+ if(state.snapshot.backgroundMusic!==undefined)visible.snapshot.backgroundMusic=state.snapshot.backgroundMusic===true;
+ if(state.snapshot.gameStatus!==undefined)visible.snapshot.gameStatus=['draft','running','finished'].includes(state.snapshot.gameStatus)?state.snapshot.gameStatus:null;
+ if(state.snapshot.audioPreparation)visible.snapshot.audioPreparation=pick(state.snapshot.audioPreparation,['fingerprint','total','complete']);
  for(const key of ['showCue','movement'])if(state.snapshot[key])visible.snapshot[key]=pick(state.snapshot[key],['id','instanceId','elapsed','duration','paused','source','hostId','returnAt']);
  if(state.snapshot.magic)visible.snapshot.magic=pick(state.snapshot.magic,['id','startedAt','playing','elapsed','duration']);
  if(state.snapshot.mouth&&typeof state.snapshot.mouth==='object')visible.snapshot.mouth=pick(state.snapshot.mouth,['open','round']);
  if(Array.isArray(state.snapshot.characterSettings))visible.snapshot.characterSettings=state.snapshot.characterSettings.map(visualCharacter);
  else if(state.snapshot.characterSettings&&typeof state.snapshot.characterSettings==='object')visible.snapshot.characterSettings=state.snapshot.characterSettings.id?visualCharacter(state.snapshot.characterSettings):Object.fromEntries(Object.entries(state.snapshot.characterSettings).map(([id,value])=>[id,visualCharacter(value)]));
  visible.show=showView(state.show);if(state.snapshot.show)visible.snapshot.show=showView(state.snapshot.show);
- visible.events=(state.events||[]).map(event=>pick(event,['id','kind','at','cue']));visible.voice=pick(state.voice,['id','clip','text','duration','phase']);visible.routing=!!state.routing;return visible;
+ visible.events=(state.events||[]).map(event=>pick(event,['id','kind','at','cue']));visible.voice=pick(state.voice,['id','clip','text','duration','phase']);if(visible.voice){visible.voice.preparedOnly=state.voice.preparedOnly===true;if(typeof state.voice.preparedFingerprint==='string'&&/^[a-f0-9]{64}$/.test(state.voice.preparedFingerprint))visible.voice.preparedFingerprint=state.voice.preparedFingerprint;}visible.routing=!!state.routing;return visible;
 }
 export function obsLiveCall(call){
  if(!call)return null;const visible=pick(call,['id','version','transport','gameId','brandId','characterId','characterName','speechEngine','phase','createdAt','updatedAt','liveUntil','muted','aiMuted','drawHeld','realtimeStatus','realtimeStopped','voiceLevel','simulated','participantIdentity','guestIdentity','outputIdentity','hostIdentity','resourcesClosed']);
@@ -124,6 +130,12 @@ export async function handleObsRequest(request,env,{providerFetch=fetch}={}){
   if(!['GET','POST'].includes(request.method))throw problem('Deze OBS-aanvraag wordt niet ondersteund.',405,'method');
   let access=await verifyObsAccess(request,env);
   if(path==='/api/obs/session'&&request.method==='GET')return json({authenticated:true,role:'output',gameId:access.gameId,expiresAt:access.expiresAt});
+  if(path==='/api/obs/show-audio'&&request.method==='GET'){
+   const manifest=await buildShowAudioManifest(env,access.ownerId,access.gameId);
+   access=await verifyObsAccess(request,env);const current=await buildShowAudioManifest(env,access.ownerId,access.gameId,{includeReadiness:false});
+   if(current.fingerprint!==manifest.fingerprint)throw problem('De stemvoorbereiding is gewijzigd. Laad de actuele fragmenten opnieuw.',409,'show_audio_changed');
+   return json(scopedShowAudioManifest(manifest));
+  }
   const native={...env,AUTH_IDENTITY:{user:access.ownerId,admin:false,role:'output',method:'obs'},OBS_ACCESS:access,OPENAI_ENV_ONLY:true,NATIVE_PROVIDER_SETTINGS:true};
   if(path==='/api/obs/output'){
    const body=request.method==='POST'?await readBody(request):undefined;
@@ -133,10 +145,17 @@ export async function handleObsRequest(request,env,{providerFetch=fetch}={}){
   }
   if(/^\/api\/obs\/clips\/[a-f0-9]{64}$/.test(path)&&request.method==='GET'){
    const clipId=path.split('/').at(-1);
-   const assertClip=async current=>{const state=await currentOutputState(env,current.ownerId,current.state);if(state?.cancelledAt||state.producer?.gameId!==current.gameId||state.snapshot?.gameId!==current.gameId||state.producer.until<=Date.now()||state.voice?.clip!==clipId||!['prepare','play','pause'].includes(state.voice?.phase))throw problem('Dit stemfragment hoort niet bij de actuele uitzending.');};
-   await assertClip(access);
+   const assertClip=async current=>{const state=await currentOutputState(env,current.ownerId,current.state);if(state?.cancelledAt)throw problem('Deze show is geannuleerd. Het uitzendgeluid is gestopt.');
+    if(state?.producer?.gameId===current.gameId&&state.snapshot?.gameId===current.gameId&&state.producer.until>Date.now()&&state.voice?.clip===clipId&&['prepare','play','pause'].includes(state.voice?.phase))return {kind:'published',fingerprint:JSON.stringify([state.producer.generation,state.voice.id,clipId])};
+    const manifest=await buildShowAudioManifest(env,current.ownerId,current.gameId,{includeReadiness:false});if(!manifest.items.some(item=>item.key===clipId))throw problem('Dit stemfragment hoort niet bij de actuele uitzending.');
+    return {kind:'prepared',fingerprint:manifest.fingerprint};
+   };
+   const before=await assertClip(access);
    const clip=await env.SETTINGS?.get(voicePath(access.ownerId,clipId));if(!clip)throw problem('Het actuele stemfragment is niet beschikbaar.',404,'clip_missing');
-   await assertClip(await verifyObsAccess(request,env));return new Response(clip.body,{headers:{'Cache-Control':'private, no-store','Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
+   const after=await assertClip(await verifyObsAccess(request,env));
+   if(before.kind!==after.kind||before.fingerprint!==after.fingerprint)throw problem('De uitzending of stemvoorbereiding is intussen gewijzigd.',409,'show_audio_changed');
+   if(after.kind==='prepared'&&(clip.customMetadata?.policyVersion!==SPEECH_POLICY_VERSION||clip.customMetadata?.scriptVerified!=='true'))throw problem('Dit stemfragment is nog niet gecontroleerd voorbereid.',409,'speech_not_prepared');
+   return new Response(clip.body,{headers:{'Cache-Control':'private, no-store','Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
   }
   if(['/api/obs/live-calls','/api/obs/live-calls/token','/api/obs/live-calls/realtime','/api/obs/live-calls/realtime-stop'].includes(path)){
    const body=request.method==='POST'?await readBody(request):undefined,role=body?.role||url.searchParams.get('role'),gameId=body?.gameId||url.searchParams.get('gameId');

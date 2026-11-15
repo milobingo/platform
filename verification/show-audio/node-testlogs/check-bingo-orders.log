@@ -1,0 +1,38 @@
+✔ optional queue-injected order unit checks the real execution clock after the deadline and leaves the game unchanged (343.10447ms)
+✔ optional queue-injected production unit uses the execution clock after a real cooldown and records that fresh time (313.247146ms)
+▶ order mail rejects lease or uncertain-guarantee expiry between claim and offering before any adapter contact
+  ✔ lease (15.286742ms)
+  ✔ guarantee (15.604441ms)
+✔ order mail rejects lease or uncertain-guarantee expiry between claim and offering before any adapter contact (33.52886ms)
+✔ ORD-01 published participation rules lock order quantity while sales settings remain editable (10.330741ms)
+✔ ORD-02 issued order books cannot be transferred by generic book administration or downloaded after revocation (34.360788ms)
+✔ ORD-03 cancelling a reported payment preserves a visible unresolved reconciliation instead of forgetting the report (24.206522ms)
+✔ ORD-03 payment evidence is exact, globally unique across shows and a late closed payment creates a refund case without books (61.357667ms)
+✔ ORD-01 deadline equality closes ordering and controlled rescheduling preserves issued numbers while refreshing PDF identity (29.725411ms)
+✔ orders are future-show specific, owner scoped, server priced and permanently idempotent (38.7958ms)
+✔ family mode on a platform organizer shows only own orders and never host-only details (29.82641ms)
+✔ payment mail has a trusted recipient, escaped content and real provider acceptance semantics (20.244806ms)
+✔ approval is explicit, atomic and permanently one-time; stored sheets render in both colors (1782.010895ms)
+✔ paid sheets can only be assigned to their owner’s children, including via existing QR registration (58.426806ms)
+✔ active order snapshots lock title, date, rounds and brand; cancellation preserves history (22.507733ms)
+✔ failed mail retries freeze body and key, and require a gateway acceptance receipt (22.310671ms)
+✔ expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee (16.356391ms)
+✔ outbox lease prevents parallel sends and payment-link replacement while sending (13.699928ms)
+✔ a manually generated batch cannot capture fulfillment or replace existing ownership (22.580564ms)
+✔ missing delivery configuration preserves the requested order and ready sheets with failed mail states (90.065902ms)
+✔ uncertain mail cannot cross delivery identities or invent an idempotency guarantee (24.828861ms)
+✔ an explicit gateway rejection can retry without claiming any guaranteed idempotency window (22.738623ms)
+✔ reading legacy settings preserves stored data and invalidated published rules refuse a silent rewrite (20.431452ms)
+✔ native session dispatch injects delivery and protects the complete order and cached PDF flow (87.193522ms)
+✔ an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections (37.13241ms)
+✔ replacing an uncertain payment mail preserves its frozen attempt and alerts only the owning admin (19.058936ms)
+✔ an expired sending lease is archived as uncertain while retaining its original receipt metadata (13.329786ms)
+✔ the payment version limit rejects before any mutation and still permits an unchanged final-version retry (55.591787ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3257.167283

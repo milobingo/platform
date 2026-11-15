@@ -1,0 +1,38 @@
+
+Running 12 tests using 2 workers
+
+(node:3328960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:3328981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/12] tests/browser/broadcast-preparation.spec.mjs:109:1 › two-page broadcast preparation plays the actual programme test, records image/audio and reconnects the same paused bingo; simulated relay
+[2/12] tests/browser/broadcast-preparation.spec.mjs:123:1 › blocked autoplay keeps a compact activation fallback until a real programme tone finishes; simulated scoped API
+[3/12] tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 390px; simulated API
+[4/12] tests/browser/obs-source.spec.mjs:55:31 › saved-show OBS link management is explicit and revocable 1366px; simulated API
+[5/12] tests/browser/obs-source.spec.mjs:74:1 › OBS output capability bypasses Google, uses only scoped transport and clears immediately on revocation; simulated API
+[6/12] tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 503; real Chromium Web Audio, simulated scoped API
+[7/12] tests/browser/obs-source.spec.mjs:104:38 › OBS starts and recovers without interaction after 409; real Chromium Web Audio, simulated scoped API
+[8/12] tests/browser/obs-source.spec.mjs:166:1 › invalid OBS source stays on a clear retry screen without Google or regie session authority; simulated API
+[9/12] tests/browser/regie-settings.spec.mjs:160:2 › saved-show mail recovery and encrypted Resend CRUD 390px; isolated native API
+[10/12] tests/browser/regie-settings.spec.mjs:160:2 › saved-show mail recovery and encrypted Resend CRUD 1366px; isolated native API
+[11/12] tests/browser/start-rules.spec.mjs:78:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API
+tests/browser/start-rules.spec.mjs:78:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 390px; real isolated Bingo API
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+[12/12] tests/browser/start-rules.spec.mjs:78:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API
+tests/browser/start-rules.spec.mjs:78:2 › Milo preparation autosaves, retains a failed edit and starts once without manual rules publication 1366px; real isolated Bingo API
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+Bingoadministratie: Error
+
+  12 passed (39.0s)

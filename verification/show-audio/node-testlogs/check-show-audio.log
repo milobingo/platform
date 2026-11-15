@@ -1,0 +1,22 @@
+✔ all 75 official scripts use the fixed BINGO names and Dutch words; Vlampie retains its existing script (3.138187ms)
+✔ the show manifest covers every runner goal, prize, long block, guest turn, fixed number and optional cue with exact chunk identities (130.138115ms)
+✔ preparation validates all 75 number transcripts before cached readiness and excludes unverified old metadata (939.919314ms)
+✔ cache-only hits and misses use no key/provider; stale bindings cannot generate and actual preparation stores verified WAV duration (75.26358ms)
+✔ manifest fingerprints change with actual plan and speaker settings while gameplay revisions leave them stable (64.370813ms)
+✔ manifest ownership, verified regie and exact origin protect preparation without provider requests (57.339251ms)
+✔ a cached static response rechecks the character after the storage await and a late generation cannot mark a changed profile ready (73.382099ms)
+✔ manifest metadata enumeration never returns an old authorized list after revoke (32.395732ms)
+✔ manifest metadata enumeration never returns an old authorized list after profile (39.742086ms)
+✔ manifest metadata enumeration never returns an old authorized list after cancel (36.812338ms)
+✔ OBS preloads only the bound current manifest with no private scripts, arbitrary owner clips or provider authority (97.144456ms)
+✔ an OBS preload delayed in object retrieval loses access after revoke (43.082483ms)
+✔ an OBS preload delayed in object retrieval loses access after profile (50.75528ms)
+✔ an OBS preload delayed in object retrieval loses access after cancel (46.666068ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1696.223711

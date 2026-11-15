@@ -1,0 +1,21 @@
+✔ native FIFO is fair per game, independent across games, and exposes only aggregate metrics (2.735601ms)
+✔ per-game and adapter admission bounds return retriable503 without discarding accepted FIFO slots (0.869521ms)
+✔ waiting TTL rejects before callback entry and later work still executes; source error does not poison the queue (21.562816ms)
+✔ nested same-key, cross-key and cross-adapter waits fail immediately instead of forming lock cycles (0.677707ms)
+✔ closing rejects pending work and new admission, then drains the active operation before resolving (2.027762ms)
+✔ SQLite does not acquire the native queue, including when an unrelated hook is present (4.359055ms)
+﹣ actual PostgreSQL explicitly selected family writes serialize100 requests across store instances with no local CAS retries (0.184265ms) # SKIP
+﹣ actual PostgreSQL waiting does not consume pool connections or block another game (0.124502ms) # SKIP
+﹣ actual PostgreSQL authority is refreshed after waiting and before an existing durable replay (0.127047ms) # SKIP
+﹣ another real PostgreSQL adapter bypasses the local FIFO safely: original CAS retries and rejects the newly committed call hold (0.129499ms) # SKIP
+﹣ an ordinary mutation on the same native adapter bypasses a busy family FIFO and still forces a safe fresh CAS retry (0.084285ms) # SKIP
+﹣ a real PostgreSQL adapter facade without the optional hook retains the original concurrent CAS contract (0.048387ms) # SKIP
+﹣ actual PostgreSQL transaction failure after the first statement rolls back game/family and releases the FIFO for a successful retry (0.035249ms) # SKIP
+ℹ tests 13
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 7
+ℹ todo 0
+ℹ duration_ms 38.477449

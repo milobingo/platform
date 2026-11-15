@@ -1,0 +1,60 @@
+{
+  "observedAt": "2026-11-15T13:29:21.692Z",
+  "actualBrowserRendering": true,
+  "realBingoHandlers": true,
+  "isolatedSQLiteWrites": true,
+  "actualShowOrAccountMutation": false,
+  "actualProviderRequests": false,
+  "gameId": "bf736c91-b767-4c89-8945-832b7afd77ac",
+  "requests": [
+    {
+      "body": {
+        "youtubeId": "ezsA3hsxIEc",
+        "expectedBroadcastRevision": 0,
+        "requestId": "6cd348fd-86b9-4081-812e-53835d479551",
+        "regieId": "29b0d8d4-74a0-4a1e-913c-e7651f7c1074"
+      },
+      "status": 503
+    },
+    {
+      "body": {
+        "youtubeId": "ezsA3hsxIEc",
+        "expectedBroadcastRevision": 0,
+        "requestId": "6cd348fd-86b9-4081-812e-53835d479551",
+        "regieId": "29b0d8d4-74a0-4a1e-913c-e7651f7c1074"
+      },
+      "status": 200
+    },
+    {
+      "body": {
+        "youtubeId": "dQw4w9WgXcQ",
+        "expectedBroadcastRevision": 1,
+        "requestId": "9ba129c3-4d47-43b0-afb2-ad68e401e67d",
+        "regieId": "29b0d8d4-74a0-4a1e-913c-e7651f7c1074"
+      },
+      "status": 409
+    },
+    {
+      "body": {
+        "youtubeId": "dQw4w9WgXcQ",
+        "expectedBroadcastRevision": 2,
+        "requestId": "3651eef0-397f-4ce0-a874-c97a7c648905",
+        "regieId": "29b0d8d4-74a0-4a1e-913c-e7651f7c1074"
+      },
+      "status": 200
+    }
+  ],
+  "unexpected": [],
+  "external": [],
+  "errors": [],
+  "expectedFailures": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "url": "http://127.0.0.1:4175/api/bingo/games/bf736c91-b767-4c89-8945-832b7afd77ac/broadcast"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:4175/api/bingo/games/bf736c91-b767-4c89-8945-832b7afd77ac/broadcast"
+    }
+  ]
+}

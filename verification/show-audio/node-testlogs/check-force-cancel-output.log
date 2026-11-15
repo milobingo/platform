@@ -1,0 +1,14 @@
+✔ fresh relay GET and heartbeat silence a cancelled game even when persistent relay cleanup has not run (34.921884ms)
+✔ publication loses an atomic game CAS when cancellation commits before its transaction (SQLite) (9.068616ms)
+﹣ publication loses an atomic game CAS when cancellation commits before its transaction (PostgreSQL) (0.184004ms) # SKIP
+✔ a publication that wins first is removed by cancellation without losing the last board (5.33076ms)
+✔ cleanup of an older cancelled show leaves a newer show relay byte for byte intact (4.411288ms)
+✔ an existing output stops all audio and ignores delayed local packets after cancellation, without reconnecting or resuming (1.577711ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 61.86557

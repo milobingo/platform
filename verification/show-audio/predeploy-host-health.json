@@ -1,0 +1,236 @@
+{
+  "format": "milo-regie-refresh-read-only-postdeploy-host-v1",
+  "baseline": "/home/codex/repos/milobingo/verification/regie-refresh/predeploy-host-health.json",
+  "expectedRelease": {
+    "sha": "9d96cc413df3173c0ea1515f327f6ca7874b76dd",
+    "id": "43713044311-1",
+    "configId": "staging-2026-11-11-v2"
+  },
+  "inspectionSucceeded": true,
+  "checks": {
+    "correctHost": true,
+    "allSevenPublicHealthChecksPassed": true,
+    "allEightServicesActiveRunning": true,
+    "allSevenCaddyFragmentsUnchanged": true,
+    "caddyFileUnchanged": true,
+    "applicationPortsUnchanged": true,
+    "allApplicationListenersLoopback": true,
+    "sixOtherAppReleaseHealthUnchanged": true,
+    "otherAppAndCaddyPIDsUnchanged": true,
+    "serviceAccountsAndUnitsUnchanged": true,
+    "exactMiloPublicReleaseIdentity": true,
+    "exactMiloHostReleaseIdentity": true
+  },
+  "allChecksPassed": true,
+  "observed": {
+    "observedAt": "2026-11-15T13:22:53.456213+00:00",
+    "host": "dg-nxttrack-01",
+    "services": {
+      "milobingo-staging.service": {
+        "MainPID": "435885",
+        "User": "app-mil-stg",
+        "Group": "app-mil-stg",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/milobingo-staging.service"
+      },
+      "dartflow-staging.service": {
+        "MainPID": "414244",
+        "User": "app-dart-stg",
+        "Group": "app-dart-stg",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/dartflow-staging.service"
+      },
+      "dartflow-production.service": {
+        "MainPID": "414243",
+        "User": "app-dart-prd",
+        "Group": "app-dart-prd",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/dartflow-production.service"
+      },
+      "rondio-staging-dg01.service": {
+        "MainPID": "414273",
+        "User": "app-rond-stg",
+        "Group": "app-rond-stg",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/rondio-staging-dg01.service"
+      },
+      "rondio-production-dg01.service": {
+        "MainPID": "414270",
+        "User": "app-rond-prd",
+        "Group": "app-rond-prd",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/rondio-production-dg01.service"
+      },
+      "socialhero-staging-web.service": {
+        "MainPID": "414357",
+        "User": "app-sh-stg",
+        "Group": "app-sh-stg",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/socialhero-staging-web.service"
+      },
+      "socialhero-production-web.service": {
+        "MainPID": "414339",
+        "User": "app-sh-prd",
+        "Group": "app-sh-prd",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/etc/systemd/system/socialhero-production-web.service"
+      },
+      "caddy.service": {
+        "MainPID": "3243",
+        "User": "caddy",
+        "Group": "caddy",
+        "ActiveState": "active",
+        "SubState": "running",
+        "FragmentPath": "/usr/lib/systemd/system/caddy.service"
+      }
+    },
+    "caddyFragments": {
+      "dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+      "dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+      "milobingo-staging.caddy": "5768de11ddfa25d7bf72052fc3099d283d0a0676903caf0405d3b7ab8b10918e",
+      "rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c",
+      "rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+      "socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+      "socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159"
+    },
+    "caddyFileSha256": "28478c57f4b6f5d851ef5bc9950e774909556b3b822586c9cd577009a236cdcd",
+    "domains": {
+      "dartflow-production": "dartflow.nl",
+      "dartflow-staging": "staging.dartflow.nl",
+      "milobingo-staging": "milo-staging.dgwebservices.nl",
+      "rondio-production": "rondio.org",
+      "rondio-staging": "staging.rondio.org",
+      "socialhero-production": "socialhero.dgwebservices.nl",
+      "socialhero-staging": "socialhero-staging.dgwebservices.nl"
+    },
+    "applicationListeners": [
+      {
+        "port": 4173,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4174,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4175,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4176,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4177,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4180,
+        "address": "127.0.0.1"
+      },
+      {
+        "port": 4181,
+        "address": "127.0.0.1"
+      }
+    ],
+    "currentReleasePath": "/srv/sites/milobingo-staging/releases/9d96cc413df3-43713044311-1",
+    "releaseMetadata": {
+      "version": 1,
+      "sha": "9d96cc413df3173c0ea1515f327f6ca7874b76dd",
+      "id": "43713044311-1",
+      "configVersion": "staging-2026-11-11-v2",
+      "port": 4173,
+      "artifactSha256": "7c42705dcacec211b1ecbad20c0634ab17797a45d339a3ae2f3f5406200bb0dc",
+      "helperSha256": "ce93bfeffa573616394d1f28dc5dd101bc7e0ce076b7bf25b35a38827ed9aba8",
+      "toolchain": {
+        "node": "24.18.0",
+        "pnpm": "11.25.0",
+        "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+        "pnpmSha256": "ff3224d46b47fbb24a7e9fe15fededef7e00892d07d4e376b6762d4899906bfd"
+      }
+    },
+    "applicationHealth": {
+      "milo-staging": {
+        "httpStatus": 200,
+        "url": "https://milo-staging.dgwebservices.nl/api/health",
+        "health": {
+          "status": "ok",
+          "revision": "9d96cc413df3173c0ea1515f327f6ca7874b76dd",
+          "releaseId": "43713044311-1",
+          "configVersion": "staging-2026-11-11-v2"
+        }
+      },
+      "dartflow-staging": {
+        "httpStatus": 200,
+        "url": "https://staging.dartflow.nl/api/health",
+        "health": {
+          "status": "ok",
+          "sha": "b7648e62a5cd03f73e0590327ff93b4da963bc3a",
+          "releaseId": "43533172175-1",
+          "configId": "staging-2026-11-12-v19-pin-1"
+        }
+      },
+      "dartflow-production": {
+        "httpStatus": 200,
+        "url": "https://dartflow.nl/api/health",
+        "health": {
+          "status": "ok",
+          "sha": "b7648e62a5cd03f73e0590327ff93b4da963bc3a",
+          "releaseId": "43533760901-1",
+          "configId": "production-2026-11-12-v19-pin-1"
+        }
+      },
+      "rondio-staging": {
+        "httpStatus": 200,
+        "url": "https://staging.rondio.org/api/health",
+        "health": {
+          "status": "ok",
+          "releaseId": "1496e04a13dd-43262076787-1"
+        }
+      },
+      "rondio-production": {
+        "httpStatus": 200,
+        "url": "https://rondio.org/api/health",
+        "health": {
+          "status": "ok",
+          "releaseId": "1496e04a13dd-43262700690-1"
+        }
+      },
+      "socialhero-staging": {
+        "httpStatus": 200,
+        "url": "https://socialhero-staging.dgwebservices.nl/api/health",
+        "health": {
+          "status": "ok",
+          "service": "SocialHero",
+          "releaseId": "2a800550ef3d5359cf73c6e37cc1f2eeb5b5b0c5-43458667644-1",
+          "environment": "staging"
+        }
+      },
+      "socialhero-production": {
+        "httpStatus": 200,
+        "url": "https://socialhero.dgwebservices.nl/api/health",
+        "health": {
+          "status": "ok",
+          "service": "SocialHero",
+          "releaseId": "2a800550ef3d5359cf73c6e37cc1f2eeb5b5b0c5-43460049432-1",
+          "environment": "production"
+        }
+      }
+    },
+    "hostMutationsPerformed": false,
+    "privateRuntimeValuesReadOrPrinted": false
+  },
+  "scope": {
+    "publicMetadataOnly": true,
+    "databaseOrProviderOrAccountAcceptance": false,
+    "actualOBSInstallation": false,
+    "hostMutationsPerformed": false
+  }
+}

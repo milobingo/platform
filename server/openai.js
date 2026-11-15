@@ -1,6 +1,8 @@
 import {showBrand,brandText} from './show-brands.js';
 import {MAX_SPEECH_REQUEST_CHARACTERS,speechCharacterCount} from '../public/speech-text.js';
-import {FIXED_SPEECH,voiceKey,voicePath} from './voice-cache.js';
+import {fixedSpeechFor,voiceKey,voicePath,characterCacheStyle,waveDurationMs} from './voice-cache.js';
+import {buildShowAudioManifest} from './show-audio-manifest.js';
+import {SPEECH_POLICY_VERSION} from '../public/bingo-speech.js';
 import {readSecret,saveSecret,saveNativeSecret,settingsReady,secretFingerprint,assertProviderSettingsLease} from './secrets.js';
 import {withProviderSettingsLock,assertProviderRotationAllowed,reserveNativePreview,bindNativePreview,closeNativePreview,ownedNativePreview,cancelNativePreview} from './node-provider-settings.js';
 import {PRESENTATION_CORE,presentationCore,speechStyle} from './presentation-model.js';
@@ -50,30 +52,42 @@ async function call(path,key,body,request,fetcher,timeoutMs=45000){
 }
 export async function handleOpenAI(request,env={},fetcher=fetch){
   const url=new URL(request.url),route=url.pathname.slice('/api/openai/'.length);
-  if(!['status','test','speech','reply','present','validate','settings','library','design-voice','live-test','live-preview','live-preview-stop','director-whisper'].includes(route)&&!/^clips\/[a-f0-9]{64}$/.test(route))return fail(404,'not_found','Onbekende aanvraag.');
+  if(!['status','test','speech','show-audio','reply','present','validate','settings','library','design-voice','live-test','live-preview','live-preview-stop','director-whisper'].includes(route)&&!/^clips\/[a-f0-9]{64}$/.test(route))return fail(404,'not_found','Onbekende aanvraag.');
   const {user,admin}=platformIdentity(request,env);
   if(!user)return fail(401,'sign_in','Open de studio terwijl je bent ingelogd.');
   if(!admin)return fail(403,'owner_only','Alleen de eigenaar kan deze regie-instellingen gebruiken.');
   if(request.method!==(route==='status'||route.startsWith('clips/')?'GET':'POST'))return fail(405,'method','Deze aanvraag wordt niet ondersteund.');
   if(request.headers.get('sec-fetch-site')==='cross-site'||(request.headers.get('origin')&&request.headers.get('origin')!==url.origin))return fail(403,'origin','Open de bediening vanuit Vlampie Studio.');
   if(route==='settings')return handleSettings(request,env,fetcher,user,url);
+  if(route==='show-audio'){
+   if(request.headers.get('origin')!==url.origin)return fail(403,'origin','Open de stemvoorbereiding vanuit de regie.');
+   try{const body=await readBody(request),manifest=await buildShowAudioManifest(env,user,body.gameId),fresh=await buildShowAudioManifest(env,user,body.gameId,{includeReadiness:false});if(manifest.fingerprint!==fresh.fingerprint)return fail(409,'show_audio_changed','Het draaiboek of personage is gewijzigd. Laad de actuele stemvoorbereiding opnieuw.');return json(manifest);}catch(error){return fail(error.status||503,error.code||'show_audio_unavailable',error.status?error.message:'De stemvoorbereiding kan nu niet worden gelezen. Probeer opnieuw.');}
+  }
   if(route==='validate'){try{const body=await readBody(request),context=await presentationContext(env,user,body,{source:true});return json({valid:true,message:context.message});}catch(error){return fail(error.status||400,error.code||'invalid',error.message||'Dit bericht is niet beschikbaar.');}}
   let preparedBody,preparedContext,preparedCharacter,cacheKey,cacheStyle,preparedSpeed;
   if(route==='director-whisper'){
    if(request.headers.get('origin')!==url.origin||request.headers.get('x-milo-director')!=='1'||request.headers.get('x-vlampie-player')==='1'||url.searchParams.get('player')==='1')return fail(403,'whisper_forbidden','Een privéaanwijzing kan alleen vanuit de regie worden verstuurd.');
    try{preparedBody=await readBody(request);preparedContext=await directorWhisperContext(env,user,preparedBody);}catch(error){return fail(error instanceof DirectorWhisperError?error.status:400,error instanceof DirectorWhisperError?error.code:'invalid_body',error instanceof DirectorWhisperError?error.message:'De aanwijzing is ongeldig of te groot.');}
   }
-  if(route.startsWith('clips/')){try{const clip=await env.SETTINGS?.get(voicePath(user,route.slice(6)));return clip?new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg'}}):fail(404,'clip_missing','Dit stemfragment is niet meer beschikbaar.');}catch{return fail(503,'cache_unavailable','De stemopslag is tijdelijk niet bereikbaar.');}}
+  if(route.startsWith('clips/')){try{const clip=await env.SETTINGS?.get(voicePath(user,route.slice(6)));return clip?new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Vlampie-Clip':route.slice(6),...(clip.customMetadata?.durationMs?{'X-Milo-Audio-Duration-Ms':String(clip.customMetadata.durationMs)}:{})}}):fail(404,'clip_missing','Dit stemfragment is niet meer beschikbaar.');}catch{return fail(503,'cache_unavailable','De stemopslag is tijdelijk niet bereikbaar.');}}
   if(route==='speech'||route==='library'){
    try{preparedBody=await readBody(request);if(route==='speech'&&(typeof preparedBody.text!=='string'||!preparedBody.text.trim()||speechCharacterCount(preparedBody.text)>MAX_SPEECH_REQUEST_CHARACTERS))return fail(400,'invalid_text','Gebruik 1 tot 500 tekens per stemfragment. De regie verdeelt langere teksten automatisch in fragmenten.');
     if(preparedBody.characterId!==undefined){if(!ALL_CHARACTER_IDS.includes(preparedBody.characterId))return fail(400,'invalid_character','Kies een bestaand personage.');try{preparedCharacter=await savedCharacter(env,user,preparedBody.characterId);}catch{return fail(503,'characters_unavailable','De personage-instellingen kunnen niet worden geladen. Er wordt geen stemaanvraag verstuurd.');}}
     const speed=Number(preparedBody.speed??preparedCharacter?.speed??1);if(!Number.isFinite(speed)||speed<.7||speed>1.3)return fail(400,'invalid_speed','Kies een tempo tussen 0,7 en 1,3.');preparedSpeed=speed;
     preparedContext=preparedBody.gameId||preparedBody.profileId||preparedBody.messageId||preparedBody.brandId?await presentationContext(env,user,preparedBody):null;if(preparedContext?.game?.cancelledAt)return fail(409,'show_cancelled','Deze show is geannuleerd. De presentator blijft stil.');cacheStyle=preparedContext?speechStyle(preparedContext.profile):voiceInstructions;
-    if(preparedCharacter)cacheStyle=characterSpeechStyle(preparedCharacter)+`\nPersonage ${preparedCharacter.id}; profielversie ${preparedCharacter.revision}.`;
+    if(preparedCharacter)cacheStyle=characterCacheStyle(preparedCharacter);
     const voice=preparedCharacter?JSON.stringify(liveVoice(preparedCharacter)):VOICE;
     const model=preparedCharacter?.speechEngine==='gpt-live'?LIVE_MODEL:env.OPENAI_SPEECH_MODEL||'gpt-4o-mini-tts';
-    if(route==='library'){const items=[];for(const item of FIXED_SPEECH){const key=await voiceKey(user,model,voice,cacheStyle,speed,item.text),file=await env.SETTINGS?.head?.(voicePath(user,key));items.push({...item,key,ready:!!file});}return json({items,ready:items.filter(i=>i.ready).length,total:items.length,...(preparedCharacter?{characterId:preparedCharacter.id,voice,characterRevision:preparedCharacter.revision}:{})});}
-    cacheKey=await voiceKey(user,model,voice,cacheStyle,speed,preparedBody.text);const clip=await env.SETTINGS?.get(voicePath(user,cacheKey));if(clip)return new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Vlampie-Clip':cacheKey,'X-Vlampie-Cached':'1',...(preparedCharacter?{'X-Milo-Character':preparedCharacter.id}:{})}});
+    if(route==='library'){const items=[];for(const item of fixedSpeechFor(preparedContext?.game?.brandId||preparedBody.brandId||preparedCharacter?.brandId)){const key=await voiceKey(user,model,voice,cacheStyle,speed,item.text),file=await env.SETTINGS?.head?.(voicePath(user,key));items.push({...item,key,ready:!!file});}return json({items,ready:items.filter(i=>i.ready).length,total:items.length,policyVersion:SPEECH_POLICY_VERSION,...(preparedCharacter?{characterId:preparedCharacter.id,voice,characterRevision:preparedCharacter.revision}:{})});}
+    if(preparedBody.cacheOnly!==undefined&&typeof preparedBody.cacheOnly!=='boolean')return fail(400,'invalid_cache_mode','Kies een geldige stemvoorbereiding.');
+    if(preparedBody.expectedKey!==undefined&&!/^[a-f0-9]{64}$/.test(preparedBody.expectedKey))return fail(400,'invalid_clip_key','Het gekozen stemfragment is ongeldig.');
+    cacheKey=await voiceKey(user,model,voice,cacheStyle,speed,preparedBody.text);
+    if(preparedBody.expectedKey!==undefined&&preparedBody.expectedKey!==cacheKey)return fail(409,'speech_profile_changed','Het personage of draaiboek is gewijzigd. Bereid de actuele stemfragmenten opnieuw voor.');
+    if(preparedBody.cacheOnly&&(!preparedCharacter||!preparedContext?.game))return fail(400,'invalid_cache_context','Kies de opgeslagen show en het bijbehorende personage.');
+    const clip=await env.SETTINGS?.get(voicePath(user,cacheKey));
+    if(preparedBody.cacheOnly){const fresh=await presentationContext(env,user,preparedBody);if(fresh.game?.cancelledAt||fresh.game?.status==='finished')return fail(409,'show_cancelled','Deze show is beëindigd. De presentator blijft stil.');const character=await savedCharacter(env,user,preparedCharacter.id),freshKey=await voiceKey(user,model,JSON.stringify(liveVoice(character)),characterCacheStyle(character),speed,preparedBody.text);if(freshKey!==cacheKey)return fail(409,'speech_profile_changed','Het personage is intussen gewijzigd. Bereid de actuele stemfragmenten opnieuw voor.');}
+    if(clip&&(!preparedBody.cacheOnly||clip.customMetadata?.policyVersion===SPEECH_POLICY_VERSION&&clip.customMetadata?.scriptVerified==='true'))return new Response(clip.body,{headers:{...headers,'Content-Type':clip.httpMetadata?.contentType||'audio/mpeg','X-Vlampie-Clip':cacheKey,'X-Vlampie-Cached':'1','X-Milo-Speech-Policy':SPEECH_POLICY_VERSION,...(clip.customMetadata?.durationMs?{'X-Milo-Audio-Duration-Ms':String(clip.customMetadata.durationMs)}:{}),...(preparedCharacter?{'X-Milo-Character':preparedCharacter.id}:{})}});
+    if(preparedBody.cacheOnly)return fail(409,'speech_not_prepared','Dit stemfragment is nog niet voorbereid. Ga naar Uitzending testen en laat de voorbereiding afronden.');
    }catch(error){if(error instanceof PresentationError)return fail(error.status,error.code,error.message);return fail(400,'invalid_body','De stemaanvraag kon niet worden voorbereid. Controleer de verbinding en probeer opnieuw.');}
   }
   let saved;try{saved=await readSecret(env);}catch{return fail(503,'settings_unavailable','De beveiligde sleutelopslag kan niet worden gelezen. Probeer opnieuw of laat de verbinding herstellen.');}
@@ -164,8 +178,12 @@ export async function handleOpenAI(request,env={},fetcher=fetch){
       const context=preparedContext;
       if(preparedCharacter?.speechEngine==='gpt-live'){
        const audio=await synthesizeLiveScript(key,{...preparedCharacter,speed},body.text.trim(),request,fetcher);
-       if(env.SETTINGS?.put)await env.SETTINGS.put(voicePath(user,cacheKey),audio,{httpMetadata:{contentType:'audio/wav'},customMetadata:{createdAt:String(Date.now()),engine:LIVE_MODEL}});
-       return new Response(audio,{headers:{...headers,'Content-Type':'audio/wav','X-Vlampie-Clip':cacheKey,'X-Milo-Character':preparedCharacter.id,'X-Milo-Speech-Engine':LIVE_MODEL}});
+       if(body.gameId){const fresh=await presentationContext(env,user,body);if(fresh.game?.cancelledAt||fresh.game?.status==='finished')return fail(409,'show_cancelled','Deze show is beëindigd. Het fragment wordt niet meer voorbereid.');}
+       const currentCharacter=await savedCharacter(env,user,preparedCharacter.id),currentKey=await voiceKey(user,LIVE_MODEL,JSON.stringify(liveVoice(currentCharacter)),characterCacheStyle(currentCharacter),speed,body.text);
+       if(currentKey!==cacheKey)return fail(409,'speech_profile_changed','Het personage is tijdens de voorbereiding gewijzigd. Bereid de actuele stemfragmenten opnieuw voor.');
+       const durationMs=waveDurationMs(audio);
+       if(env.SETTINGS?.put)await env.SETTINGS.put(voicePath(user,cacheKey),audio,{httpMetadata:{contentType:'audio/wav'},customMetadata:{createdAt:String(Date.now()),engine:LIVE_MODEL,policyVersion:SPEECH_POLICY_VERSION,scriptVerified:'true',durationMs:String(durationMs||'')}});
+       return new Response(audio,{headers:{...headers,'Content-Type':'audio/wav','X-Vlampie-Clip':cacheKey,'X-Milo-Character':preparedCharacter.id,'X-Milo-Speech-Engine':LIVE_MODEL,'X-Milo-Speech-Policy':SPEECH_POLICY_VERSION,...(durationMs?{'X-Milo-Audio-Duration-Ms':String(durationMs)}:{})}});
       }
       const response=await call('/audio/speech',key,{model:env.OPENAI_SPEECH_MODEL||'gpt-4o-mini-tts',voice:preparedCharacter?.voice||VOICE,input:body.text.trim(),instructions:preparedCharacter?characterSpeechStyle(preparedCharacter):context?speechStyle(context.profile):voiceInstructions,response_format:'mp3',speed},request,fetcher);
       if(!response.ok){await response.body?.cancel();return upstreamError(response.status);}

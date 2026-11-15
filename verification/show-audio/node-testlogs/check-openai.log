@@ -1,0 +1,22 @@
+✔ missing identity, cross-origin and malformed requests cannot spend API credit (31.617115ms)
+✔ configuration status never returns the key and missing key is explicit (7.202296ms)
+✔ speech uses server-selected Ballad, Dutch instructions, bounded speed and audio response (2.31476ms)
+✔ regie reply uses Responses, keeps untrusted messages separate and does not retain responses (1.383383ms)
+✔ upstream failures are sanitized and connection test does not generate speech (1.527592ms)
+✔ visual speech starts after decode with true duration and stops with the audio (1.040188ms)
+✔ stop during fetch prevents a late response from playing (0.297962ms)
+✔ newer utterance wins when network responses arrive out of order (0.456872ms)
+✔ autoplay restriction keeps decoded audio ready and retry makes no API call (0.524705ms)
+✔ API failure stays a failure and does not start an alternate voice (0.433298ms)
+✔ an interrupted audio context resumes the existing source at the same position (0.480083ms)
+✔ all new controls exist, and the client has no key or direct provider endpoint (2.400938ms)
+✔ regie pause holds the existing source and resume makes no new API request (0.484449ms)
+✔ pause while the voice loads prevents a late response from starting audio (0.375979ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.963431

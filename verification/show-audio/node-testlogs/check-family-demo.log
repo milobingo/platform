@@ -1,0 +1,3 @@
+✓ Demo data: running Milo show, 2 children, 4-round books, drawn balls, prizes, local chat/profiles, abort and reset; no real network/device/provider access
+✓ Regular family API keeps its real fetch route, player headers and request ID behavior
+✓ React demo: all 5 filled tabs, unique books/marks, sample prizes, persistent mock stage, isolated real session/storage and no real media/API connections

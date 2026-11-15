@@ -37,7 +37,7 @@ async function rig({live=false,goal=0}={}){
  const round=server.plan.blocks.findIndex(b=>b.type==='round');activateBlock(server,round,goal);
  e.game=live?hostCopy(server):server;e.demo=!live;e.loading=false;e.voiceMode=live?'ai':'browser';e.apiStatus={configured:live};e.syncGame();e.speakerId=e.hostId='milo';
  const calls=[];router=async(url,opts)=>{
-  const action=url.split('/').at(-1),body=opts.body?JSON.parse(opts.body):{};calls.push({action,body});
+  const action=url.split('/').at(-1),body=opts.body?JSON.parse(opts.body):{};if(action==='show-audio')return Response.json({fingerprint:'isolated-engine-audio-fixture',items:[]});calls.push({action,body});
   if(action===server.id&&(!opts.method||opts.method==='GET'))return Response.json({game:hostCopy(server)});
   let result;
   if(action==='activate')activateBlock(server,body.blockIndex,body.goalIndex);

@@ -1,0 +1,12 @@
+✔ C01: 4000 actual cards and 81 two-sheet orders retain old snapshots with measured start reserve (1495.697554ms)
+✔ C01: start and opening a window fail before mutations when their reserved capacity is unavailable (1100.965061ms)
+CAPACITY_MEASUREMENTS {"storage":"native SQLite :memory:; PostgreSQL target load not measured","providerCalls":0,"fourThousandCards":{"strategy":"bounded-document-v1","bytes":656754,"maximumBytes":33554432,"availableBytes":32897678,"bookCount":1000,"cardCount":4000,"goalCount":10,"eventCount":0,"eventLimit":20000,"coreEventReserve":1000,"liveReserveBytes":16202176,"windowReserveBytes":3393216,"projectedBytes":16858930,"startReady":true},"eightyOneOrdersDefaultCopy":{"strategy":"bounded-document-v1","bytes":1383001,"maximumBytes":33554432,"availableBytes":32171431,"bookCount":162,"cardCount":648,"goalCount":10,"eventCount":0,"eventLimit":20000,"coreEventReserve":1000,"liveReserveBytes":3632176,"windowReserveBytes":879216,"projectedBytes":5015177,"startReady":true},"eightyOneOrdersLongCopy":{"strategy":"bounded-document-v1","bytes":3852691,"maximumBytes":33554432,"availableBytes":29701741,"bookCount":162,"cardCount":648,"goalCount":10,"eventCount":0,"eventLimit":20000,"coreEventReserve":1000,"liveReserveBytes":3632176,"windowReserveBytes":879216,"projectedBytes":7484867,"startReady":true},"concurrentHouseholds":{"households":100,"books":400,"cardCount":1600,"claims":400,"results":1,"elapsedMs":7385,"peakDocumentBytes":1114949,"conflicts":0,"retries":0,"requests":500}}
+✔ C01: 100 concurrent households claim all 400 books with durable CAS outcomes and one saved draw (7759.360623ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10360.554162

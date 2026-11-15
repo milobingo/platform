@@ -1,4 +1,5 @@
 import {characterLiveInstructions,liveVoice} from './characters.js';
+import {dutchNumber} from '../public/bingo-speech.js';
 
 export const LIVE_MODEL='gpt-live-1';
 export class LiveServiceError extends Error{
@@ -52,8 +53,7 @@ function closeAttachedSession(socket){
   try{socket.accept();socket.send(JSON.stringify({type:'session.close'}));}catch{finish('close_send_failed');}
  });
 }
-const numberWord=n=>{const units=['nul','een','twee','drie','vier','vijf','zes','zeven','acht','negen'],teens=['tien','elf','twaalf','dertien','veertien','vijftien','zestien','zeventien','achttien','negentien'],tens=['','','twintig','dertig','veertig','vijftig','zestig','zeventig'];return n<10?units[n]:n<20?teens[n-10]:n%10?units[n%10]+'en'+tens[Math.floor(n/10)]:tens[n/10];};
-const words=Array.from({length:76},(_,n)=>[numberWord(n),String(n)]).sort((a,b)=>b[0].length-a[0].length);
+const words=Array.from({length:76},(_,n)=>[dutchNumber(n).normalize('NFD').replace(/\p{M}/gu,''),String(n)]).sort((a,b)=>b[0].length-a[0].length);
 export function normalizedScript(text){let s=String(text).toLowerCase().normalize('NFD').replace(/\p{M}/gu,'').replace(/[-’']/g,'').replace(/\bhe+[ey]*\b/g,'he').replace(/\bbingo\s+show\b/g,'bingoshow');for(const [word,n] of words)s=s.replace(new RegExp('\\b'+word+'\\b','g'),n);return s.replace(/[^\p{L}\p{N}]+/gu,' ').trim();}
 export function pcmWave(chunks){
  const size=chunks.reduce((n,c)=>n+c.length,0),out=new Uint8Array(44+size),view=new DataView(out.buffer),ascii=(offset,s)=>{for(let i=0;i<s.length;i++)out[offset+i]=s.charCodeAt(i);};

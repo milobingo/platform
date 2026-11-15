@@ -1,0 +1,10 @@
+✔ a protected runtime can open beheer before provider credentials or a mail gateway exist (169.815812ms)
+✔ server mail limits still reject live staging, invalid policy, recipients and a bad explicit gateway secret (232.364607ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 408.057012

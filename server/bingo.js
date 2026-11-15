@@ -15,10 +15,12 @@ import {bookPdf,PRINT_VERSION,printVersion} from './bingo-pdf.js';
 import {handleBingoOrders} from './bingo-orders.js';
 import {assertStartCapacity,gameCapacity} from './game-capacity.js';
 import {recordResultMailEvent,dispatchPublishedPrizeMail} from './mail-domain-events.js';
+import {broadcastSettings,normalizeYoutubeId} from './broadcast-settings.js';
+import {optionalSpeechCue,NUMBER_NINE_AUDIENCE} from '../public/bingo-speech.js';
 import {activeOrders,orderShow,assertOrderStartReady,assertOrderBookIntegrity} from './bingo-order-model.js';
 const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>Response.json(data,{status,headers});
-const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);copy.capacity=gameCapacity(game);copy.preparationRevision=game.preparationRevision||0;copy.serverTime=Date.now();delete copy.state.deck;delete copy.chat;return copy;};
+const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);copy.capacity=gameCapacity(game);copy.preparationRevision=game.preparationRevision||0;copy.broadcastRevision=broadcastSettings(game).revision;copy.serverTime=Date.now();delete copy.state.deck;delete copy.chat;return copy;};
 async function hostGameWithCleanup(game,env){
  const copy=hostGame(game);if(!copy.cancellation)return copy;
  let pending=!!(game.state.callId||game.state.drawHold);
@@ -82,11 +84,39 @@ export async function handleBingo(request,env={}){
     let game=row.data;if(game.status!=='finished'&&game.state.window?.status==='open'&&Date.now()>=game.state.window.endsAt)game=(await store.mutate(id,{},(g,_family,now)=>settleWindow(g,now))).game;
     return json({game:admin&&url.searchParams.get('player')!=='1'?await hostGameWithCleanup(game,env):playerGame(game,user),serverTime:Date.now()});
    }
+   if(action==='broadcast'&&request.method==='POST'){
+    requireHost();
+    if(!/^application\/json(?:;|$)/i.test(request.headers.get('content-type')||''))throw new BingoError('Verstuur de uitzendinstellingen als JSON.',415,'content_type');
+    if(Object.keys(body).some(key=>!['youtubeId','expectedBroadcastRevision','requestId','regieId'].includes(key)))throw new BingoError('Wijzig hier alleen de YouTube-uitzending.',400,'broadcast_fields');
+    if(!Number.isSafeInteger(body.expectedBroadcastRevision)||body.expectedBroadcastRevision<0)throw new BingoError('Herlaad de uitzendinstellingen voordat je opslaat.',400,'broadcast_revision');
+    const youtubeId=normalizeYoutubeId(body.youtubeId),binding=await operationDigest(['broadcast',youtubeId,body.expectedBroadcastRevision]);
+    const result=await store.mutate(id,{...options,binding,authorize:g=>{if(g.ownerId!==user)throw new BingoError('Deze show hoort bij een andere host.',403);assertShowNotCancelled(g);if(!['draft','running'].includes(g.status))throw new BingoError('Deze show is afgelopen. De uitzending kan niet meer worden gewijzigd.',409,'show_finished');}},(g)=>{
+     const current=broadcastSettings(g);
+     if(current.revision!==body.expectedBroadcastRevision)throw Object.assign(new BingoError('De YouTube-uitzending is in een ander venster gewijzigd. Je invoer blijft bewaard. Controleer de opgeslagen uitzending voordat je opnieuw probeert.',409,'broadcast_conflict'),{broadcast:current});
+     g.settings={...g.settings,youtubeId};g.broadcastRevision=current.revision+1;
+     return broadcastSettings(g);
+    });return json({game:hostGame(result.game),broadcast:broadcastSettings(result.game)});
+   }
+   if(action==='audio-cue'&&request.method==='POST'){
+    requireHost();if(!/^application\/json(?:;|$)/i.test(request.headers.get('content-type')||''))throw new BingoError('Verstuur het presentatormoment als JSON.',415,'content_type');const cue=optionalSpeechCue(body.cueId);
+    if(!cue)throw new BingoError('Kies een beschikbaar kort presentatormoment.',400,'audio_cue_invalid');
+    const authorize=g=>{if(g.ownerId!==user)throw new BingoError('Deze show hoort bij een andere host.',403);assertShowNotCancelled(g);if(brandId(g)!=='milo'||g.status!=='running')throw new BingoError('Dit presentatormoment hoort bij een lopende Milo-show.',409,'audio_cue_unavailable');};
+    const result=await store.mutate(id,{requestId:scopedId,authorize,durableReplay:g=>g.audioCues?.[cue.id]?{result:{claimed:false}}:null},(g,_family,at)=>{
+     if(!body.regieId||g.state.control?.id!==body.regieId||!(g.state.control.until>at))throw new BingoError('Alleen het actieve regievenster kan dit presentatormoment afspelen. Hervat eerst de regie.',409,'control_busy');
+     assertDrawAvailable(g);
+     if(g.state.paused||g.state.phase!=='running'||g.state.window?.status==='open'||g.state.resultId||g.state.pending||g.state.callId)throw new BingoError('Het presentatormoment wacht tot de trekking vrij is.',409,'audio_cue_held');
+     if(body.expectedEpoch!==undefined&&body.expectedEpoch!==g.state.epoch)throw new BingoError('Deze ronde is intussen gewijzigd.',409,'audio_cue_stale');
+     if(body.expectedNumber!==undefined&&body.expectedNumber!==g.state.lastCommit?.number)throw new BingoError('Er is intussen een andere officiële bal getoond.',409,'audio_cue_stale');
+     if(cue.id===NUMBER_NINE_AUDIENCE.id&&(g.state.lastCommit?.number!==9||!g.state.drawn.includes(9)))throw new BingoError('Dit moment hoort alleen bij de officieel getoonde negen.',409,'audio_cue_number');
+     g.audioCues={...(g.audioCues||{}),[cue.id]:{at,by:user,requestId,epoch:g.state.epoch,number:g.state.lastCommit?.number||null}};
+     return {claimed:true};
+    });return json({claimed:result.result?.claimed===true,game:hostGame(result.game)});
+   }
    if(action==='brand'&&request.method==='POST'){
     requireHost();const next=validBrand(body.brandId);const result=await store.mutate(id,options,(g,_family,now)=>{control(g,now);assertDrawAvailable(g);if((g.status!=='draft'||g.rulesPublication)&&brandId(g)!==next)throw new BingoError('De showwereld staat vast zodra de regels gepubliceerd zijn of de show gestart is.',409,'brand_locked');if(activeOrders(g)&&brandId(g)!==next)throw new BingoError('De showwereld staat vast zolang er bestellingen voor deze show bestaan.',409);if(g.state.callId)throw new BingoError('Rond eerst het belmoment af voordat je de showhost wisselt.',409,'call_active');if(g.status==='finished')throw new BingoError('Deze show is afgelopen. De opgeslagen showidentiteit blijft bewaard.',409);const previous=showBrand(g);g.plan=switchPlanBrand(g.plan,previous,next);g.brandId=next;g.settings={...g.settings,minigames:enabledMinigameIds(g)};if(g.title===previous.title)g.title=showBrand(g).title;if(g.presentationSnapshot){g.presentationSnapshot.profile=brandProfile(g.presentationSnapshot.profile,g);g.presentationSnapshot.frozenAt=now;} });return json({game:hostGame(result.game)});
    }
    if(!action&&request.method==='PUT'){
-    requireHost();const presentation=body.presentationSelection?await new PresentationStore(env.DB).read(user):null;const result=await store.mutate(id,options,(g,_family,now)=>{if(g.status!=='draft')throw new BingoError('De voorbereiding staat vast: deze show is bezig. Hervat de regie om verder te gaan.',409,'preparation_locked');preparationCheck(g);const plan=normalizeBingoPlan(body.plan||g.plan),schedule=body.date?normalizeShowTime(body.date,{timeZone:body.timeZone}):{date:g.date,timeZone:g.timeZone},rounds=plan.blocks.filter(b=>b.type==='round'),old=g.plan.blocks.filter(b=>b.type==='round');if((g.books.length||activeOrders(g))&&(rounds.length!==old.length||rounds.some((r,i)=>r.title!==old[i].title)||body.title&&body.title!==g.title||body.date&&schedule.date!==g.date))throw new BingoError('Spelnaam, datum en ronde-indeling staan vast zodra er boekjes of actieve bestellingen zijn.');g.plan=plan;g.title=cleanText(body.title||g.title,60,'spelnaam');Object.assign(g,schedule);g.settings=gameSettings(body.settings||g.settings,g);if(presentation)g.presentationSelection=presentationValue(()=>presentationSelection(body.presentationSelection,presentation.document));if(automaticRules(g)){prepareAutomaticRules(g,now);}else if(g.rulesPublication){if(body.publishRules===true){const reason=cleanText(body.rulesChangeReason,300,'reden voor de gewijzigde regels');if(reason.length<10)throw new BingoError('Licht de gecontroleerde regelwijziging toe (minimaal tien tekens).');const oldVersion=g.rulesPublication.version;publishGameRules(g,now);if(g.rulesPublication.version!==oldVersion)productionEvent(g,'rules-republished',{previousVersion:oldVersion,version:g.rulesPublication.version,reason},now);}else assertRulesCurrent(g);}g.preparationRevision=(g.preparationRevision||0)+1;});return json({game:hostGame(result.game)});
+    requireHost();const presentation=body.presentationSelection?await new PresentationStore(env.DB).read(user):null;const result=await store.mutate(id,options,(g,_family,now)=>{if(g.status!=='draft')throw new BingoError('De voorbereiding staat vast: deze show is bezig. Hervat de regie om verder te gaan.',409,'preparation_locked');preparationCheck(g);const plan=normalizeBingoPlan(body.plan||g.plan),schedule=body.date?normalizeShowTime(body.date,{timeZone:body.timeZone}):{date:g.date,timeZone:g.timeZone},rounds=plan.blocks.filter(b=>b.type==='round'),old=g.plan.blocks.filter(b=>b.type==='round');if((g.books.length||activeOrders(g))&&(rounds.length!==old.length||rounds.some((r,i)=>r.title!==old[i].title)||body.title&&body.title!==g.title||body.date&&schedule.date!==g.date))throw new BingoError('Spelnaam, datum en ronde-indeling staan vast zodra er boekjes of actieve bestellingen zijn.');g.plan=plan;g.title=cleanText(body.title||g.title,60,'spelnaam');Object.assign(g,schedule);g.settings=gameSettings({...body.settings||g.settings,youtubeId:g.settings.youtubeId||''},g);if(presentation)g.presentationSelection=presentationValue(()=>presentationSelection(body.presentationSelection,presentation.document));if(automaticRules(g)){prepareAutomaticRules(g,now);}else if(g.rulesPublication){if(body.publishRules===true){const reason=cleanText(body.rulesChangeReason,300,'reden voor de gewijzigde regels');if(reason.length<10)throw new BingoError('Licht de gecontroleerde regelwijziging toe (minimaal tien tekens).');const oldVersion=g.rulesPublication.version;publishGameRules(g,now);if(g.rulesPublication.version!==oldVersion)productionEvent(g,'rules-republished',{previousVersion:oldVersion,version:g.rulesPublication.version,reason},now);}else assertRulesCurrent(g);}g.preparationRevision=(g.preparationRevision||0)+1;});return json({game:hostGame(result.game)});
    }
    if(action==='load-standard'&&request.method==='POST'){
     requireHost();const result=await store.mutate(id,options,(g,_family,now)=>{
@@ -171,5 +201,5 @@ export async function handleBingo(request,env={}){
    const row=await store.game(url.searchParams.get('game')),id=url.searchParams.get('id');if(!row||!row.data.plan.prizes.some(p=>p.image===`/api/planner/images/${id}`))throw new BingoError('Afbeelding niet gevonden.',404);const image=await env.SETTINGS?.get(`show-prizes/${encodeURIComponent(row.owner_id)}/${id}`);if(!image)throw new BingoError('Afbeelding niet gevonden.',404);return new Response(image.body,{headers:{...headers,'Content-Type':image.httpMetadata?.contentType||'image/png'}});
   }
   throw new BingoError('Deze functie bestaat niet.',404);
- }catch(error){if(error instanceof BingoError||error.status&&error.code)return json({error:{code:error.code,message:error.message}},error.status);console.error('Bingoadministratie:',error?.name||'StorageError');return json({error:{code:'unavailable',message:'De aanvraag is niet bevestigd. Probeer opnieuw; de opgeslagen spelstand blijft behouden.'}},503);}
+ }catch(error){if(error instanceof BingoError||error.status&&error.code)return json({error:{code:error.code,message:error.message},...(error.broadcast?{broadcast:error.broadcast}:{})},error.status);console.error('Bingoadministratie:',error?.name||'StorageError');return json({error:{code:'unavailable',message:'De aanvraag is niet bevestigd. Probeer opnieuw; de opgeslagen spelstand blijft behouden.'}},503);}
 }

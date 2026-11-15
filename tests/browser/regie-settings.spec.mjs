@@ -1,3 +1,4 @@
+import {createBrowserAudioFixture} from '../helpers/browser-audio-fixture.mjs';
 import {test,expect} from '@playwright/test';
 import {mkdir,writeFile,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -42,6 +43,7 @@ async function simulatedSavedShow(page,testInfo){
  // assertions do not claim that a real provider credential was exercised.
  for(const status of [openai,livekit])for(const key of ['key','apiKey','apiSecret','OPENAI_API_KEY','LIVEKIT_API_KEY','LIVEKIT_API_SECRET'])expect(status).not.toHaveProperty(key);
  const proof={origin,gameId:game.id,requestedMailState:0,requestedSavedGame:0,gets:{},mailResponses:[],errors:[],external:[],writes:[],unexpected:[],expectedSandboxScriptBlocks:[],expectedMailLoadConsoleErrors:[],expectedResendConsoleErrors:[],resendRequests:[],resendStatuses:[],providerRequests:[],forbiddenProviderRequests:[],providerChecks:{},fixtureCleanup:false};
+ const audioFixture=createBrowserAudioFixture({owner:'qa-browser-regie',getGame:()=>game});proof.audioPreparationRequests=audioFixture.requests;
  page.setDefaultTimeout(10000);
  page.on('pageerror',error=>proof.errors.push(error.message));
  page.on('console',message=>{
@@ -60,6 +62,7 @@ async function simulatedSavedShow(page,testInfo){
   if(url.origin!==origin){proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
+  if(await audioFixture.handle(route))return;
   if(url.pathname==='/api/resend/settings'){
    const method=request.method(),body=method==='GET'?undefined:request.postDataJSON(),headers=request.headers();
    if(method==='GET')proof.gets[url.pathname]=(proof.gets[url.pathname]||0)+1;

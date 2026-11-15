@@ -1,0 +1,18 @@
+✔ native REST fetch stays native, upgrade allowlist never forwards secrets to another origin (25.003704ms)
+✔ upgrade resolves only once open, buffers early messages and supports listener removal and close (11.048954ms)
+✔ rejected and redirected handshakes return bounded safe status without leaking key or following redirects (4.189652ms)
+✔ abort before or during handshake and handshake timeout close pending sockets (64.878153ms)
+✔ synthesis runs the transferred voice/session protocol and caches only complete confirmed PCM (15.322ms)
+✔ request cancellation after socket open closes synthesis and never returns partial audio (4.28268ms)
+✔ session teardown confirms session.closed; rejected close stays unconfirmed (7.268037ms)
+✔ live whisper uses an existing Node WebSocket session, accepts only its ACK and leaves primary media open (4.603724ms)
+✔ an early buffered Node sideband ACK cannot confirm a later whisper send (62.988923ms)
+✔ request abort on an open Node whisper sideband reports uncertain and never sends primary-session close (5.335907ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 209.844345

@@ -1,0 +1,21 @@
+✔ force cancellation requires verified host ownership, same-origin headers and explicit confirmation without any mutation (35.720758ms)
+✔ forced cancellation overrides an active control lease, pending draw, open claims and a call hold without settling or changing history (10.781363ms)
+✔ unpublished results remain unpublished and all stale regie mutation routes are refused after cancellation (15.653348ms)
+✔ double clicks, independent tabs and durable retries produce exactly one cancellation event (48.71539ms)
+✔ force cancellation refuses a draft show without changing it (3.934399ms)
+✔ force cancellation refuses a finished show without changing it (3.483425ms)
+✔ a failed durable cancellation write keeps the entire running show and a retry can succeed (4.971723ms)
+✔ a draw waiting on a stale CAS cannot commit after cancellation wins the database race (75.982633ms)
+✔ cancellation retries a lost CAS against the latest officially committed draw rather than replacing it (43.025005ms)
+✔ the shared store refuses terminal game resurrection even when an internal writer bypasses API guards (10.505193ms)
+✔ players see cancellation without private operator, reason or pending draw details and cannot add claims (9.497458ms)
+✔ force cancelling Milo leaves the separate Vlampie show unchanged (4.01511ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 270.887727
+Bingoadministratie: Error

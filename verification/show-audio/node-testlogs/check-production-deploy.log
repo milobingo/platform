@@ -1,0 +1,18 @@
+✔ production profile requires a real separate destination and rejects staging or injected configuration (6.205688ms)
+✔ rendered production wrapper pins reviewed source and enforces fixed target and production mail policy (1072.30287ms)
+✔ sudoers parser selection requires digest support and rejects a no-op or incompatible pinned parser (1.434343ms)
+✔ binding preserves confirmed names containing old tokens and port digits without cascading substitutions (5.633967ms)
+✔ production runtime binds TLS, limited account, mail mode and strips all deployment/build credentials (3.611622ms)
+✔ same-SHA staging proof requires exact successful workflow jobs and currently matching public release (0.366077ms)
+✔ protected full staging acceptance cannot be inferred from health, pending checks or a different release (1.428965ms)
+✔ promotion consults own exact CI, staging identity and protected complete acceptance without provider calls (19.662821ms)
+✔ public production verification checks actual bytes and access boundaries without an account/provider call (23.09162ms)
+✔ production imports have no CLI side effects and incomplete default profile cannot render or deploy (86.168895ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1226.206097

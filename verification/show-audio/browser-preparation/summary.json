@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-11-15T13:30:51.964010+00:00",
+  "baseUrl": "http://127.0.0.1:4175",
+  "actualChromium": true,
+  "actualProviderCalls": false,
+  "actualOBSInstallation": false,
+  "actualShowWrites": false,
+  "isolatedSQLiteWrites": true,
+  "checks": [
+    {
+      "name": "automatic-bank-and-start",
+      "status": "passed",
+      "proof": "automatic-bank-and-start.json",
+      "initialPreparedClips": 123,
+      "storyEditedClips": 2,
+      "startWaitedForLastByte": true,
+      "singleStart": true
+    },
+    {
+      "name": "live-cadence-and-reload",
+      "status": "passed",
+      "proof": "live-cadence-and-reload.json",
+      "officialGapMs": 15098,
+      "runtimeSpeechRequests": 0,
+      "actualSyntheticWavPlays": 3,
+      "pauseHeldForFullInterval": true,
+      "reload": {
+        "sameGame": true,
+        "sameRoundEpoch": true,
+        "sameDrawn": true,
+        "paused": true,
+        "openBingoWindowPreserved": true,
+        "coldBankReloaded": true,
+        "numberNineReceiptPreserved": true
+      }
+    },
+    {
+      "name": "original-music-render",
+      "status": "passed",
+      "proof": "../rendered-music.json",
+      "sampleRate": 48000,
+      "peak": 0.015093733556568623,
+      "pausedRms": 0
+    }
+  ]
+}

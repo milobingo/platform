@@ -1,0 +1,22 @@
+✔ public video IDs and supported YouTube URLs normalize without any provider request (1.52591ms)
+✔ YouTube autosave accepts {"status":"draft"} independently of rules, timeline and preparation revision (32.037747ms)
+✔ YouTube autosave accepts {"status":"running"} independently of rules, timeline and preparation revision (7.47265ms)
+✔ YouTube autosave accepts {"status":"running","paused":true} independently of rules, timeline and preparation revision (5.492413ms)
+✔ terminal shows reject broadcast changes; role, ownership, origin, JSON and field guards fail closed (12.706525ms)
+✔ two tabs conflict on the broadcast revision; idempotent retries and clearing are explicit (11.699783ms)
+✔ a storage error preserves the old ID; retrying the same request stores it once (4.943523ms)
+✔ a stale complete preparation PUT preserves a newer broadcast ID, including a lost CAS race (36.459379ms)
+✔ optional speech claims are durable at most once, including retries, two tabs and old operation eviction (83.064452ms)
+✔ optional speech cannot be claimed before an official nine, across an old epoch or while held (43.658111ms)
+✔ optional speech requires the current unexpired control lease and never acquires or extends it (14.759341ms)
+✔ a control handover that wins the CAS prevents the old tab from consuming a cue (62.551236ms)
+﹣ PostgreSQL broadcast revisions and durable audio receipts use real CAS and survive reload (0.065081ms) # MILO_TEST_DATABASE_URL is not set; this integration requires an explicitly local PostgreSQL test database
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 321.908197
+Bingoadministratie: Error

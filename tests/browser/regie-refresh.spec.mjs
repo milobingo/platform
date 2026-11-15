@@ -7,6 +7,7 @@ import {handleBingo} from '../../server/bingo.js';
 import {createSqliteDatabase} from '../../server/node-storage.js';
 import {prepareAutomaticRules} from '../../server/game-rules.js';
 import {defaultPresentation} from '../../server/presentation-model.js';
+import {createBrowserAudioFixture} from '../helpers/browser-audio-fixture.mjs';
 
 // Production UI and real Bingo handlers/SQLite CAS. Every API request is
 // intercepted; no real show, account, provider or production data is changed.
@@ -17,7 +18,7 @@ async function fixture(page,testInfo,options={}){
  prepareAutomaticRules(game);game.status='running';game.startedAt=Date.now()-120000;
  activateBlock(game,game.plan.blocks.map((block,index)=>({block,index})).filter(item=>item.block.type==='round')[1].index,1);
  Object.assign(game.state,{paused:true,drawn:[7,13,19,24,31,41],lastCommit:{number:41,at:Date.now()-20000}});await store.create(game);
- const path='/api/bingo/games/'+game.id,evidence={origin,gameId:game.id,errors:[],external:[],unexpected:[],forbiddenWrites:[],mutations:[],expectedFailures:[]},state={cancelFailures:0,cancelDelayMs:0,...options};
+ const audio=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data}),path='/api/bingo/games/'+game.id,evidence={origin,gameId:game.id,errors:[],external:[],unexpected:[],forbiddenWrites:[],mutations:[],expectedFailures:[],audioPreparationRequests:audio.requests},state={cancelFailures:0,cancelDelayMs:0,...options};
  page.on('pageerror',error=>evidence.errors.push(error.message));
  page.on('console',message=>{if(message.type()!=='error')return;if(message.location().url===origin+path+'/force-cancel'&&/status of 503/.test(message.text()))evidence.expectedFailures.push(message.text());else evidence.errors.push(message.text());});
  await page.context().route('**/*',async route=>{
@@ -25,6 +26,7 @@ async function fixture(page,testInfo,options={}){
   if(url.origin!==origin){evidence.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
+  if(await audio.handle(route))return;
   const read=method==='GET'&&['/api/bingo/games',path,'/api/bingo/families'].includes(url.pathname),write=method==='POST'&&['heartbeat','pause',...(state.allowForceCancel?['force-cancel']:[])].some(action=>url.pathname===path+'/'+action);
   if(read||write){
    const body=write?request.postDataJSON():undefined;
@@ -46,7 +48,8 @@ async function fixture(page,testInfo,options={}){
   }
   else if(url.pathname===path+'/chat/members')body={members:[],serverTime:Date.now()};
   else if(url.pathname==='/api/characters')body={characters:Object.values(CHARACTERS),revision:0};
-  else if(url.pathname==='/api/openai/status'||url.pathname==='/api/livekit/settings')body={configured:false,canManage:true,source:'none',environmentConfigured:false,revision:null};
+  else if(url.pathname==='/api/openai/status')body={configured:true,canManage:true,source:'isolated-fixture',environmentConfigured:false,revision:null};
+  else if(url.pathname==='/api/livekit/settings')body={configured:false,canManage:true,source:'none',environmentConfigured:false,revision:null};
   else if(url.pathname==='/api/live-calls')body={call:null,serverTime:Date.now()};
   else if(url.pathname==='/api/output')body={state:null,serverTime:Date.now()};
   else if(url.pathname==='/api/presentation/document')body={document:defaultPresentation(),revision:0};

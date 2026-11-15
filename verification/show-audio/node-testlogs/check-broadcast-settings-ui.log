@@ -1,0 +1,14 @@
+✔ a running-show URL autosaves to the separate broadcast API and confirms the normalized server ID (168.712778ms)
+✔ a failed autosave keeps the complete input and only an explicit retry reuses its request ID (225.141361ms)
+✔ a conflicting tab preserves input and requires explicit confirmation against the current broadcast revision (199.703197ms)
+✔ edits during an in-flight save stay visible and are serialized after the confirmed revision (185.848075ms)
+✔ invalid input never sends a request and terminal shows never claim an unsaved change was stored (115.505729ms)
+✔ switching shows cancels pending debounce and ignores an old show response (139.400547ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1040.804572

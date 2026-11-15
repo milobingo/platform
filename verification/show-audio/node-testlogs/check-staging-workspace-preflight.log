@@ -1,0 +1,11 @@
+✔ read-only workspace preflight opens both mail catalogues and redacted native settings (54.288685ms)
+✔ unavailable private storage fails the deployment gate without leaking its error contents (15.369205ms)
+✔ workspace CLI refuses an unbound target before any database or storage access (72.864784ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 147.565756

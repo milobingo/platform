@@ -5,6 +5,7 @@ import BroadcastPreparation from './BroadcastPreparation.jsx';
 import {bindingRules,rulesContract} from '../server/game-rules.js';
 import {canLoadStandardMilo,standardMiloDiffers,patternRequirement} from '../server/standard-show.js';
 import {startReadiness} from './start-readiness.js';
+import ShowAudioPreparation from './ShowAudioPreparation.jsx';
 
 export function PreparationStatus({s,operator,run}){
  const [discard,setDiscard]=useState(false),state=s.preparation||{status:s.dirty?'saving':'saved'};
@@ -25,7 +26,7 @@ export function PreparationStart({s,operator,run,onStarted}){
  const blockers=readiness.blockers.filter(row=>!running||!['calls','result','voice'].includes(row.id));
  const resume=()=>run(async()=>{await operator.resumeRegie();onStarted?.();});
  return <Panel title={running?'Hervat regie':'Start show'} subtitle={running?'De serverstand blijft behouden. Pauze, meldingen en belblokkades worden niet vrijgegeven.':'Laatste wijzigingen worden eerst opgeslagen. De server legt daarna de actuele spelregels vast.'}>
-  <div className="mf-editor-content mf-preparation-start"><PreparationStatus s={s} operator={operator} run={run}/>
+  <div className="mf-editor-content mf-preparation-start"><PreparationStatus s={s} operator={operator} run={run}/><ShowAudioPreparation s={s} operator={operator} run={run}/>
    <p className="mf-rules-readonly" data-rules-state="readonly"><CheckCircle2 size={17}/>{s.game.rulesPublication?.finalizedAt?'Spelregels bij de start vastgelegd.':s.game.rulesPublication&&(s.game.orders?.length||s.game.books.some(book=>book.accountId))?'Deelnemers spelen met deze gepubliceerde regels.':'De spelregels staan klaar en worden bij de start automatisch vastgelegd.'}</p>
    {finished?<p>Deze show is afgelopen. Maak een nieuwe show om opnieuw te spelen.</p>:<>
     {!verified&&running&&<p>Controleer de actuele serverstand door de regie te hervatten.</p>}
@@ -48,6 +49,7 @@ export default function ShowPreparation({s,operator,run,onEdit,onNew,onOpenOutpu
  return <div className="mf-simple-preparation">
   <header className="mf-page-head"><div><span className="mf-eyebrow">MILO & FRIENDS BINGOSHOW</span><h1>Productieoverzicht</h1><p>{s.game.title}</p></div>{onNew&&<Button onClick={onNew}>Nieuwe show</Button>}</header>
   <nav className="mf-preparation-steps" aria-label="Show voorbereiden">{['Voorbereiden','Uitzending testen','Start show'].map((label,index)=><button key={label} type="button" aria-current={step===index?'step':undefined} onClick={()=>setStep(index)}><span>{index+1}</span>{label}</button>)}</nav>
+  {step!==2&&<ShowAudioPreparation s={s} operator={operator} run={run}/>}
   {step===0&&<Panel title="Voorbereiden" subtitle="Rondes, prijsstappen en spelregels staan bij elkaar."><div className="mf-editor-content"><PreparationStatus s={s} operator={operator} run={run}/>{s.demo?<p>Je oefenstudio staat klaar. Kies Nieuwe show om de voorbereiding als echte show te gebruiken.</p>:s.game.status==='running'?<p>{s.serverStatusVerified?'Show bezig — serverstatus gecontroleerd.':'Serverstatus controleren bij hervatten.'}</p>:<p>Pas het draaiboek en de prijzen aan. Wijzigingen worden automatisch opgeslagen.</p>}
    {canLoad&&<Button icon={RefreshCw} disabled={s.working} onClick={()=>run(()=>operator.loadStandardRules())}>Standaardregels laden</Button>}
    <ShowRulesPreview game={s.game}/><div className="mf-editor-actions"><Button icon={Clapperboard} onClick={onEdit}>Draaiboek bewerken</Button><Button kind="primary" icon={ArrowRight} onClick={()=>setStep(1)}>Uitzending testen</Button></div></div></Panel>}

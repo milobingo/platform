@@ -1,3 +1,4 @@
+import {createBrowserAudioFixture} from '../helpers/browser-audio-fixture.mjs';
 import {test,expect} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {CHARACTERS} from '../../server/characters.js';
@@ -19,6 +20,7 @@ async function savedShow(page,testInfo){
  prepareAutomaticRules(game);generateBooks(game,1,'qa-preparation-book');Object.assign(game.books[0],{accountId:'qa-family',profileId:'qa-child',name:'Sam'});await store.create(game);
  const gamePath='/api/bingo/games/'+game.id,initial=JSON.stringify((await store.game(game.id)).data);
  const evidence={origin,gameId:game.id,gets:{},bingoRequests:[],puts:[],starts:[],publishCalls:[],blockedWrites:[],external:[],unexpected:[],errors:[],expectedStorageConsoleErrors:[]},state={failSaves:true};
+ const audioFixture=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data});evidence.audioPreparationRequests=audioFixture.requests;
  const failedStorage={kind:db.kind,prepare(sql){
   const query=db.prepare(sql);if(!/^UPDATE bingo_games SET revision/.test(sql))return query;
   return {bind(...args){const bound=query.bind(...args);return {...bound,async first(){throw new Error('Synthetic preparation storage outage');}};}};
@@ -36,6 +38,7 @@ async function savedShow(page,testInfo){
   if(url.origin!==origin){evidence.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
+  if(await audioFixture.handle(route))return;
   if(method==='GET')evidence.gets[url.pathname]=(evidence.gets[url.pathname]||0)+1;
   const bingoRead=method==='GET'&&['/api/bingo/games',gamePath,'/api/bingo/families'].includes(url.pathname);
   const bingoWrite=method==='PUT'&&url.pathname===gamePath||method==='POST'&&['start','activate','heartbeat','pause'].some(action=>url.pathname===gamePath+'/'+action);

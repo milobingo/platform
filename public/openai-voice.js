@@ -8,7 +8,7 @@ export async function apiJSON(path,body,signal){
 
 // One audio owner, one bounded clip at a time. The script can be long while
 // decoding, caching and the OBS acknowledgement keep their existing limits.
-export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},onError=()=>{},fetcher=fetch,Context=globalThis.AudioContext||globalThis.webkitAudioContext,getRemote=()=>null,canPlay=()=>true}={}){
+export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},onError=()=>{},fetcher=fetch,Context=globalThis.AudioContext||globalThis.webkitAudioContext,getRemote=()=>null,getPrepared=()=>null,canPlay=()=>true}={}){
   let gain,analyser,volume=1,remote=null;
   let context,source,buffer,controller,generation=0,phase='idle',text='',started=0,pauseRequested=false,remoteStart=null;
   let chunks=[],chunkIndex=0,completedMs=0,speed=1,presentation={};
@@ -33,17 +33,19 @@ export function createOpenAIVoice({onState=()=>{},onStart=()=>{},onEnd=()=>{},on
     if(!current(token))return;
     text=chunks[chunkIndex];controller=new AbortController();const signal=controller.signal;
     try{
-      const response=await fetcher('/api/openai/speech',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({...presentation,text,speed}),signal});
+      const prepared=getPrepared(text,speed,presentation);
+      if(presentation.preparedOnly&&!prepared)throw new Error('De vaste showaudio is nog niet ingeladen. Wacht op de audiovoorbereiding en hervat daarna.');
+      const response=prepared?null:await fetcher('/api/openai/speech',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({...presentation,text,speed}),signal});
       if(!current(token))return;
-      if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error?.message||'De OpenAI-stem kon niet worden opgehaald.');}
-      if(!(response.headers.get('content-type')||'').startsWith('audio/'))throw new Error('Er kwam geen audio terug. Ververs de studio en probeer opnieuw.');
-      const bytes=await response.arrayBuffer();if(!current(token))return;
+      if(response&&!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error?.message||'De OpenAI-stem kon niet worden opgehaald.');}
+      if(response&&!(response.headers.get('content-type')||'').startsWith('audio/'))throw new Error('Er kwam geen audio terug. Ververs de studio en probeer opnieuw.');
+      const bytes=prepared?prepared.bytes.slice(0):await response.arrayBuffer();if(!current(token))return;
       const decoded=await context.decodeAudioData(bytes);if(!current(token))return;
       if(!Number.isFinite(decoded.duration)||decoded.duration<=0||decoded.duration>120)throw new Error('De ontvangen audio heeft geen geldige lengte.');
       buffer=decoded;controller=null;remote=getRemote();if(remote){
        const start=async()=>{
         if(!current(token))return;remoteStart=null;
-        try{const playback=remote.play(response.headers.get('x-vlampie-clip'),text,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(text,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token))await finishChunk(token);}
+        try{const playback=remote.play(prepared?.clip||response.headers.get('x-vlampie-clip'),text,decoded.duration*1000,()=>{if(current(token)){if(!canPlay()){remote.pause();setPhase('paused');return;}onStart(text,decoded.duration*1000);setPhase(pauseRequested?'paused':'playing');}},{canPlay,preparedOnly:!!prepared,preparedFingerprint:prepared?.fingerprint||null,onBlocked:()=>{if(current(token))setPhase('ready');}});if(pauseRequested)remote.pause();await playback;if(current(token))await finishChunk(token);}
         catch(error){if(!current(token))return;stop();if(error.name!=='AbortError')onError(error.message||'De stem kon niet worden afgespeeld.');}
        };
        if(pauseRequested||!canPlay()){remoteStart=start;setPhase('ready');}else await start();

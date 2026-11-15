@@ -1,0 +1,28 @@
+✔ a new OBS source waits for verified producer state, then creates audio once and activates without a click only after measured test playback (63.435649ms)
+✔ an established OBS source automatically recovers from 409 without duplicate outage epochs or manual activation (60.43357ms)
+✔ an established OBS source automatically recovers from 503 without duplicate outage epochs or manual activation (60.661865ms)
+✔ an established OBS source automatically recovers from network without duplicate outage epochs or manual activation (56.681544ms)
+✔ the original 401 relay error survives the capability-loss event instead of becoming a misleading epoch error (3.165676ms)
+✔ the original 403 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.883673ms)
+✔ the original 409 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.37458ms)
+✔ the original 503 relay error survives the capability-loss event instead of becoming a misleading epoch error (1.786319ms)
+✔ a browser that actually blocks autoplay never acknowledges audio, hides the status or starts a tone, and retries stay bounded (3.87042ms)
+✔ a running audio context without a measured audible signal keeps the status visible and never reports a successful heartbeat (29.144618ms)
+✔ mismatched-show never automatically opens audio or releases the paused show (1.766051ms)
+✔ expired-producer never automatically opens audio or releases the paused show (1.4764ms)
+✔ stale-publication never automatically opens audio or releases the paused show (1.264679ms)
+✔ inconsistent-show never automatically opens audio or releases the paused show (1.834006ms)
+✔ stale-generation never automatically opens audio or releases the paused show (0.917168ms)
+✔ a cancelled show invalidates an already queued activation and old running snapshots cannot reactivate its audio (1.210013ms)
+✔ a capability loss between state consumption and its activation microtask cancels that queued attempt (0.736288ms)
+✔ revoked OBS access never opens audio and cannot silently switch into another show (1.246753ms)
+✔ regular browser output retains explicit manual activation while valid programme state still restores immediately (28.507077ms)
+✔ an OBS source waits silently for another live audio lease and activates automatically once that lease expires (28.919487ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 358.158075

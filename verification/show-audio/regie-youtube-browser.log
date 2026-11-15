@@ -1,0 +1,17 @@
+
+Running 9 tests using 1 worker
+
+(node:3331039) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/9] tests/browser/broadcast-settings.spec.mjs:42:31 › YouTube autosave 1366px: running paused show, failed storage, retry, reload, conflict and terminal read-only; real isolated Bingo API
+[2/9] tests/browser/broadcast-settings.spec.mjs:42:31 › YouTube autosave 390px: running paused show, failed storage, retry, reload, conflict and terminal read-only; real isolated Bingo API
+[3/9] tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1920px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API
+[4/9] tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 1366px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API
+[5/9] tests/browser/regie-refresh.spec.mjs:65:2 › regie refresh 390px: live priorities, resume, keyboard pause and BINGO focus; isolated real Bingo API
+[6/9] tests/browser/regie-refresh.spec.mjs:106:1 › regie refresh preserves the separate Vlampie console and all seven modules
+[7/9] tests/browser/regie-refresh.spec.mjs:125:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 1366px; isolated real Bingo API
+[8/9] tests/browser/regie-refresh.spec.mjs:125:2 › force cancellation keeps failed confirmation, submits once, stops another tab and preserves history 390px; isolated real Bingo API
+[9/9] tests/browser/regie-refresh.spec.mjs:155:1 › presenter inputs preserve ten thousand characters and explain an oversized paste without truncation
+  9 passed (38.2s)

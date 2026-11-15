@@ -1,0 +1,96 @@
+✔ one saved custom voice serves scripted audio and spontaneous Live sessions without a TTS fallback (32.808432ms)
+✔ incomplete or different script audio is rejected and the connection is closed (22.290823ms)
+✔ WebRTC uses JSON Live startup and returns the typed session id; rejected upstream never exposes keys (6.585363ms)
+✔ invalid Live SDP answer closes an allocated session before reporting failure (1.007051ms)
+✔ voice design uses the saved prompt and revision, and persists the returned ID per character (20.286172ms)
+✔ extended character knowledge is durable and each caller gets only fresh verified context (8.337296ms)
+✔ microphone rehearsal owns its session and only its owner can close that allocated session (7.241999ms)
+✔ voice design waits for a slow provider and retains its result beyond the old server deadline (7.073468ms)
+✔ unconfirmed voice design times out cleanly without a retry or changing the saved voice (6.424671ms)
+✔ the owner can close the previous rehearsal after reload and a closed record never blocks the next test (5.827345ms)
+✔ previous-test recovery is owner-only, same-origin and creates no new session when nothing is open (5.53406ms)
+✔ 503 closure preserves the unconfirmed session and a user-initiated replacement can proceed (5.070259ms)
+✔ first start after reload can recover a stale 503 session without a permanent 409 loop (4.884392ms)
+✔ new-session service failures surface 503 separately and never overwrite the old recovery record (4.49921ms)
+✔ invalid character and invalid SDP are rejected separately before any provider request (7.361997ms)
+✔ a terminal receipt is limited to the owner-bound local preview and is recorded as a client observation (3.959813ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 155.863508
+gpt_live_start_failed {
+  status: 403,
+  responseType: 'text/plain',
+  requestId: null,
+  errorCode: null,
+  errorType: null,
+  retryAfter: null,
+  policyBlocked: false
+}
+gpt_live_close_unconfirmed {
+  restStatus: 503,
+  attachStatus: 503,
+  reason: 'attach_rejected',
+  rest: {
+    status: 503,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 503,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+gpt_live_close_unconfirmed {
+  restStatus: 503,
+  attachStatus: 503,
+  reason: 'attach_rejected',
+  rest: {
+    status: 503,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  },
+  attach: {
+    status: 503,
+    responseType: 'other',
+    requestId: null,
+    errorCode: null,
+    errorType: null,
+    retryAfter: null,
+    policyBlocked: false
+  }
+}
+gpt_live_start_failed {
+  status: 503,
+  responseType: 'application/json',
+  requestId: null,
+  errorCode: 'server_is_overloaded',
+  errorType: 'service_unavailable_error',
+  retryAfter: null,
+  policyBlocked: false
+}
+live_preview_input_rejected { reason: 'invalid_character' }
+live_preview_input_rejected { reason: 'invalid_character' }
+live_preview_input_rejected { reason: 'invalid_character' }
+live_preview_input_rejected { reason: 'invalid_character' }
+live_preview_input_rejected { reason: 'invalid_sdp' }
+live_preview_input_rejected { reason: 'invalid_sdp' }
+live_preview_input_rejected { reason: 'invalid_sdp' }
+live_preview_input_rejected { reason: 'sdp_too_large', size: 30003 }

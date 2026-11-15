@@ -1,0 +1,27 @@
+✔ OBS loads all 75 fixed clips through its scoped capability before any command and plays prepared bytes without another GET (32.391166ms)
+✔ ordinary authenticated output uses the same manifest contract through POST and never receives an OBS token (0.937035ms)
+✔ a missing prepared-only clip never falls back to a runtime GET (0.897581ms)
+✔ a missing prepared command fingerprint cannot borrow current cached bytes (0.86787ms)
+✔ a different prepared command fingerprint cannot borrow current cached bytes (0.792916ms)
+✔ OBS projection carries only a valid prepared fingerprint and the public preload receipt (0.547385ms)
+✔ a new dynamic current-voice command retains its scoped clip GET (1.167645ms)
+✔ partial preloading cannot acknowledge or play a fixed clip before the whole current manifest is ready (2.839485ms)
+✔ a new fingerprint aborts and supersedes an old blocked preload immediately and ignores its late bytes (1.335476ms)
+✔ a manifest change during prepared decode cannot reactivate the old clip (1.306716ms)
+✔ a manifest change during prepared resume cannot reactivate the old clip (0.899473ms)
+✔ late preload bytes after revoke cannot restore static audio readiness (0.952608ms)
+✔ late preload bytes after cancel cannot restore static audio readiness (0.786137ms)
+✔ late preload bytes after dispose cannot restore static audio readiness (0.602513ms)
+✔ partial preload failure reports an error, backs off, and retries only missing clips without duplicating completed work (1.342015ms)
+✔ malformed duplicate manifest is rejected before any unscoped or extra clip request (0.400213ms)
+✔ malformed invalid-key manifest is rejected before any unscoped or extra clip request (0.374989ms)
+✔ malformed wrong-count manifest is rejected before any unscoped or extra clip request (0.291302ms)
+✔ producer readiness cannot trust an expired output lease with an old complete audio receipt (301.373939ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.458745

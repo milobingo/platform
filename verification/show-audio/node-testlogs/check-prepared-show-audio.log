@@ -1,0 +1,32 @@
+✔ every manifest item is loaded with at most two requests, after the latest preparation is flushed (30.909456ms)
+✔ same keys reuse loaded bytes across shows and plan changes; only changed keys are fetched and old unused bytes are removed (3.509772ms)
+✔ a changed speaker profile invalidates exact text/speed identities rather than playing the earlier voice (3.58054ms)
+✔ a server-lost clip is regenerated on explicit retry even if the browser still holds the old bytes (3.589391ms)
+✔ a failed first worker cancels another worker waiting for the generation gap and never starts later items (92.790238ms)
+✔ partial success is retained, active siblings are aborted and ignored, and only a manual retry completes preparation (14.333125ms)
+✔ show changes abort a pending manifest and reject stale items before any speech request (1.585311ms)
+✔ plan changes abort a pending manifest and reject stale items before any speech request (1.377494ms)
+✔ profile changes abort a pending manifest and reject stale items before any speech request (1.372998ms)
+✔ a show change during the initial save barrier prevents even manifest enumeration (0.398531ms)
+✔ profile changes abort in-flight response and stale bytes cannot enter the cache (2.723525ms)
+✔ profile changes abort in-flight bytes and stale bytes cannot enter the cache (2.586726ms)
+✔ content-type never produces a green prepared status or usable playback entry (1.608323ms)
+✔ wrong-key never produces a green prepared status or usable playback entry (1.46883ms)
+✔ empty never produces a green prepared status or usable playback entry (1.413574ms)
+✔ http-error never produces a green prepared status or usable playback entry (1.484173ms)
+✔ automatic debounce uses the current context once and disposal cancels a scheduled new preparation (62.536037ms)
+✔ disposal aborts active fetches, ignores late responses and clears all held bytes (2.088396ms)
+✔ prepared local playback reads exact loaded bytes lazily, emits once and never requests the provider (2.506947ms)
+✔ prepared OBS playback forwards the bound fingerprint and clip, waits for its ACK and never plays locally (2.848047ms)
+✔ unprepared fixed speech fails before a hot request, while explicit dynamic manual speech may fetch its new fragment (2.041912ms)
+✔ all 10,000 characters play from prepared chunks through local with no hot fetches and one final completion (19.138274ms)
+✔ all 10,000 characters play from prepared chunks through OBS with no hot fetches and one final completion (18.878366ms)
+✔ stopping prepared playback cancels its remaining queue and ignores an old completion callback (2.000966ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 283.538085

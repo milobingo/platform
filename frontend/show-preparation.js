@@ -1,6 +1,6 @@
 // Serialize preparation writes without replacing edits made while a request is
 // in flight. The server compares preparationRevision independently of heartbeats.
-export const preparationFields=game=>({title:game.title,date:game.date,timeZone:game.timeZone||'Europe/Amsterdam',plan:structuredClone(game.plan),settings:structuredClone(game.settings)});
+export const preparationFields=game=>{const {youtubeId:unused,...settings}=game.settings||{};return {title:game.title,date:game.date,timeZone:game.timeZone||'Europe/Amsterdam',plan:structuredClone(game.plan),settings:structuredClone(settings)};};
 export const preparationFingerprint=game=>JSON.stringify(preparationFields(game));
 
 export class PreparationAutosave{

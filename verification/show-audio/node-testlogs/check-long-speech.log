@@ -1,0 +1,19 @@
+✔ 10,000 Unicode characters split without losing, duplicating or breaking text and oversize input remains untouched (5.449692ms)
+✔ a full 10,000-character local script fetches one bounded clip at a time and ends exactly once after every word (25.723258ms)
+✔ pausing between clips retains the current queue and decoded audio; resume does not request or repeat the first clip (1.909009ms)
+✔ stop aborts an in-flight later clip, clears the remaining script and ignores its late response (1.077399ms)
+✔ a failed later clip reports failure without an early completion or generating the rest of the script (2.315371ms)
+✔ 10,000 characters use the same OBS clip route in sequence; no local source plays and only the final acknowledgement completes the script (3.220412ms)
+✔ stop during a remote clip cancels its playback and never starts the next queued clip (1.747526ms)
+✔ the real speech API, saved GPT-Live character and clip cache prepare every part and reuse all cached parts without credentials (223.611065ms)
+✔ the fragment endpoint rejects an overlong direct request honestly and cancelled shows cannot generate or read script audio (6.857881ms)
+✔ the engine preserves a 10,001-character field and rejects before stop, provider access or truncation (0.764475ms)
+✔ the browser rehearsal also speaks the complete script in bounded parts and stopping cancels future parts (1.386907ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 278.711322

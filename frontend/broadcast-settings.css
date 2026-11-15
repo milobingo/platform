@@ -1,0 +1,10 @@
+.mf-broadcast-settings{display:grid;gap:12px}
+.mf-broadcast-settings .mf-field{margin:0}
+.mf-broadcast-settings input{min-height:44px;width:100%}
+.mf-broadcast-save-state{display:flex;align-items:center;gap:8px;font-size:13px;color:#34704e;overflow-wrap:anywhere}
+.mf-broadcast-save-state.has-error{display:block;padding:13px 15px;border:1px solid #e8bfcb;border-radius:10px;background:#fff5f8;color:#86394e}
+.mf-broadcast-save-state p{margin:7px 0 10px;line-height:1.6}
+.mf-broadcast-save-state .mf-btn{margin-right:8px}
+.mf-broadcast-save-help,.mf-broadcast-readonly{margin:0;font-size:13px;line-height:1.65;color:var(--mf-sub,#74647f)}
+.mf-show-settings-fields{border:0;padding:0;margin:0;min-width:0;display:grid;gap:18px}
+.mf-show-settings-fields:disabled{opacity:.72}

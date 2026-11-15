@@ -1,0 +1,31 @@
+✔ OpenAI environment credentials are redacted but replaceable; save, connection test and model test remain separate (293.818978ms)
+✔ a successful OpenAI save clears the typed secret even when its following status read fails (186.178433ms)
+✔ both settings forms retain failed edits, refresh a stale revision, and retry only after a deliberate save (571.394481ms)
+✔ canManage false removes credential editing and rotation controls while permitting an explicit stored-connection test (345.186475ms)
+✔ LiveKit never prefills returned key material and preserves blank credentials only for the unchanged project (124.254793ms)
+✔ LiveKit requires a new secret after URL or key changes and tests only the explicitly saved project (314.816333ms)
+✔ remove and environment fallback require explicit confirmation, preserve revision binding, and never resend typed secrets (901.742833ms)
+✔ an initial failed status load offers a real retry for either provider without enabling credential writes first (345.812811ms)
+✔ an explicitly disabled connection can deliberately return to existing server settings (305.613922ms)
+✔ late operation success or failure after unmount cannot update another view, reload settings or repeat a request (1267.94465ms)
+✔ Resend redacts returned credentials, saves sender and reply address, and tests only the saved revision without sending a mail (239.395867ms)
+✔ Resend sender-only edits preserve a blank stored key and keep key verification separate from allowlisted sending (178.746438ms)
+✔ a failed Resend save retains every edit and retries only after the director deliberately saves again (338.385013ms)
+✔ a failed Resend test refreshes its failed receipt and revision without leaving stale success or retrying a provider call (151.279239ms)
+✔ Resend disable and server fallback require confirmation and send no typed key or address fields (501.498742ms)
+✔ existing server mail delivery never implies a Resend key or a successful Resend check (77.920002ms)
+✔ Resend rejects incomplete management status before exposing credential editing (115.639613ms)
+✔ Resend defaults to disabled and requires an explicit saved allowlist before enabling test recipients (236.645114ms)
+✔ Resend production sending stays a deliberate policy edit and a server limit remains visible (152.822514ms)
+✔ Resend limits explicit test recipients before saving and never persists addresses or keys in browser storage (140.533174ms)
+✔ a failed new OpenAI or LiveKit test removes old success and reloads the revision for an explicit retry (304.62799ms)
+✔ a synchronous double submission can issue only one credential change for every provider (585.549968ms)
+✔ a production host allowlist remains visible even when the saved preference is live (79.818847ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7769.546256

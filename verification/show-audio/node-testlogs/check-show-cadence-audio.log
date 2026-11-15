@@ -1,0 +1,22 @@
+✔ all 75 live Milo number calls use exactly the prepared Dutch letter/name script (3.831296ms)
+✔ Milo official cadence preserves spin/commit and limits the post-speech board/host tail to 900ms (0.490478ms)
+✔ number-finished opportunities remain silent while voice, pause, call, claim or cancellation blocks progress (0.758108ms)
+✔ a synchronous optional-number listener can cancel safely and never reopens the draw (0.315537ms)
+✔ Vlampie retains its number text, 5-second tail and fifth-ball comment even with official config (0.274238ms)
+✔ round, prize, bingo and finale speech share manifest identity and official runner uses no second timer (1.817472ms)
+✔ Milo winner announcement is a prepared fixed script while the actual winner remains visible; Vlampie retains the named script (0.42684ms)
+✔ Milo music requires active-show permission and continues across scenes/cues on the separate program bus (1.446379ms)
+✔ number scenes and presenter voice duck gentle music independently of effect cues (0.325639ms)
+✔ held, paused, finished, cancelled and disconnected shows stop music immediately without late replay (4.914344ms)
+✔ mute/disable/explicit stop silence both buses; resume starts a fresh current chord, not missed music (0.65153ms)
+✔ late AudioContext resume cannot undo pause, cancellation permission or disposal (0.360318ms)
+✔ Vlampie lobby music retains the existing scene policy and needs no new Milo permission (0.253541ms)
+✔ a late pending server commit cannot emit optional speech after its director flow is cancelled (2.834268ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.01157

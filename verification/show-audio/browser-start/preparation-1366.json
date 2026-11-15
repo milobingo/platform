@@ -1,0 +1,977 @@
+{
+  "observedAt": "2026-11-15T13:29:23.907Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "actualBrowserRendering": true,
+  "simulatedAuthAndProviderStatus": true,
+  "actualBingoHandlers": true,
+  "actualSQLiteCAS": true,
+  "inMemoryFixtureWritesOnly": true,
+  "actualAccountWrites": false,
+  "actualProviderAcceptance": false,
+  "actualOBSInstallation": false,
+  "origin": "http://127.0.0.1:4175",
+  "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+  "gets": {
+    "/api/auth/session": 1,
+    "/api/bingo/games": 1,
+    "/api/characters": 1,
+    "/api/openai/status": 1,
+    "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb": 3,
+    "/api/live-calls": 4,
+    "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/chat": 1,
+    "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/chat/stream": 25
+  },
+  "bingoRequests": [
+    {
+      "path": "/api/bingo/games",
+      "method": "GET",
+      "at": 1794749358587,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749358590
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "GET",
+      "at": 1794749358629,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749358631
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360087,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360090
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360374,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360376
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360808,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360810
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749361466,
+      "regieHeader": true,
+      "requestId": "dfb2a436-c426-4487-8b19-48bdbbfba45d",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 200,
+      "completedAt": 1794749361468
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749361582,
+      "regieHeader": true,
+      "requestId": "5cd9b96f-915a-405a-820d-1314f306a62b",
+      "preparationRevision": 1,
+      "cueTitle": "Laatste wijziging vóór start 1366",
+      "status": 200,
+      "completedAt": 1794749361584
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "GET",
+      "at": 1794749361592,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749361593
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "GET",
+      "at": 1794749362059,
+      "regieHeader": false,
+      "requestId": null,
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749362061
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/start",
+      "method": "POST",
+      "at": 1794749362762,
+      "regieHeader": true,
+      "requestId": "997c8e19-3333-476c-b7ef-47e75949c8de",
+      "preparationRevision": 2,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749362766
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/activate",
+      "method": "POST",
+      "at": 1794749362774,
+      "regieHeader": true,
+      "requestId": "47574e23-1c86-4cf3-afba-75c45be1578a",
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749362776
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/heartbeat",
+      "method": "POST",
+      "at": 1794749363360,
+      "regieHeader": true,
+      "requestId": "f52e9249-4b4f-406e-81b6-20e18abf05a8",
+      "preparationRevision": null,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749363362
+    }
+  ],
+  "puts": [
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360087,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360090
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360374,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360376
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749360808,
+      "regieHeader": true,
+      "requestId": "0019461d-7ab4-466f-aea5-28bce5a82db7",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 503,
+      "completedAt": 1794749360810
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749361466,
+      "regieHeader": true,
+      "requestId": "dfb2a436-c426-4487-8b19-48bdbbfba45d",
+      "preparationRevision": 0,
+      "cueTitle": "Mijn bewaarde voorbereiding 1366",
+      "status": 200,
+      "completedAt": 1794749361468
+    },
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "method": "PUT",
+      "at": 1794749361582,
+      "regieHeader": true,
+      "requestId": "5cd9b96f-915a-405a-820d-1314f306a62b",
+      "preparationRevision": 1,
+      "cueTitle": "Laatste wijziging vóór start 1366",
+      "status": 200,
+      "completedAt": 1794749361584
+    }
+  ],
+  "starts": [
+    {
+      "path": "/api/bingo/games/9ac4a93d-9786-4399-a0c1-fbae4fc80beb/start",
+      "method": "POST",
+      "at": 1794749362762,
+      "regieHeader": true,
+      "requestId": "997c8e19-3333-476c-b7ef-47e75949c8de",
+      "preparationRevision": 2,
+      "cueTitle": null,
+      "status": 200,
+      "completedAt": 1794749362766
+    }
+  ],
+  "publishCalls": [],
+  "blockedWrites": [],
+  "external": [],
+  "unexpected": [],
+  "errors": [],
+  "expectedStorageConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "audioPreparationRequests": [
+    {
+      "path": "/api/openai/show-audio",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "cacheOnly": false
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    },
+    {
+      "path": "/api/openai/speech",
+      "gameId": "9ac4a93d-9786-4399-a0c1-fbae4fc80beb",
+      "characterId": "milo",
+      "cacheOnly": true
+    }
+  ],
+  "liveWorkspace": {
+    "routeRendered": true,
+    "transitionSettled": true,
+    "round": "Showmoment",
+    "priceStep": null,
+    "lastOfficialBall": null,
+    "timer": "Wacht",
+    "pauseControlEnabled": true,
+    "bingoControlsVisible": true,
+    "scope": "The started show is in its opening countdown; no bingo round or draw has been activated by this test."
+  },
+  "final": {
+    "status": "running",
+    "preparationRevision": 2,
+    "firstCueTitle": "Laatste wijziging vóór start 1366",
+    "rulesVersion": 1,
+    "rulesFinalizedAt": 1794749362764,
+    "rulesCurrent": true,
+    "showStartedEvents": 1,
+    "goalCount": 10
+  }
+}

@@ -17,9 +17,10 @@ export async function obsFetch(input,init={},options={}){
  const url=new URL(String(input),location.origin),sameOrigin=url.origin===location.origin;
  let path=sameOrigin?url.pathname:'';
  if(path==='/api/output')path='/api/obs/output';
+ else if(path==='/api/openai/show-audio')path='/api/obs/show-audio';
  else if(/^\/api\/openai\/clips\/[a-f0-9]{64}$/.test(path))path=path.replace('/api/openai/clips/','/api/obs/clips/');
  else if(/^\/api\/live-calls(?:\/|$)/.test(path))path=path.replace('/api/live-calls','/api/obs/live-calls');
- const scoped=/^\/api\/obs\/(?:session|output|clips\/[a-f0-9]{64}|live-calls(?:\/[a-z-]+)?)$/.test(path);
+ const scoped=/^\/api\/obs\/(?:session|output|show-audio|clips\/[a-f0-9]{64}|live-calls(?:\/[a-z-]+)?)$/.test(path);
  if(!sameOrigin||!scoped){const headers=new Headers(init.headers);headers.delete('X-Milo-OBS-Token');return fetcher(input,{...init,headers});}
  const token=obsSourceToken(location);
  if(!token){lost();throw Object.assign(new Error('De OBS-link is ongeldig of onvolledig. Maak een nieuwe link in de regie.'),{status:401});}
