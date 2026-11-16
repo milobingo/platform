@@ -123,6 +123,29 @@ test('Supabase verifies identity and private SQL roles override all email and me
  assert.equal(context.identity.user,null);
 });
 
+test('hosted production and staging use empty persisted records even when demo hints are supplied',async t=>{
+ for(const origin of ['https://milo.dgwebservices.nl','https://milo-staging.dgwebservices.nl']){
+  const h=await fixture(t,{NODE_ENV:'production',MILO_LOCAL_AUTH:'true',APP_URL:origin,SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'});
+  const provider=fakeProvider({id:'supabase-family',email:'family@example.test'});
+  const call=async(path,{body,status=200}={})=>{
+   const response=await dispatchNodeRequest(req(path,body,{'x-milo-role':'regie','x-milo-user':'demo-regie'},origin),{env:h.env,authClientFactory:provider.factory});
+   const data=await response.json();assert.equal(response.status,status,JSON.stringify(data));return data;
+  };
+  const session=await call('/api/auth/session?demo=1');
+  assert.equal(session.localAvailable,false);assert.equal(session.role,'player');assert.equal(session.authenticated,true);
+  const family=await call('/api/player/session?demo=1');
+  assert.equal(family.accountId,'supabase-family');assert.deepEqual(family.family.profiles,[]);assert.equal(family.needsOnboarding,true);
+  assert.deepEqual((await call('/api/bingo/games?demo=1')).games,[]);
+  assert.deepEqual((await call('/api/bingo/orders?demo=1')).orders,[]);
+  await call('/api/bingo/games?demo=1',{body:{title:'Untrusted demo hint',demo:true,simulated:true},status:403});
+  await call('/auth/local',{body:{role:'regie'},status:403});
+  await h.env.DB.prepare('INSERT INTO app_user_roles (user_id,role) VALUES (?,?)').bind('supabase-family','regie').run();
+  assert.deepEqual((await call('/api/bingo/games?demo=1')).games,[]);
+  assert.deepEqual((await call('/api/bingo/families?demo=1')).families,[]);
+  assert.equal((await h.env.DB.prepare('SELECT COUNT(*) AS count FROM bingo_games').first()).count,0);
+ }
+});
+
 test('standalone proxy origin requires the fixed listener and exact public host and protocol',async t=>{
  const origin='https://studio.example';
  const h=await fixture(t,{NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:'4173',APP_URL:origin,SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'});
@@ -200,5 +223,5 @@ test('configured provider handlers use the Node fetch adapter while live verific
  assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'audio/wav');assert((await response.arrayBuffer()).byteLength>44);
  assert.equal(requests.length,1);assert.equal(requests[0].url,'https://api.openai.com/v1/live/sessions');assert.equal(requests[0].options.headers.Authorization,'Bearer test-only-not-real');
  const status=await dispatchNodeRequest(req('/api/openai/status',undefined,{},'https://studio.example'),{env:h.env,authClientFactory:provider.factory,providerFetch});
- assert.equal(status.status,200);const data=await status.json();assert.equal(data.transportReady,true);assert.equal(data.liveVerified,false);assert(!JSON.stringify(data).includes('test-only-not-real'));
+ assert.equal(status.status,200);const data=await status.json();assert.equal(data.transportReady,true);assert.equal(data.transportStatus,'node_adapter_ready');assert.equal(data.liveVerified,false);assert(!JSON.stringify(data).includes('test-only-not-real'));
 });

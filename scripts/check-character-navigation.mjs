@@ -83,6 +83,7 @@ async function setup({host='milo',hash='',saved=true}={}){
  const h=harness(({url,method,body})=>{
   if(url==='/api/bingo/games')return Response.json({games:saved?[game]:[]});
   if(url==='/api/bingo/games/'+game.id)return Response.json({game});
+  if(url==='/api/auth/session')return Response.json({authenticated:true,role:'regie',localAvailable:true});
   if(url==='/api/characters')return Response.json({characters,revision});
   if(url==='/api/openai/status')return Response.json({configured:true,revision:null,canManage:true});
   if(url.startsWith('/api/characters/')&&method==='PUT'){const id=url.split('/').at(-1);assert(CHARACTERS[id],'Invalid profile save: '+id);assert.equal(body.settings.id,id);characters=characters.map(c=>c.id===id?{...c,...body.settings}:c);return Response.json({characters,revision:++revision});}

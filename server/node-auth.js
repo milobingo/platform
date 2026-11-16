@@ -108,7 +108,7 @@ export async function createAuthContext(request,env=process.env,{clientFactory}=
   if(!oauthCallback(request))checkSameOrigin(request,context.origin);
   if(context.localAvailable){context.identity=localIdentity(request);return context;}
   const config=supabaseConfig(env);
-  if(!config){context.error=error('Supabase Auth is nog niet ingesteld. Gebruik lokaal de expliciete ontwikkelaanmelding.',503,'auth_unconfigured');return context;}
+  if(!config){context.error=error('De aanmelding is nog niet ingesteld. Laat de beheerder Supabase Auth koppelen.',503,'auth_unconfigured');return context;}
   const factory=clientFactory||(await import('@supabase/ssr')).createServerClient;
   context.client=factory(config.url,config.key,{
    auth:{flowType:'pkce',autoRefreshToken:false,detectSessionInUrl:false,persistSession:true},

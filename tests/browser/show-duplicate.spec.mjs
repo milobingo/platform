@@ -33,7 +33,7 @@ async function fixture(page,testInfo,{running=false,demo=false,lostResponse=fals
   }
   if(request.method()!=='GET'){proof.unexpected.push({method:request.method(),path:url.pathname});return route.fulfill({status:403,json:{error:{message:'Only isolated duplicate/create writes are allowed.'}}});}
   let data;
-  if(url.pathname==='/api/auth/session')data={authenticated:true,role:'regie',user:owner,configured:true,email:'fixture@example.invalid'};
+  if(url.pathname==='/api/auth/session')data={authenticated:true,role:'regie',user:owner,configured:true,email:'fixture@example.invalid',localAvailable:demo};
   else if(url.pathname==='/api/characters')data={characters:Object.values(CHARACTERS),revision:0};
   else if(['/api/openai/status','/api/livekit/settings'].includes(url.pathname))data={configured:false,canManage:true,source:'none',environmentConfigured:false};
   else if(url.pathname==='/api/live-calls')data={call:null,serverTime:Date.now()};

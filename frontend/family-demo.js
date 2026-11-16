@@ -11,6 +11,7 @@ const DEMO_ERROR='Demostand: er wordt geen echte microfoon-, LiveKit- of AI-verb
 let state;
 
 export function isFamilyDemo(value=globalThis.location){
+ if(globalThis.__MILO_LOCAL_PREVIEW_AVAILABLE__!==true)return false;
  try{
   const source=typeof value==='string'?value:value?.href||value?.search||'';
   return !!source&&new URL(source,'https://family-demo.invalid/').searchParams.get('demo')==='1';

@@ -13,7 +13,7 @@ const values=new Map();
 globalThis.localStorage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)};
 globalThis.sessionStorage={getItem:()=>null,setItem(){}};
 globalThis.BroadcastChannel=class{postMessage(){}close(){}};
-globalThis.fetch=async path=>Response.json(path==='/api/bingo/games'?{games:[]}:path==='/api/characters'?{characters:Object.values(CHARACTERS),revision:0}:path==='/api/openai/status'?{configured:false}:{});
+globalThis.fetch=async path=>Response.json(path==='/api/auth/session'?{authenticated:true,role:'regie',localAvailable:true}:path==='/api/bingo/games'?{games:[]}:path==='/api/characters'?{characters:Object.values(CHARACTERS),revision:0}:path==='/api/openai/status'?{configured:false}:{});
 const gradient={addColorStop(){}};
 function context(){return new Proxy({measureText:s=>({width:String(s).length*8}),createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},{get:(o,k)=>o[k]??(()=>{})});}
 class Surface{

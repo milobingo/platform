@@ -34,7 +34,7 @@ async function simulatedTransport(page,testInfo){
    return route.fulfill({status:403,json:{error:{message:'Simulated browser QA blocks backend writes.'}}});
   }
   let body;
-  if(url.pathname==='/api/auth/session')body={authenticated:true,user:'qa-browser-regie',email:'regie@example.test',role:'regie',local:false,configured:true,localAvailable:false};
+  if(url.pathname==='/api/auth/session')body={authenticated:true,user:'qa-browser-regie',email:'regie@example.test',role:'regie',local:false,configured:true,localAvailable:true};
   else if(url.pathname==='/api/bingo/games')body={games:[]};
   else if(url.pathname==='/api/characters')body={characters:Object.values(CHARACTERS),revision:0};
   else if(url.pathname==='/api/openai/status')body={configured:false,canManage:false,revision:null,liveVerified:false};

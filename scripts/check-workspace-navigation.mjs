@@ -61,7 +61,7 @@ const h=harness(({url})=>{
  if(url==='/api/output')return Response.json({state:null,serverTime:Date.now()});
  if(url==='/api/presentation/document')return Response.json({document:presentation,revision:0});
  if(url==='/api/bingo/families')return Response.json({families:[]});
- if(url==='/api/auth/session')return Response.json({configured:true,authenticated:true,role:'regie',localAvailable:false});
+ if(url==='/api/auth/session')return Response.json({configured:true,authenticated:true,role:'regie',localAvailable:true});
  if(url==='/api/livekit/settings')return Response.json({source:'environment',canManage:false,configured:false,url:'',apiKey:'',apiKeyConfigured:false,secretConfigured:false,revision:null,connectionTest:null});
  if(url.includes('/archive'))return Response.json({total:81,items:[]});
  return Response.json({});

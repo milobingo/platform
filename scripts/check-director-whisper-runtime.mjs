@@ -221,6 +221,7 @@ let networkRouter;
 const originalFetch=globalThis.fetch;
 globalThis.fetch=async(url,options={})=>{
  if(url==='/api/bingo/games')return Response.json({games:[]});
+ if(url==='/api/auth/session')return Response.json({authenticated:true,role:'regie',localAvailable:true});
  if(url==='/api/characters')return Response.json({characters:Object.values((await import('../server/characters.js')).CHARACTERS),revision:0});
  if(url==='/api/openai/status')return Response.json({configured:false});
  if(networkRouter)return networkRouter(url,options);

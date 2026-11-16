@@ -122,7 +122,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
    if(!context.identity.admin)response=json('Alleen de regie kan deze functie gebruiken.',403,'owner_only');
    else {
     response=cleanRequest.method==='POST'&&['/api/openai/settings','/api/openai/live-preview'].includes(path)?await providerOperation((locked,guardedFetch)=>handleOpenAI(cleanRequest,locked,guardedFetch)):await handleOpenAI(cleanRequest,verifiedEnv,providerFetch);
-    if(path==='/api/openai/status'&&response.ok){const status=await response.json();response=Response.json({...status,runtime:'node',transportStatus:'local_contract_tested',transportReady:true,liveVerified:false},{headers:response.headers});}
+    if(path==='/api/openai/status'&&response.ok){const status=await response.json();response=Response.json({...status,runtime:'node',transportStatus:'node_adapter_ready',transportReady:true,liveVerified:false},{headers:response.headers});}
    }
   }
   else if(path.startsWith('/api/presentation/'))response=await handlePresentation(cleanRequest,verifiedEnv);

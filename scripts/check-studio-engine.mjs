@@ -21,9 +21,11 @@ globalThis.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
 globalThis.speechSynthesis={getVoices:()=>[{lang:'nl-NL'}],speak:u=>{utterances.push(u);u.onstart?.();},cancel(){},pause(){},resume(){}};
 let router;
 globalThis.fetch=async(url,options={})=>{
+ if(url==='/api/auth/session')return Response.json({localAvailable:true});
  if(url==='/api/bingo/games'&&(!options.method||options.method==='GET'))return Response.json({games:[]});
  if(url==='/api/characters')return Response.json({characters:Object.values((await import('../server/characters.js')).CHARACTERS),revision:0});
  if(url==='/api/openai/status')return Response.json({configured:false});
+ if(url==='/api/auth/session')return Response.json({authenticated:true,role:'regie',localAvailable:true});
  if(router)return router(url,options);
  throw Error('Unexpected request '+url);
 };
@@ -77,7 +79,7 @@ test('stage restores cohost and all saved settings, mouth follows the active aud
 test('starting a real draft requires configured AI and never silently falls back to a browser voice',async()=>{
  const {e,server,calls}=await rig({live:true});try{
  server.status='draft';e.game=hostCopy(server);
- e.voiceMode='browser';await assert.rejects(()=>e.start(),/browserstem/);assert.equal(calls.some(call=>call.action==='start'),false);
+ e.voiceMode='browser';await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);
  e.voiceMode='ai';e.apiStatus.configured=false;await assert.rejects(()=>e.start(),/centrale personagestem/);assert.equal(calls.some(call=>call.action==='start'),false);assert.equal(server.status,'draft');
  }finally{e.dispose();}
 });
@@ -547,4 +549,31 @@ test('cue replay and previous-cue navigation only repeat presentation and retain
 });
 test('a missing Dutch browser voice blocks rehearsal speech instead of silently selecting an English voice',async t=>{
  const {e}=await rig();try{t.mock.method(globalThis.speechSynthesis,'getVoices',()=>[{lang:'en-US'}]);const before=utterances.length;e.speak('Dit is een Nederlandse proef.','milo','browser');assert.equal(utterances.length,before);assert.match(e.error,/geen Nederlandse browserstem/);assert.equal(e.voicePhase,'idle');assert.equal(e.director.paused,true);}finally{e.dispose();}
+});
+
+test('hosted studio starts empty, ignores local rehearsal data and cannot operate an unsaved placeholder',async t=>{
+ const original=globalThis.fetch;
+ t.mock.method(globalThis,'fetch',(url,options)=>url==='/api/auth/session'?Promise.resolve(Response.json({localAvailable:false})):original(url,options));
+ const e=new StudioEngine();
+ try{
+  assert.equal(e.game.title,'Nieuwe show');assert.deepEqual(e.game.books,[]);
+  await flush();assert.equal(e.loading,false);assert.equal(e.localPreviewAvailable,false);assert.deepEqual(e.game.books,[]);assert.deepEqual(e.games,[]);
+  assert.equal(e.getSnapshot().localPreviewAvailable,false);assert.equal(e.getSnapshot().gamesLoadError,'');
+  await assert.rejects(e.openRehearsal(),/Maak of open/);await assert.rejects(e.start(),/Maak of open/);await assert.rejects(e.draw(),/Maak of open/);
+  await assert.rejects(e.generate(1),/Maak of open/);assert.throws(()=>e.editPlan(plan=>plan.blocks.pop()),/Maak of open/);await assert.rejects(e.saveBroadcast({gameId:e.game.id,youtubeId:'dQw4w9WgXcQ'}),/Maak of open/);
+  assert.equal(await e.pause(true),false);assert.equal(e.runner.active,false);assert.deepEqual(e.game.state.drawn,[]);assert.deepEqual(e.game.books,[]);
+ }finally{e.dispose();}
+});
+
+test('failed hosted capability or show lookup stays empty and exposes the real load error',async t=>{
+ const original=globalThis.fetch;
+ t.mock.method(globalThis,'fetch',(url,options)=>{
+  if(url==='/api/auth/session')return Promise.reject(Error('capability connection unavailable'));
+  if(url==='/api/bingo/games')return Promise.resolve(Response.json({error:{message:'De opgeslagen shows zijn tijdelijk niet bereikbaar.'}},{status:503}));
+  return original(url,options);
+ });
+ const e=new StudioEngine();
+ try{
+  await flush();assert.equal(e.localPreviewAvailable,false);assert.equal(e.loading,false);assert.equal(e.getSnapshot().gamesLoadError,'De opgeslagen shows zijn tijdelijk niet bereikbaar.');assert.deepEqual(e.game.books,[]);assert.equal(e.game.title,'Nieuwe show');await assert.rejects(e.openRehearsal(),/Maak of open/);
+ }finally{e.dispose();}
 });

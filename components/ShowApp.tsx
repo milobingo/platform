@@ -1,6 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { Component, type ReactNode } from 'react';
+import { Component, useEffect, useState, type ReactNode } from 'react';
+import {configureLocalPreview} from '../frontend/local-preview-access.js';
 const Loading = () => <div className="app-loading">Een wereld vol verwondering wordt klaargezet…</div>;
 const Studio = dynamic(() => import('../frontend/App.jsx'), { ssr: false, loading: Loading });
 const Family = dynamic(() => import('../frontend/FamilyApp.jsx'), { ssr: false, loading: Loading });
@@ -13,5 +14,21 @@ class AppBoundary extends Component<{children: ReactNode}, {error: Error|null}> 
   }
 }
 export default function ShowApp({ family = false }: {family?: boolean}) {
+  const [familyReady,setFamilyReady]=useState(false);
+  useEffect(()=>{
+    if(!family)return;
+    const controller=new AbortController();
+    Reflect.set(window,'__MILO_LOCAL_PREVIEW_AVAILABLE__',false);
+    fetch('/api/auth/session',{cache:'no-store',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(12000)])})
+      .then(response=>response.ok?response.json():null)
+      .catch(()=>null)
+      .then(session=>{
+        if(controller.signal.aborted)return;
+        configureLocalPreview(session);
+        setFamilyReady(true);
+      });
+    return ()=>controller.abort();
+  },[family]);
+  if(family&&!familyReady)return <Loading/>;
   return <AppBoundary>{family ? <Family/> : <Studio/>}</AppBoundary>;
 }

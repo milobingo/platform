@@ -68,6 +68,7 @@ function harness(fetcher=async()=>Response.json({}),pathname='/'){
 
 const h=harness(({url})=>{
  if(url==='/api/bingo/games')return Response.json({games:[]});
+ if(url==='/api/auth/session')return Response.json({authenticated:true,role:'regie',localAvailable:true});
  if(url==='/api/characters')return Response.json({characters:Object.values(CHARACTERS),revision:0});
  if(url==='/api/openai/status')return Response.json({configured:false,revision:null,canManage:true});
  if(url==='/api/output')return Response.json({state:null,serverTime:Date.now()});

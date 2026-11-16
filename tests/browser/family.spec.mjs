@@ -7,6 +7,7 @@ for(const width of [320,390,430,768,1280]) {
     const errors=[],api=[],external=[];
     page.on('pageerror',e=>errors.push(e.message));
     page.on('request',r=>{if(new URL(r.url()).pathname.startsWith('/api/'))api.push(r.url());if(/openai|livekit|youtube|resend/.test(new URL(r.url()).hostname))external.push(r.url());});
+    await page.route('**/api/auth/session',route=>route.fulfill({json:{authenticated:false,configured:false,localAvailable:true}}));
     await page.addInitScript(()=>localStorage.setItem('real-account-untouched','retained'));
     await page.goto('/spelen?demo=1');
     await expect(page.getByRole('navigation',{name:'Spelersomgeving'})).toBeVisible();
@@ -31,7 +32,7 @@ for(const width of [320,390,430,768,1280]) {
     await page.getByRole('button',{name:'Demo opnieuw beginnen'}).click();
     await expect(grid.getByRole('gridcell')).toHaveCount(75);
     expect(await page.evaluate(()=>localStorage.getItem('real-account-untouched'))).toBe('retained');
-    expect(api).toEqual([]);expect(external).toEqual([]);expect(errors).toEqual([]);
+    expect(api.map(url=>new URL(url).pathname)).toEqual(['/api/auth/session']);expect(external).toEqual([]);expect(errors).toEqual([]);
     await mkdir('verification/screenshots',{recursive:true});
     await page.screenshot({path:`verification/screenshots/family-${width}.png`,fullPage:true});
   });

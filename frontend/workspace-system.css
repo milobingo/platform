@@ -289,3 +289,5 @@
 .mf-audio-music input{width:18px;height:18px;accent-color:#8753ae}
 .mf-audio-music-volume{display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-height:44px}
 .mf-audio-music-volume input{max-width:240px;accent-color:#8753ae}
+
+.mf-studio-empty{width:min(100%,760px);margin:0 auto;padding:32px 24px;min-height:100vh;box-sizing:border-box}.mf-studio-empty.is-wide{width:min(100%,1120px)}.mf-empty-brand{display:flex;align-items:center;gap:14px;width:fit-content;margin-bottom:28px;text-decoration:none;color:var(--text,#301d43);font-size:12px;font-weight:800;letter-spacing:.12em}.mf-empty-brand img{width:96px;height:64px;object-fit:contain}.mf-studio-empty>.lks-card,.mf-studio-empty>.rs-card,.mf-studio-empty>.mf-panel{margin-bottom:20px}@media(max-width:480px){.mf-studio-empty{padding:24px 16px}.mf-studio-empty .mf-page-head h1{font-size:28px}}

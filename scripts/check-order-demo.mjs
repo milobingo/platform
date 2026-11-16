@@ -7,6 +7,7 @@ import {matchFamilyOrderDemo as family} from '../frontend/family-order-demo.js';
 
 const values=new Map();
 globalThis.localStorage={getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)};
+globalThis.__MILO_LOCAL_PREVIEW_AVAILABLE__=true;
 globalThis.location={href:'https://family-demo.invalid/spelen?demo=1'};
 globalThis.fetch=()=>{throw Error('De bestelsimulatie mag geen netwerkverzoek doen.');};
 const post=body=>({method:'POST',body});

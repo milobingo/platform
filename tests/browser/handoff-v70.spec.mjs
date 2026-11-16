@@ -19,6 +19,7 @@ async function protectNetwork(page,testInfo,{dispatch,expectedExternal=[]}={}){
   if(url.pathname==='/favicon.ico')return route.fulfill({status:204});
   if(!url.pathname.startsWith('/api/')&&!url.pathname.startsWith('/auth/'))return route.continue();
   proof.api.push(url.pathname);if(request.method()!=='GET')proof.writes.push(url.pathname);
+  if(url.pathname==='/api/auth/session')return route.fulfill({json:{authenticated:false,configured:false,localAvailable:!dispatch}});
   const body=dispatch&&await dispatch(url,request);
   if(body!==undefined)return route.fulfill({json:body,headers:{'Cache-Control':'private, no-store'}});
   proof.unexpected.push(url.pathname);return route.fulfill({status:403,json:{error:{message:'Browser QA blocks real backend and provider traffic.'}}});
@@ -47,7 +48,7 @@ for(const width of [320,1366])test(`v70 family demo ${width}px: real BINGO from 
  await expect.poll(async()=>seconds(await dialog.locator('.fam-window-count').innerText())).toBeLessThan(before);
  expect(Math.abs(seconds(await helper.innerText())-seconds(await dialog.locator('.fam-window-count').innerText()))).toBeLessThanOrEqual(1);
  await noOverflow(page);await expect(stage).toHaveAttribute('data-v70-mount','retained');
- expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual([]);expect(proof.writes).toEqual([]);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual(['/api/auth/session']);expect(proof.writes).toEqual([]);
  await evidence(page,`books-bingo-${width}`,{transport:'explicit-browser-local-demo',sharedCountdown:true,claimStatus:'valid',...proof});
 });
 
@@ -99,7 +100,7 @@ test('v70 mobile family newsletter preferences default to opt-out and stay separ
  await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();await page.getByRole('combobox',{name:'Kies een show',exact:true}).selectOption('milo-family-demo');await expect(page.locator('.family-app')).toHaveAttribute('data-brand','milo');await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(choice).toBeChecked();
  await choice.uncheck();await dialog.getByRole('button',{name:'Mijn keuze opslaan',exact:true}).click();await expect(dialog.locator('.fam-mail-saved')).toContainText('afgemeld');
  await evidence(page,'brand-mail-opt-in-phone',{transport:'explicit-browser-local-demo',defaultOptOut:true,brandIsolation:true,...proof});
- expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual([]);expect(proof.writes).toEqual([]);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual(['/api/auth/session']);expect(proof.writes).toEqual([]);
 });
 
 test('v70 mobile reactions retain the typed question and viewing preferences persist per brand without pretending demo speech captions',async({page},testInfo)=>{
@@ -113,7 +114,7 @@ test('v70 mobile reactions retain the typed question and viewing preferences per
  await page.reload();await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).toBeChecked();await expect(motion).toBeChecked();await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();
  await page.getByRole('combobox',{name:'Kies een show',exact:true}).selectOption('vlampie-family-demo');await expect(page.locator('.family-app')).toHaveAttribute('data-brand','vlampie');await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).not.toBeChecked();await expect(motion).not.toBeChecked();
  await evidence(page,'family-viewing-and-reactions-phone',{transport:'explicit-browser-local-demo',reactionProfile:'Sem',typedDraftRetained:true,viewingPreferencesPersist:true,brandIsolation:true,actualCaptionTrackVerified:false,...proof});
- expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual([]);expect(proof.writes).toEqual([]);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual(['/api/auth/session']);expect(proof.writes).toEqual([]);
 });
 
 test('v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences',async({request})=>{

@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import ShowApp from './ShowApp';
 import {normalizedEntry} from '../server/site-entry.js';
 import {isObsSource,obsSourceToken,obsFetch} from '../public/obs-access.js';
+import {configureLocalPreview} from '../frontend/local-preview-access.js';
 export default function StudioGate() {
   const [ready,setReady] = useState(false);
   const [error,setError] = useState('');
@@ -10,6 +11,7 @@ export default function StudioGate() {
   const [obs,setObs] = useState(false);
   const [retrying,setRetrying] = useState(false);
   useEffect(() => {
+    Reflect.set(window,'__MILO_LOCAL_PREVIEW_AVAILABLE__',false);
     const canonical=normalizedEntry(location.href);
     if(canonical){location.replace(canonical.href);return;}
     const controller = new AbortController();
@@ -39,7 +41,9 @@ export default function StudioGate() {
       void verify();
       return ()=>{controller.abort();clearTimeout(retryTimer);};
     }
-    fetch('/api/auth/session',{cache:'no-store',signal:controller.signal}).then(r=>r.json()).then(session=>{
+    fetch('/api/auth/session',{cache:'no-store',signal:controller.signal}).then(r=>{if(!r.ok)throw Error('De aanmelding kon niet worden gecontroleerd.');return r.json();}).then(session=>{
+      if(controller.signal.aborted)return;
+      configureLocalPreview(session);
       if(session.authenticated && ['regie','owner','admin'].includes(session.role)) setReady(true);
       else if(session.authenticated) location.replace('/spelen');
       else location.replace('/login?next='+encodeURIComponent(location.pathname+location.search+location.hash));
