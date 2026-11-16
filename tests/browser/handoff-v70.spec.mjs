@@ -114,7 +114,7 @@ test('v70 mobile reactions retain the typed question and viewing preferences per
  await page.reload();await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).toBeChecked();await expect(motion).toBeChecked();await dialog.getByRole('button',{name:'Sluiten',exact:true}).click();
  await page.getByRole('combobox',{name:'Kies een show',exact:true}).selectOption('vlampie-family-demo');await expect(page.locator('.family-app')).toHaveAttribute('data-brand','vlampie');await page.getByRole('button',{name:'Account en instellingen'}).click();await expect(captions).not.toBeChecked();await expect(motion).not.toBeChecked();
  await evidence(page,'family-viewing-and-reactions-phone',{transport:'explicit-browser-local-demo',reactionProfile:'Sem',typedDraftRetained:true,viewingPreferencesPersist:true,brandIsolation:true,actualCaptionTrackVerified:false,...proof});
- expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual(['/api/auth/session']);expect(proof.writes).toEqual([]);
+ expect(proof.errors).toEqual([]);expect(proof.external).toEqual([]);expect(proof.api).toEqual(['/api/auth/session','/api/auth/session']);expect(proof.writes).toEqual([]);
 });
 
 test('v70 actual unauthenticated APIs reject forged identity for claims, private calls and mail preferences',async({request})=>{
