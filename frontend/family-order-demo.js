@@ -48,13 +48,14 @@ export function matchFamilyOrderDemo(input,options={},context={}){
  const data=bodyOf(options.body),family=context.family||{profiles:[]};
  if(!orderId){
   const show=state.shows.find(s=>s.id===gameId);if(!open(show))throw fail('Bestellen voor deze voorbeeldshow is gesloten.');
+  if(!['print','pickup','both'].includes(data.fulfillmentChoice))throw fail('Kies Zelf printen, Ophalen of Zelf printen én ophalen.');
   const max=Math.min(30,configOf(show).maxQuantity||30),quantity=data.quantity;
   if(!Number.isInteger(quantity)||quantity<1||quantity>max)throw fail(`Kies 1 tot ${max} bingobladen.`);
   if(!Array.isArray(data.profileIds)||data.profileIds.length!==quantity)throw fail('Controleer de spelers bij jullie bladen.');
   if(data.profileIds.some(id=>id!==null&&!family.profiles.some(p=>p.id===id)))throw fail('Kies alleen spelers uit jullie voorbeeldgezin.');
   const requestId=String(data.requestId||'');if(!requestId)throw fail('Deze aanvraag mist een herkenbare referentie. Probeer opnieuw.');
   const previous=state.orders.find(o=>o.accountId===accountId&&o.show.id===gameId&&o.requestId===requestId);if(previous)return response(state,context,gameId,previous.id);
-  const id='demo-order-'+crypto.randomUUID(),changed=mutateOrderDemo(s=>{s.orders.push({id,reference:'MF-DEMO-'+String(s.orders.length+1041),requestId,accountId,customerName:family.ownerName||'Voorbeeldgezin',email:family.email||'gezin@voorbeeld.invalid',show:{id:show.id,title:show.title,date:show.date,roundCount:show.roundCount||4},quantity,profileIds:copy(data.profileIds),profileNames:data.profileIds.map(id=>family.profiles.find(p=>p.id===id)?.name||''),profileAges:data.profileIds.map(id=>family.profiles.find(p=>p.id===id)?.age??null),amountCents:Number.isInteger(configOf(show).unitPriceCents)?quantity*configOf(show).unitPriceCents:null,status:'requested',createdAt:Date.now(),paymentUrl:'',paymentMail:{status:'queued'},readyMail:{status:'queued'},books:[],bookIds:[],note:'',simulated:true});});
+  const id='demo-order-'+crypto.randomUUID(),changed=mutateOrderDemo(s=>{s.orders.push({id,reference:'MF-DEMO-'+String(s.orders.length+1041),requestId,accountId,customerName:family.ownerName||'Voorbeeldgezin',email:family.email||'gezin@voorbeeld.invalid',show:{id:show.id,title:show.title,date:show.date,roundCount:show.roundCount||4},quantity,fulfillmentChoice:data.fulfillmentChoice,profileIds:copy(data.profileIds),profileNames:data.profileIds.map(id=>family.profiles.find(p=>p.id===id)?.name||''),profileAges:data.profileIds.map(id=>family.profiles.find(p=>p.id===id)?.age??null),amountCents:Number.isInteger(configOf(show).unitPriceCents)?quantity*configOf(show).unitPriceCents:null,status:'requested',createdAt:Date.now(),paymentUrl:'',paymentMail:{status:'queued'},readyMail:{status:'queued'},books:[],bookIds:[],note:'',simulated:true});});
   return response(changed,context,gameId,id);
  }
  const order=state.orders.find(o=>o.id===orderId&&o.show.id===gameId&&o.accountId===accountId);if(!order)throw fail('Deze voorbeeldbestelling is niet gevonden.',404);

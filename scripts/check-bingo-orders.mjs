@@ -8,6 +8,7 @@ import {BingoStore} from '../server/bingo-store.js';
 import {dispatchOrderMail} from '../server/bingo-order-mail.js';
 import {dispatchNodeRequest} from '../server/node-runtime.js';
 import {setPaymentLink} from '../server/bingo-order-model.js';
+import {generateBooks} from '../server/bingo-model.js';
 import {publishGameRules,assertRulesCurrent} from '../server/game-rules.js';
 
 function setup(){
@@ -31,10 +32,10 @@ async function fixture(h,quantity=2){
  await h.store.mutate(game.id,{},g=>publishGameRules(g));
  const profile=(await h.call('/profiles',post({name:'Sophie',age:7},'family'),201)).result;
  const second=(await h.call('/profiles',post({name:'Timo',age:9},'family'),201)).result;
- const {order}=await h.call(route+'/orders',post({quantity,profileIds:Array.from({length:quantity},(_,i)=>i===0?profile.id:null)},'family'),201);
+ const {order}=await h.call(route+'/orders',post({quantity,fulfillmentChoice:'print',profileIds:Array.from({length:quantity},(_,i)=>i===0?profile.id:null)},'family'),201);
  return {game,route,order,profile,second};
 }
-const link=(h,f,extra={})=>h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/milo?order=123&token=secret',amountCents:500,note:'Dank je <gezin>!',...extra}));
+const link=(h,f,extra={})=>h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/milo?order=123&token=secret',amountCents:f.order.amountCents,note:'Dank je <gezin>!',...extra}));
 
 test('optional queue-injected order unit checks the real execution clock after the deadline and leaves the game unchanged',async t=>{
  const h=setup(),f=await fixture(h,1);try{
@@ -43,7 +44,7 @@ test('optional queue-injected order unit checks the real execution clock after t
   // Test-only opt-in: ordinary order/production routes deliberately do not join
   // the native family-claim FIFO. Exercise their fresh-clock callback contract.
   const mutate=BingoStore.prototype.mutate;t.mock.method(BingoStore.prototype,'mutate',function(id,options={},operation){return mutate.call(this,id,{...options,serializeLocal:true},operation);});
-  const response=await h.raw(f.route+'/orders',post({quantity:1},'family'));assert(queued);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'ordering_closed');assert.deepEqual((await h.store.game(f.game.id)).data,before);assert.equal(h.mail.length,0);
+  const response=await h.raw(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'));assert(queued);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'ordering_closed');assert.deepEqual((await h.store.game(f.game.id)).data,before);assert.equal(h.mail.length,0);
  }finally{h.db.close();}
 });
 
@@ -62,7 +63,7 @@ test('order mail rejects lease or uncertain-guarantee expiry between claim and o
  for(const expiry of ['lease','guarantee'])await t.test(expiry,async()=>{
   const h=setup(),f=await fixture(h,1);try{
    h.env.ORDER_MAIL_DELIVERY.idempotencyWindowMs=1000;
-   await h.store.mutate(f.game.id,{},g=>{setPaymentLink(g,g.orders[0],{paymentUrl:'https://pay.example.test/pre-offer',amountCents:250});if(expiry==='guarantee')Object.assign(g.orders[0].paymentMail,{status:'failed',uncertain:true,adapterId:'test-dg-mail',idempotencyWindowMs:1000,firstAttemptAt:Date.now()});});
+   await h.store.mutate(f.game.id,{},g=>{setPaymentLink(g,g.orders[0],{paymentUrl:'https://bunq.me/o/pre-offer',amountCents:250});if(expiry==='guarantee')Object.assign(g.orders[0].paymentMail,{status:'failed',uncertain:true,adapterId:'test-dg-mail',idempotencyWindowMs:1000,firstAttemptAt:Date.now()});});
    const get=h.env.SETTINGS.get;let templateReads=0;h.env.SETTINGS.get=async key=>{if(key==='private/studio-mail-milo.v1'&&++templateReads===2)await h.store.mutate(f.game.id,{},g=>{const mail=g.orders[0].paymentMail;if(expiry==='lease')mail.leaseUntil=Date.now()-1;else mail.firstAttemptAt=Date.now()-1001;});return get(key);};
    await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'payment',env:h.env,origin:'https://studio.example'});
    const order=(await h.store.game(f.game.id)).data.orders[0];assert.equal(templateReads,2);assert.equal(h.mail.length,0);assert.equal(order.paymentVersion,1);assert.equal(order.paymentMail.status,'failed');assert.equal(order.paymentMail.leaseUntil,0);assert.equal(order.paymentMail.attempts,1);if(expiry==='lease')assert.match(order.paymentMail.error,/verlopen vóór aanbieding/);else{assert.equal(order.paymentMail.uncertain,true);assert.match(order.paymentMail.error,/Veilig automatisch/);}
@@ -142,28 +143,28 @@ test('orders are future-show specific, owner scoped, server priced and permanent
   await h.call(f.route+'/orders/config',post({enabled:true},'family'),403);
   await h.call(f.route+'/orders',post({quantity:0},'family'),400);
   await h.call(f.route+'/orders',post({quantity:31},'family'),400);
-  await h.call(f.route+'/orders',post({quantity:1,profileIds:['foreign-child']},'family'),403);
-  const body={requestId:'durable-order-retry',quantity:1,amountCents:1,email:'thief@example.test'};
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print',profileIds:['foreign-child']},'family'),403);
+  const body={requestId:'durable-order-retry',quantity:1,fulfillmentChoice:'print',amountCents:1,email:'thief@example.test'};
   const created=await h.call(f.route+'/orders',post(body,'family'),201);assert.equal(created.order.amountCents,250);
   await h.store.mutate(f.game.id,{},g=>{g.ops=[];g.ordering.enabled=false;});
   const retry=await h.call(f.route+'/orders',post({...body,quantity:20},'family'),201);assert.equal(retry.order.id,created.order.id);assert.equal(retry.order.quantity,1);
   assert.equal((await h.store.game(f.game.id)).data.orders.length,2);
-  await h.call(f.route+'/orders',post({quantity:1},'family'),409);
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),409);
   await h.call(f.route+'/orders/config',post({enabled:true,unitPriceCents:null}));
-  const unpriced=await h.call(f.route+'/orders',post({quantity:1,amountCents:99},'family'),201);assert.equal(unpriced.order.amountCents,null);
+  const unpriced=await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print',amountCents:99},'family'),201);assert.equal(unpriced.order.amountCents,null);
   await h.store.mutate(f.game.id,{},g=>{g.date='2020-01-01T12:00';});
   assert.equal((await h.call(f.route+'/orders',{user:'family'})).available,false);
-  await h.call(f.route+'/orders',post({quantity:1},'family'),409);
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),409);
  }finally{h.db.close();}
 });
 
 test('family mode on a platform organizer shows only own orders and never host-only details',async()=>{
  const h=setup(),f=await fixture(h);try{
-  const headers={'X-Vlampie-Player':'1'},own=await h.call(f.route+'/orders',post({quantity:1},'host',headers),201);
+  const headers={'X-Vlampie-Player':'1'},own=await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'host',headers),201);
   const familyView=await h.call('/orders',{headers});assert.deepEqual(familyView.orders.map(o=>o.id),[own.order.id]);assert(!('email'in familyView.orders[0]));
   await h.call(`${f.route}/orders/${f.order.id}`,{headers},403);
   await h.call(f.route+'/orders/config',post({enabled:true},'host',headers),403);
-  await h.call(`${f.route}/orders/${own.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/own',amountCents:250}));
+  await h.call(`${f.route}/orders/${own.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/own',amountCents:250}));
   const reported=await h.call(`${f.route}/orders/${own.order.id}/paid`,post({},'host',headers));assert.equal(reported.order.status,'payment_reported');
   const hostView=await h.call('/orders');assert.equal(hostView.orders.length,2);assert.equal(hostView.orders.find(o=>o.id===f.order.id).email,'family@example.test');
  }finally{h.db.close();}
@@ -172,7 +173,7 @@ test('family mode on a platform organizer shows only own orders and never host-o
 test('payment mail has a trusted recipient, escaped content and real provider acceptance semantics',async()=>{
  const h=setup(),f=await fixture(h);try{
   for(const paymentUrl of ['javascript:alert(1)','http://pay.example.test/x','https://u:p@pay.example.test/x','https://localhost/x','https://127.0.0.1/x'])await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl,amountCents:500}),400);
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/x',amountCents:500},'family'),403);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/x',amountCents:500},'family'),403);
   const linked=await link(h,f,{email:'evil@example.test'});assert.equal(linked.order.status,'payment_pending');assert.equal(linked.order.paymentMail.status,'sent');assert.equal(h.mail.length,1);
   const payload=h.mail[0].message;assert.deepEqual(payload.to,['family@example.test']);assert(payload.html.includes('Dank je &lt;gezin&gt;!'));assert(payload.html.includes('&amp;token=secret'));assert(!payload.html.includes('re_test'));
   const saved=(await h.store.game(f.game.id)).data.orders[0];assert.equal(saved.paymentMail.acceptedByProvider,true);assert.equal(saved.paymentMail.providerId,'stub-1');
@@ -182,7 +183,7 @@ test('payment mail has a trusted recipient, escaped content and real provider ac
  }finally{h.db.close();}
 });
 
-test('approval is explicit, atomic and permanently one-time; stored sheets render in both colors',async()=>{
+test('approval is explicit and permanently one-time; stored sheets render in both colors',async()=>{
  const h=setup(),f=await fixture(h);try{
   await link(h,f);
   await h.call(`${f.route}/orders/${f.order.id}/approve`,post({}),409);
@@ -198,7 +199,120 @@ test('approval is explicit, atomic and permanently one-time; stored sheets rende
   assert.notDeepEqual(colorBytes,monoBytes);assert.deepEqual(new Uint8Array(await (await h.raw(pdfRoute+'?mode=color&format=a5',{user:'family'})).arrayBuffer()),colorBytes);
   assert.equal(JSON.stringify((await h.store.game(f.game.id)).data.books),identities);
   await h.call(pdfRoute,{user:'stranger'},403);await h.call(pdfRoute+'?mode=invalid',{user:'family'},400);
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/changed',amountCents:999}),409);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/changed',amountCents:999}),409);
+ }finally{h.db.close();}
+});
+
+test('fulfillment choices are required and server stored; unpaid choices never create cards, codes, jobs or PDFs',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  for(const fulfillmentChoice of [null,'unknown','both-times',true])await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice},'family'),400);
+  await h.call(f.route+'/orders',post({quantity:1},'family'),400);
+  const orders=[f.order];
+  for(const [fulfillmentChoice,quantity] of [['pickup',3],['both',2]])orders.push((await h.call(f.route+'/orders',post({quantity,fulfillmentChoice,amountCents:1,show:{id:'forged-show'}},'family'),201)).order);
+  assert.deepEqual(orders.map(order=>[order.fulfillmentChoice,order.quantity,order.amountCents]),[['print',1,250],['pickup',3,750],['both',2,500]]);
+  for(const order of orders){await link(h,{...f,order});await h.call(`${f.route}/orders/${order.id}/pdf`,{user:'family'},403);await h.call(`${f.route}/orders/${order.id}/pdf`,{},403);}
+  const stored=(await h.store.game(f.game.id)).data;
+  assert.equal(stored.books.length,0);assert.equal(stored.batches.length,0);assert.equal(stored.orders.every(order=>order.bookIds.length===0&&!order.batchId&&!order.issuance),true);assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_codes').first()).n,0);assert.equal(h.files.size,0);
+  assert.deepEqual((await h.call('/orders')).orders.filter(order=>['pickup','both'].includes(order.fulfillmentChoice)).map(order=>order.id).sort(),orders.slice(1).map(order=>order.id).sort());
+  assert(orders.every(order=>order.show.id===f.game.id));
+ }finally{h.db.close();}
+});
+
+test('saving a bunq share normalizes without sending; explicit concurrent sends use stored price and recipient',async()=>{
+ const h=setup(),f=await fixture(h,2);try{
+  const route=`${f.route}/orders/${f.order.id}/payment-link`,body={paymentUrl:'🙏 Betaal € 5,00 voor "test" via https://bunq.me/o/VoorbeeldCode123',amountCents:500};
+  const saved=await h.call(route,post(body));assert.equal(saved.order.paymentUrl,'https://bunq.me/o/VoorbeeldCode123');assert.equal(saved.order.status,'payment_pending');assert.equal(h.mail.length,0);
+  const stored=(await h.store.game(f.game.id)).data.orders[0];assert.equal(stored.paymentUrl,saved.order.paymentUrl);assert.equal(stored.paymentMail.status,'queued');
+  await h.call(route,post({...body,amountCents:501,sendMail:true}),409);assert.equal(h.mail.length,0);
+  await Promise.all([h.call(route,post({...body,sendMail:true,email:'attacker@example.test'})),h.call(route,post({...body,sendMail:true}))]);
+  assert.equal(h.mail.length,1);assert.deepEqual(h.mail[0].message.to,['family@example.test']);assert.match(h.mail[0].message.html,/https:\/\/bunq.me\/o\/VoorbeeldCode123/);assert.match(h.mail[0].message.html,/Betaal via bunq/);
+  const after=(await h.store.game(f.game.id)).data;assert.equal(after.orders[0].payment?.state,undefined);assert.equal(after.books.length,0);assert.equal(after.batches.length,0);assert.equal(h.files.size,0);
+ }finally{h.db.close();}
+});
+
+test('mail retry rejects legacy unnormalized or foreign payment links before provider contact without changing the saved link',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  for(const paymentUrl of ['https://bunq.me.evil.test/o/Lookalike','https://pay.example.test/legacy','Betaal via https://bunq.me/o/ValidButNotNormalized']){
+   await h.store.mutate(f.game.id,{},g=>Object.assign(g.orders[0],{status:'payment_pending',paymentVersion:1,paymentUrl,paymentMail:{status:'queued',version:1}}));
+   const rejected=(await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}))).order;
+   assert.equal(rejected.paymentUrl,paymentUrl);assert.equal(rejected.paymentMail.status,'failed');assert.match(rejected.paymentMail.error,/bunq|genormaliseerde/);assert.equal(h.mail.length,0);
+  }
+  const stored=(await h.store.game(f.game.id)).data;assert.equal(stored.books.length,0);assert.equal(stored.batches.length,0);assert.equal(stored.orders[0].payment,undefined);assert.equal(h.files.size,0);
+ }finally{h.db.close();}
+});
+
+test('ready-mail retries never contact the provider for fulfilled paid orders with revoked or incomplete sheets',async()=>{
+ const h=setup(),f=await fixture(h,2);try{
+  await link(h,f);const approved=await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true})),bookIds=[...approved.order.bookIds],sentBefore=h.mail.length;
+  assert.equal(approved.order.downloadReady,true);assert.equal(approved.order.readyMail.status,'sent');assert.equal(sentBefore,2);
+  for(const unavailable of ['revoked','incomplete']){
+   await h.store.mutate(f.game.id,{},g=>{
+    const order=g.orders[0],book=g.books.find(book=>book.id===bookIds[0]);delete book.revokedAt;
+    order.bookIds=[...bookIds];order.readyMail={status:'failed',version:1,error:'Gesimuleerde eerdere mailfout'};
+    if(unavailable==='revoked')book.revokedAt=Date.now();else order.bookIds.pop();
+   });
+   const before=(await h.store.game(f.game.id)).data;
+   const retry=(await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'ready'}))).order;
+   assert.equal(retry.status,'fulfilled');assert.equal(retry.payment.state,'verified');assert.equal(retry.downloadReady,false);assert.equal(retry.readyMail.status,'failed');assert.equal(h.mail.length,sentBefore,unavailable+' sheets prevent provider contact');
+   await dispatchOrderMail({store:h.store,gameId:f.game.id,orderId:f.order.id,kind:'ready',env:h.env,origin:'https://studio.example'});
+   assert.equal(h.mail.length,sentBefore);assert.deepEqual((await h.store.game(f.game.id)).data,before,'blocked retries preserve payment, cards and mail receipt');
+  }
+ }finally{h.db.close();}
+});
+
+test('QR registration cannot assign an unpaid historical order batch even when its code is known',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  // A malformed historical batch must not become a route around payment. The
+  // normal order handler never creates this unpaid stock in the first place.
+  await h.store.mutate(f.game.id,{},g=>{const order=g.orders[0],batch=generateBooks(g,1,`order:${order.id}`);order.batchId=batch.id;order.bookIds=[...batch.bookIds];});
+  const before=(await h.store.game(f.game.id)).data,book=before.books[0];assert.equal(book.accountId,null);assert.equal(before.orders[0].payment,undefined);
+  await h.call(f.route+'/register',post({code:book.code,profileId:f.profile.id},'family'),409);
+  await h.call(f.route+'/register',post({token:book.token,profileId:f.profile.id},'family'),409);
+  assert.deepEqual((await h.store.game(f.game.id)).data,before);assert.equal(h.files.size,0);
+ }finally{h.db.close();}
+});
+
+test('generation failing after a partial in-memory set keeps payment/audit committed and retries exactly once',async t=>{
+ const h=setup(),f=await fixture(h,3);try{
+  await link(h,f);const original=crypto.randomUUID.bind(crypto);let generating=0;
+  const mock=t.mock.method(crypto,'randomUUID',()=>{if(new Error().stack.includes('generateBooks')&&++generating===5)throw new Error('private-mid-generation-failure');return original();});
+  const failed=await h.call(`${f.route}/orders/${f.order.id}/approve`,post({paymentVerified:true}));mock.mock.restore();
+  assert.equal(generating,5);assert.equal(failed.order.payment.state,'verified');assert.equal(failed.order.payment.verifiedBy,'host');assert.equal(typeof failed.order.payment.verifiedAt,'number');assert.equal(failed.order.issuance.state,'failed');assert.equal(failed.order.issuance.canRetry,true);assert.equal(failed.order.downloadReady,false);assert(!JSON.stringify(failed).includes('private-mid-generation'));
+  const before=(await h.store.game(f.game.id)).data,payment=structuredClone(before.orders[0].payment);assert.equal(before.books.length,0);assert.equal(before.batches.length,0);assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_codes').first()).n,0);assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_payment_receipts').first()).n,1);
+  const sentBefore=h.mail.length;await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}));assert.equal(h.mail.length,sentBefore);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/AlreadyPaid',amountCents:750}),409);assert.equal(h.mail.length,sentBefore);
+  assert.equal(before.orders[0].financialHistory.length,1);await h.call(`${f.route}/orders/${f.order.id}/pdf`,{user:'family'},403);await h.call(`${f.route}/orders/${f.order.id}/approve`,post({},'family'),403);
+  await h.call(`${f.route}/orders/${f.order.id}/cancel`,post({},'family'),409);
+  const [retried]=await Promise.all([h.call(`${f.route}/orders/${f.order.id}/approve`,post({})),h.call(`${f.route}/orders/${f.order.id}/approve`,post({}))]);
+  const ready=(await h.store.game(f.game.id)).data;assert.equal(retried.order.status,'fulfilled');assert.equal(retried.order.downloadReady,true);assert.equal(retried.order.issuance.canRetry,false);assert.equal(ready.books.length,3);assert.equal(ready.batches.length,1);assert.equal(new Set(ready.orders[0].bookIds).size,3);assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_codes').first()).n,3);assert.deepEqual(ready.orders[0].payment,payment);assert.equal(ready.orders[0].financialHistory.length,1);
+  const identities=structuredClone(ready.books);await h.call(`${f.route}/orders/${f.order.id}/approve`,post({}));assert.deepEqual((await h.store.game(f.game.id)).data.books,identities);
+  const family=(await h.call(`${f.route}/orders/${f.order.id}`,{user:'family'})).order;assert(!('verifiedBy'in family.payment));assert(!('verifiedAt'in family.payment));
+  const invalidId=ready.orders[0].bookIds[1],validId=ready.orders[0].bookIds[0];await h.store.mutate(f.game.id,{},g=>{g.books.find(book=>book.id===invalidId).revokedAt=Date.now();});
+  await h.call(`${f.route}/books/${validId}/pdf`,{user:'family'},409);await h.call(`${f.route}/batches/${ready.batches[0].id}/pdf`,{},409);
+ }finally{h.db.close();}
+});
+
+test('paid partial stored batches resume with existing numbers and legacy paid downloads stay private',async()=>{
+ const h=setup(),f=await fixture(h,3);try{
+  await link(h,f);
+  // This models an older interrupted issuer: payment and the first sheet are
+  // already durable. New issuance uses a single transaction for every sheet.
+  await h.store.mutate(f.game.id,{},g=>{
+   const order=g.orders[0],batch=generateBooks(g,1,`order:${order.id}`),book=g.books.find(book=>book.id===batch.bookIds[0]);
+   Object.assign(order,{payment:{state:'verified',reference:'partial-fixture',amountCents:750,currency:'EUR',orderNumber:order.number,verifiedBy:'original-host',verifiedAt:12345},paymentVerifiedAt:12345,batchId:batch.id,bookIds:[book.id],issuance:{state:'failed',error:'Onderbroken testuitgifte'}});
+   Object.assign(book,{orderId:order.id,accountId:order.accountId,issueStatus:'paid-ready',admitted:false});
+  });
+  const partial=(await h.store.game(f.game.id)).data,original=structuredClone(partial.books[0]);
+  await h.call(`${f.route}/books/${original.id}/pdf`,{user:'family'},409);await h.call(`${f.route}/batches/${partial.orders[0].batchId}/pdf`,{},409);assert.equal(h.files.size,0);
+  const result=await h.call(`${f.route}/orders/${f.order.id}/approve`,post({})),ready=(await h.store.game(f.game.id)).data;
+  assert.equal(result.order.books.length,3);assert.equal(ready.batches.length,1);assert.equal(ready.batches[0].id,partial.batches[0].id);assert.equal(ready.books[0].id,original.id);assert.equal(ready.books[0].ticket,original.ticket);assert.equal(ready.books[0].code,original.code);assert.equal(ready.books[0].token,original.token);assert.deepEqual(ready.books[0].cards,original.cards);assert.equal(ready.orders[0].payment.verifiedBy,'original-host');assert.equal(ready.orders[0].paymentVerifiedAt,12345);
+  const identities=structuredClone(ready.books);await h.store.mutate(f.game.id,{},g=>{delete g.orders[0].fulfillmentChoice;delete g.orders[0].issuance;delete g.orders[0].payment;});
+  const before=(await h.db.prepare('SELECT document FROM bingo_games WHERE id=?').bind(f.game.id).first()).document;
+  const legacy=(await h.call(`${f.route}/orders/${f.order.id}`,{user:'family'})).order;assert.equal(legacy.fulfillmentChoice,'unknown');assert.equal(legacy.payment.state,'verified');assert.equal(legacy.downloadReady,true);assert.equal((await h.db.prepare('SELECT document FROM bingo_games WHERE id=?').bind(f.game.id).first()).document,before);
+  const familyPdf=await h.raw(`${f.route}/orders/${f.order.id}/pdf`,{user:'family'});assert.equal(familyPdf.status,200);assert.equal(familyPdf.headers.get('Cache-Control'),'private, no-store');
+  const bytes=new Uint8Array(await familyPdf.arrayBuffer()),hostPdf=await h.raw(`${f.route}/orders/${f.order.id}/pdf`);assert.deepEqual(new Uint8Array(await hostPdf.arrayBuffer()),bytes);assert.equal((await PDFDocument.load(bytes)).getPageCount(),3);
+  for(const path of [`${f.route}/orders/${f.order.id}/pdf`,`${f.route}/books/${original.id}/pdf`,`${f.route}/batches/${ready.batches[0].id}/pdf`])await h.call(path,{user:'stranger'},403);
+  await h.call(`${f.route}/orders/${f.order.id}/approve`,post({}));assert.deepEqual((await h.store.game(f.game.id)).data.books,identities);
  }finally{h.db.close();}
 });
 
@@ -213,12 +327,12 @@ test('paid sheets can only be assigned to their owner’s children, including vi
   const stored=(await h.store.game(f.game.id)).data,free=stored.books.find(b=>b.id===ids[2]);
   await h.call(f.route+'/register',post({profileId:other.id,code:free.code},'stranger'),409);
   const registered=await h.call(f.route+'/register',post({profileId:f.second.id,code:free.code},'family'));assert(registered.game.books.find(b=>b.id===free.id).admitted);
-  const pending=(await h.call(f.route+'/orders',post({quantity:1},'family'),201)).order;
+  const pending=(await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),201)).order;
   await link(h,{...f,order:pending});
   await h.call(f.route+'/start',post({}));
   await h.call(`${f.route}/orders/${pending.id}/approve`,post({paymentVerified:true}),409);
   await h.call(`${f.route}/orders/${f.order.id}/assign`,post({bookId:ids[0],profileId:f.profile.id},'family'),409);
-  await h.call(f.route+'/orders',post({quantity:1},'family'),409);
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),409);
  }finally{h.db.close();}
 });
 
@@ -235,7 +349,7 @@ test('active order snapshots lock title, date, rounds and brand; cancellation pr
 test('failed mail retries freeze body and key, and require a gateway acceptance receipt',async()=>{
  const h=setup(),f=await fixture(h);try{
   const failed=[];const provider=async payload=>{failed.push(payload);return {accepted:true};};
-  const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/retry',amountCents:500}),200,provider);assert.equal(first.order.paymentMail.status,'failed');assert.equal(first.order.status,'payment_pending');
+  const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/retry',amountCents:500}),200,provider);assert.equal(first.order.paymentMail.status,'failed');assert.equal(first.order.status,'payment_pending');
   h.env.IGNORED_BROWSER_MAIL_FROM='changed@example.test';
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,provider);assert.equal(failed.length,2);assert.deepEqual(failed[0].message,failed[1].message);assert.equal(failed[0].idempotencyKey,failed[1].idempotencyKey);assert(failed[1].message.from.endsWith('<host@example.test>'));assert.deepEqual(failed[1].context,{brandId:'milo',gameId:f.game.id,orderId:f.order.id,kind:'payment'});
   const stored=(await h.store.game(f.game.id)).data.orders[0];assert(stored.paymentMail.uncertain);
@@ -246,7 +360,7 @@ test('failed mail retries freeze body and key, and require a gateway acceptance 
 
 test('expired sending leases after a worker crash preserve uncertainty and stop beyond the adapter guarantee',async()=>{
  const h=setup(),f=await fixture(h);try{
-  const now=Date.now();await h.store.mutate(f.game.id,{},g=>{const o=g.orders[0];o.status='payment_pending';o.paymentVersion=1;o.paymentUrl='https://pay.example.test/crash';o.paymentMail={status:'sending',version:1,attemptId:'crashed-worker',firstAttemptAt:now-86400001,leaseUntil:now-60000,attempts:1,adapterId:'test-dg-mail',idempotencyWindowMs:86400000};});
+  const now=Date.now();await h.store.mutate(f.game.id,{},g=>{const o=g.orders[0];o.status='payment_pending';o.paymentVersion=1;o.paymentUrl='https://bunq.me/o/crash';o.paymentMail={status:'sending',version:1,attemptId:'crashed-worker',firstAttemptAt:now-86400001,leaseUntil:now-60000,attempts:1,adapterId:'test-dg-mail',idempotencyWindowMs:86400000};});
   // A temporary loss of mail configuration must preserve the uncertainty of
   // the crashed attempt too, rather than turn it into a fresh safe attempt.
   const adapter=h.env.ORDER_MAIL_DELIVERY;delete h.env.ORDER_MAIL_DELIVERY;
@@ -261,9 +375,9 @@ test('outbox lease prevents parallel sends and payment-link replacement while se
  const h=setup(),f=await fixture(h);let release;const gate=new Promise(resolve=>release=resolve);let started;const entered=new Promise(resolve=>started=resolve);let sends=0;
  try{
   const provider=async()=>{sends++;started();await gate;return {accepted:true,messageId:'accepted-after-gate'};};
-  const sending=h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/leased',amountCents:500}),200,provider);await entered;
+  const sending=h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/leased',amountCents:500}),200,provider);await entered;
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,provider);assert.equal(sends,1);
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/replaced',amountCents:500}),409,provider);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/replaced',amountCents:500}),409,provider);
   release();const result=await sending;assert.equal(result.order.paymentMail.status,'sent');assert.equal(sends,1);
  }finally{release();h.db.close();}
 });
@@ -294,7 +408,7 @@ test('missing delivery configuration preserves the requested order and ready she
 test('uncertain mail cannot cross delivery identities or invent an idempotency guarantee',async()=>{
  const h=setup(),f=await fixture(h);try{
   let sends=0;const uncertain=async()=>{sends++;throw new Error('private-adapter-token-must-not-leak');};
-  const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/uncertain',amountCents:500}),200,uncertain);
+  const first=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/uncertain',amountCents:500}),200,uncertain);
   assert.equal(first.order.paymentMail.status,'failed');assert(!JSON.stringify(first).includes('private-adapter'));
   const original=h.env.ORDER_MAIL_DELIVERY;h.env.ORDER_MAIL_DELIVERY={...original,id:'another-mail-gateway'};
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,uncertain);assert.equal(sends,1);
@@ -309,7 +423,7 @@ test('an explicit gateway rejection can retry without claiming any guaranteed id
  const h=setup(),f=await fixture(h);try{
   h.env.ORDER_MAIL_DELIVERY.idempotencyWindowMs=0;
   let sends=0;const rejected=async()=>{sends++;return {accepted:false,uncertain:false};};
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/rejected',amountCents:500}),200,rejected);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/rejected',amountCents:500}),200,rejected);
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}),200,rejected);assert.equal(sends,2);
   assert.equal((await h.store.game(f.game.id)).data.orders[0].paymentMail.uncertain,false);
  }finally{h.db.close();}
@@ -346,9 +460,9 @@ test('native session dispatch injects delivery and protects the complete order a
   await call(route+'/orders/config',{enabled:true,unitPriceCents:250});await h.store.mutate(game.id,{},g=>publishGameRules(g));
   await call('/auth/local',{role:'player'});const family={...cookies};
   const {result:profile}=await call('/api/bingo/profiles',{name:'Noor',age:8},201);
-  const {order}=await call(route+'/orders',{quantity:1,profileIds:[profile.id],email:'attacker@example.test'},201);
+  const {order}=await call(route+'/orders',{quantity:1,fulfillmentChoice:'print',profileIds:[profile.id],email:'attacker@example.test'},201);
   await call(route+'/orders/'+order.id+'/approve',{paymentVerified:true},403);
-  cookies=regie;await call(route+'/orders/'+order.id+'/payment-link',{paymentUrl:'https://pay.example.test/native',amountCents:250});
+  cookies=regie;await call(route+'/orders/'+order.id+'/payment-link',{sendMail:true,paymentUrl:'https://bunq.me/o/native',amountCents:250});
   const approved=await call(route+'/orders/'+order.id+'/approve',{paymentVerified:true});assert.equal(approved.order.status,'fulfilled');assert.equal(approved.order.readyMail.status,'sent');
   assert.equal(h.mail.length,2);assert(h.mail.every(m=>m.message.to[0]==='gezin@localhost.invalid'));
   const original=(await h.store.game(game.id)).data.books[0];cookies=family;
@@ -363,7 +477,7 @@ test('native session dispatch injects delivery and protects the complete order a
 test('an explicit payment-link replacement archives accepted evidence once and keeps private history out of order projections',async()=>{
  const h=setup(),f=await fixture(h);try{
   await link(h,f);const original=structuredClone((await h.store.game(f.game.id)).data.orders[0]);
-  const replacement={requestId:'replace-payment-accepted',paymentUrl:'https://pay.example.test/new?private=accepted-history',amountCents:525,note:'Nieuwe betaalnotitie'};
+  const replacement={sendMail:true,requestId:'replace-payment-accepted',paymentUrl:'https://bunq.me/o/new?private=accepted-history',amountCents:500,note:'Nieuwe betaalnotitie'};
   await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post(replacement));
   const stored=(await h.store.game(f.game.id)).data.orders[0],history=stored.paymentMailHistory;
   assert.equal(stored.paymentVersion,2);assert.equal(history.length,1);assert.equal(history[0].id,`${f.order.id}/payment/1`);assert.equal(history[0].version,1);assert.equal(history[0].kind,'payment');assert.equal(typeof history[0].archivedAt,'number');
@@ -377,7 +491,7 @@ test('an explicit payment-link replacement archives accepted evidence once and k
   assert(!JSON.stringify(family).includes('paymentMailHistory'));assert(!JSON.stringify(family).includes('providerId'));assert(!JSON.stringify(family).includes('adapterId'));assert(!JSON.stringify(family).includes('paymentMailReconciliation'));
   assert(!JSON.stringify(admin.orders[0]).includes('payload'));assert(!JSON.stringify(admin.orders[0]).includes('providerId'));assert(!('paymentMailHistory'in admin.orders[0]));assert.deepEqual(admin.orders[0].paymentMailReconciliation,{required:false,versions:[]});
   await h.call(`${f.route}/orders/${f.order.id}`,{user:'stranger'},403);
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({...replacement,paymentUrl:'https://pay.example.test/theft'},'stranger'),403);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({...replacement,paymentUrl:'https://bunq.me/o/theft'},'stranger'),403);
   await h.call(`${f.route}/orders/${f.order.id}/payment-link`,{...post(replacement),user:'another-host',email:'host@example.test'},403);
   assert.deepEqual((await h.store.game(f.game.id)).data.orders[0],retry);
  }finally{h.db.close();}
@@ -387,9 +501,9 @@ test('replacing an uncertain payment mail preserves its frozen attempt and alert
  const h=setup(),f=await fixture(h);try{
   h.env.ORDER_MAIL_DELIVERY.idempotencyWindowMs=0;
   let oldSends=0;const unconfirmed=async()=>{oldSends++;return {accepted:false,uncertain:true};};
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/uncertain-old',amountCents:500}),200,unconfirmed);
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/uncertain-old',amountCents:500}),200,unconfirmed);
   const old=structuredClone((await h.store.game(f.game.id)).data.orders[0].paymentMail);assert.equal(old.uncertain,true);
-  const current=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/explicit-replacement',amountCents:510}));
+  const current=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/explicit-replacement',amountCents:500}));
   assert.equal(current.order.paymentMail.status,'sent');assert.deepEqual(current.order.paymentMailReconciliation,{required:true,versions:[1]});
   const stored=(await h.store.game(f.game.id)).data.orders[0];assert.deepEqual(stored.paymentMailHistory[0].mail,old);assert.equal(stored.paymentMailHistory[0].version,1);assert.equal(oldSends,1);assert.equal(h.mail.length,1);
   await h.call(`${f.route}/orders/${f.order.id}/mail`,post({kind:'payment'}));assert.equal(h.mail.length,1);assert.equal(oldSends,1);
@@ -401,9 +515,9 @@ test('replacing an uncertain payment mail preserves its frozen attempt and alert
 test('an expired sending lease is archived as uncertain while retaining its original receipt metadata',async()=>{
  const h=setup(),f=await fixture(h);try{
   const now=Date.now();await h.store.mutate(f.game.id,{},g=>{
-   const order=g.orders[0];Object.assign(order,{paymentVersion:1,status:'payment_pending',paymentUrl:'https://pay.example.test/crashed-old',paymentMail:{status:'sending',version:1,attemptId:'crashed-after-acceptance',firstAttemptAt:now-60000,leaseUntil:now-1,adapterId:'old-dg-gateway',idempotencyWindowMs:0,payload:{to:['family@example.test'],text:'Frozen private attempt'},acceptedByProvider:true,providerId:'reconciliation-receipt'}});
+   const order=g.orders[0];Object.assign(order,{paymentVersion:1,status:'payment_pending',paymentUrl:'https://bunq.me/o/crashed-old',paymentMail:{status:'sending',version:1,attemptId:'crashed-after-acceptance',firstAttemptAt:now-60000,leaseUntil:now-1,adapterId:'old-dg-gateway',idempotencyWindowMs:0,payload:{to:['family@example.test'],text:'Frozen private attempt'},acceptedByProvider:true,providerId:'reconciliation-receipt'}});
   });
-  const current=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/after-expired-lease',amountCents:500}));
+  const current=await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/after-expired-lease',amountCents:500}));
   const archived=(await h.store.game(f.game.id)).data.orders[0].paymentMailHistory[0];assert.equal(archived.mail.status,'sending');assert.equal(archived.mail.uncertain,true);assert.equal(archived.mail.providerId,'reconciliation-receipt');assert.equal(archived.mail.acceptedByProvider,true);assert.equal(archived.mail.attemptId,'crashed-after-acceptance');assert.equal(archived.mail.payload.text,'Frozen private attempt');
   assert.deepEqual(current.order.paymentMailReconciliation,{required:true,versions:[1]});assert.equal(h.mail.length,1);assert.equal(h.mail[0].message.text.includes('Frozen private attempt'),false);
  }finally{h.db.close();}
@@ -412,12 +526,12 @@ test('an expired sending lease is archived as uncertain while retaining its orig
 test('the payment version limit rejects before any mutation and still permits an unchanged final-version retry',async()=>{
  const h=setup(),f=await fixture(h);try{
   delete h.env.ORDER_MAIL_DELIVERY;
-  for(let version=1;version<=20;version++)await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/version/'+version,amountCents:500+version}));
+  for(let version=1;version<=20;version++)await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/version'+version,amountCents:500}));
   const before=(await h.store.game(f.game.id)).data,order=before.orders[0];assert.equal(order.paymentVersion,20);assert.equal(order.paymentMailHistory.length,19);
-  const direct=structuredClone(order);assert.throws(()=>setPaymentLink(before,direct,{paymentUrl:'https://pay.example.test/version/21',amountCents:521}),error=>error.code==='order_mail_version_limit');assert.deepEqual(direct,order,'pure operation leaves every field unchanged on limit');
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:'https://pay.example.test/version/21',amountCents:521}),409);
+  const direct=structuredClone(order);assert.throws(()=>setPaymentLink(before,direct,{paymentUrl:'https://bunq.me/o/version21',amountCents:500}),error=>error.code==='order_mail_version_limit');assert.deepEqual(direct,order,'pure operation leaves every field unchanged on limit');
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/version21',amountCents:500}),409);
   assert.deepEqual((await h.store.game(f.game.id)).data,before,'failed API change commits no new game revision or partial archive');
-  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({paymentUrl:order.paymentUrl,amountCents:order.amountCents,note:order.note}));
+  await h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:order.paymentUrl,amountCents:order.amountCents,note:order.note}));
   const retry=(await h.store.game(f.game.id)).data.orders[0];assert.equal(retry.paymentVersion,20);assert.deepEqual(retry.paymentMailHistory,order.paymentMailHistory);assert.equal(h.mail.length,0);
  }finally{h.db.close();}
 });

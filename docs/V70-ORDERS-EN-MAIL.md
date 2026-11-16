@@ -1,5 +1,7 @@
 # v70 · Bestellingen en mail
 
+De actuele audit, ontvangstkeuzes, Bunq-stroom en verificatieresultaten staan in [Bestellen, betalen en ophalen](BESTELLEN-BETALEN-OPHALEN.md).
+
 De implementatie behoudt de native sessies en de DG-mailadapter. De geverifieerde Sites-bron is `f81d0c1c60cbe1422d43ce46d896af6cd4d2939c`; de daarin aanwezige veertien mailtemplates zijn behouden, met drie afzonderlijke operationele templates voor verplaatsing, annulering en bevestigde terugbetaling. Deze overdracht heeft geen betaling, echte verzending, campagne of externe provideractie uitgevoerd.
 
 ## Bestellingen
@@ -17,7 +19,7 @@ Historische zonevrije tijden worden niet stil herschreven. De formatter bewaart 
 | Refund bevestigen | Regie; referentie, bedrag, EUR en ordernummer | Pas dan `verified` en een operationele bevestigingsmail |
 | Show verplaatsen / annuleren | Regie; actuele revisie, preview, uitleg en bevestiging | Behoud van historie; verplaatsing behoudt show-, order-, kaart- en code-identiteit |
 
-Een serverberekende ontvangsthash voorkomt dat dezelfde betaalreferentie bij twee orders/shows van dezelfde organisatie wordt gebruikt. De sleutel bindt versienaam, opgeslagen `ownerId`, NFKC-genormaliseerde referentie en valuta; het bedrag maakt geen nieuwe ontvangstidentiteit. De claim wordt samen met de order, het gezin, de boekjes en codes atomair vastgelegd in `bingo_payment_receipts`. Er wordt geen bank of betaalprovider geraadpleegd. Raw referenties en ontvangsthashes komen niet in publieke foutmeldingen.
+Een serverberekende ontvangsthash voorkomt dat dezelfde betaalreferentie bij twee orders/shows van dezelfde organisatie wordt gebruikt. De sleutel bindt versienaam, opgeslagen `ownerId`, NFKC-genormaliseerde referentie en valuta; het bedrag maakt geen nieuwe ontvangstidentiteit. De claim wordt samen met de betaalbevestiging van de order atomair vastgelegd in `bingo_payment_receipts`. Deze eerste fase commit vóór de uitgifte. Een afzonderlijke atomaire spelmutatie legt vervolgens de boekjes, codes, orderbatch en eventuele gezinskoppeling vast; een generatiefout behoudt daardoor de bevestigde betaling en kan veilig worden hervat. Er wordt geen bank of betaalprovider geraadpleegd. Raw referenties en ontvangsthashes komen niet in publieke foutmeldingen.
 
 De startcontrole en uitgifte lopen door dezelfde atomaire spelmutatie. Open betaalcontrole, ontbrekende uitgifte of onopgeloste financiële afhandeling blokkeert start. Na start kan regie financieel blijven reconciliëren; dat voegt geen nieuwe kaart aan het lopende spel toe. Algemene boekadministratie kan een orderblad niet naar een ander gezin overdragen of de orderuitgiftestatus wijzigen. Correctie van een kind binnen hetzelfde gezin blijft vóór start mogelijk en wordt gelogd. Losse en complete order-PDF's controleren de actuele order, show, eigenaar, uitgiftestatus, intrekking en waar vereist toelating, ook vóór een gecachete download.
 

@@ -76,7 +76,7 @@ for(const participation of ['linked-book','active-order'])test(`native game PUT 
  const generated=participation==='linked-book'?await h.call(path+'/generate',{body:{count:1}},201):null;
  await h.call('/auth/local',{body:{role:'player'}});const onboard=await h.call('/api/player/onboarding',{body:{name:'Volwassen ouder',dateOfBirth:'1990-01-01'}});
  if(generated)await h.call(path+'/register',{body:{profileId:onboard.family.profiles[0].id,code:generated.game.books[0].code}});
- else await h.call(path+'/orders',{body:{quantity:1,profileIds:[onboard.family.profiles[0].id]}},201);
+ else await h.call(path+'/orders',{body:{quantity:1,profileIds:[onboard.family.profiles[0].id],fulfillmentChoice:'print'}},201);
  await h.call('/auth/local',{body:{role:'regie'}});
  const before=await h.DB.prepare('SELECT revision,document FROM bingo_games WHERE id = ?').bind(h.id).first(),game=JSON.parse(before.document),plan=structuredClone(game.plan);plan.prizes[0].title='Niet toegestane prijswijziging';
  const blocked=await h.call(path,{method:'PUT',body:{plan,settings:{...game.settings,retroBalls:4},publishRules:true,rulesChangeReason:'Deze wijziging mag na deelname niet worden gepubliceerd.'}},409);

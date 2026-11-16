@@ -1,0 +1,63 @@
+{
+  "baselineStagingRevision": "a1d419c6f5f0611e11171a6b3514aee642bf396d",
+  "runtime": "v24.18.0",
+  "targeted": {
+    "tests": 79,
+    "pass": 79,
+    "fail": 0,
+    "command": "node --test scripts/check-bingo-orders.mjs scripts/check-mail-service.mjs scripts/check-order-demo.mjs tests/check-family-claim-context.mjs tests/check-bunq-payment.mjs tests/check-node-resend-mail.mjs"
+  },
+  "fullOfflineInitial": {
+    "programs": 131,
+    "pass": 130,
+    "failures": [
+      {
+        "name": "check-node-resend-mail",
+        "exitCode": 1,
+        "ms": 285
+      }
+    ],
+    "resolution": "check-node-resend-mail had an old non-bunq payment fixture. Updated fictional URL only; all 11 resend tests and the final 79 targeted tests pass. Full repeat is required by CI."
+  },
+  "mailTemplates": {
+    "tests": 9,
+    "pass": 9
+  },
+  "browser": {
+    "stats": {
+      "startTime": "2026-11-16T09:19:57.176Z",
+      "duration": 36459.371,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "cases": [
+      "orders-flow.spec.mjs"
+    ],
+    "viewportWidths": [
+      1366,
+      390
+    ],
+    "entrypoints": [
+      "/spelen",
+      "/#/orders"
+    ],
+    "backend": "Real bingo/player/live-feed handlers; isolated in-memory SQLite and private object adapter; supplied verified identities; captured accepted/failed mail."
+  },
+  "lint": {
+    "command": "pnpm lint",
+    "exitCode": 0
+  },
+  "typecheck": {
+    "command": "pnpm typecheck",
+    "exitCode": 0
+  },
+  "migration": "No schema changes or historical backfill; missing fulfillmentChoice projects as unknown. Existing issued identities are retained.",
+  "limits": [
+    "No real bank payment or bunq network contact",
+    "No real mail delivery or inbox rendering",
+    "No live Supabase sign-in or remote RLS rehearsal",
+    "No production deployment; full production build and relocated standalone browser tests run in mandatory GitHub CI"
+  ]
+}

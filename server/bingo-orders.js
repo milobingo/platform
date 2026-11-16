@@ -1,5 +1,5 @@
 import {BingoError,playerGame,bingoPrintMode} from './bingo-model.js';
-import {orderingConfig,orderingAvailable,orderShow,orderById,createOrder,setPaymentLink,reportOrderPaid,closeOrder,fulfillOrder,assignOrderBook,projectOrder,assertOrderBookIntegrity,reconcileOrderPayment,paymentReceiptHash,changeOrderedShow} from './bingo-order-model.js';
+import {orderingConfig,orderingAvailable,orderShow,orderById,createOrder,setPaymentLink,reportOrderPaid,closeOrder,confirmOrderPayment,fulfillOrder,failOrderIssuance,assignOrderBook,projectOrder,assertOrderBookIntegrity,reconcileOrderPayment,paymentReceiptHash,changeOrderedShow,orderPaymentVerified} from './bingo-order-model.js';
 import {dispatchOrderMail} from './bingo-order-mail.js';
 import {bookPdf,printVersion} from './bingo-pdf.js';
 import {brandId} from './show-brands.js';
@@ -32,10 +32,20 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
   const game=(await store.game(gameId)).data,order=orderId?orderById(game,orderId):null;
   return json({...snapshots(game,user,admin,Date.now()),...(order?{order:projectOrder(order,game,{admin})}:{}),game:admin?hostGame(game):playerGame(game,user),...(family?{family}:{})},status);
  };
+ const issue=async order=>{
+  try{
+   return await store.mutate(gameId,{requestId:`${scopedId}:issue`,accountId:order.accountId,email:order.email},(game,family,now=Date.now())=>fulfillOrder(game,family,orderById(game,order.id),{hostId:user},now));
+  }catch(error){
+   // Verification was committed separately. A generator/storage failure must
+   // never turn a received payment back into an unpaid order.
+   await store.mutate(gameId,{},(game,_family,now=Date.now())=>failOrderIssuance(orderById(game,order.id),error,now));
+   return null;
+  }
+ };
  if(!part){
   if(request.method==='GET')return json(snapshots(row.data,user,admin,now));
   if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
-  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:user,email},(game,family,now=Date.now())=>createOrder(game,family,{accountId:user,email,requestId,quantity:body.quantity,profileIds:body.profileIds},now));
+  const saved=await store.mutate(gameId,{requestId:scopedId,accountId:user,email},(game,family,now=Date.now())=>createOrder(game,family,{accountId:user,email,requestId,quantity:body.quantity,profileIds:body.profileIds,fulfillmentChoice:body.fulfillmentChoice},now));
   const order=saved.result||(saved.game.orders||[]).find(o=>o.accountId===user&&o.createRequestId===requestId);
   if(!order)throw new BingoError('De bestelling kon nog niet worden bevestigd.',409);
   await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});
@@ -56,7 +66,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  if(!admin&&order.accountId!==user)throw new BingoError('Deze bestelling hoort niet bij jouw account.',403,'order_ownership');
  if(!action&&request.method==='GET')return response(order.id);
  if(action==='pdf'&&request.method==='GET'){
-  if(order.status!=='fulfilled')throw new BingoError('De organisatie heeft deze bestelling nog niet vrijgegeven.',403,'order_not_ready');
+  if(order.status!=='fulfilled'||!orderPaymentVerified(order))throw new BingoError('De organisatie heeft deze betaalde bestelling nog niet vrijgegeven.',403,'order_not_ready');
   if(order.bookIds.length!==order.quantity||order.bookIds.some(id=>!row.data.books.some(b=>b.id===id&&b.accountId===order.accountId&&b.orderId===order.id)))throw new BingoError('De bladen van deze bestelling moeten door de organisatie worden gecontroleerd.',409);
   for(const id of order.bookIds)assertOrderBookIntegrity(row.data,row.data.books.find(b=>b.id===id),{accountId:order.accountId,download:true});
   const mode=bingoPrintMode(url.searchParams.get('mode')||'color'),format=url.searchParams.get('format')||'a5';
@@ -70,17 +80,28 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  if(request.method!=='POST')throw new BingoError('Deze methode is niet beschikbaar.',405);
  if(action==='payment-link'){
   requireHost();await store.mutate(gameId,{requestId:scopedId},(game,_family,now=Date.now())=>setPaymentLink(game,orderById(game,order.id),body,now));
-  await dispatchOrderMail({store,gameId,orderId:order.id,kind:'payment',env,origin:url.origin,now});return response(order.id);
+  if(body.sendMail===true)await dispatchOrderMail({store,gameId,orderId:order.id,kind:'payment',env,origin:url.origin,now});return response(order.id);
  }
  if(action==='approve'){
-  requireHost();const receiptHash=order.status==='fulfilled'?order.payment?.receiptHash:await paymentReceiptHash(row.data,body.paymentEvidence);const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email,receiptClaim},(game,family,now=Date.now())=>fulfillOrder(game,family,orderById(game,order.id),{paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
-  await dispatchOrderMail({store,gameId,orderId:order.id,kind:'ready',env,origin:url.origin,now});return response(order.id,200,saved.family);
+  requireHost();let saved=null;
+  if(order.status!=='fulfilled'){
+   if(!orderPaymentVerified(order)){
+    const receiptHash=await paymentReceiptHash(row.data,body.paymentEvidence);
+    await store.mutate(gameId,{requestId:`${scopedId}:payment`,receiptClaim},(game,_family,now=Date.now())=>confirmOrderPayment(game,orderById(game,order.id),{paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
+   }
+   saved=await issue(order);
+  }
+  await dispatchOrderMail({store,gameId,orderId:order.id,kind:'ready',env,origin:url.origin,now});return response(order.id,200,saved?.family);
  }
  if(action==='assign'){
   const saved=await store.mutate(gameId,{requestId:scopedId,accountId:order.accountId,email:order.email},(game,family,now=Date.now())=>{const current=orderById(game,order.id);if(!admin&&current.accountId!==user)throw new BingoError('Deze bestelling hoort niet bij jouw account.',403);return assignOrderBook(game,family,current,body,now);});return response(order.id,200,saved.family);
  }
  if(action==='reconcile'){
-  requireHost();const receiptHash=body.operation==='confirm-payment'?await paymentReceiptHash(row.data,body.evidence):null;const saved=await store.mutate(gameId,{requestId:scopedId,receiptClaim:body.operation==='confirm-payment'?receiptClaim:null},(game,_family,now=Date.now())=>reconcileOrderPayment(game,orderById(game,order.id),{...body,receiptHash,hostId:user},now));await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
+  requireHost();const receiptHash=body.operation==='confirm-payment'?await paymentReceiptHash(row.data,body.evidence):null;const saved=await store.mutate(gameId,{requestId:scopedId,receiptClaim:body.operation==='confirm-payment'?receiptClaim:null},(game,_family,now=Date.now())=>reconcileOrderPayment(game,orderById(game,order.id),{...body,receiptHash,hostId:user},now));
+  if(body.operation==='confirm-payment'&&saved.game.status==='draft'&&!['cancelled','rejected','fulfilled'].includes(orderById(saved.game,order.id).status)){
+   await issue(order);await dispatchOrderMail({store,gameId,orderId:order.id,kind:'ready',env,origin:url.origin,now});
+  }
+  await recoverOrderMailEvents({env,game:saved.game,origin:url.origin});return response(order.id);
  }
  if(action==='paid'){
   if(admin)throw new BingoError('Een betaalmelding komt van het gezin. Gebruik goedkeuren nadat je de betaling hebt gecontroleerd.',409);

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readOrderDemo,mutateOrderDemo,resetOrderDemo,ORDER_DEMO_SHOW,ORDER_DEMO_ACCOUNT,ORDER_DEMO_KEY} from '../frontend/order-demo-store.js';
 import {orderAdminDemoRequest as admin} from '../frontend/order-admin-demo.js';
+import {fulfillmentLabel,isPickupOrder,orderDownloadReady,paymentStatusLabel} from '../frontend/order-fulfillment.js';
 import {matchFamilyOrderDemo as family} from '../frontend/family-order-demo.js';
 
 const values=new Map();
@@ -15,20 +16,20 @@ const route='/games/'+ORDER_DEMO_SHOW+'/orders';
 const url=path=>'https://family-demo.invalid/api/bingo'+path;
 
 test('family request → payment report → explicit organizer approval → assigned books is one shared simulation',async()=>{
- const ctx=fixture(),created=family(url(route),post({quantity:2,profileIds:['custom-sophie',null],requestId:'integration-request'}),ctx),id=created.order.id,orderPath=route+'/'+id;
- assert.equal(created.order.status,'requested');
+ const ctx=fixture(),created=family(url(route),post({quantity:2,fulfillmentChoice:'both',profileIds:['custom-sophie',null],requestId:'integration-request'}),ctx),id=created.order.id,orderPath=route+'/'+id;
+ assert.equal(created.order.status,'requested');assert.equal(created.order.fulfillmentChoice,'both');assert.equal(created.order.amountCents,700);assert.equal(created.order.books.length,0);assert.equal(isPickupOrder(created.order),true);
  assert.equal((await admin('/orders')).orders.find(o=>o.id===id).customerName,'Voorbeeldgezin');
  assert(!('email'in created.order));assert(!('accountId'in created.order));
  await assert.rejects(admin(orderPath+'/approve',post({paymentVerified:true})),/Controleer/);
- await assert.rejects(admin(orderPath+'/payment-link',post({paymentUrl:'http://payment.example.invalid/demo',amountCents:700})),/HTTPS/);
- const payment=await admin(orderPath+'/payment-link',post({paymentUrl:'https://payment.example.invalid/demo/integration',amountCents:700,note:'Fictief voorbeeld'}));
- assert.equal(payment.order.status,'payment_pending');assert.equal(payment.order.paymentMail.status,'simulated');
+ await assert.rejects(admin(orderPath+'/payment-link',post({paymentUrl:'http://bunq.me/o/VoorbeeldCode123',amountCents:700})),/HTTPS/);
+ const payment=await admin(orderPath+'/payment-link',post({paymentUrl:'🙏 Betaal € 7,00 via https://bunq.me/o/VoorbeeldCode123',amountCents:700,note:'Fictief voorbeeld',sendMail:true}));
+ assert.equal(payment.order.status,'payment_pending');assert.equal(payment.order.paymentUrl,'https://bunq.me/o/VoorbeeldCode123');assert.equal(orderDownloadReady(payment.order),false);assert.equal(payment.order.paymentMail.status,'simulated');
  const reported=family(url(orderPath+'/paid'),post({}),ctx);
  assert.equal(reported.order.status,'payment_reported');assert.equal(reported.order.bookIds.length,0);
  await assert.rejects(admin(orderPath+'/approve',post({paymentVerified:false})),/bevestig/);
  await assert.rejects(admin(orderPath+'/approve',post({paymentVerified:'true'})),/bevestig/);
  const approved=await admin(orderPath+'/approve',post({paymentVerified:true})),books=readOrderDemo().booksByOrder[id];
- assert.equal(approved.order.status,'fulfilled');assert.equal(books.length,2);assert.equal(approved.order.readyMail.status,'simulated');
+ assert.equal(approved.order.status,'fulfilled');assert.equal(orderDownloadReady(approved.order),true);assert.equal(paymentStatusLabel(approved.order),'Betaald');assert.equal(books.length,2);assert.equal(approved.order.readyMail.status,'simulated');
  assert.equal(books[0].name,'Sophie');assert.equal(books[0].profileId,'custom-sophie');assert.equal(books[1].profileId,null);
  assert.equal(new Set(books.map(b=>b.id)).size,2);assert.equal(new Set(books.map(b=>b.ticket)).size,2);
  assert.equal(new Set(books.flatMap(b=>b.cards.map(card=>card.join(',')))).size,8);
@@ -56,4 +57,19 @@ test('closed ordering, family ownership, rejection, copy isolation and mail retr
  mutateOrderDemo(state=>{state.shows[0].status='running';});
  await assert.rejects(admin(route+'/demo-order-controleren/approve',post({paymentVerified:true})),/gestart/);
  await assert.rejects(admin(route+'/config',post({enabled:true,unitPriceCents:350,maxQuantity:30})),/vóór/);
+});
+
+
+test('all three delivery choices preserve quantity; saving a link does not send or assign books',async()=>{
+ const ctx=fixture();
+ for(const [index,fulfillmentChoice] of ['print','pickup','both'].entries()){
+  const quantity=index+1,created=family(url(route),post({quantity,fulfillmentChoice,profileIds:Array(quantity).fill(null),requestId:'delivery-'+fulfillmentChoice}),ctx),orderPath=route+'/'+created.order.id;
+  assert.equal(created.order.quantity,quantity);assert.equal(created.order.amountCents,quantity*350);assert.equal(created.order.fulfillmentChoice,fulfillmentChoice);assert.equal(isPickupOrder(created.order),fulfillmentChoice!=='print');
+  const saved=await admin(orderPath+'/payment-link',post({paymentUrl:'https://bunq.me/o/VoorbeeldCode'+index+'?note=CaseSensitive',amountCents:quantity*350,sendMail:false}));
+  assert.equal(saved.order.paymentMail.status,'queued');assert.equal(saved.order.bookIds.length,0);assert.equal(saved.order.books.length,0);assert.equal(readOrderDemo().booksByOrder[created.order.id],undefined);
+  const invalid='https://bunq.me.evil.test/o/Lookalike';await assert.rejects(admin(orderPath+'/payment-link',post({paymentUrl:invalid,amountCents:quantity*350,sendMail:true})));
+  assert.equal((await admin('/orders')).orders.find(order=>order.id===created.order.id).paymentUrl,saved.order.paymentUrl);
+ }
+ assert.throws(()=>family(url(route),post({quantity:1,profileIds:[null],requestId:'missing-choice'}),ctx),/Kies Zelf printen/);
+ const legacy=(await admin('/orders')).orders.find(order=>order.id==='demo-order-ander-gezin');assert.equal(fulfillmentLabel(legacy.fulfillmentChoice),'Onbekend');
 });

@@ -1,9 +1,10 @@
-import {orderById} from './bingo-order-model.js';
+import {orderById,orderPaymentVerified,orderDownloadReady} from './bingo-order-model.js';
 import {showBrand} from './show-brands.js';
 import {showTimeParts} from './show-time.js';
 import {readEffectiveMailTemplate} from './mail-service.js';
 import {renderMailTemplate} from './mail-templates.js';
 import {mailConfig} from './mail-config.js';
+import {normalizeBunqPaymentLink} from '../public/bunq-payment.js';
 
 const euro=cents=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'}).format(cents/100);
 export function orderMailContext(game,order,origin){
@@ -14,7 +15,7 @@ export function orderMailContext(game,order,origin){
 export function orderMailPayload(game,order,kind,origin,template,assetBaseUrl,from='organisatie@voorbeeld.invalid'){
  return renderMailTemplate(kind==='ready'?'books-ready':'payment-link',{brandId:showBrand(game).id,template,context:orderMailContext(game,order,origin),origin,assetBaseUrl,from,to:order.email});
 }
-function eligible(order,kind){return kind==='payment'?['payment_pending','payment_reported'].includes(order.status)&&!!order.paymentUrl:order.status==='fulfilled';}
+function eligible(order,kind,game){return kind==='payment'?!orderPaymentVerified(order)&&['payment_pending','payment_reported'].includes(order.status)&&!!order.paymentUrl:orderDownloadReady(game,order);}
 /** A server-owned adapter chooses its approved sender and transport. A successful
  * receipt means gateway acceptance, not inbox delivery. Never expose its config.
  * ORDER_MAIL_DELIVERY = {id, idempotencyWindowMs, send({message, context,
@@ -31,13 +32,17 @@ function deliveryAdapter(adapter){
  */
 export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin}){
  const field=kind==='payment'?'paymentMail':'readyMail',row=await store.game(gameId),existing=orderById(row.data,orderId);
- if(!eligible(existing,kind)||existing[field]?.status==='sent')return;
+ if(!eligible(existing,kind,row.data)||existing[field]?.status==='sent')return;
+ if(kind==='payment'){
+  let issue;try{if(normalizeBunqPaymentLink(existing.paymentUrl)!==existing.paymentUrl)issue='Sla eerst de genormaliseerde bunq-betaallink opnieuw op bij de bestelling.';}catch(error){issue=error.message;}
+  if(issue){await store.mutate(gameId,{},(game,_family,at=Date.now())=>{const order=orderById(game,orderId),mail=order[field];if(order.paymentVersion!==existing.paymentVersion||!eligible(order,kind,game)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>at)return;order[field]={...mail,status:'failed',error:issue,leaseUntil:0};});return;}
+ }
  const resolved=await mailConfig(env),config=resolved.value,adapter=config.contactReady?deliveryAdapter(resolved.delivery):null;
  if(!adapter){
   await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
    const order=orderById(game,orderId),mail=order[field];
    if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return;
-   if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return;
+   if(!eligible(order,kind,game)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return;
    order[field]={...mail,...(mail?.status==='sending'?{uncertain:true}:{}),status:'failed',error:'De e-mailkoppeling is nog niet ingesteld. De bestelling blijft bewaard.'};
   });return;
  }
@@ -45,7 +50,7 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin}){
  const claim=await store.mutate(gameId,{},(game,_family,now=Date.now())=>{
   const order=orderById(game,orderId),mail=order[field];
   if(kind==='payment'&&order.paymentVersion!==existing.paymentVersion)return null;
-  if(!eligible(order,kind)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return null;
+  if(!eligible(order,kind,game)||mail?.status==='sent'||['claimed','offering','sending'].includes(mail?.status)&&mail.leaseUntil>now)return null;
   // A crash between acceptance and its saved receipt leaves an uncertain send.
   if(['offering','sending'].includes(mail?.status))mail.uncertain=true;
   if(mail?.uncertain){
@@ -65,7 +70,7 @@ export async function dispatchOrderMail({store,gameId,orderId,kind,env,origin}){
   if(!(mail.leaseUntil>now)){mail.status='failed';mail.leaseUntil=0;mail.error='De verzendreservering is verlopen vóór aanbieding. Controleer de mailstatus voordat je opnieuw probeert.';return false;}
   const guarantee=Math.min(mail.idempotencyWindowMs??0,adapter.window);
   if(mail.uncertain&&(mail.adapterId!==adapter.id||!guarantee||!mail.firstAttemptAt||now-mail.firstAttemptAt>=guarantee)){mail.status='failed';mail.leaseUntil=0;mail.error='De vorige verzendpoging is onzeker. Veilig automatisch opnieuw aanbieden kan niet worden bevestigd. Controleer eerst de e-mailstatus bij de organisatie.';return false;}
-  if(!eligible(current,kind)||kind==='payment'&&current.paymentVersion!==claim.result.version||template.enabled===false){mail.status='blocked';mail.leaseUntil=0;mail.error='De bestelling of mailinstelling is gewijzigd vóór aanbieding.';return false;}
+  if(!eligible(current,kind,game)||kind==='payment'&&current.paymentVersion!==claim.result.version||template.enabled===false){mail.status='blocked';mail.leaseUntil=0;mail.error='De bestelling of mailinstelling is gewijzigd vóór aanbieding.';return false;}
   mail.status='offering';return true;
  });
  if(!offered.result)return;

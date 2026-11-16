@@ -28,21 +28,22 @@ function seedState(){
  const show={id:ORDER_DEMO_SHOW,title:'Milo’s Magische BingoShow',date:'2026-11-18T13:30',status:'draft',brandId:'milo',roundCount:4,config:copy(config),ordering:copy(config),available:true};
  const common={accountId:ORDER_DEMO_ACCOUNT,customerName:'Familie Jansen',email:'familie.jansen@voorbeeld.invalid',show:{id:show.id,title:show.title,date:show.date,roundCount:4},quantity:2,profileIds:['noor-demo','sem-demo'],amountCents:700,bookIds:[],books:[],note:'',paymentUrl:'',paymentMail:{status:'queued'},readyMail:{status:'queued'},simulated:true};
  const rows=[
-  {id:'demo-order-nieuw',reference:'MF-DEMO-1041',status:'requested',createdAt:time-20*60000},
-  {id:'demo-order-betalen',reference:'MF-DEMO-1042',status:'payment_pending',createdAt:time-65*60000,paymentUrl:'https://payment.example.invalid/demo/1042',paymentMail:{status:'failed',error:'Voorbeeld: de betaalmail is nog niet bevestigd. Probeer de simulatie opnieuw.'}},
-  {id:'demo-order-controleren',reference:'MF-DEMO-1043',status:'payment_reported',createdAt:time-2*3600000,paymentReportedAt:time-10*60000,paymentUrl:'https://payment.example.invalid/demo/1043',paymentMail:{status:'simulated',sentAt:time-90*60000}},
-  {id:'demo-order-klaar',reference:'MF-DEMO-1044',status:'fulfilled',createdAt:time-86400000,approvedAt:time-23*3600000,paymentUrl:'https://payment.example.invalid/demo/1044',paymentMail:{status:'simulated',sentAt:time-86400000},readyMail:{status:'simulated',sentAt:time-23*3600000}},
+  {id:'demo-order-nieuw',fulfillmentChoice:'print',reference:'MF-DEMO-1041',status:'requested',createdAt:time-20*60000},
+  {id:'demo-order-betalen',fulfillmentChoice:'pickup',reference:'MF-DEMO-1042',status:'payment_pending',createdAt:time-65*60000,paymentUrl:'https://bunq.me/o/VoorbeeldCode1042',paymentMail:{status:'failed',error:'Voorbeeld: de betaalmail is nog niet bevestigd. Probeer de simulatie opnieuw.'}},
+  {id:'demo-order-controleren',fulfillmentChoice:'both',reference:'MF-DEMO-1043',status:'payment_reported',createdAt:time-2*3600000,paymentReportedAt:time-10*60000,paymentUrl:'https://bunq.me/o/VoorbeeldCode1043',paymentMail:{status:'simulated',sentAt:time-90*60000}},
+  {id:'demo-order-klaar',fulfillmentChoice:'pickup',reference:'MF-DEMO-1044',status:'fulfilled',createdAt:time-86400000,approvedAt:time-23*3600000,paymentUrl:'https://bunq.me/o/VoorbeeldCode1044',paymentMail:{status:'simulated',sentAt:time-86400000},readyMail:{status:'simulated',sentAt:time-23*3600000}},
   {id:'demo-order-ander-gezin',reference:'MF-DEMO-1045',status:'requested',createdAt:time-45*60000,accountId:'order-demo-ander-gezin',customerName:'Familie De Vries',email:'gezin.devries@voorbeeld.invalid',quantity:1,profileIds:[null],amountCents:350},
  ];
  const orders=rows.map(row=>({...copy(common),...row})),booksByOrder={};
  const ready=orders.find(o=>o.status==='fulfilled'),books=makeOrderDemoBooks(ready);
- booksByOrder[ready.id]=books;ready.bookIds=books.map(b=>b.id);ready.books=books.map(({cards,token,code,...book})=>book);
+ booksByOrder[ready.id]=books;ready.bookIds=books.map(b=>b.id);ready.payment={state:'verified',verifiedAt:time-23*3600000,verifiedBy:'demo-beheer'};ready.issuance={state:'ready',error:null,canRetry:false};ready.downloadReady=true;ready.books=books.map(({cards,token,code,...book})=>book);
  return {version:1,orders,shows:[show],booksByOrder};
 }
 export function readOrderDemo(_context={}){
- try{const stored=JSON.parse(globalThis.localStorage?.getItem(ORDER_DEMO_KEY)||'null');if(stored?.version===1&&Array.isArray(stored.orders)&&Array.isArray(stored.shows)&&stored.booksByOrder)return copy(stored);}catch{}
+ try{const stored=JSON.parse(globalThis.localStorage?.getItem(ORDER_DEMO_KEY)||'null');if(stored?.version===1&&Array.isArray(stored.orders)&&Array.isArray(stored.shows)&&stored.booksByOrder)return projectState(stored);}catch{}
  fallback??=seedState();return copy(fallback);
 }
+function projectState(state){const projected=copy(state);for(const order of projected.orders){order.fulfillmentChoice=['print','pickup','both'].includes(order.fulfillmentChoice)?order.fulfillmentChoice:'unknown';if(order.status==='fulfilled'&&!order.payment){order.payment={state:'verified',verifiedAt:order.approvedAt,verifiedBy:'demo-beheer'};order.issuance={state:'ready',error:null,canRetry:false};order.downloadReady=order.books?.length===order.quantity;}}return projected;}
 function persist(state){
  fallback=copy(state);try{globalThis.localStorage?.setItem(ORDER_DEMO_KEY,JSON.stringify(state));}catch{}
  if(typeof globalThis.dispatchEvent==='function'&&typeof CustomEvent==='function')globalThis.dispatchEvent(new CustomEvent(ORDER_DEMO_EVENT));
