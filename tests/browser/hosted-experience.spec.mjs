@@ -81,7 +81,7 @@ test('failed hosted shows request stays an explicit retry state and never opens 
  const proof=await hostedTransport(page,testInfo,{regie:true,failGames:true});
  await page.goto('/#/live');
  await expect(page.getByRole('heading',{name:'Je shows konden niet worden geladen',exact:true})).toBeVisible();
- await expect(page.getByRole('alert')).toContainText('Shows tijdelijk niet bereikbaar.');
+ await expect(page.locator('main.mf-studio-empty').getByRole('alert')).toContainText('Shows tijdelijk niet bereikbaar.');
  await expect(page.getByRole('button',{name:/Oefenstudio|Volgende bal|Start show/i})).toHaveCount(0);
  const before=proof.games;
  await page.getByRole('button',{name:'Opnieuw laden',exact:true}).click();

@@ -5,17 +5,18 @@ import {makeGame,activateBlock} from '../../server/bingo-model.js';
 import {BingoStore} from '../../server/bingo-store.js';
 import {handleBingo} from '../../server/bingo.js';
 import {createSqliteDatabase} from '../../server/node-storage.js';
-import {prepareAutomaticRules} from '../../server/game-rules.js';
+import {prepareAutomaticRules,publishGameRules} from '../../server/game-rules.js';
 import {defaultPresentation} from '../../server/presentation-model.js';
 import {createBrowserAudioFixture} from '../helpers/browser-audio-fixture.mjs';
 
 // Production UI and real Bingo handlers/SQLite CAS. Every API request is
 // intercepted; no real show, account, provider or production data is changed.
 const output=process.env.REGIE_REFRESH_EVIDENCE_ROOT||'verification/regie-refresh/browser';
-async function fixture(page,testInfo,options={}){
+async function fixture(page,testInfo,{brandId='milo',...options}={}){
  const origin=new URL(testInfo.project.use.baseURL).origin,owner='qa-regie-refresh',db=createSqliteDatabase(':memory:'),store=new BingoStore(db);
- const game=makeGame({brandId:'milo',title:'QA regie · Magie op het Sterrenplein',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam'},owner,origin);
- prepareAutomaticRules(game);game.status='running';game.startedAt=Date.now()-120000;
+ const game=makeGame({brandId,title:brandId==='vlampie'?'QA regie · Vlampies familieshow':'QA regie · Magie op het Sterrenplein',date:'2027-11-18T13:30',timeZone:'Europe/Amsterdam'},owner,origin);
+ if(brandId==='milo')prepareAutomaticRules(game);else publishGameRules(game);
+ game.status='running';game.startedAt=Date.now()-120000;
  activateBlock(game,game.plan.blocks.map((block,index)=>({block,index})).filter(item=>item.block.type==='round')[1].index,1);
  Object.assign(game.state,{paused:true,drawn:[7,13,19,24,31,41],lastCommit:{number:41,at:Date.now()-20000}});await store.create(game);
  const audio=createBrowserAudioFixture({owner,getGame:async()=>(await store.game(game.id)).data}),path='/api/bingo/games/'+game.id,evidence={origin,gameId:game.id,errors:[],external:[],unexpected:[],forbiddenWrites:[],mutations:[],expectedFailures:[],audioPreparationRequests:audio.requests},state={cancelFailures:0,cancelDelayMs:0,...options};
@@ -106,10 +107,12 @@ for(const width of [1920,1366,390]){
 
 test('regie refresh preserves the separate Vlampie console and all seven modules',async({page},testInfo)=>{
  await page.setViewportSize({width:1366,height:900});await page.emulateMedia({reducedMotion:'reduce'});await page.addInitScript(()=>localStorage.setItem('mf-production','vlampie'));
- const h=await fixture(page,testInfo);
+ const h=await fixture(page,testInfo,{brandId:'vlampie'});
  try{
   await page.goto('/#/live');await expect(page.locator('body')).toHaveAttribute('data-brand','vlampie');const workspace=page.locator('.rd-workspace');await expect(workspace).toBeVisible();
-  await expect(workspace.locator('.mf-live-essentials,.mf-live-advanced')).toHaveCount(0);await expect(workspace.getByRole('button',{name:'Volgende bal',exact:false})).toBeVisible();await expect(workspace.getByRole('button',{name:'Pauzeren',exact:true})).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();
+  await expect(page.locator('.mf-top-show>strong')).toHaveText(h.game.title);
+  await expect(page.locator('.mf-top-show')).not.toContainText('Oefenstudio');
+  await expect(workspace.locator('.mf-live-essentials,.mf-live-advanced')).toHaveCount(0);await expect(workspace.getByRole('button',{name:'Volgende bal',exact:false})).toBeVisible();await expect(workspace.getByRole('button',{name:/^(Pauzeren|Hervatten)$/})).toBeVisible();await expect(workspace.getByRole('button',{name:'TAKE',exact:true})).toBeVisible();
   await expect(workspace.locator('[data-module-id]')).toHaveCount(7);const modules=[];
   for(const control of await workspace.locator('[data-module-id]').all()){
    const id=await control.getAttribute('data-module-id');await control.click();await expect(workspace.locator(`[data-panel-id="${id}"]`)).toBeVisible();modules.push(id);await noOverflow(page);
