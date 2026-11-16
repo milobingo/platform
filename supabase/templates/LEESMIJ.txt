@@ -1,0 +1,31 @@
+Milo & Friends BingoShow — Supabase OTP-templates
+
+Productie:
+https://supabase.com/dashboard/project/msupvdycmtbycaonqgan/auth/templates
+
+Magic Link:
+Onderwerp: Je inlogcode voor Milo & Friends BingoShow
+Body: plak de volledige inhoud van magic-link.html.
+
+Confirm signup:
+Onderwerp: Welkom bij Milo & Friends BingoShow
+Body: plak de volledige inhoud van confirm-signup.html.
+
+Laat de variabele {{ .Token }} letterlijk staan. Supabase vult de echte code in.
+Deze templates gebruiken de bestaande code-inlogflow: de ontvanger voert de code
+in op het oorspronkelijke inlogscherm. Er is geen automatische verificatielink.
+
+Het logo verwijst naar de bestaande publieke productieafbeelding.
+De HTML gebruikt uitsluitend inline CSS, presentatietabellen en een vaste
+Outlook-breedte; er zijn geen scripts, externe lettertypen of trackingpixels.
+
+Het opslaan van deze bestanden in GitHub wijzigt de hosted Supabase-templates
+niet automatisch. Sla beide templates in het juiste Supabase-project op.
+
+Lokaal gecontroleerd met fictieve codes van 6, 8 en 10 cijfers, op 320px,
+390px en 800px. Mailboxbezorging en de echte Outlook/Gmail-weergave zijn hiermee
+niet gerepeteerd. Hiervoor is geen echte mail verstuurd.
+
+Documentatie:
+https://supabase.com/docs/guides/auth/auth-email-templates
+https://supabase.com/docs/guides/auth/auth-email-passwordless
