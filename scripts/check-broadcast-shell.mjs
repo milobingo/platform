@@ -62,6 +62,7 @@ function harness(fetcher=async()=>Response.json({}),pathname='/',production='mil
 
 
 const h=harness(({url})=>{
+ if(url==='/api/auth/session')return Response.json({localAvailable:true});
  if(url==='/api/bingo/games')return Response.json({games:[]});
  if(url==='/api/characters')return Response.json({characters:Object.values(CHARACTERS),revision:0});
  if(url==='/api/openai/status')return Response.json({configured:false,revision:null,canManage:true});
@@ -84,7 +85,7 @@ try{
  const refreshed=findSelect('Overgang tussen shots');Object.defineProperty(refreshed,'value',{configurable:true,value:'smooth'});h.event(refreshed,'change');await wait(30);
  assert(!findSelect('Duur van de beweging').disabled);
  assert.deepEqual(h.errors,[]);
- const legacy=harness(({url})=>{if(url==='/api/bingo/games')return Response.json({games:[]});if(url==='/api/characters')return Response.json({characters:Object.values(CHARACTERS),revision:0});if(url==='/api/openai/status')return Response.json({configured:false});return Response.json({});},'/','vlampie');
+ const legacy=harness(({url})=>{if(url==='/api/auth/session')return Response.json({localAvailable:true});if(url==='/api/bingo/games')return Response.json({games:[]});if(url==='/api/characters')return Response.json({characters:Object.values(CHARACTERS),revision:0});if(url==='/api/openai/status')return Response.json({configured:false});return Response.json({});},'/','vlampie');
  try{legacy.run(app);await wait(600);assert(legacy.document.querySelector('.bs-show-hero .mf-stage-frame'),'Vlampie keeps its separate overview monitor');assert.equal(legacy.document.querySelectorAll('.bs-preflight>button').length,4,'Vlampie keeps its legacy preparation shortcuts');assert.equal(legacy.document.querySelector('.mf-simple-preparation'),null);assert(legacy.body().includes('VLAMPIES EIGEN STUDIO'));assert.deepEqual(legacy.errors,[]);}finally{legacy.close();}
  console.log('✓ Broadcast shell: overview, thirteen reachable routes including mail, four clear navigation groups, new studio monitor and actual cut/smooth camera controls');
 }finally{h.close();}
