@@ -23,7 +23,7 @@ export async function orderAdminDemoRequest(path,{method='GET',body={}}={}){
    order.paymentUrl=normalizeBunqPaymentLink(body.paymentUrl);order.amountCents=money(body.amountCents);order.note=String(body.note||'').slice(0,300);if(order.status==='requested')order.status='payment_pending';if(body.sendMail===true)order.paymentMail={status:'simulated',sentAt:Date.now()};
   }else if(action==='approve'){
    if(order.status==='fulfilled')return;
-   if(body.paymentVerified!==true||!['payment_pending','payment_reported'].includes(order.status))throw error('Controleer eerst de betaling en bevestig de controle.');
+   if(body.confirm!==true&&body.paymentVerified!==true||!['payment_pending','payment_reported'].includes(order.status))throw error('Controleer eerst de betaling en bevestig de controle.');
    if(show.status!=='draft')throw error('De voorbeeldshow is al gestart.');
    const number=2041+Object.values(state.booksByOrder).reduce((sum,books)=>sum+books.length,0),books=makeOrderDemoBooks(order,number);
    state.booksByOrder[order.id]=books;order.books=books.map(({cards,token,code,...book})=>book);order.bookIds=books.map(b=>b.id);order.status='fulfilled';order.approvedAt=Date.now();order.payment={state:'verified',verifiedAt:Date.now(),verifiedBy:'demo-beheer'};order.issuance={state:'ready',error:null,canRetry:false};order.downloadReady=true;order.readyMail={status:'simulated',sentAt:Date.now()};

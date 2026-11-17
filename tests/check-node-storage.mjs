@@ -18,6 +18,27 @@ import { duplicateShowDraft } from '../server/show-duplicate.js';
 const game = (id = randomUUID()) => ({ id, ownerId: 'host', books: [], ops: [], status: 'draft', counter: 0 });
 const execFileAsync = promisify(execFile);
 
+async function orderReferenceContract(DB){
+  const store=new BingoStore(DB),first=game(),second=game();
+  const legacy=()=>({id:randomUUID(),number:'MF-0001',status:'requested'});
+  first.orders=[legacy()];second.orders=[legacy()];
+  await store.create(first);await store.create(second);
+  // Force two concurrent shows to choose the same new six-character code.
+  // This exercises the database predicate with no family row, including on
+  // the restricted PostgreSQL login; existing duplicate legacy codes survive.
+  const code='MF-'+randomUUID().replaceAll('-','').slice(0,6).toUpperCase();
+  const append=current=>{current.orders.push({id:randomUUID(),number:code,status:'requested'});};
+  const results=await Promise.allSettled([store.mutate(first.id,{},append),store.mutate(second.id,{},append)]);
+  assert.equal(results.filter(result=>result.status==='fulfilled').length,1);
+  const rejected=results.find(result=>result.status==='rejected');assert.equal(rejected.reason.status,409);
+  const stored=await Promise.all([store.game(first.id),store.game(second.id)]);
+  assert.equal(stored.flatMap(row=>row.data.orders).filter(order=>order.number===code).length,1);
+  assert.deepEqual(stored[0].data.orders[0],first.orders[0]);assert.deepEqual(stored[1].data.orders[0],second.orders[0]);
+  const loser=stored.find(row=>row.data.orders.length===1);
+  await store.mutate(loser.id,{},current=>{current.orders.push({id:randomUUID(),number:'MF-'+randomUUID().replaceAll('-','').slice(0,6).toUpperCase(),status:'requested'});});
+  assert.equal((await store.game(loser.id)).data.orders.length,2);
+}
+
 async function localFixture(t) {
   const directory = await mkdtemp(join(tmpdir(), 'milo-storage-'));
   const config = { SQLITE_PATH: join(directory, 'bingo.sqlite'), OBJECT_STORAGE_PATH: join(directory, 'objects') };
@@ -218,7 +239,7 @@ test('Supabase object reads preserve bucket, permission, server and malformed-re
 
 test('durable SQLite adapter preserves CAS, game/family/code transactions and chat JSON behavior', async t => {
   const { DB, SETTINGS } = await localFixture(t);
-  await persistenceContract(DB); await duplicationContract(DB); await atomicContract(DB); await chatContract(DB); await objectContract(SETTINGS);
+  await persistenceContract(DB); await duplicationContract(DB); await atomicContract(DB); await orderReferenceContract(DB); await chatContract(DB); await objectContract(SETTINGS);
 });
 
 test('local data, private objects and roles survive a new storage instance', async t => {
@@ -291,7 +312,7 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
   source.searchParams.set('options', `-c search_path=${schema}`);
   directory = await mkdtemp(join(tmpdir(), 'milo-pg-objects-'));
   storage = await createStorageEnvironment({ DATABASE_URL: source.toString(), OBJECT_STORAGE_PATH: directory });
-  await persistenceContract(storage.DB); await duplicationContract(storage.DB); await atomicContract(storage.DB); await chatContract(storage.DB);
+  await persistenceContract(storage.DB); await duplicationContract(storage.DB); await atomicContract(storage.DB); await orderReferenceContract(storage.DB); await chatContract(storage.DB);
   await assert.rejects(storage.DB.withObjectLock('invalid-timeout',()=>assert.fail('Invalid lease must not execute'),{idleTimeoutMs:180001}),RangeError);
   await storage.DB.withObjectLock('bounded-lease',async lease=>{
     assert.equal(lease.signal.aborted,false);
@@ -348,6 +369,7 @@ test('PostgreSQL adapter executes the same persistence/concurrency contract with
     await backendStore.mutate(backendGame.id, { accountId: 'backend-family' }, (current, family) => { current.counter++; family.counter = 1; current.books.push({ code: randomUUID() }); });
     assert.equal((await backendStore.game(backendGame.id)).data.counter, 1);
     await duplicationContract(restricted.DB);
+    await orderReferenceContract(restricted.DB);
     await assert.rejects(restricted.DB.prepare('DROP TABLE bingo_games').run(), error => error.code === '42501');
   } finally { await restricted.close(); }
 });

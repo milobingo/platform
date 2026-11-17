@@ -2,6 +2,14 @@
 
 Deze audit en wijziging zijn uitgevoerd op 16 november 2026, vanuit uitgangsversie `a1d419c6f5f0611e11171a6b3514aee642bf396d`. De bestaande gezinsomgeving, backoffice, rollen, orderstatussen, mailtemplates, bingobladgenerator en opslag zijn hergebruikt. Er zijn uitsluitend fictieve gezinnen en gesimuleerde betalingen gebruikt. Er is geen productie-uitrol of wijziging van echte bestellingen uitgevoerd.
 
+## Aanpassing 17 november: bestelcodes en één betaalbevestiging
+
+Nieuwe bestellingen krijgen een willekeurige referentie van zes hoofdletters/cijfers achter `MF-`, bijvoorbeeld `MF-8JK655`. De server gebruikt cryptografische willekeur en bewaart het resultaat bij de bestelling. Een herhaalde aanvraag behoudt dezelfde code. De bestaande atomaire opslag controleert nieuwe codes over alle shows heen; een botsing wordt opnieuw geprobeerd, ook bij gelijktijdige bestellingen. Bestaande nummers zoals `MF-0001` worden niet herschreven. Er is geen databaseconversie of nieuwe tabel nodig.
+
+In de bestelgegevens kiest de regie **Betaald**. Eén bevestigingsvenster toont gezin, bestaande bestelreferentie en verschuldigd bedrag. **Annuleren** wijzigt niets; **Ja, betaald** bevestigt de betaling en zet dezelfde unieke bladen klaar. Er zijn geen invulvelden of vinkjes. Dubbelklikken geeft geen tweede betaalbevestiging of extra bladenset. Bij een opslagfout blijft het venster open met de fout en kan dezelfde actie opnieuw worden geprobeerd.
+
+`POST /api/bingo/games/:gameId/orders/:orderId/approve` accepteert hiervoor `{confirm:true}`. De server neemt bestelnummer, totaal en EUR over uit de opgeslagen bestelling en legt de bevoegde regiegebruiker en het tijdstip vast als `payment.method:'manual_host'`. Dit is een handmatige betaalbevestiging; er wordt geen banktransactie of transactiereferentie verzonnen. Het gezin kan zichzelf niet als betaald markeren. De bestaande bewijsroute voor financiële uitzonderingen en terugbetalingen blijft beschikbaar. De twee duurzame fasen en het herstel na een fout bij het genereren blijven hieronder beschreven.
+
 ## 1. Bestaande bestelstroom en gevonden gaten
 
 | Onderdeel | Al aanwezig bij de audit | Aangepast of toegevoegd |
@@ -46,11 +54,11 @@ Een verzending krijgt pas `sent` nadat de adapter een geldige acceptatie met ber
 
 ## 4. Betaling, uitgifte en privé downloaden
 
-Alleen de bestaande serverbevoegde regie van de betreffende organisatie kan goedkeuren. Het gezin kan uitsluitend melden dat het betaald heeft; zo'n melding geeft geen bladen vrij. De medewerker controleert de ontvangst buiten de app en legt referentie, exact bedrag, EUR en ordernummer vast.
+Alleen de bestaande serverbevoegde regie van de betreffende organisatie kan goedkeuren. Het gezin kan uitsluitend melden dat het betaald heeft; zo'n melding geeft geen bladen vrij. De medewerker controleert de ontvangst buiten de app en gebruikt **Betaald → Ja, betaald**. Het opgeslagen orderbedrag en bestelnummer worden automatisch overgenomen; handmatige invoer van betaalreferenties is niet nodig.
 
 Goedkeuring heeft twee afzonderlijke, duurzame fasen:
 
-1. **Betaling vastleggen.** Een spelmutatie bewaart `payment.state:'verified'`, `verifiedBy`, `verifiedAt`, het gecontroleerde bewijs en de unieke ontvangstclaim in `bingo_payment_receipts`. Deze mutatie commit vóór de generator begint. De bestaande orderstatussen blijven bestaan; het scherm toont **Betaald** op basis van deze opgeslagen betaalbevestiging.
+1. **Betaling vastleggen.** Een spelmutatie bewaart `payment.state:'verified'`, `verifiedBy`, `verifiedAt`, bedrag, valuta en bestelnummer. De gewone bevestiging krijgt `method:'manual_host'` en een auditregel, zonder verzonnen ontvangstclaim. Alleen de afzonderlijke bewijsroute bewaart de unieke ontvangstclaim in `bingo_payment_receipts`. Deze mutatie commit vóór de generator begint. De bestaande orderstatussen blijven bestaan; het scherm toont **Betaald** op basis van deze opgeslagen betaalbevestiging.
 2. **Bladen uitgeven.** Een volgende CAS-mutatie gebruikt de bestaande generator, orderbatch, gezinsgegevens en codes. Precies de bestelde hoeveelheid wordt gegenereerd of aan de bestaande orderbatch ontleend. De volledige uitgifte wordt `fulfilled`; `issuance.state` wordt `ready`. Pas dan kan de boekjesmail worden aangeboden.
 
 Bij een generatie- of opslagfout blijft de eerste fase bewaard. De backoffice toont `issuance.state:'failed'` met een passende foutmelding en **Bladen opnieuw klaarzetten**. Het gezin ziet dat de betaling bevestigd is en de bladen nog worden klaargezet. Hervatten via dezelfde goedkeuringsroute gebruikt de bestaande betaling; er is geen nieuwe betaalbevestiging nodig. Gelijktijdige en herhaalde bevestigingen behouden dezelfde orderbatch. Een bestaande gedeeltelijke batch wordt gecontroleerd en aangevuld zonder eerder opgeslagen bladnummers, codes of kaarten te vervangen. Een inconsistente bestaande set vraagt beheercontrole en wordt niet stil vervangen.

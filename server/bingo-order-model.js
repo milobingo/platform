@@ -8,6 +8,18 @@ import {normalizeBunqPaymentLink} from '../public/bunq-payment.js';
 
 const text=(value,max,label)=>value==null||value===''?'':cleanText(value,max,label);
 const MAX_PAYMENT_VERSIONS=20;
+const ORDER_NUMBER_ALPHABET='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+// Rejection sampling avoids favoring the first four characters of the alphabet.
+// The store repeats the whole creation on a platform-wide reference collision.
+export function newOrderNumber(game){
+ const used=new Set((game.orders||[]).flatMap(order=>[order.number,order.reference]));
+ for(let attempt=0;attempt<8;attempt++){
+  let code='';
+  for(let draw=0;draw<8&&code.length<6;draw++)for(const value of crypto.getRandomValues(new Uint8Array(12))){if(value<252)code+=ORDER_NUMBER_ALPHABET[value%36];if(code.length===6)break;}
+  if(code.length===6&&!used.has('MF-'+code))return 'MF-'+code;
+ }
+ throw new BingoError('Er kon nog geen uniek bestelnummer worden gemaakt. Probeer de bestelling opnieuw; er is niets gewijzigd.',409,'order_reference_unavailable');
+}
 export const ORDER_STATES=Object.freeze(['requested','payment_pending','payment_reported','fulfilled','cancelled','rejected']);
 export const FULFILLMENT_CHOICES=Object.freeze(['print','pickup','both']);
 export function fulfillmentChoice(value){if(!FULFILLMENT_CHOICES.includes(value))throw new BingoError('Kies Zelf printen, Ophalen of Zelf printen én ophalen.',400,'order_fulfillment_choice');return value;}
@@ -77,7 +89,7 @@ export function createOrder(game,family,{accountId,email,requestId,quantity,prof
  game.orders??=[];if(game.orders.length>=100)throw new BingoError('Deze show heeft het maximum aantal bestellingen bereikt.',409);
  const own=game.orders.filter(o=>o.accountId===accountId&&!['cancelled','rejected'].includes(o.status));
  if(own.filter(o=>o.status!=='fulfilled').length>=10||own.reduce((sum,o)=>sum+o.quantity,0)+count>150)throw new BingoError('Er staan al veel bestellingen op jouw account. Neem contact op met de organisatie.',409);
- const order={id:crypto.randomUUID(),number:`MF-${String(game.orders.length+1).padStart(4,'0')}`,createRequestId:requestId,accountId,email:email.toLowerCase(),customerName:text(family.ownerName,80,'accountnaam')||'Jouw gezin',quantity:count,fulfillmentChoice:delivery,profileIds:profileIdsFor(family,profileIds,count),show:{id:game.id,title:game.title,date:game.date,roundCount:game.plan.blocks.filter(b=>b.type==='round').length,brandId:brandId(game)},status:'requested',amountCents:config.unitPriceCents===null?null:config.unitPriceCents*count,unitPriceCents:config.unitPriceCents,paymentUrl:'',paymentVersion:0,note:'',createdAt:now,updatedAt:now,bookIds:[],paymentMail:{status:'not_sent'},readyMail:{status:'not_sent'}};
+ const order={id:crypto.randomUUID(),number:newOrderNumber(game),createRequestId:requestId,accountId,email:email.toLowerCase(),customerName:text(family.ownerName,80,'accountnaam')||'Jouw gezin',quantity:count,fulfillmentChoice:delivery,profileIds:profileIdsFor(family,profileIds,count),show:{id:game.id,title:game.title,date:game.date,roundCount:game.plan.blocks.filter(b=>b.type==='round').length,brandId:brandId(game)},status:'requested',amountCents:config.unitPriceCents===null?null:config.unitPriceCents*count,unitPriceCents:config.unitPriceCents,paymentUrl:'',paymentVersion:0,note:'',createdAt:now,updatedAt:now,bookIds:[],paymentMail:{status:'not_sent'},readyMail:{status:'not_sent'}};
  recordOrderMailEvent(order,'order-received',now);recordOrderMailEvent(order,'org-order-new',now);game.orders.push(order);return order;
 }
 export function validatePaymentUrl(value){
@@ -189,13 +201,22 @@ export function closeOrder(order,status,reason,now=Date.now()){
  if(status==='rejected')order.rejectionReason=reasonText;
  recordOrderMailEvent(order,status==='cancelled'?'order-cancelled':'order-rejected',now);return order;
 }
-export function confirmOrderPayment(game,order,{paymentVerified,hostId,paymentEvidence,receiptHash},now=Date.now()){
+export function confirmOrderPayment(game,order,{confirm,paymentVerified,hostId,paymentEvidence,receiptHash},now=Date.now()){
  if(order.status==='fulfilled')return order;
  draft(game);editableOrder(order);
  if(orderPaymentVerified(order))return order;
- if(paymentVerified!==true)throw new BingoError('Bevestig eerst dat de betaling door de organisatie is gecontroleerd.',409,'payment_verification_required');
+ if(confirm!==true&&paymentVerified!==true)throw new BingoError('Bevestig dat je deze bestelling als betaald wilt markeren.',409,'payment_verification_required');
  if(!['payment_pending','payment_reported'].includes(order.status)||!order.paymentUrl)throw new BingoError('Koppel eerst een betaallink aan deze bestelling.',409);
- reconcileOrderPayment(game,order,{operation:'confirm-payment',evidence:paymentEvidence,hostId,receiptHash},now);
+ if(confirm===true){
+  if(typeof hostId!=='string'||!hostId)throw new BingoError('Alleen de organisatie kan de betaling bevestigen.',403);
+  if(order.amountCents==null)throw new BingoError('Leg eerst het verschuldigde bedrag voor deze bestelling vast.',409,'order_amount_required');
+  const amountCents=integer(order.amountCents,0,100000000,'Te betalen bedrag in centen');
+  if((order.financialHistory?.length||0)>=100)throw new BingoError('De betaalhistorie vraagt beheercontrole.',409);
+  // This records the organizer's decision. It is not a bank transaction or a
+  // provider verification, so no fictitious transaction/reference is created.
+  order.payment={state:'verified',method:'manual_host',amountCents,currency:'EUR',orderNumber:order.number,verifiedAt:now,verifiedBy:hostId};order.paymentVerifiedAt=now;
+  order.financialHistory??=[];order.financialHistory.push({id:crypto.randomUUID(),operation:'confirm-payment',method:'manual_host',actor:hostId,at:now,amountCents,currency:'EUR',orderNumber:order.number});
+ }else reconcileOrderPayment(game,order,{operation:'confirm-payment',evidence:paymentEvidence,hostId,receiptHash},now);
  order.issuance={state:'pending',requestedAt:now};order.updatedAt=now;return order;
 }
 export function fulfillOrder(game,family,order,{hostId},now=Date.now()){

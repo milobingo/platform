@@ -37,6 +37,82 @@ async function fixture(h,quantity=2){
 }
 const link=(h,f,extra={})=>h.call(`${f.route}/orders/${f.order.id}/payment-link`,post({sendMail:true,paymentUrl:'https://bunq.me/o/milo?order=123&token=secret',amountCents:f.order.amountCents,note:'Dank je <gezin>!',...extra}));
 
+test('new random order references preserve legacy numbers and remain stable on a repeated creation',async()=>{
+ const h=setup(),f=await fixture(h,1);try{
+  await h.store.mutate(f.game.id,{},game=>{game.orders[0].number='MF-0001';});
+  const legacy=structuredClone((await h.store.game(f.game.id)).data.orders[0]);
+  const body={quantity:1,fulfillmentChoice:'pickup',requestId:'random-reference-create',number:'MF-FORGED',reference:'MF-FORGED'};
+  const created=await h.call(f.route+'/orders',post(body,'family'),201);
+  assert.match(created.order.number,/^MF-[A-Z0-9]{6}$/);assert.notEqual(created.order.number,'MF-FORGED');
+  const repeated=await h.call(f.route+'/orders',post(body,'family'));
+  assert.equal(repeated.order.id,created.order.id);assert.equal(repeated.order.number,created.order.number);
+  const stored=(await h.store.game(f.game.id)).data;
+  assert.equal(stored.orders.length,2);assert.deepEqual(stored.orders[0],legacy);
+  const listed=await h.call('/orders');assert.equal(listed.orders.find(order=>order.id===legacy.id).number,'MF-0001');
+ }finally{h.db.close();}
+});
+
+test('concurrent orders in different shows retry a forced random reference collision',async t=>{
+ const h=setup(),a=await fixture(h,1),b=await fixture(h,1);try{
+  const original=crypto.getRandomValues.bind(crypto);let draws=0;
+  t.mock.method(crypto,'getRandomValues',value=>value instanceof Uint8Array?value.fill(draws++<2?0:1):original(value));
+  const result=await Promise.all([h.call(a.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),201),h.call(b.route+'/orders',post({quantity:1,fulfillmentChoice:'both'},'family'),201)]);
+  assert(draws>=3,'a duplicated candidate must be retried');assert.notEqual(result[0].order.number,result[1].order.number);
+  for(const value of result)assert.match(value.order.number,/^MF-[A-Z0-9]{6}$/);
+  const all=(await h.store.games()).flatMap(row=>row.data.orders);
+  assert.equal(all.length,4);assert.equal(new Set(all.map(order=>order.number)).size,4);
+ }finally{h.db.close();}
+});
+
+test('exhausted random reference collisions leave the existing order and all books unchanged',async t=>{
+ const h=setup(),f=await fixture(h,1);try{
+  // Zero entropy always yields the same valid candidate, making collisions
+  // deterministic without weakening randomness in application code.
+  const original=crypto.getRandomValues.bind(crypto);
+  t.mock.method(crypto,'getRandomValues',value=>value instanceof Uint8Array?value.fill(0):original(value));
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),201);
+  const before=(await h.store.game(f.game.id)).data;
+  await h.call(f.route+'/orders',post({quantity:1,fulfillmentChoice:'print'},'family'),409);
+  assert.deepEqual((await h.store.game(f.game.id)).data,before);assert.equal(before.books.length,0);
+ }finally{h.db.close();}
+});
+
+test('one explicit manual payment confirmation derives all facts from the order and records the host once',async()=>{
+ const h=setup(),f=await fixture(h,2);try{
+  await link(h,f);const base=`${f.route}/orders/${f.order.id}/approve`;
+  for(const confirm of [undefined,false,'true',1])await h.call(base,post({confirm}),409);
+  await h.call(base,post({confirm:true},'family'),403);
+  await h.call(base,post({confirm:true},'other-host',{'oai-authenticated-user-email':'host@example.test'}),403);
+  assert.equal((await h.store.game(f.game.id)).data.books.length,0);
+  const responses=await Promise.all([h.call(base,post({confirm:true,amountCents:1,currency:'USD',orderNumber:'MF-FORGED',reference:'invented-client-reference'})),h.call(base,post({confirm:true}))]);
+  assert.deepEqual(responses[0].order.bookIds,responses[1].order.bookIds);
+  const saved=(await h.store.game(f.game.id)).data,order=saved.orders[0];
+  assert.equal(order.payment.state,'verified');assert.equal(order.payment.method,'manual_host');
+  assert.equal(order.payment.amountCents,500);assert.equal(order.payment.currency,'EUR');assert.equal(order.payment.orderNumber,f.order.number);
+  assert.equal(order.payment.verifiedBy,'host');assert.equal(typeof order.payment.verifiedAt,'number');
+  assert.equal(order.payment.reference,undefined);assert.equal(order.payment.receiptHash,undefined);
+  assert.equal(order.financialHistory.length,1);assert.equal(saved.books.length,2);assert.equal(saved.batches.length,1);
+  assert.equal((await h.db.prepare('SELECT count(*) n FROM bingo_payment_receipts').first()).n,0,'manual confirmation must not invent bank evidence');
+  const payment=structuredClone(order.payment),books=structuredClone(saved.books);
+  await h.call(base,post({confirm:true}));const repeated=(await h.store.game(f.game.id)).data;
+  assert.deepEqual(repeated.orders[0].payment,payment);assert.deepEqual(repeated.books,books);assert.equal(repeated.orders[0].financialHistory.length,1);
+ }finally{h.db.close();}
+});
+
+test('manual payment stays confirmed after issuance failure and recovers without another confirmation',async t=>{
+ const h=setup(),f=await fixture(h,2);try{
+  await link(h,f);const batch=h.db.batch.bind(h.db);let fail=true;
+  t.mock.method(h.db,'batch',statements=>{if(fail&&statements.some(statement=>statement.sql.includes('INSERT INTO bingo_codes'))){fail=false;throw Error('fictitious issuance storage failure');}return batch(statements);});
+  const base=`${f.route}/orders/${f.order.id}/approve`,failed=await h.call(base,post({confirm:true}));
+  assert.equal(failed.order.payment.state,'verified');assert.equal(failed.order.issuance.state,'failed');
+  const before=(await h.store.game(f.game.id)).data,payment=structuredClone(before.orders[0].payment);
+  assert.equal(before.books.length,0);assert.equal(before.orders[0].financialHistory.length,1);
+  const recovered=await h.call(base,post({}));assert.equal(recovered.order.downloadReady,true);
+  const after=(await h.store.game(f.game.id)).data;
+  assert.deepEqual(after.orders[0].payment,payment);assert.equal(after.orders[0].financialHistory.length,1);assert.equal(after.books.length,2);assert.equal(after.batches.length,1);
+ }finally{h.db.close();}
+});
+
 test('optional queue-injected order unit checks the real execution clock after the deadline and leaves the game unchanged',async t=>{
  const h=setup(),f=await fixture(h,1);try{
   const deadline=Date.now()+250;await h.store.mutate(f.game.id,{},g=>{g.ordering.deadline=new Date(deadline).toISOString();});const before=(await h.store.game(f.game.id)).data;

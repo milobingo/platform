@@ -27,7 +27,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  const requireHost=()=>{if(!admin)throw new BingoError('Alleen de organisatie kan deze bestelling goedkeuren of een betaallink instellen.',403);};
  const scopedId=`${user}:${request.method}:${path}:${requestId}`;
  // Time-sensitive model checks use the fresh clock supplied for each CAS attempt.
- const receiptClaim=(_game,result)=>result?.payment?.state==='verified'?{receiptHash:result.payment.receiptHash,orderId:result.id}:null;
+ const receiptClaim=(_game,result)=>result?.payment?.state==='verified'&&result.payment.receiptHash?{receiptHash:result.payment.receiptHash,orderId:result.id}:null;
  const response=async(orderId,status=200,family=null)=>{
   const game=(await store.game(gameId)).data,order=orderId?orderById(game,orderId):null;
   return json({...snapshots(game,user,admin,Date.now()),...(order?{order:projectOrder(order,game,{admin})}:{}),game:admin?hostGame(game):playerGame(game,user),...(family?{family}:{})},status);
@@ -86,8 +86,8 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
   requireHost();let saved=null;
   if(order.status!=='fulfilled'){
    if(!orderPaymentVerified(order)){
-    const receiptHash=await paymentReceiptHash(row.data,body.paymentEvidence);
-    await store.mutate(gameId,{requestId:`${scopedId}:payment`,receiptClaim},(game,_family,now=Date.now())=>confirmOrderPayment(game,orderById(game,order.id),{paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
+    const receiptHash=body.confirm===true?null:await paymentReceiptHash(row.data,body.paymentEvidence);
+    await store.mutate(gameId,{requestId:`${scopedId}:payment`,receiptClaim},(game,_family,now=Date.now())=>confirmOrderPayment(game,orderById(game,order.id),{confirm:body.confirm,paymentVerified:body.paymentVerified,paymentEvidence:body.paymentEvidence,receiptHash,hostId:user},now));
    }
    saved=await issue(order);
   }
