@@ -58,6 +58,7 @@ wildcard naar een andere VPS (`167.235.202.206`). Die zijn geen testdoel.
 | WHIP media | UDP 7885 | Nodig voor OBS |
 | Eigen TURN | UDP 3480, TLS/TCP 5349 | Authenticated fallback |
 | Redis | 127.0.0.1:6381 | Nee; eigen wachtwoord |
+| SFU-metrics | 127.0.0.1:6798 | Nee; alleen SSH-sampler |
 | Worker-health/relay | 9086, 9087, 9096 | Door lokale firewall afgeschermd |
 | HLS-bestanden | App-route `/api/broadcast/hls/...` | Getekende playlist én segmenten, geen sessiecookie nodig |
 
@@ -114,6 +115,14 @@ De gezamenlijke media-slice heeft CPUQuota 280%, MemoryHigh 2800 MiB en
 MemoryMax 3200 MiB. Containers hebben aanvullende grenzen. Dit reserveert geen
 gegarandeerde capaciteit: de belastingproef moet aantonen wat er naast de
 andere apps past. UDP-bufferlimieten worden alleen verhoogd, minimaal 5 MB.
+
+De eigen nftables-tabel `inet milo_media_turn_observe` telt alleen pakketten
+en bytes op eth0 voor TURN-UDP 3480 en TURN/TLS 5349. Hij voegt geen
+accept/dropregels toe en wist geen bestaande firewallconfiguratie. De sampler
+leest de vier counters via de bestaande beheerverbinding en controleert resets.
+Deze listener-totalen bevatten protocoloverhead en zijn geen room- of
+audio-opnamen. Prometheus blijft op loopback 6798. Stop bij infra-rollback ook
+`milo-media-observe.service`; die verwijdert uitsluitend zijn eigen tabel.
 
 Egress 1.15 classificeert de nieuwe `MediaSource` bij toelating als
 `participant_cpu_cost`, ook bij precies één geselecteerd AV-paar. Dat staat

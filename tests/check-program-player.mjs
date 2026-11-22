@@ -76,10 +76,10 @@ test('temporary signal loss reconnects the same room and does not touch the game
 });
 
 function castFixture(){
- const context=new Emitter(),remote={isConnected:true,isMediaLoaded:true},session={media:null,loads:[],getMediaSession(){return this.media;},async loadMedia(request){this.loads.push(request);this.media={media:request.media,playerState:'BUFFERING'};},endSession(){if(this.ackStop){this.media=null;remote.isConnected=false;context.emit('session',{sessionState:'ENDED'});}}};
+ const context=new Emitter(),remote={isConnected:true,isMediaLoaded:true},session={media:null,loads:[],getMediaSession(){return this.media;},async loadMedia(request){this.loads.push(request);this.media={media:request.media,playerState:'BUFFERING'};},endSession(){this.endRequests=(this.endRequests||0)+1;if(this.ackStop){this.media=null;remote.isConnected=false;context.emit('session',{sessionState:'ENDED',session:this});}}};
  Object.assign(context,{setOptions(value){this.options=value;},getCastState:()=> 'AVAILABLE',requestSession:async()=>{},getCurrentSession:()=>session});
  const controller=new Emitter(),sdk={framework:{CastContext:{getInstance:()=>context},RemotePlayer:class{constructor(){return remote;}},RemotePlayerController:class{constructor(){return controller;}},CastContextEventType:{SESSION_STATE_CHANGED:'session',CAST_STATE_CHANGED:'cast'},SessionState:{SESSION_ENDED:'ENDED',SESSION_START_FAILED:'FAILED'},RemotePlayerEventType:{IS_CONNECTED_CHANGED:'connected',IS_MEDIA_LOADED_CHANGED:'loaded',PLAYER_STATE_CHANGED:'player'},CastState:{NO_DEVICES_AVAILABLE:'NONE'}},cast:{AutoJoinPolicy:{ORIGIN_SCOPED:'origin'},media:{DEFAULT_MEDIA_RECEIVER_APP_ID:'CC1AD845',StreamType:{LIVE:'LIVE'},PlayerState:{PLAYING:'PLAYING',BUFFERING:'BUFFERING',PAUSED:'PAUSED',IDLE:'IDLE'},MediaInfo:class{constructor(contentId,contentType){Object.assign(this,{contentId,contentType});}},LoadRequest:class{constructor(media){this.media=media;}}}}};
- const changes=[],cast=new ProgramCast({gameId:'show',getAccess:async()=>({url:'https://example.invalid/signed/live.m3u8'}),loadSDK:async()=>sdk,onChange:patch=>changes.push(patch)});
+ const changes=[],cast=new ProgramCast({gameId:'show',getAccess:async()=>({url:'https://example.invalid/signed/live.m3u8'}),loadSDK:async()=>sdk,onChange:patch=>changes.push(patch),stopTimeoutMs:45});
  return {cast,changes,context,controller,session,remote};
 }
 
@@ -89,4 +89,49 @@ test('Google Cast load acknowledgement is not playback proof; live edge is reque
  h.session.media.media.customData={miloBroadcastGameId:'different-show'};h.controller.emit('player');assert.equal(h.cast.active,false);
  h.session.media.media.customData={miloBroadcastGameId:'show'};h.session.media.playerState='PLAYING';h.controller.emit('player');assert.equal(h.cast.active,true);
  h.session.ackStop=true;await h.cast.stop();assert.equal(h.cast.active,false);assert(h.changes.some(patch=>patch.castPhase==='playing'));
+});
+
+const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
+
+test('a non-playing Cast still requires the matching SESSION_ENDED acknowledgement; disconnected/failed/unrelated events are insufficient',async t=>{
+ const h=castFixture();t.after(()=>h.cast.dispose());await h.cast.start();assert.equal(h.cast.active,false);
+ const stopped=h.cast.stop();h.remote.isConnected=false;h.controller.emit('connected');h.context.emit('session',{sessionState:'FAILED',session:h.session});h.context.emit('session',{sessionState:'ENDED',session:{getSessionId:()=> 'another-session'}});
+ await assert.rejects(stopped,/niet bevestigd/);assert(h.session.endRequests>0);
+ h.session.ackStop=true;await h.cast.stop();assert.equal(h.cast.active,false);
+});
+
+test('a load resolving after an earlier end acknowledgement is ended again before the private transition can report silence',async t=>{
+ const h=castFixture(),m=mediaFixture(),load=deferred();t.after(()=>{m.controller.dispose();h.cast.dispose();});await until(()=>m.controller.room?.connection);m.controller.cast.dispose();m.controller.cast=h.cast;
+ h.cast.onChange=patch=>{m.controller.update(patch);m.controller.syncMute();};
+ h.session.loadMedia=async request=>{h.session.loads.push(request);await load.promise;h.session.media={media:request.media,playerState:'PLAYING'};h.remote.isConnected=true;h.remote.isMediaLoaded=true;h.controller.emit('player');};
+ const start=h.cast.start();await until(()=>h.session.loads.length===1);h.session.ackStop=true;let finished=false;const stopped=m.controller.suspend().then(value=>{finished=true;return value;});
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(finished,false,'An early end event cannot release private audio while loadMedia is unresolved');assert.equal(m.controller.getSnapshot().suspended,true);
+ load.resolve();await start;const proof=await stopped;assert.equal(proof.silenced,true);assert(h.session.endRequests>=2,'A late completed load requires a new end request/ack');assert.equal(h.session.media,null);assert.equal(h.cast.active,false);
+});
+
+test('a session request that completes after stop is cancelled, never loads media, and waits for the created session to end',async t=>{
+ const h=castFixture(),launch=deferred();t.after(()=>h.cast.dispose());let sessionAvailable=false;h.context.getCurrentSession=()=>sessionAvailable?h.session:null;h.context.requestSession=async()=>{await launch.promise;sessionAvailable=true;};
+ const start=h.cast.start();await until(()=>h.cast.operations.size===1);let finished=false;h.session.ackStop=true;const stopped=h.cast.stop().then(()=>{finished=true;});await new Promise(resolve=>setImmediate(resolve));assert.equal(finished,false);
+ launch.resolve();await start;await stopped;assert.equal(h.session.loads.length,0);assert(h.session.endRequests>0);assert.equal(h.cast.active,false);
+});
+
+test('a lost load response keeps the private transition blocked; late completion still performs receiver cleanup',async t=>{
+ const h=castFixture(),load=deferred();t.after(()=>h.cast.dispose());h.session.loadMedia=async request=>{h.session.loads.push(request);await load.promise;h.session.media={media:request.media,playerState:'PLAYING'};};
+ const start=h.cast.start();await until(()=>h.session.loads.length===1);h.session.ackStop=true;await assert.rejects(h.cast.stop(),/niet bevestigd/);
+ assert.equal(h.cast.operations.size,1);load.resolve();await start;assert.equal(h.session.media,null);assert(h.session.endRequests>=2);await h.cast.stop();assert.equal(h.cast.active,false);
+});
+
+test('an early end acknowledgement cannot authorize a later completed load without a fresh matching end acknowledgement',async t=>{
+ const h=castFixture(),load=deferred();t.after(()=>h.cast.dispose());h.session.loadMedia=async request=>{h.session.loads.push(request);await load.promise;h.session.media={media:request.media,playerState:'PLAYING'};};
+ const end=h.session.endSession;h.session.endSession=function(){this.ackStop=!this.endRequests;return end.call(this);};
+ const start=h.cast.start();await until(()=>h.session.loads.length===1);const stopped=h.cast.stop();await new Promise(resolve=>setImmediate(resolve));load.resolve();await start;await assert.rejects(stopped,/niet bevestigd/);
+ assert(h.session.endRequests>=2);h.session.endSession=end;h.session.ackStop=true;await h.cast.stop();assert.equal(h.session.media,null);
+});
+
+test('an inactive Cast error still blocks programme silence until its uncertain receiver session has a matching end acknowledgement',async t=>{
+ const h=castFixture(),m=mediaFixture();t.after(()=>{m.controller.dispose();h.cast.dispose();});await until(()=>m.controller.room?.connection);m.controller.cast.dispose();m.controller.cast=h.cast;h.cast.onChange=patch=>m.controller.update(patch);
+ h.session.loadMedia=async request=>{h.session.media={media:request.media,playerState:'PLAYING'};throw Error('Response lost after receiver started');};
+ await assert.rejects(h.cast.start(),/Response lost/);assert.equal(h.cast.active,false);assert.equal(m.controller.getSnapshot().castPhase,'error');
+ await assert.rejects(m.controller.suspend(),/niet bevestigd/);assert.equal(m.controller.getSnapshot().suspended,true);
+ h.session.ackStop=true;assert.equal((await m.controller.suspend()).silenced,true);assert.equal(h.session.media,null);
 });

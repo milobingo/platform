@@ -7,7 +7,7 @@ import {cpus,freemem,networkInterfaces,hostname} from 'node:os';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
 import {runHlsViewer} from './hls-client.mjs';
 
 const base=dirname(fileURLToPath(import.meta.url));
@@ -122,7 +122,7 @@ async function probe(config,credentials,origin,identity,{hls=false}={}){
   return {context,page,identity};
 }
 function spawnCli(config,credentials,stage,subscribers){
-  const child=spawn(config.lkPath,['perf','load-test','--room',config.room,'--subscribers',String(subscribers),'--video-publishers','0','--audio-publishers','0','--duration',`${stage.seconds}s`,'--num-per-second','5','--layout','speaker','--identity-prefix',`milo-load-${stage.name}`],{stdio:['ignore','pipe','pipe'],env:{...process.env,LIVEKIT_URL:config.livekitUrl,LIVEKIT_API_KEY:credentials.apiKey,LIVEKIT_API_SECRET:credentials.apiSecret,NO_COLOR:'1',TERM:'dumb'}});
+  const child=spawn(config.lkPath,['perf','load-test','--room',config.room,'--subscribers',String(subscribers),'--video-publishers','0','--audio-publishers','0','--duration',`${cliDurationSeconds(stage)}s`,'--num-per-second','5','--layout','speaker','--identity-prefix',`milo-load-${stage.name}`],{stdio:['ignore','pipe','pipe'],env:{...process.env,LIVEKIT_URL:config.livekitUrl,LIVEKIT_API_KEY:credentials.apiKey,LIVEKIT_API_SECRET:credentials.apiSecret,NO_COLOR:'1',TERM:'dumb'}});
   let raw='',readyAt=null;
   const add=chunk=>{raw+=chunk.toString();if(raw.length>20000000){raw=raw.slice(0,20000000);child.kill('SIGTERM');}if(raw.includes('Finished connecting to room, waiting')&&readyAt===null)readyAt=Date.now();};
   child.stdout.on('data',add);child.stderr.on('data',add);
@@ -133,7 +133,7 @@ async function runStage(config,credentials,origin,stage,previous){
   requireDnsPin((await lookup(config.livekitHostname,{all:true})).map(value=>value.address),config.targetPublicIps);
   const result={...stage,status:'running',startedAt:new Date().toISOString(),executed:true,browserViewers:3,cliViewers:stage.webrtc-3,hlsHttpViewers:Math.max(0,stage.hls-1),hlsBrowserViewers:stage.hls?1:0};
   report.stages.push(result);await save();
-  const probes=[],samples=[],hlsSamples=[],hlsPlaybackSamples=[],hostSamples=[],roomSamples=[],hlsAbort=new AbortController();let cli,hls=[],hlsProbe;
+  const probes=[],samples=[],hlsSamples=[],hlsPlaybackSamples=[],hostSamples=[],roomSamples=[],hlsAbort=new AbortController();let cli,hls=[],hlsProbe,fullOccupancyAtMs=null;
   try{
     for(let index=0;index<3;index++)probes.push(await probe(config,credentials,origin,`milo-load-${stage.name}-browser-${index}`));
     if(stage.hls){
@@ -150,11 +150,15 @@ async function runStage(config,credentials,origin,stage,previous){
       if(terminate)throw new Error('Proef bewust afgebroken.');
       const before=previous;
       previous=await observeSafety(config,previous,stage.name);
+      if(finished)break;
       const elapsed=(previous.observedAtMs-before.observedAtMs)/1000,total=previous.cpuTotal-before.cpuTotal;
       hostSamples.push({...previous,cpuPercent:total>0?(1-(previous.cpuIdle-before.cpuIdle)/total)*100:null,egressMbps:elapsed>0?(previous.txBytes-before.txBytes)*8/elapsed/1e6:null});
       const roomSample=await observeRoom(config,credentials);roomSamples.push(roomSample);
+      if(finished)break;
       await appendFile(resolve(output,`${stage.name}-room.jsonl`),JSON.stringify(roomSample)+'\n',{mode:0o600});
       if(cli.readyAt&&roomSample.viewerCount<Math.ceil(stage.webrtc*.99))throw new Error('Minder dan 99% van de testkijkers blijft verbonden.');
+      if(cli.readyAt&&roomSample.viewerCount===stage.webrtc)fullOccupancyAtMs??=Date.now();
+      else fullOccupancyAtMs=null;
       if(previous.cpuCount!==config.inventory.cpuCount)throw new Error('Hostinventaris is gewijzigd.');
       for(const item of probes){
         const sample=await item.page.evaluate(()=>window.miloMediaProbe.sample());
@@ -174,7 +178,9 @@ async function runStage(config,credentials,origin,stage,previous){
     for(const value of sensitive)if(log.includes(value))throw new Error('CLI-output bevat een geheim en is niet opgeslagen.');
     await writeFile(resolve(output,`${stage.name}-cli.log`),log,{mode:0o600});
     const parsed=parseCliTrackResults(log);
-    result.cli=parsed;result.holdSeconds=finished.readyAt?(finished.finishedAt-finished.readyAt)/1000:0;
+    result.cli=parsed;result.cliDurationSeconds=cliDurationSeconds(stage);result.connectedWaitSeconds=finished.readyAt?(finished.finishedAt-finished.readyAt)/1000:0;
+    result.fullOccupancyObservedAtMs=fullOccupancyAtMs;
+    result.holdSeconds=fullOccupancyHoldSeconds(fullOccupancyAtMs,finished.finishedAt);
     const goodBrowsers=probes.filter(item=>samples.some(sample=>sample.identity===item.identity&&sample.frames>0&&sample.audioRmsMax>.0001&&sample.tracks.some(track=>track.kind==='video'&&track.framesDecoded>0))).length;
     result.successfulWebrtcViewers=parsed.receivingAudioAndVideo+goodBrowsers;
     result.connectionSuccessRate=result.successfulWebrtcViewers/stage.webrtc;
@@ -199,7 +205,8 @@ async function runStage(config,credentials,origin,stage,previous){
     result.hostEgressMbps=summarize(hostSamples.map(sample=>sample.egressMbps));
     result.hostAvailableMemoryMinBytes=Math.min(...hostSamples.map(sample=>sample.memAvailableBytes));
     result.roomViewerCount=summarize(roomSamples.map(sample=>sample.viewerCount));
-    result.turnBurden={measured:false,reason:'Separate SFU/TURN Prometheus counters and forced-relay probe must be added to the release evidence; no zero-load claim inferred.'};
+    result.turnBurden=summarizeTurnBurden(hostSamples);
+    result.sfuPrometheusSamples=hostSamples.filter(sample=>sample.livekitPrometheus?.measured).length;
     result.hlsLatencyMs=summarize(hlsPlaybackSamples.flatMap(sample=>sample.timecodeSamples.map(value=>value.latencyMs)));
     result.hlsTimeToFirstFrameMs=summarize(hlsPlaybackSamples.slice(0,1).map(sample=>sample.timeToFirstVideoMs));
     result.hlsPlaybackVerified=hlsPlaybackSamples.some(sample=>sample.frames>0&&sample.audioRmsMax>.0001);
@@ -208,7 +215,7 @@ async function runStage(config,credentials,origin,stage,previous){
     const profileLoaded=result.browserMediaBitrateBps.p50>=MEDIA_PROFILE.totalBps*.8;
     result.profileBitrateAdequate=profileLoaded;
     result.profileFpsAdequate=result.browserDecodedFps.p50>=27;
-    result.success=finished.code===0&&result.holdSeconds>=stage.seconds-1&&result.connectionSuccessRate>=.99&&result.webrtcLatencyMs.samples>=stage.seconds&&result.webrtcLatencyMs.p95<=1000&&hlsSuccess&&profileLoaded&&result.profileFpsAdequate;
+    result.success=finished.code===0&&result.holdSeconds>=stage.seconds&&result.connectionSuccessRate>=.99&&result.webrtcLatencyMs.samples>=stage.seconds&&result.webrtcLatencyMs.p95<=1000&&hlsSuccess&&profileLoaded&&result.profileFpsAdequate&&result.turnBurden.measured&&result.sfuPrometheusSamples>=2;
     result.status=result.success?'passed':'target-missed';
     result.endedAt=new Date().toISOString();
     return {previous,success:result.success};

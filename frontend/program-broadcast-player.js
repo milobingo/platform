@@ -130,7 +130,9 @@ export class ProgramBroadcastController{
  stopAirPlay(){if(!this.airplay)return;this.airplay.webkitShowPlaybackTargetPicker();this.update({airplayPhase:'stopping'});}
  async suspend(){
   this.update({suspended:true,phase:'suspended'});this.syncMute();
-  if(this.state.castActive||['connecting','waiting'].includes(this.state.castPhase))await this.stopCast();
+  // Even a non-playing/error Cast session may have an issued load whose
+  // response was lost. The Cast controller owns the receiver-end proof.
+  if(this.cast)await this.stopCast();
   this.airplay?.pause();
   if(this.state.airplayActive){this.stopAirPlay();throw Error('Kies deze iPhone/iPad in de AirPlay-bediening om de tv-verbinding te stoppen. Neem daarna opnieuw op; je microfoon is nog niet geopend.');}
   return {silenced:true,method:'programme-player-and-remote-stop',simulated:false};

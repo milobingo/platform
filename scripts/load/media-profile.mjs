@@ -11,6 +11,28 @@ export const STAGES = Object.freeze([
   {name:'mixed-150-50',webrtc:150,hls:50,seconds:600},
 ]);
 export const MEDIA_PROFILE = Object.freeze({width:1280,height:720,fps:30,videoBps:1186000,audioBps:64000,totalBps:1250000,simulcast:false});
+// lk 2.20.1 starts --duration after group.Wait(), not before its join ramp.
+// Reserve a little extra for the first independent full-room observation.
+export const cliDurationSeconds = stage => stage.seconds+15;
+export function fullOccupancyHoldSeconds(fullObservedAtMs,finishedAtMs){
+  return Number.isFinite(fullObservedAtMs)&&Number.isFinite(finishedAtMs)?Math.max(0,(finishedAtMs-fullObservedAtMs)/1000):0;
+}
+export function summarizeTurnBurden(observations){
+  const values=observations.filter(value=>value?.turnNetwork?.measured===true);
+  if(values.length<2)return {measured:false,samples:values.length,reason:'Twee volledige waarnemingen van de eigen TURN-kerneltellers ontbreken.'};
+  const counters={},rates=[];let reset=false;
+  for(let i=1;i<values.length;i++){
+    const before=values[i-1],after=values[i],seconds=(after.observedAtMs-before.observedAtMs)/1000;
+    let bytes=0;
+    for(const name of ['udp_in','udp_out','tls_in','tls_out']){
+      const earlier=before.turnNetwork.counters[name],later=after.turnNetwork.counters[name];
+      if(later.bytes<earlier.bytes||later.packets<earlier.packets||(earlier.handle!==undefined&&later.handle!==earlier.handle)){reset=true;continue;}
+      counters[name]??={bytes:0,packets:0};counters[name].bytes+=later.bytes-earlier.bytes;counters[name].packets+=later.packets-earlier.packets;bytes+=later.bytes-earlier.bytes;
+    }
+    if(seconds>0)rates.push(bytes*8/seconds/1e6);
+  }
+  return {measured:!reset,samples:values.length,counterResetDetected:reset,scope:'Alleen eigen eth0 TURN-listeners UDP3480/TCP5349; hostbreed, niet per room.',includesProtocolOverhead:true,counters:reset?null:counters,combinedIngressAndEgressMbps:reset?null:summarize(rates),reason:reset?'Tellers zijn gereset; geen geldige fasebelasting afgeleid.':null};
+}
 export const ROOM_PREFIX = 'milo-staging-load-';
 const fixtureUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 export function testRoomAllowed(room,{fixtureGameId,testOnly=false}={}) {

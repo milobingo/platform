@@ -1,0 +1,17 @@
+# Dedicated observation only. UFW remains authoritative. Do not flush ruleset.
+table inet milo_media_turn_observe {
+    counter udp_in { }
+    counter udp_out { }
+    counter tls_in { }
+    counter tls_out { }
+    chain observe_input {
+        type filter hook input priority 10;
+        iifname "eth0" udp dport 3480 counter name udp_in
+        iifname "eth0" tcp dport 5349 counter name tls_in
+    }
+    chain observe_output {
+        type filter hook output priority 10;
+        oifname "eth0" udp sport 3480 counter name udp_out
+        oifname "eth0" tcp sport 5349 counter name tls_out
+    }
+}

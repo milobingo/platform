@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+"""Install only this project's packet counters. Never alter firewall policy."""
+import json
+import subprocess
+
+table = ["inet", "milo_media_turn_observe"]
+existing = subprocess.run(["/usr/sbin/nft", "-j", "list", "table", *table], capture_output=True, text=True)
+if existing.returncode == 0:
+    entries = json.loads(existing.stdout)["nftables"]
+    counters = {item["counter"]["name"] for item in entries if "counter" in item}
+    if counters != {"udp_in", "udp_out", "tls_in", "tls_out"}:
+        raise SystemExit("Existing observation table differs; manual review required.")
+else:
+    subprocess.run(["/usr/sbin/nft", "-c", "-f", "/etc/milobingo-media/turn-observe.nft"], check=True)
+    subprocess.run(["/usr/sbin/nft", "-f", "/etc/milobingo-media/turn-observe.nft"], check=True)

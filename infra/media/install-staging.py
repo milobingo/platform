@@ -71,10 +71,13 @@ for name, owner in [("livekit.yaml", 65532), ("ingress.yaml", 65532), ("redis.co
 (config / "tls").mkdir(mode=0o755, exist_ok=True)
 for name in ["compose.yaml", "Egress.Dockerfile"]:
     shutil.copy2(source / name, install / name)
-for name in ["milo-media.slice", "milo-media-staging.service", "milo-media-maintenance.service", "milo-media-maintenance.timer"]:
+for name in ["milo-media.slice", "milo-media-staging.service", "milo-media-maintenance.service", "milo-media-maintenance.timer", "milo-media-observe.service"]:
     shutil.copy2(source / name, Path("/etc/systemd/system") / name)
 shutil.copy2(source / "milo-media-sync-cert", "/usr/local/sbin/milo-media-sync-cert")
 Path("/usr/local/sbin/milo-media-sync-cert").chmod(0o700)
+shutil.copy2(source / "milo-media-observe", "/usr/local/sbin/milo-media-observe")
+Path("/usr/local/sbin/milo-media-observe").chmod(0o700)
+shutil.copy2(source / "turn-observe.nft", config / "turn-observe.nft")
 
 app_gid = grp.getgrnam("app-mil-stg").gr_gid
 hls = Path("/srv/sites/milobingo-staging/shared/broadcast-hls")
@@ -154,7 +157,7 @@ except subprocess.CalledProcessError:
     shutil.copy2(backup / "milobingo-staging.caddy", caddy)
     raise
 run("systemctl", "reload", "caddy.service")
-run("systemctl", "enable", "--now", "milo-media-staging.service", "milo-media-maintenance.timer")
+run("systemctl", "enable", "--now", "milo-media-staging.service", "milo-media-maintenance.timer", "milo-media-observe.service")
 run("docker", "compose", "-f", str(install / "compose.yaml"), "up", "-d", "--wait")
 for path, digest in inventory.items():
     if path != str(caddy) and hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest:

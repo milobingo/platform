@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
 import {runHlsViewer} from '../scripts/load/hls-client.mjs';
 
 let checks=0;
@@ -10,6 +10,25 @@ const config={format:'milo-media-load-v1',environment:'staging',appOrigin:'https
 check('Vaste gebruikersaantallen en minimale werkelijke meetduur',()=>{
   assert.deepEqual(STAGES.map(s=>[s.webrtc,s.hls,s.seconds]),[[25,0,300],[50,0,300],[100,0,300],[150,0,300],[200,0,1200],[150,50,600]]);
   assert.equal(MEDIA_PROFILE.videoBps+MEDIA_PROFILE.audioBps,1250000);assert.equal(MEDIA_PROFILE.simulcast,false);
+});
+check('Meetduur telt uitsluitend vanaf onafhankelijk vastgestelde volledige bezetting',()=>{
+  assert.equal(cliDurationSeconds({seconds:300}),315);
+  assert.equal(fullOccupancyHoldSeconds(null,400000),0);
+  assert.equal(fullOccupancyHoldSeconds(105000,400000),295);
+  assert.equal(fullOccupancyHoldSeconds(105000,420000),315);
+  assert.ok(fullOccupancyHoldSeconds(105000,400000)<300);
+  assert.ok(fullOccupancyHoldSeconds(105000,420000)>=300);
+});
+check('TURN-belasting komt uit echte tellerdelta’s; ontbrekende of geresette tellers zijn geen nulmeting',()=>{
+  const observation=(at,bytes)=>({observedAtMs:at,turnNetwork:{measured:true,counters:Object.fromEntries(['udp_in','udp_out','tls_in','tls_out'].map(name=>[name,{packets:bytes/100,bytes}]))}});
+  assert.equal(summarizeTurnBurden([]).measured,false);
+  assert.equal(summarizeTurnBurden([observation(1000,1000)]).measured,false);
+  const result=summarizeTurnBurden([observation(1000,1000),observation(2000,2000)]);
+  assert.equal(result.measured,true);assert.equal(result.counters.udp_in.bytes,1000);assert.equal(result.combinedIngressAndEgressMbps.p50,.032);
+  const reset=summarizeTurnBurden([observation(1000,1000),observation(2000,0)]);
+  assert.equal(reset.measured,false);assert.equal(reset.counterResetDetected,true);assert.equal(reset.counters,null);
+  const earlier=observation(1000,1000),later=observation(2000,2000);earlier.turnNetwork.counters.udp_in.handle=1;later.turnNetwork.counters.udp_in.handle=2;
+  assert.equal(summarizeTurnBurden([earlier,later]).counterResetDetected,true);
 });
 check('Testconfiguratie weigert productie, cloud, een echte show en dezelfde generator',()=>{
   assert.equal(validateLoadConfiguration(config),config);

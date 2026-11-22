@@ -25,6 +25,8 @@ node scripts/load/run-staging-media.mjs --run /private/config.json /private/capa
 
 Het harnas voert 25/50/100/150 WebRTC-kijkers elk vijf minuten, 200 kijkers twintig minuten en daarna 150 WebRTC + 50 HLS tien minuten uit, met echte RTP-ontvangst en afzonderlijke echte browserdecode. Een mislukte verbinding, onveilige hostbelasting of gemist doel stopt de volgende niveaus. `Ctrl+C` stopt de eigen testclients en de eigen WHIP-sessie; geen spelstatus wordt hervat.
 
+De gemeten meetduur start pas bij onafhankelijk vastgestelde volle bezetting; de CLI krijgt 15 seconden extra observatiemarge. De SSH-sampler leest intern Prometheus op loopback6798 en de vier eigen TURN-kerneltellers uit `inet milo_media_turn_observe`. Geen meting of een counterreset levert geen acceptatie op. TURN-counters omvatten de eigen listeners op de host, geen afzonderlijke roomtoerekening.
+
 De optionele, aparte `probe-https-margin.py /private/result.json` test gedurende 15 seconden maximaal 400 Mbit/s op de vooraf gecontroleerde eigen VPS. Hij gebruikt alleen een tijdelijke, extern IP-beperkte HTTPS-route en herstelt het oorspronkelijke Caddy-fragment met digestcontrole. De opdracht is een beheerhandeling: eerst de doelhost en afwezigheid van een echte uitzending controleren. Deze proef vervangt geen UDP/TURN- of 200-kijkersproef.
 
 Fysieke Chromecast/Google TV, AirPlay, een echte OBS-encoder, privéregie-audio/live-audio en claimtiming op een tv blijven afzonderlijke verplichte repetities. Rapporten bevatten daarvoor expliciete niet-uitgevoerdvelden totdat werkelijk bewijs beschikbaar is. HTTP-segmenten zijn geen bewijs van tv-beeld en audio.

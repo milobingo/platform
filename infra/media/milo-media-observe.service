@@ -1,0 +1,12 @@
+[Unit]
+Description=Milo TURN packet counters without firewall policy changes
+After=network-online.target ufw.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/milo-media-observe
+ExecStop=/usr/sbin/nft delete table inet milo_media_turn_observe
+
+[Install]
+WantedBy=multi-user.target

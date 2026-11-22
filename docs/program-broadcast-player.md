@@ -62,9 +62,13 @@ het Milo/YouTube- en Vlampie-belgedrag blijven verder behouden.
 
 ## Uitgevoerde lokale controles en grenzen
 
-- `node tests/check-program-player.mjs`: acht controller-/API-tests voor
+- `node tests/check-program-player.mjs`: veertien controller-/API-tests voor
   kijkersisolatie, autoplay, reconnect, daadwerkelijke Cast-status,
-  AirPlay-ontkoppeling en het ballenbord.
+  AirPlay-ontkoppeling en het ballenbord. Daaronder vallen gerichte races met
+  een nog lopende Cast-sessieaanvraag of `loadMedia`, een verloren antwoord,
+  een vroegere eindmelding en een eindmelding van een andere sessie. Een
+  privé-overgang wacht op afgehandelde oude aanvragen en een passende nieuwe
+  `SESSION_ENDED`-bevestiging; een fout of timeout blijft blokkeren.
 - `node scripts/check-player-live-call.mjs`: bestaande routes plus een
   afzonderlijke Milo/LiveKit-proef waarin een onbevestigde tv-stop geen
   antwoord of privémicrofoon mag openen.

@@ -1,0 +1,100 @@
+{
+  "format": "milo-media-metrics-readiness-v1",
+  "observedAt": "2026-11-22T15:35:32.736505+00:00",
+  "loadStageExecuted": false,
+  "scope": "Read-only idle sampler capability; no public TURN or viewer-capacity success claimed",
+  "observations": [
+    {
+      "observedAtMs": 1795361730854,
+      "host": "dg-nxttrack-01",
+      "livekitPrometheus": {
+        "measured": true,
+        "scope": "own LiveKit SFU on loopback:6798",
+        "metrics": {
+          "livekit_participant_total": 0.0,
+          "process_cpu_seconds_total": 0.23,
+          "process_resident_memory_bytes": 51380224.0,
+          "process_start_time_seconds": 1795361668.14
+        },
+        "dedicatedTurnMetrics": false
+      },
+      "turnNetwork": {
+        "measured": true,
+        "scope": "eth0 embedded TURN listeners UDP3480/TCP5349",
+        "counters": {
+          "udp_in": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 3
+          },
+          "udp_out": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 4
+          },
+          "tls_in": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 5
+          },
+          "tls_out": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 6
+          }
+        },
+        "includesProtocolOverhead": true,
+        "scopeLimitation": "host-wide own TURN listeners; no per-room attribution"
+      }
+    },
+    {
+      "observedAtMs": 1795361732701,
+      "host": "dg-nxttrack-01",
+      "livekitPrometheus": {
+        "measured": true,
+        "scope": "own LiveKit SFU on loopback:6798",
+        "metrics": {
+          "livekit_participant_total": 0.0,
+          "process_cpu_seconds_total": 0.24,
+          "process_resident_memory_bytes": 51773440.0,
+          "process_start_time_seconds": 1795361668.14
+        },
+        "dedicatedTurnMetrics": false
+      },
+      "turnNetwork": {
+        "measured": true,
+        "scope": "eth0 embedded TURN listeners UDP3480/TCP5349",
+        "counters": {
+          "udp_in": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 3
+          },
+          "udp_out": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 4
+          },
+          "tls_in": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 5
+          },
+          "tls_out": {
+            "packets": 0,
+            "bytes": 0,
+            "handle": 6
+          }
+        },
+        "includesProtocolOverhead": true,
+        "scopeLimitation": "host-wide own TURN listeners; no per-room attribution"
+      }
+    }
+  ],
+  "cliDurationSource": {
+    "version": "2.20.1",
+    "url": "https://github.com/livekit/livekit-cli/blob/v2.20.1/pkg/loadtester/loadtest.go#L355",
+    "verified": "group.Wait completes before Finished connecting message and time.After(duration)",
+    "harnessPolicy": "15 seconds observation margin; minimum hold measured only from independently observed full room count"
+  }
+}
