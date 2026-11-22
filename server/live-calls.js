@@ -239,7 +239,13 @@ export async function handleLiveCalls(request,env,fetcher=fetch){
     return json({sdp,realtimeId,speechEngine:'gpt-live',model:'gpt-live-1',serverTime:Date.now()});
    }catch(error){const stopped=realtimeId?await hangup(env,realtimeId,env.PROVIDER_CLEANUP_FETCH||fetcher,'gpt-live',start.credentialFingerprint):!dispatched;await change(current=>{if(current.realtimeStart?.id!==start.id)return current;if(realtimeId){current.realtimeId=realtimeId;current.realtimeStatus=stopped?'closed':'uncertain';current.realtimeStopped=stopped;current.resourcesClosed=false;}else current.realtimeStatus=dispatched?'uncertain':'failed';if(current.phase==='live')returnLiveCall(current,'failed','De presentator kon de live stemverbinding niet starten. De trekking blijft geblokkeerd.');},{allowFinished:true}).catch(()=>{});if(c?.id===body.callId)await cleanup(env,store,owner,c,env.PROVIDER_CLEANUP_FETCH||fetcher,{force:true});throw error;}
   }
-  if(action==='answer'&&c.brandId==='milo'){const entry=row.data.participation?.find(entry=>entry.id===c.entryId);if(entry?.technicalContext&&entry.technicalContext!==body.technicalContext)throw livekitError('Deze oproep hoort bij het apparaat waarop de microfoon is gecontroleerd. Open de app daar, of controleer dit apparaat vóór een nieuwe oproep.');}
+  if(action==='answer'&&c.brandId==='milo'){
+   const entry=row.data.participation?.find(entry=>entry.id===c.entryId);if(entry?.technicalContext&&entry.technicalContext!==body.technicalContext)throw livekitError('Deze oproep hoort bij het apparaat waarop de microfoon is gecontroleerd. Open de app daar, of controleer dit apparaat vóór een nieuwe oproep.');
+   // The own programme player (including its television receiver) is silenced
+   // before entering backstage. The existing separate-screen YouTube route is
+   // unchanged; its audio cannot be controlled from this application.
+   if(row.data.programBroadcast?.version===1&&row.data.programBroadcast.enabled===true&&(body.heardLastNumber!==c.checkpoint.lastNumber||body.cardsUpdated!==true||body.programmeSilenced!==true))throw livekitError('Hoor eerst het laatste officiële nummer, werk de kaart bij en stop de tv-weergave voordat je het gesprek opneemt.');
+  }
   if(url.pathname!=='/api/live-calls')throw livekitError('Onbekende belroute.',404);
   if(action==='prepared-fallback'){
    if(role!=='output'||c.brandId!=='milo'||c.phase!=='live'||c.mode!=='ai'||c.mediaRevokedAt)throw livekitError('Deze veilige spraakovergang hoort niet bij het actieve gesprek.',403);

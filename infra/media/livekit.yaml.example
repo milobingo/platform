@@ -1,0 +1,26 @@
+port: 7880
+bind_addresses: [127.0.0.1]
+rtc:
+  tcp_port: 7881
+  udp_port: 7882
+  use_external_ip: false
+  node_ip: 128.140.93.95
+  enable_loopback_candidate: false
+  interfaces:
+    includes: [eth0]
+redis:
+  address: 127.0.0.1:6381
+  password: REPLACE_PRIVATE_REDIS_PASSWORD
+keys:
+  REPLACE_API_KEY: REPLACE_API_SECRET
+ingress:
+  whip_base_url: https://milo-staging.dgwebservices.nl/whip
+turn:
+  enabled: true
+  domain: milo-staging.dgwebservices.nl
+  tls_port: 5349
+  udp_port: 3480
+  cert_file: /tls/cert.pem
+  key_file: /tls/key.pem
+logging:
+  level: warn

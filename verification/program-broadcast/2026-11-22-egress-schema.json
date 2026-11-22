@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "observedAt": "2026-11-22T15:26:50.401Z",
+  "finishedAt": "2026-11-22T15:28:48.619Z",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "versions": {
+    "server": "1.13.11",
+    "egress": "1.15.0",
+    "serverProtocol": "46332a036e25",
+    "egressProtocol": "efea8680276b"
+  },
+  "sourceTracks": "intentionally-nonexistent",
+  "realParticipants": 0,
+  "parserAcceptedExactRequest": true,
+  "requestFeatures": [
+    "media.video_track_id",
+    "audio.capture_all=false",
+    "audio.routes.track_id",
+    "AUDIO_CHANNEL_BOTH",
+    "H264_MAIN",
+    "AAC",
+    "outputs.segments",
+    "HLS_PROTOCOL",
+    "disable_manifest=true",
+    "segment_duration=2"
+  ],
+  "initialStatus": "EGRESS_STARTING",
+  "stopApiConfirmed": false,
+  "cleanup": {
+    "ownRoomDeleted": true,
+    "activeOwnEgresses": 0,
+    "finalOwnJob": [
+      {
+        "status": "EGRESS_FAILED",
+        "errorCode": 404,
+        "missingTrackFailure": true
+      }
+    ]
+  },
+  "actualMediaVerified": false,
+  "encoderQualityVerified": false,
+  "capacityVerified": false,
+  "credentialsPrinted": false,
+  "notes": [
+    "The deliberately missing source tracks produced the expected terminal EGRESS_FAILED / 404 state.",
+    "Stopping the starting job timed out; cleanup was verified afterwards by terminal job state, zero active jobs and deleting only its empty room.",
+    "This validates the deployed request parser/enums and job admission, not live media delivery."
+  ]
+}

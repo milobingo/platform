@@ -1,0 +1,53 @@
+{
+  "format": 1,
+  "observedAt": "2026-11-22T15:12:55.363Z",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "roomPrefix": "milo-staging-load-contract-",
+  "tests": [
+    {
+      "name": "create-isolated-room",
+      "passed": true
+    },
+    {
+      "name": "list-publishers",
+      "passed": true,
+      "participants": 0
+    },
+    {
+      "name": "whip-response",
+      "passed": true,
+      "origin": "https://milo-staging.dgwebservices.nl",
+      "pathWithoutSecret": "/whip",
+      "keySeparate": true,
+      "bypassTranscoding": true
+    },
+    {
+      "name": "ingress-reconcile",
+      "passed": true,
+      "count": 1
+    },
+    {
+      "name": "public-whip-routing-invalid-sdp",
+      "passed": true,
+      "status": 400,
+      "protocolRejectedSdp": true,
+      "noTokenEcho": true
+    },
+    {
+      "name": "egress-api",
+      "passed": true,
+      "activeEncoders": 0
+    },
+    {
+      "name": "delete-isolated-ingress",
+      "passed": true
+    },
+    {
+      "name": "delete-isolated-room",
+      "passed": true
+    }
+  ],
+  "credentialsPrinted": false,
+  "realCalls": false,
+  "persistedShowsModified": false
+}

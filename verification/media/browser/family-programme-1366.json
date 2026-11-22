@@ -1,0 +1,15 @@
+{
+  "actualReactBrowserRendering": true,
+  "actualLiveKitMediaDecoded": false,
+  "castSDKSimulated": true,
+  "physicalCastOrAirPlayTested": false,
+  "providerOrRealParticipantTraffic": false,
+  "errors": [],
+  "external": [],
+  "unexpected": [],
+  "writes": [
+    "/api/broadcast/1f745a70-d961-4b09-926c-a7a3a096db41/token",
+    "/api/broadcast/1f745a70-d961-4b09-926c-a7a3a096db41/cast",
+    "/api/broadcast/1f745a70-d961-4b09-926c-a7a3a096db41/token"
+  ]
+}

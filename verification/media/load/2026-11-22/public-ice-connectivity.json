@@ -1,0 +1,55 @@
+{
+  "format": "milo-media-load-result-v1",
+  "startedAt": "2026-11-22T15:15:46.533Z",
+  "executed": true,
+  "complete": false,
+  "profile": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoBps": 1186000,
+    "audioBps": 64000,
+    "totalBps": 1250000,
+    "simulcast": false
+  },
+  "stages": [],
+  "hardwareTests": {
+    "chromecast": {
+      "executed": false
+    },
+    "airplay": {
+      "executed": false
+    }
+  },
+  "limitations": [],
+  "preflight": {
+    "passed": true,
+    "appOrigin": "https://milo-staging.dgwebservices.nl",
+    "livekitHostname": "milo-staging.dgwebservices.nl",
+    "targetPublicIps": [
+      "128.140.93.95"
+    ],
+    "host": "dg-nxttrack-01",
+    "room": "milo-staging-load-connectivity-20261122",
+    "inventoryReference": "SSH-hostinventaris root en readonly /dev/shm/milo-load-staging-status.json; alle bestaande running-shows sinds 15/16 november onveranderd",
+    "generator": {
+      "host": "codex-worker-01",
+      "cpuCount": 12,
+      "freeMemoryBytes": 10431385600,
+      "network": "Extern codex-worker-01 65.108.158.112: HTTPS-proef /dev/shm/milo-media-https-network-probe.json ontving 750MB in15.13s (396.54Mbps); geen claim over abonnementsbundel.",
+      "publicIp": "65.108.158.112",
+      "availableIngressMbps": 396.54,
+      "clockErrorBoundMs": 0
+    },
+    "sourceRoute": "direct-sdk-diagnostic-source",
+    "cliVersion": "lk version 2.20.1"
+  },
+  "connectivity": {
+    "attempted": true,
+    "sourceRoute": "direct-sdk-diagnostic-source",
+    "capacityTest": false,
+    "receivingAudioAndVideo": false
+  },
+  "error": "page.evaluate: ConnectionError: could not establish pc connection\n    at _ConnectionError.internal ([URL verwijderd]\n    at [URL verwijderd]",
+  "finishedAt": "2026-11-22T15:16:09.549Z"
+}

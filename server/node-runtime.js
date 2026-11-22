@@ -21,6 +21,7 @@ import {handleLiveFeed} from './live-feed.js';
 import {withProviderSettingsLock} from './node-provider-settings.js';
 import {assertProviderSettingsLease} from './secrets.js';
 import {handleObsRequest,handleObsAccess} from './node-obs-access.js';
+import {handleProgramBroadcast,handleProgramHls} from './program-broadcast.js';
 
 const json=(message,status=503,code='unavailable')=>Response.json({error:{code,message}},{status});
 const authPaths=new Set(['/api/auth/session','/api/player/request-code','/api/player/verify-code','/api/player/logout']);
@@ -73,6 +74,9 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   const url=new URL(cleanRequest.url),path=url.pathname;
   if(path==='/spelregels'||path==='/api/bingo/rules')return handlePublicRules(cleanRequest,env);
   if(path==='/mail/afmelden')return handleMail(cleanRequest,env);
+  // Cast receivers cannot carry the family's login cookie. Every playlist and
+  // segment is authorized separately by a scoped, expiring HMAC capability.
+  if(path.startsWith('/api/broadcast/hls/'))return handleProgramHls(cleanRequest,env);
   if(path.startsWith('/api/obs/')&&path!=='/api/obs/access')return handleObsRequest(cleanRequest,env,{providerFetch});
   context=await createAuthContext(cleanRequest,env,{clientFactory:authClientFactory});
   const finish=response=>applyAuthCookies(response,context);
@@ -115,6 +119,7 @@ export async function dispatchNodeRequest(request,{env,authClientFactory,provide
   else if(path.startsWith('/api/mail/'))response=await handleMail(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/player/'))response=await handlePlayerAuth(cleanRequest,verifiedEnv);
   else if(path==='/api/output')response=await handleOutput(cleanRequest,verifiedEnv);
+  else if(path.startsWith('/api/broadcast/'))response=cleanRequest.method==='POST'&&path.endsWith('/control')?await providerOperation((locked,guardedFetch)=>handleProgramBroadcast(cleanRequest,locked,guardedFetch)):await handleProgramBroadcast(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/live-calls'))response=cleanRequest.method==='POST'&&(['/api/live-calls/token','/api/live-calls/realtime'].includes(path)||path==='/api/live-calls'&&providerAction==='prepare')?await providerOperation((locked,guardedFetch)=>handleLiveCalls(cleanRequest,locked,guardedFetch)):await handleLiveCalls(cleanRequest,verifiedEnv,providerFetch);
   else if(path.startsWith('/api/livekit/'))response=cleanRequest.method==='POST'?await providerOperation((locked,guardedFetch)=>handleLiveKit(cleanRequest,locked,guardedFetch)):await handleLiveKit(cleanRequest,verifiedEnv,providerFetch);
   else if(path==='/api/calls'||path==='/api/calls/settings')response=cleanRequest.method==='POST'&&path==='/api/calls'&&['prepare','realtime'].includes(providerAction)?await providerOperation((locked,guardedFetch)=>handleCalls(cleanRequest,locked,guardedFetch)):await handleCalls(cleanRequest,verifiedEnv,providerFetch);

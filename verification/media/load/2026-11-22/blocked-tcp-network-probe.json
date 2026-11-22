@@ -1,0 +1,27 @@
+{
+  "format": "milo-media-external-network-probe-v1",
+  "target": "128.140.93.95",
+  "generator": "65.108.158.112",
+  "observedAt": "2026-11-22T15:09:43Z",
+  "senderReady": {
+    "ready": true,
+    "seconds": 15,
+    "ceilingMbps": 400,
+    "sourceOnly": "65.108.158.112",
+    "temporaryRuleAdded": true
+  },
+  "requestedSeconds": 15,
+  "ceilingMbps": 400,
+  "receivedBytes": 0,
+  "achievedMbps": null,
+  "receiverError": "TimeoutError",
+  "senderResult": [
+    {
+      "senderError": "TimeoutError"
+    },
+    {
+      "cleanupConfirmed": true
+    }
+  ],
+  "passed": false
+}

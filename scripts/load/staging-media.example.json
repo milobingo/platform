@@ -1,0 +1,49 @@
+{
+  "format": "milo-media-load-v1",
+  "environment": "staging",
+  "appOrigin": "https://milo-staging.dgwebservices.nl",
+  "livekitUrl": "wss://milo-staging.dgwebservices.nl",
+  "livekitHostname": "milo-staging.dgwebservices.nl",
+  "targetPublicIps": ["128.140.93.95"],
+  "targetNetworkMbps": 0,
+  "room": "milo-staging-load-REPLACE-WITH-NEW-LOWERCASE-ID",
+  "testOnly": true,
+  "fixtureGameId": null,
+  "fixtureGeneration": null,
+  "fixtureManifestPath": "/private/verified-staging-fixture.json",
+  "fixturePrivacy": "no-real-families",
+  "fixtureAttestationReference": "REPLACE-WITH-NEW-PRIVATE-STAGING-FIXTURE-PROOF-IF-USING-PROGRAMME-ROOM",
+  "publisherIdentity": "milo-load-program",
+  "sourceRoute": "browser-whip-test",
+  "whipUrl": "https://milo-staging.dgwebservices.nl/whip/REPLACE-WITH-PRIVATE-INGRESS-STREAM-KEY",
+  "whipIceServers": [],
+  "credentialsPath": "/private/milo-load-credentials.json",
+  "lkPath": "/private/milo-load-tools/lk",
+  "chromiumPath": "/private/chromium/chrome",
+  "announcementsPath": "/private/milo-number-announcements.wav",
+  "hlsMediaPlaylistUrl": "https://milo-staging.dgwebservices.nl/REPLACE-WITH-ACTIVE-MEDIA-PLAYLIST",
+  "hlsPathPrefix": "/api/broadcast/hls/REPLACE-WITH-PRIVATE-SIGNED-CAPABILITY/",
+  "hlsRoomBindingReference": "REPLACE-WITH-FIXTURE-GAME-GENERATION-ROOM-MAPPING-PROOF",
+  "generator": {
+    "publicIp": "65.108.158.112",
+    "externalNetwork": true,
+    "networkDescription": "REPLACE: geverifieerde externe VPS, provider, regio, route en meetreferentie",
+    "availableIngressMbps": 0,
+    "clockErrorBoundMs": 20
+  },
+  "inventory": {
+    "host": "dg-nxttrack-01",
+    "cpuCount": 4,
+    "checkedAt": "REPLACE-WITH-FRESH-UTC-ISO-TIMESTAMP",
+    "reference": "REPLACE-WITH-VERIFIED-HOST-AND-LINK-INVENTORY",
+    "activeRealShow": false
+  },
+  "ssh": {
+    "config": "/home/codex/.ssh/dg-nxttrack-admin.conf",
+    "alias": "dg-nxttrack-01-admin"
+  },
+  "criticalHealthUrls": [
+    "https://milo-staging.dgwebservices.nl/api/health",
+    "https://milo.dgwebservices.nl/api/health"
+  ]
+}

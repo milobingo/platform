@@ -1,0 +1,18 @@
+[Unit]
+Description=Milo staging LiveKit, WHIP and HLS workers
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/milobingo-media
+ExecStartPre=/usr/local/sbin/milo-media-sync-cert
+ExecStart=/usr/bin/docker compose -f compose.yaml up -d --wait
+ExecStop=/usr/bin/docker compose -f compose.yaml down --timeout 30
+TimeoutStartSec=180
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target

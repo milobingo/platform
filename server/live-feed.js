@@ -30,7 +30,7 @@ export async function handleLiveFeed(request,env){
   let entry=cache.get(key);
   if(!entry||entry.until<Date.now()){
    const row=await store.game(id);if(brandId(row.data)!==expectedBrand)return json({error:{code:'brand',message:'De showwereld is veranderd.'}},403);const family=await store.family(identity.user,identity.email),view=playerGame(row.data,identity.user);
-   entry={until:Date.now()+15000,view,family:refreshAges(family.data),familyRevision:family.revision,booksVersion:await digest(JSON.stringify(view.books)),configVersion:await digest(JSON.stringify([view.brandId,view.title,view.date,view.settings,view.rounds,view.rulesPublication,view.showRules]))};
+   entry={until:Date.now()+15000,view,family:refreshAges(family.data),familyRevision:family.revision,booksVersion:await digest(JSON.stringify(view.books)),configVersion:await digest(JSON.stringify([view.brandId,view.title,view.date,view.settings,view.rounds,view.rulesPublication,view.showRules,view.programBroadcast]))};
    cache.set(key,entry);while(cache.size>8)cache.delete(cache.keys().next().value);
   }
   const full=url.searchParams.get('scope')!==scope||url.searchParams.get('snapshot')==='1'||url.searchParams.get('booksVersion')!==entry.booksVersion||url.searchParams.get('configVersion')!==entry.configVersion;

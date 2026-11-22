@@ -99,3 +99,14 @@ test('Milo emergency withdrawal starts immediately during another action and doe
 test('Milo call closure does not inspect playback, live position or require a family return form',async()=>{
  const f=fixture({game:{id:'game-1',brandId:'milo'}});try{await f.set('returning',{resourcesClosed:true});f.video.info={framePresent:false,muted:true,currentTime:1,duration:99999};f.clear();await f.controller.confirmReturn();assert.deepEqual(f.actions[0],{action:'player-returned',confirmed:true});assert.equal(f.events.some(event=>event.startsWith('youtube:')),false);assert.equal(f.controller.call.drawHeld,true);assert.equal(f.actions.some(action=>action.action==='resume-draw'),false);}finally{await f.controller.dispose();}
 });
+
+test('Milo native programme waits for heard-ball/card confirmation and verified TV stop before opening private audio',async()=>{
+ const f=fixture({game:{id:'game-1',brandId:'milo'}});f.video.getSnapshot=()=>({source:'livekit'});
+ try{
+  await f.set('ringing');f.clear();await assert.rejects(f.controller.answer(),/laatste nummer/);assert.equal(f.actions.length,0);
+  let allowStop=false;const suspend=f.video.suspend.bind(f.video);f.video.suspend=async()=>{if(!allowStop)throw Error('TV stop not acknowledged');return suspend();};
+  await assert.rejects(f.controller.answer({heard:true,cardsUpdated:true}),/not acknowledged/);assert.equal(f.actions.length,0);assert.equal(f.events.some(event=>event.startsWith('media:connect')),false);
+  allowStop=true;await f.controller.answer({heard:true,cardsUpdated:true});await flush();assert.equal(f.controller.call.phase,'backstage');assert.equal(f.actions[0].programmeSilenced,true);assert.equal(f.actions[0].cardsUpdated,true);assert.equal(f.actions[0].heardLastNumber,42);assert.equal(Object.hasOwn(f.actions[0],'youtubeMuted'),false);
+  assert(f.events.indexOf('youtube:suspend')<f.events.indexOf('server:answer'));assert(f.events.indexOf('server:answer')<f.events.indexOf('media:connect:backstage'));assert.equal(f.actions.some(action=>action.action==='resume-draw'),false);
+ }finally{await f.controller.dispose();}
+});

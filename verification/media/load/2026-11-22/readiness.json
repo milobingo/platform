@@ -1,0 +1,115 @@
+{
+  "format": "milo-media-load-readiness-v1",
+  "observedAt": "2026-11-22T15:17:39.511997+00:00",
+  "environment": "staging",
+  "target": {
+    "host": "dg-nxttrack-01",
+    "publicIp": "128.140.93.95",
+    "vcpus": 4,
+    "memoryBytes": 8121946112
+  },
+  "generator": {
+    "host": "codex-worker-01",
+    "publicIp": "65.108.158.112",
+    "vcpus": 12
+  },
+  "readOnlyShowAudit": "staging-show-status.json",
+  "networkMargin": {
+    "executed": true,
+    "protocol": "HTTPS over TCP443",
+    "seconds": 15.130840574973263,
+    "receivedBytes": 750000000,
+    "Mbps": 396.54108906045377,
+    "temporaryRouteRemoved": true,
+    "originalCaddyDigestRestored": true,
+    "supportsAccountBundleClaim": false
+  },
+  "publicWebrtc": {
+    "executed": true,
+    "success": false,
+    "failure": "could not establish pc connection after enforced eth0-only media restart",
+    "evidence": "public-ice-connectivity.json",
+    "noTailscaleResultAccepted": true
+  },
+  "earlierDiagnostic": {
+    "publicRouteVerified": false,
+    "excludedFromPublicAcceptance": true,
+    "reason": "Selected ICE candidate IP was not captured before eth0-only service restart. Video decoded, but audio energy was zero; not accepted as AV or public-network proof."
+  },
+  "loadStages": [
+    {
+      "webrtc": 25,
+      "hls": 0,
+      "requiredSeconds": 300,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    },
+    {
+      "webrtc": 50,
+      "hls": 0,
+      "requiredSeconds": 300,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    },
+    {
+      "webrtc": 100,
+      "hls": 0,
+      "requiredSeconds": 300,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    },
+    {
+      "webrtc": 150,
+      "hls": 0,
+      "requiredSeconds": 300,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    },
+    {
+      "webrtc": 200,
+      "hls": 0,
+      "requiredSeconds": 1200,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    },
+    {
+      "webrtc": 150,
+      "hls": 50,
+      "requiredSeconds": 600,
+      "executed": false,
+      "successfulConnections": null,
+      "p50LatencyMs": null,
+      "p95LatencyMs": null,
+      "reason": "Public WebRTC media connectivity remains blocked; no escalation after failed single-publisher browser test."
+    }
+  ],
+  "hardware": {
+    "chromecast": {
+      "executed": false,
+      "reason": "No physical receiver available to this Codex environment."
+    },
+    "airplay": {
+      "executed": false,
+      "reason": "No physical receiver available to this Codex environment."
+    }
+  },
+  "recommendedPremiereCapacity": null,
+  "accountBundleVerified": false,
+  "productionChanged": false,
+  "scope": "Only the new isolated media service and staging test paths; no existing show mutated, no real participants called."
+}

@@ -1,0 +1,44 @@
+#!/bin/sh
+set -eu
+# Copy only this existing Caddy certificate. Do not give containers access to
+# Caddy's storage or admin API. Run hourly; restart LiveKit only on renewal.
+source_dir=/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/milo-staging.dgwebservices.nl
+target_dir=/etc/milobingo-media/tls
+renew=${1:-}
+changed=0
+for pair in 'milo-staging.dgwebservices.nl.crt cert.pem' 'milo-staging.dgwebservices.nl.key key.pem'; do
+    set -- $pair
+    if ! cmp -s "$source_dir/$1" "$target_dir/$2"; then
+        install -o 65532 -g 65532 -m 0400 "$source_dir/$1" "$target_dir/$2"
+        changed=1
+    fi
+done
+pending=/etc/milobingo-media/.tls-restart-pending
+if [ "$changed" = 1 ]; then
+    touch "$pending"
+    chmod 0600 "$pending"
+fi
+if [ -f "$pending" ] && [ "$renew" = '--renew' ]; then
+    # Defer a certificate restart while anyone is watching. A failed provider
+    # query also defers; a timer is never evidence that a room is empty.
+    if python3 - <<'PY'
+import base64, hashlib, hmac, json, time, urllib.request
+try:
+    c = json.load(open('/etc/milobingo-media/credentials.json'))
+    encode = lambda x: base64.urlsafe_b64encode(json.dumps(x, separators=(',', ':')).encode()).decode().rstrip('=')
+    now = int(time.time())
+    body = encode({'alg':'HS256','typ':'JWT'}) + '.' + encode({'iss':c['apiKey'],'sub':'cert-maintenance','nbf':now-5,'exp':now+30,'video':{'roomList':True}})
+    token = body + '.' + base64.urlsafe_b64encode(hmac.new(c['apiSecret'].encode(), body.encode(), hashlib.sha256).digest()).decode().rstrip('=')
+    req = urllib.request.Request('http://127.0.0.1:7880/twirp/livekit.RoomService/ListRooms', data=b'{}', headers={'Authorization':'Bearer '+token, 'Content-Type':'application/json'})
+    rooms = json.load(urllib.request.urlopen(req, timeout=5)).get('rooms', [])
+    raise SystemExit(1 if any(int(r.get('numParticipants', r.get('num_participants', 0))) > 0 for r in rooms) else 0)
+except Exception:
+    raise SystemExit(1)
+PY
+    then
+        /usr/bin/docker compose -f /opt/milobingo-media/compose.yaml restart livekit
+        unlink "$pending"
+    else
+        echo 'TURN certificate restart deferred: active room or unavailable status.'
+    fi
+fi

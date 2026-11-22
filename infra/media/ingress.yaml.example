@@ -1,0 +1,23 @@
+api_key: REPLACE_API_KEY
+api_secret: REPLACE_API_SECRET
+ws_url: ws://127.0.0.1:7880
+redis:
+  address: 127.0.0.1:6381
+  password: REPLACE_PRIVATE_REDIS_PASSWORD
+rtmp_port: -1
+whip_port: 8086
+http_relay_port: 9096
+health_port: 9086
+rtc_config:
+  udp_port: 7885
+  use_external_ip: false
+  node_ip: 128.140.93.95
+  interfaces:
+    includes: [eth0]
+logging:
+  level: warn
+cpu_cost:
+  rtmp_cpu_cost: 2.0
+  whip_cpu_cost: 2.0
+  whip_bypass_transcoding_cpu_cost: 0.1
+  url_cpu_cost: 2.0

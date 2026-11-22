@@ -23,6 +23,7 @@ import {broadcastSettings,normalizeYoutubeId} from './broadcast-settings.js';
 import {optionalSpeechCue,NUMBER_NINE_AUDIENCE} from '../public/bingo-speech.js';
 import {activeOrders,orderShow,assertOrderStartReady,assertOrderBookIntegrity} from './bingo-order-model.js';
 import {duplicateShowDraft,freshProduction,freshOrdering,showCreateBinding} from './show-duplicate.js';
+import {isProgrammeTestFixture} from './programme-test-fixture.js';
 const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>Response.json(data,{status,headers});
 const hostGame=game=>{const copy=structuredClone(game);copy.plan=repairLegacyPlanBrand(copy.plan,copy);copy.production=productionSettings(copy.production,copy);copy.capacity=gameCapacity(game);copy.preparationRevision=game.preparationRevision||0;copy.broadcastRevision=broadcastSettings(game).revision;copy.serverTime=Date.now();delete copy.state.deck;delete copy.chat;return copy;};
@@ -60,7 +61,7 @@ export async function handleBingo(request,env={}){
   if(path==='/profiles'&&request.method==='POST'){
    const saved=await store.editFamily(user,email,family=>{const prior=family.profiles.find(p=>p.createRequestId===requestId);if(prior)return prior;if(family.profiles.length>=30)throw new BingoError('Een account kan maximaal 30 personen beheren.');const profile={id:crypto.randomUUID(),createRequestId:requestId,name:cleanText(body.name,40,'voornaam'),age:body.dateOfBirth?birthAge(body.dateOfBirth):integer(body.age,0,120,'Leeftijd'),...(body.dateOfBirth?{dateOfBirth:body.dateOfBirth}:{})};family.profiles.push(profile);return profile;});return json(saved,201);
   }
-  if(path==='/games'&&request.method==='GET'){const rows=await store.games();return json({games:rows.filter(r=>!admin||r.owner_id===user).map(r=>({...orderShow(r.data,now),bookCount:r.data.books.length,linked:r.data.books.filter(b=>b.accountId).length,createdAt:r.data.createdAt})),serverTime:Date.now()});}
+  if(path==='/games'&&request.method==='GET'){const rows=await store.games();return json({games:rows.filter(r=>!isProgrammeTestFixture(r.data)&&(!admin||r.owner_id===user)).map(r=>({...orderShow(r.data,now),bookCount:r.data.books.length,linked:r.data.books.filter(b=>b.accountId).length,createdAt:r.data.createdAt})),serverTime:Date.now()});}
   if(path==='/games'&&request.method==='POST'){
    requireHost();const id=await creationId(user,requestId);
    // Keep retries of shows created before stable IDs working as well.
@@ -83,7 +84,7 @@ export async function handleBingo(request,env={}){
   const orderResponse=await handleBingoOrders({path,request,url,body,requestId,user,email,admin,store,env,now,json,hostGame});if(orderResponse)return orderResponse;
   const match=path.match(/^\/games\/([a-f0-9-]{36})(?:\/(.*))?$/);
   if(match){
-   const id=match[1],action=match[2]||'',row=await store.game(id);if(!row)throw new BingoError('Dit spel bestaat niet.',404);if(admin&&row.owner_id!==user)throw new BingoError('Dit spel hoort bij een andere host.',403);
+   const id=match[1],action=match[2]||'',row=await store.game(id);if(!row||isProgrammeTestFixture(row.data))throw new BingoError('Dit spel bestaat niet.',404);if(admin&&row.owner_id!==user)throw new BingoError('Dit spel hoort bij een andere host.',403);
    const scopedId=`${user}:${request.method}:${path}:${requestId}`,options={requestId:scopedId,authorize:assertShowNotCancelled},ownOptions={requestId:scopedId,accountId:user,email};
    const preparationCheck=game=>{if(body.expectedPreparationRevision!==undefined&&(!Number.isSafeInteger(body.expectedPreparationRevision)||body.expectedPreparationRevision!==(game.preparationRevision||0)))throw new BingoError('Het draaiboek is in een ander venster gewijzigd. Jouw invoer is bewaard. Vergelijk de actuele voorbereiding voordat je opnieuw opslaat.',409,'preparation_conflict');};
    const control=(game,now)=>{assertShowNotCancelled(game);if(game.status==='finished')throw new BingoError('Deze show is afgelopen. Maak een nieuwe show.',409,'show_finished');const client=cleanText(body.regieId,100,'regievenster');if(game.state.control&&game.state.control.id!==client&&game.state.control.until>now)throw new BingoError('Dit spel wordt al vanuit een ander regievenster bestuurd. Sluit dat venster of wacht 15 seconden.',409,'control_busy');game.state.control={id:client,until:now+15000};};

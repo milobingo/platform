@@ -1,0 +1,17 @@
+api_key: REPLACE_API_KEY
+api_secret: REPLACE_API_SECRET
+ws_url: ws://127.0.0.1:7880
+redis:
+  address: 127.0.0.1:6381
+  password: REPLACE_PRIVATE_REDIS_PASSWORD
+health_port: 9087
+logging:
+  level: warn
+insecure: true
+enable_chrome_sandbox: false
+cpu_cost:
+  # v1.15 MediaSource uses participant_cpu_cost for this exact AV pair.
+  # Match legacy single-pair TrackComposite admission; capacity is unproven.
+  participant_cpu_cost: 1.0
+  track_composite_cpu_cost: 1.0
+  room_composite_cpu_cost: 4.0

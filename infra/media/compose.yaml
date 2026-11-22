@@ -1,0 +1,72 @@
+# Staging only. All images are immutable; no host port publishing/Docker NAT.
+name: milo-media-staging
+services:
+  redis:
+    image: redis:7.4.7-alpine@sha256:02f2cc4882f8bf87c79a220ac958f58c700bdec0dfb9b9ea61b62fb0e8f1bfcf
+    command: [redis-server, /config/redis.conf]
+    network_mode: host
+    restart: unless-stopped
+    user: "65532:65532"
+    volumes: ["/etc/milobingo-media/redis.conf:/config/redis.conf:ro"]
+    mem_limit: 128m
+    cpus: 0.2
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    cgroup_parent: milo-media.slice
+    logging: &logging {driver: local, options: {max-size: 10m, max-file: "2"}}
+  livekit:
+    image: livekit/livekit-server:v1.13.11@sha256:25cd902de7cacbd5f1f779f6a6ac1eae20ba8f56b0935934ce6b0ab80d1e3d20
+    command: [--config, /config/livekit.yaml]
+    network_mode: host
+    restart: unless-stopped
+    user: "65532:65532"
+    volumes:
+      - /etc/milobingo-media/livekit.yaml:/config/livekit.yaml:ro
+      - /etc/milobingo-media/tls:/tls:ro
+    mem_limit: 768m
+    cpus: 1.5
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    cgroup_parent: milo-media.slice
+    depends_on: [redis]
+    logging: *logging
+  ingress:
+    image: livekit/ingress:v1.6.0@sha256:8417446ede56ed378a83fc97bcdc335a328d62b5fb5b1061377f56741b3c276e
+    environment: {INGRESS_CONFIG_FILE: /config/ingress.yaml}
+    network_mode: host
+    restart: unless-stopped
+    user: "65532:65532"
+    volumes: ["/etc/milobingo-media/ingress.yaml:/config/ingress.yaml:ro"]
+    tmpfs: ["/tmp:size=128m,mode=1777"]
+    mem_limit: 512m
+    cpus: 0.5
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cgroup_parent: milo-media.slice
+    depends_on: [livekit]
+    logging: *logging
+  egress:
+    build:
+      context: .
+      dockerfile: Egress.Dockerfile
+      network: none
+    image: milo-egress-staging:1.15.0-uid63001
+    pull_policy: never
+    environment: {EGRESS_CONFIG_FILE: /config/egress.yaml}
+    network_mode: host
+    restart: unless-stopped
+    user: "63001:0"
+    volumes:
+      - /etc/milobingo-media/egress.yaml:/config/egress.yaml:ro
+      - /srv/sites/milobingo-staging/shared/broadcast-hls:/out
+    tmpfs: ["/tmp:size=256m,mode=1777"]
+    shm_size: 256m
+    mem_limit: 1536m
+    cpus: 1.5
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cgroup_parent: milo-media.slice
+    depends_on: [livekit]
+    logging: *logging

@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh Milo TURN certificate and expire old closed HLS sessions
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/milo-media-sync-cert --renew
+# Active sessions update their playlists. Never remove anything modified in
+# the last 48 hours; maximum configured show duration must remain below this.
+ExecStart=/usr/bin/find /srv/sites/milobingo-staging/shared/broadcast-hls -mindepth 1 -type f -mmin +2880 -delete
+ExecStart=/usr/bin/find /srv/sites/milobingo-staging/shared/broadcast-hls -mindepth 1 -depth -type d -empty -delete

@@ -1,0 +1,14 @@
+# Insert before the existing staging app reverse_proxy inside its host block.
+# No access log for these routes: WHIP keys/JWT query parameters are credentials.
+# In the site block, add handle_errors { respond "Tijdelijk niet bereikbaar" {err.status_code} }
+# and keep debug logging disabled. Handled proxy errors then log only at DEBUG.
+@livekit path /rtc /rtc/* /twirp/livekit.*
+handle @livekit {
+    reverse_proxy 127.0.0.1:7880
+}
+handle_path /whip/* {
+    # Ingress WHIP HTTP handler takes /w/<streamkey>.
+    rewrite * /w{path}
+    reverse_proxy 127.0.0.1:8086
+}
+# Keep the existing reverse_proxy as the final handle block.

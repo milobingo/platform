@@ -1,0 +1,35 @@
+{
+  "format": "milo-staging-load-show-status-v1",
+  "observedAt": "2026-11-22T15:09:01.298Z",
+  "readOnly": true,
+  "rows": [
+    {
+      "status": "draft",
+      "phase": "lobby",
+      "shows": 8,
+      "latest_update_ms": "1794772209440",
+      "updated_last_five_minutes": 0
+    },
+    {
+      "status": "finished",
+      "phase": "complete",
+      "shows": 1,
+      "latest_update_ms": "1794745593917",
+      "updated_last_five_minutes": 0
+    },
+    {
+      "status": "running",
+      "phase": "interlude",
+      "shows": 1,
+      "latest_update_ms": "1794862418241",
+      "updated_last_five_minutes": 0
+    },
+    {
+      "status": "running",
+      "phase": "running",
+      "shows": 1,
+      "latest_update_ms": "1794776016217",
+      "updated_last_five_minutes": 0
+    }
+  ]
+}

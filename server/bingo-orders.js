@@ -6,6 +6,7 @@ import {brandId} from './show-brands.js';
 import {recoverOrderMailEvents} from './mail-domain-events.js';
 import {automaticRules} from './standard-show.js';
 import {prepareAutomaticRules} from './game-rules.js';
+import {isProgrammeTestFixture} from './programme-test-fixture.js';
 
 const snapshots=(game,user,admin,now)=>({orders:(game.orders||[]).filter(o=>admin||o.accountId===user).map(o=>projectOrder(o,game,{admin})),config:orderingConfig(game.ordering),available:orderingAvailable(game,now),serverTime:now});
 const emailKind=kind=>{if(!['payment','ready'].includes(kind))throw new BingoError('Kies de betaalmail of de boekjesmail.');return kind;};
@@ -14,7 +15,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  // view. The header can reduce authority only; it never grants host access.
  const admin=authorizedAdmin&&request.headers.get('x-vlampie-player')!=='1'&&url.searchParams.get('player')!=='1';
  if(path==='/orders'&&request.method==='GET'){
-  const rows=(await store.games()).filter(r=>!admin||r.owner_id===user),orders=[];
+  const rows=(await store.games()).filter(r=>!isProgrammeTestFixture(r.data)&&(!admin||r.owner_id===user)),orders=[];
   for(const row of rows)for(const order of row.data.orders||[])if(admin||order.accountId===user)orders.push(projectOrder(order,row.data,{admin}));
   orders.sort((a,b)=>b.createdAt-a.createdAt);
   return json({orders,shows:rows.map(r=>orderShow(r.data,now)),serverTime:now});
@@ -22,7 +23,7 @@ export async function handleBingoOrders({path,request,url,body,requestId,user,em
  const match=path.match(/^\/games\/([a-f0-9-]{36})\/orders(?:\/(config|show-change|[a-f0-9-]{36})(?:\/(payment-link|paid|approve|assign|cancel|reject|mail|pdf|reconcile))?)?$/);
  if(!match)return null;
  const [_,gameId,part,action]=match,row=await store.game(gameId);
- if(!row)throw new BingoError('Deze show bestaat niet.',404);
+ if(!row||isProgrammeTestFixture(row.data))throw new BingoError('Deze show bestaat niet.',404);
  if(admin&&row.owner_id!==user)throw new BingoError('Deze show hoort bij een andere organisatie.',403);
  const requireHost=()=>{if(!admin)throw new BingoError('Alleen de organisatie kan deze bestelling goedkeuren of een betaallink instellen.',403);};
  const scopedId=`${user}:${request.method}:${path}:${requestId}`;

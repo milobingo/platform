@@ -5,6 +5,7 @@
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.118.0",
+    "hls.js": "1.7.4",
     "lit": "3.3.3",
     "livekit-client": "2.23.0",
     "lucide-react": "0.468.0",

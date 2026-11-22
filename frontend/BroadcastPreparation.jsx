@@ -2,6 +2,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {CheckCircle2,Monitor,RefreshCw,Volume2} from 'lucide-react';
 import {Button,Panel} from './components.jsx';
 import ObsSourceSettings from './ObsSourceSettings.jsx';
+import ProgramBroadcastSettings from './ProgramBroadcastSettings.jsx';
 
 /** Preparation only: none of these controls starts, resumes or releases a game. */
 export default function BroadcastPreparation({s,bridge,onPrepare,onOpenOutput,onTestSound}){
@@ -29,6 +30,7 @@ export default function BroadcastPreparation({s,bridge,onPrepare,onOpenOutput,on
    </ol>
    {busy&&busy!=='sound'&&<p role="status">Uitzendvenster verbinden…</p>}{error&&<p role="alert">{error}</p>}
    <ObsSourceSettings s={s} preparation entryLabel="Kopieer OBS-link" copyLabel="Kopieer OBS-link"/>
+   <ProgramBroadcastSettings s={s}/>
   </>}
   <details><summary>Browserbron in OBS</summary><p>Voeg een Browserbron toe met de OBS-link, stel <strong>1920 × 1080</strong> in en zet <strong>Audio beheren via OBS</strong> aan. Beeld en geluid worden automatisch geactiveerd zodra de regie verbonden is; bij een tijdelijke onderbreking verbindt de bron vanzelf opnieuw. Je hoeft niet in de bron te klikken.</p><p>Kies <strong>Speel testgeluid</strong> in de regie. Controleer de meter van deze bron in de OBS-mixer en luister een korte proefopname met beeld en testgeluid terug. Alleen die controle bevestigt dat OBS geluid ontvangt.</p><p>Blokkeert jouw browser of OBS-installatie automatisch afspelen? Gebruik als eenmalige terugvalroute <strong>OBS → Bronnen → rechtsklik → Interactie → Beeld & geluid activeren</strong>. Controleer daarna opnieuw met het testgeluid.</p></details>
   <details><summary>Vensteropname in OBS</summary><p>Open de OBS-link in een aparte browsertoepassing, zonder regie- of backstagetabs, en activeer daar Beeld & geluid. Voeg dit venster in OBS toe via Bronnen → + → Vensteropname. Leg voor audio uitsluitend die uitzendbrowser vast via Toepassingsaudio vastleggen; zet algemene desktopaudio uit. Gebruik de Browserbron als audio per toepassing niet beschikbaar is. Controleer de mixer en luister een korte proefopname terug.</p></details>

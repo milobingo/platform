@@ -1,0 +1,29 @@
+{
+  "format": "milo-media-https-network-probe-v1",
+  "observedAt": "2026-11-22T15:14:20.637404+00:00",
+  "target": "128.140.93.95",
+  "generator": "65.108.158.112",
+  "requestedSeconds": 15,
+  "ceilingMbps": 400,
+  "receivedBytes": 750000000,
+  "achievedMbps": 396.54108906045377,
+  "mediaCapacityProven": false,
+  "setup": {
+    "ready": true,
+    "originalDigest": "84b850212fb5601f9f9e70ca4bb14084d9d9fcb81b91ef63c0a0f21fa60da76c",
+    "boundedMbps": 400,
+    "boundedSeconds": 15
+  },
+  "elapsedSeconds": 15.130840574973263,
+  "senderResult": [
+    {
+      "sourceOnly": "65.108.158.112",
+      "requestedSeconds": 15,
+      "ceilingMbps": 400,
+      "sentBytes": 750000000,
+      "senderSeconds": 15.000039167003706,
+      "cleanupConfirmed": true
+    }
+  ],
+  "passed": true
+}

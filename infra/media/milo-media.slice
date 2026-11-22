@@ -1,0 +1,10 @@
+[Unit]
+Description=Bounded Milo staging media resources
+
+[Slice]
+CPUAccounting=true
+MemoryAccounting=true
+CPUQuota=280%
+MemoryHigh=2800M
+MemoryMax=3200M
+TasksMax=2048
