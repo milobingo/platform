@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
 import {createServer} from 'node:http';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,validateMixedRetryReport,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
 import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from '../scripts/load/hls-client.mjs';
@@ -30,6 +34,16 @@ check('Een gemengde herhaling vereist alle zes beëindigde fasen,200PASS en deze
   const change=fn=>{const copy=structuredClone(prior);fn(copy);assert.throws(()=>validateMixedRetryReport(copy,c));};
   change(value=>value.stages.pop());change(value=>delete value.finishedAt);change(value=>value.stages[4].status='target-missed');change(value=>value.stages[4].holdSeconds=1199);change(value=>value.stages[5].status='running');change(value=>value.stages[5].holdSeconds=599);change(value=>value.stages[5].seconds=30);change(value=>value.preflight.fixtureBinding.gameId='other');change(value=>value.preflight.room='programme-other');change(value=>value.preflight.appOrigin='https://milo.dgwebservices.nl');change(value=>value.preflight.targetPublicIps=['167.235.202.206']);change(value=>value.profile.width=480);
   assert.throws(()=>validateMixedRetryReport(prior,{...c,testOnly:false}));assert.throws(()=>validateMixedRetryReport(prior,{...c,fixturePrivacy:'real-families'}));
+});
+check('De echte retry-opdracht weigert een bestaande resultaatmap vóór configuratie of netwerk en laat eerder bewijs intact',()=>{
+  const root=mkdtempSync(join(tmpdir(),'milo-retry-guard-'));
+  try{
+    const before=join(root,'before'),occupied=join(root,'occupied');mkdirSync(before);mkdirSync(occupied);const report=join(before,'report.json'),sentinel=join(occupied,'sentinel');writeFileSync(report,'original failed measurement\n');writeFileSync(sentinel,'preserve\n');
+    for(const output of [before,occupied]){
+      const result=spawnSync(process.execPath,['scripts/load/run-staging-media.mjs','--retry-mixed',join(root,'configuration-must-not-be-read.json'),output,report],{encoding:'utf8',timeout:5000});
+      assert.notEqual(result.status,0);assert.match(result.stderr,/nieuwe resultaatmap|mag nog niet bestaan/);assert.equal(readFileSync(report,'utf8'),'original failed measurement\n');assert.equal(readFileSync(sentinel,'utf8'),'preserve\n');
+    }
+  }finally{rmSync(root,{recursive:true,force:true});}
 });
 check('HLS-diagnostiek bewaart begrensde niet-fatale gebeurtenissen zonder stream-URLs of credentials',()=>{
   const log=createHlsEventLog(2);
@@ -203,5 +217,30 @@ const result=await runHlsViewer({playlistUrl:`http://127.0.0.1:${server.address(
 await delay(10);await new Promise(accept=>server.close(accept));
 check('Echte HTTP-HLS-test haalt segmenten op kijktempo op en beweert geen decode',()=>{
   const segments=requests.filter(request=>request.path.endsWith('.ts'));assert.equal(result.segments,3);assert.ok(segments[1].at-segments[0].at>=200);assert.ok(segments[2].at-segments[1].at>=200);assert.equal(result.decoded,false);assert.equal(result.errors,0);
+});
+const errorServer=createServer((request,response)=>{
+  const phase=request.url.split('/')[1],playlist=request.url.includes('live.m3u8');
+  if((phase==='playlist'||phase==='oversized')&&playlist||phase==='init'&&request.url.includes('init.mp4')||phase==='segment'&&request.url.includes('.ts')){
+    response.writeHead(503,{'Content-Type':'application/json'});
+    response.end(JSON.stringify({error:{code:phase==='playlist'?'hls_playlist':phase==='segment'?'https://SECRET.invalid/code':'hls_storage',message:'FAKE_SECRET_MUST_NOT_LEAK '+request.url+' '+(phase==='oversized'?'x'.repeat(10000):'')}}));
+  }else{
+    response.setHeader('Content-Type','application/vnd.apple.mpegurl');response.end('#EXTM3U\n#EXT-X-TARGETDURATION:1\n#EXT-X-MEDIA-SEQUENCE:0\n'+(phase==='init'?'#EXT-X-MAP:URI="init.mp4?token=SECRET_QUERY"\n':'')+'#EXTINF:1,\n0.ts?token=SECRET_QUERY\n');
+  }
+});
+await new Promise(accept=>errorServer.listen(0,'127.0.0.1',accept));
+const errorCases=[];
+try{
+  for(const phase of ['playlist','init','segment','oversized']){
+    const controller=new AbortController(),samples=[];
+    const result=await runHlsViewer({playlistUrl:`http://127.0.0.1:${errorServer.address().port}/${phase}/SECRET_PATH/live.m3u8?token=SECRET_QUERY`,signal:controller.signal,identity:'fictional-error-'+phase,onSample:sample=>{samples.push(sample);if(sample.kind==='hls-http-error')controller.abort();}});
+    errorCases.push({phase,result,samples});
+  }
+}finally{await new Promise(accept=>errorServer.close(accept));}
+check('Echte lokale HTTP503 onderscheidt playlist/init/segment en whitelistcodes zonder geheime URL, token of bodytekst te bewaren',()=>{
+  for(const {phase,result,samples} of errorCases){
+    assert.equal(result.errors,1);assert.equal(result.decoded,false);assert.equal(samples.length,1);
+    const sample=samples[0];assert.equal(sample.kind,'hls-http-error');assert.equal(sample.httpStatus,503);assert.equal(sample.requestPhase,phase==='oversized'?'playlist':phase);assert.equal(sample.serverErrorCode,phase==='playlist'?'hls_playlist':phase==='init'?'hls_storage':null);
+    assert.equal(sample.reason,'HLS HTTP 503');assert.ok(!JSON.stringify(sample).includes('SECRET'));assert.ok(!JSON.stringify(sample).includes('token='));assert.ok(!JSON.stringify(sample).includes('http:'));assert.ok(!JSON.stringify(sample).includes('https:'));
+  }
 });
 console.log(`${checks} betekenisvolle loadharnascontroles geslaagd; geen belastingtest op een externe dienst uitgevoerd.`);

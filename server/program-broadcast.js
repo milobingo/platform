@@ -84,7 +84,38 @@ async function hlsFile(settings,game,file){
  if(!info.isFile()||info.nlink!==1||info.size>(file.endsWith('.m3u8')?131072:8*1024*1024)){await handle.close();throw problem('De tv-uitvoer is ongeldig.',503,'hls_storage');}
  return {handle,info};
 }
-async function hlsAvailable(settings,game){try{const file=await hlsFile(settings,game,'live.m3u8');if(!file)return false;try{const raw=await file.handle.readFile('utf8');return file.info.mtimeMs>Date.now()-15000&&raw.startsWith('#EXTM3U')&&/#EXTINF:/.test(raw)&&!raw.includes('#EXT-X-ENDLIST');}finally{await file.handle.close();}}catch{return false;}}
+function completePlaylist(raw,prefix){
+ const invalid=()=>problem('De tv-afspeellijst is ongeldig.',503,'hls_playlist');
+ if(Buffer.byteLength(raw)>131072||raw.includes('\r'))throw invalid();
+ if(!raw||'#EXTM3U\n'.startsWith(raw))return null;
+ const lines=raw.split('\n');if(lines[0]!=='#EXTM3U')throw invalid();
+ // The pinned Egress storage writer truncates and copies in place. A reader
+ // can see an empty file or an unfinished final line, never serve that prefix.
+ if(!raw.endsWith('\n')){
+  const last=lines.pop();rewriteProgramPlaylist(lines.join('\n')+'\n',prefix);
+  if(last.startsWith('#')){if(/URI\s*=/.test(last))throw invalid();}
+  else if(!'segment_'.startsWith(last)&&!/^segment_[A-Za-z0-9_-]+(?:\.(?:t(?:s)?)?)?$/.test(last))throw invalid();
+  return null;
+ }
+ const body=rewriteProgramPlaylist(raw,prefix);let target=false,sequence=false,pending=false,segments=0;
+ for(const line of lines){
+  if(line.startsWith('#EXT-X-TARGETDURATION:')){if(!/^#EXT-X-TARGETDURATION:[1-9]\d*$/.test(line))throw invalid();target=true;}
+  else if(line.startsWith('#EXT-X-MEDIA-SEQUENCE:')){if(!/^#EXT-X-MEDIA-SEQUENCE:\d+$/.test(line))throw invalid();sequence=true;}
+  else if(line.startsWith('#EXTINF:')){if(pending||!/^#EXTINF:(?:\d+(?:\.\d+)?),[^\r\n]*$/.test(line))throw invalid();pending=true;}
+  else if(line&&!line.startsWith('#')){if(!pending)throw invalid();pending=false;segments++;}
+ }
+ return target&&sequence&&segments&&!pending?body:null;
+}
+export async function readProgramPlaylist(settings,game,prefix='',pause=ms=>new Promise(resolve=>setTimeout(resolve,ms))){
+ for(let attempt=0;attempt<3;attempt++){
+  const file=await hlsFile(settings,game,'live.m3u8');if(!file)return null;
+  try{const raw=await file.handle.readFile('utf8'),body=completePlaylist(raw,prefix);if(body!==null)return {raw,body,info:file.info};}
+  finally{await file.handle.close();}
+  if(attempt<2)await pause(10);
+ }
+ throw problem('De tv-afspeellijst wordt bijgewerkt. Probeer opnieuw.',503,'hls_playlist');
+}
+async function hlsAvailable(settings,game){try{const file=await readProgramPlaylist(settings,game);return !!file&&file.info.mtimeMs>Date.now()-15000&&!file.raw.includes('#EXT-X-ENDLIST');}catch{return false;}}
 async function status(settings,game,fetcher,{queryProvider=true}={}){
  const state=stateOf(game),enabled=!!settings&&brandId(game)==='milo'&&state?.enabled===true;
  const base={providerConfigured:!!settings,enabled,provider:enabled?'livekit':null,state:game.cancelledAt||game.status==='finished'||state?.status==='stopped'?'ended':'waiting',profile:PROGRAM_PROFILE,programTrackNames:PROGRAM_TRACK_NAMES,publisherIdentity:publisherIdentity(game.id),hls:{available:false},castAppId:settings?.castAppId||'CC1AD845',serverTime:Date.now()};
@@ -131,9 +162,10 @@ export async function handleProgramHls(request,env){
   const claims=verifyProgramHlsCapability(settings,match[1]);
   const game=(await new BingoStore(env.DB).game(claims.g))?.data,state=stateOf(game||{});
   if(!game||brandId(game)!=='milo'||game.cancelledAt||state?.enabled!==true||state.status==='stopped'||state.generation!==claims.n)throw problem('Deze uitzending is gestopt of opnieuw ingesteld.',410,'hls_ended');
-  let opened;try{opened=await hlsFile(settings,game,match[2]);}catch(error){if(error.code==='ENOENT')throw problem('De tv-uitzending wordt voorbereid. Probeer opnieuw.',404,'hls_waiting');throw error;}if(!opened)throw problem('De tv-uitvoer staat nog niet klaar.',404,'hls_waiting');
-  const {handle,info}=opened,playlist=match[2].endsWith('.m3u8'),headers={...cors,'Cache-Control':playlist?'no-store, max-age=0':'private, max-age=60','Content-Type':playlist?'application/vnd.apple.mpegurl':'video/mp2t'};
-  if(playlist){try{const raw=await handle.readFile('utf8'),body=rewriteProgramPlaylist(raw,url.origin+url.pathname.slice(0,url.pathname.lastIndexOf('/')+1));headers['Content-Length']=String(Buffer.byteLength(body));return new Response(request.method==='HEAD'?null:body,{headers});}finally{await handle.close();}}
+  const playlist=match[2].endsWith('.m3u8'),headers={...cors,'Cache-Control':playlist?'no-store, max-age=0':'private, max-age=60','Content-Type':playlist?'application/vnd.apple.mpegurl':'video/mp2t'};
+  let opened;try{opened=playlist?await readProgramPlaylist(settings,game,url.origin+url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)):await hlsFile(settings,game,match[2]);}catch(error){if(error.code==='ENOENT')throw problem('De tv-uitzending wordt voorbereid. Probeer opnieuw.',404,'hls_waiting');throw error;}if(!opened)throw problem('De tv-uitvoer staat nog niet klaar.',404,'hls_waiting');
+  if(playlist){headers['Content-Length']=String(Buffer.byteLength(opened.body));return new Response(request.method==='HEAD'?null:opened.body,{headers});}
+  const {handle,info}=opened;
   headers['Content-Length']=String(info.size);if(request.method==='HEAD'){await handle.close();return new Response(null,{headers});}
   return new Response(handle.readableWebStream({autoClose:true}),{headers});
  }catch(error){return Response.json({error:{code:error.code||'hls_unavailable',message:error.status?error.message:'De tv-uitzending is tijdelijk niet beschikbaar.'}},{status:error.status||503,headers:{...cors,'Cache-Control':'no-store'}});}

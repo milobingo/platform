@@ -33,10 +33,20 @@ export function createHlsContinuityTracker(identities){
   return {record,snapshot};
 }
 
+const serverErrorCodes=new Set(['hls_access','hls_origin','hls_missing','hls_waiting','hls_ended','hls_storage','hls_playlist','hls_unavailable','broadcast_configuration','broadcast_storage','broadcast_access','broadcast_forbidden']);
+async function serverErrorCode(response){
+  const reader=response.body?.getReader();if(!reader)return null;
+  const chunks=[];let bytes=0;
+  try{
+    while(true){const {done,value}=await reader.read();if(done)break;bytes+=value.byteLength;if(bytes>4096){await reader.cancel();return null;}chunks.push(Buffer.from(value));}
+    const body=JSON.parse(Buffer.concat(chunks).toString('utf8')),code=body?.error?.code;
+    return serverErrorCodes.has(code)?code:null;
+  }catch{return null;}finally{reader.releaseLock();}
+}
 async function request(url,signal,limit) {
   const startedAt=Date.now();
   const response=await fetch(url,{signal:AbortSignal.any([signal,AbortSignal.timeout(10000)]),redirect:'error',cache:'no-store'});
-  if(!response.ok)throw new Error(`HLS HTTP ${response.status}`);
+  if(!response.ok)throw Object.assign(new Error(`HLS HTTP ${response.status}`),{httpStatus:response.status,serverErrorCode:await serverErrorCode(response)});
   const contentLength=Number(response.headers.get('content-length'));
   if(contentLength>limit)throw new Error('HLS-respons overschrijdt de limiet.');
   const body=Buffer.from(await response.arrayBuffer());
@@ -49,24 +59,25 @@ export async function runHlsViewer({playlistUrl,signal,onSample,identity}) {
   try{
     while(!signal.aborted){
       const requestStarted=Date.now();
+      let requestPhase='playlist';
       try{
         const manifest=await request(playlistUrl,signal,1000000);bytes+=manifest.body.length;
         const playlist=parseLivePlaylist(manifest.body.toString('utf8'),playlistUrl);
         if(playlist.ended)throw new Error('De HLS-feed is beëindigd tijdens de proef.');
-        if(playlist.map&&mapFetched!==playlist.map){const init=await request(playlist.map,signal,5000000);bytes+=init.body.length;mapFetched=playlist.map;}
+        if(playlist.map&&mapFetched!==playlist.map){requestPhase='init';const init=await request(playlist.map,signal,5000000);bytes+=init.body.length;mapFetched=playlist.map;}
         // Start at the actual live edge. Never drain an archive or catch up in a burst.
         if(lastSequence<0&&playlist.segments.length)lastSequence=playlist.segments.at(-1).sequence-1;
         const next=playlist.segments.find(segment=>segment.sequence>lastSequence);
         if(next){
           if(next.sequence>lastSequence+1)stalls++;
-          const segment=await request(next.url,signal,10000000);bytes+=segment.body.length;segments++;lastSequence=next.sequence;firstSegmentAt??=Date.now();
+          requestPhase='segment';const segment=await request(next.url,signal,10000000);bytes+=segment.body.length;segments++;lastSequence=next.sequence;firstSegmentAt??=Date.now();
           onSample({kind:'hls-http',identity,observedAtMs:Date.now(),bytes,segments,errors,stalls,sequence:next.sequence,timeToFirstSegmentMs:firstSegmentAt-startedAt,downloadMs:segment.elapsedMs,segmentSeconds:next.seconds,decoded:false,latencyMs:null});
           // One completed segment at its viewing tempo, including fetch time.
           await delay(Math.max(0,next.seconds*1000-(Date.now()-requestStarted)),undefined,{signal});
         }else await delay(Math.max(250,playlist.targetDuration*500),undefined,{signal});
       }catch(error){
         if(signal.aborted)break;
-        errors++;onSample({kind:'hls-http-error',identity,observedAtMs:Date.now(),errors,reason:String(error.message).replace(/https?:\/\/\S+/g,'[URL verwijderd]')});
+        errors++;onSample({kind:'hls-http-error',identity,observedAtMs:Date.now(),errors,requestPhase,httpStatus:Number.isInteger(error.httpStatus)?error.httpStatus:null,serverErrorCode:serverErrorCodes.has(error.serverErrorCode)?error.serverErrorCode:null,reason:String(error.message).replace(/https?:\/\/\S+/g,'[URL verwijderd]')});
         await delay(2000,undefined,{signal});
       }
     }

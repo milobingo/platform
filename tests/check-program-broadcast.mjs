@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,readFile,symlink} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,symlink,link,unlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createSqliteDatabase} from '../server/node-storage.js';
@@ -10,7 +10,7 @@ import {callRoomToken} from '../server/livekit.js';
 import {playerGame} from '../server/bingo-model.js';
 import {fixture as callFixture} from '../scripts/live-calls-fixture.mjs';
 import {dispatchNodeRequest} from '../server/node-runtime.js';
-import {handleProgramBroadcast,handleProgramHls,PROGRAM_PROFILE,PROGRAM_TRACK_NAMES,programHlsCapability,verifyProgramHlsCapability,rewriteProgramPlaylist,validateBroadcastConfiguration,broadcastConfiguration} from '../server/program-broadcast.js';
+import {handleProgramBroadcast,handleProgramHls,PROGRAM_PROFILE,PROGRAM_TRACK_NAMES,programHlsCapability,verifyProgramHlsCapability,rewriteProgramPlaylist,readProgramPlaylist,validateBroadcastConfiguration,broadcastConfiguration} from '../server/program-broadcast.js';
 
 const origin='https://broadcast.example.test';
 const claims=token=>JSON.parse(Buffer.from(token.split('.')[1],'base64url'));
@@ -107,6 +107,28 @@ test('HLS capability protects playlist and segments without session cookies, wit
 test('playlist URI injection and symlink media cannot escape the isolated show directory',async t=>{
  for(const text of ['#EXTM3U\nhttps://evil.test/segment_1.ts\n','#EXTM3U\n../secret.ts\n','#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="file:///private"\n','#EXTM3U\nsegment_1.ts?key=secret\n'])assert.throws(()=>rewriteProgramPlaylist(text,origin+'/api/broadcast/hls/cap/'));
  const h=await fixture(t);await h.prepare();const directory=await h.manifest(),game=await h.read(),cap=programHlsCapability(validateBroadcastConfiguration(h.configuration),game);await writeFile(join(h.configuration.hls.root,'outside-secret'),'PRIVATE');await symlink(join(h.configuration.hls.root,'outside-secret'),join(directory,'segment_escape.ts'));const response=await handleProgramHls(new Request(origin+'/api/broadcast/hls/'+cap.capability+'/segment_escape.ts'),h.env);assert.notEqual(response.status,200);assert(!await response.text().then(text=>text.includes('PRIVATE')));assert.equal(await readFile(join(h.configuration.hls.root,'outside-secret'),'utf8'),'PRIVATE');
+});
+test('playlist snapshots reopen at most three times across real empty, partial and complete Egress files',async t=>{
+ const h=await fixture(t);await h.prepare();const directory=await h.manifest(),path=join(directory,'live.m3u8'),game=await h.read(),settings=validateBroadcastConfiguration(h.configuration),complete=await readFile(path,'utf8');
+ const partial=complete.replace('segment_7.ts\n','segment_7.t'),pauses=[];await writeFile(path,'');
+ const result=await readProgramPlaylist(settings,game,origin+'/media/',async ms=>{pauses.push(ms);await unlink(path);await writeFile(path,pauses.length===1?partial:complete);});
+ assert.deepEqual(pauses,[10,10]);assert.equal(result.raw,complete);assert.equal(result.body,complete.replace('segment_7.ts',origin+'/media/segment_7.ts'));
+ // Even a complete header/EXTINF prefix is incomplete until its URI exists.
+ await writeFile(path,complete.slice(0,complete.indexOf('segment_7.ts')));let retries=0;
+ assert.equal((await readProgramPlaylist(settings,game,'',async ms=>{assert.equal(ms,10);retries++;await writeFile(path,complete);})).raw,complete);assert.equal(retries,1);
+});
+test('playlist retry exhaustion is bounded and every reopened file retains the security checks',async t=>{
+ const h=await fixture(t);await h.prepare();const directory=await h.manifest(),path=join(directory,'live.m3u8'),game=await h.read(),settings=validateBroadcastConfiguration(h.configuration),complete=await readFile(path,'utf8');
+ for(const incomplete of ['', '#EXTM', '#EXTM3U\n#EXT-X-TARGETDURATION:2\n']){await writeFile(path,incomplete);const pauses=[];await assert.rejects(readProgramPlaylist(settings,game,'',async ms=>pauses.push(ms)),error=>error.status===503&&error.code==='hls_playlist');assert.deepEqual(pauses,[10,10]);}
+ for(const invalid of ['#WRONG\n','#EXTM3U\nhttps://evil.test/segment_1.ts\n','#EXTM3U\nsegment_1.ts?secret=x','#EXTM3U\n#EXT-X-KEY:URI="file:///secret"\n','#EXTM3U\n#EXT-X-TARGETDURATION:invalid\n','x'.repeat(131073)]){await writeFile(path,invalid);let retries=0;await assert.rejects(readProgramPlaylist(settings,game,'',async()=>{retries++;}));assert.equal(retries,0,'permanently invalid media must not retry');}
+ const outside=join(h.configuration.hls.root,'playlist-outside');await writeFile(outside,complete);
+ for(const replace of [()=>symlink(outside,path),()=>link(outside,path)]){await writeFile(path,'');let retries=0;await assert.rejects(readProgramPlaylist(settings,game,'',async()=>{retries++;await unlink(path);await replace();}));assert.equal(retries,1,'a swapped symlink or hardlink is rejected on the next fresh open');await unlink(path);}
+});
+test('availability and playlist GET/HEAD use the same complete snapshot without retrying segments',async t=>{
+ const h=await fixture(t);await h.prepare();h.ready();const directory=await h.manifest(),path=join(directory,'live.m3u8'),game=await h.read(),cap=programHlsCapability(validateBroadcastConfiguration(h.configuration),game),url=origin+'/api/broadcast/hls/'+cap.capability+'/live.m3u8';
+ assert.equal((await h.invoke()).data.hls.available,true);const get=await handleProgramHls(new Request(url),h.env),body=await get.text(),head=await handleProgramHls(new Request(url,{method:'HEAD'}),h.env);assert.equal(get.status,200);assert.equal(head.status,200);assert.equal(head.headers.get('content-length'),String(Buffer.byteLength(body)));assert.equal(await head.text(),'');
+ await writeFile(path,'');assert.equal((await h.invoke()).data.hls.available,false);assert.equal((await h.invoke('cast',{}, {user:'family',admin:false})).status,409);for(const method of ['GET','HEAD'])assert.equal((await handleProgramHls(new Request(url,{method}),h.env)).status,503);
+ const segment=await handleProgramHls(new Request(url.replace('live.m3u8','segment_7.ts')),h.env);assert.equal(segment.status,200);assert.equal(await segment.text(),'representative-media-bytes');
 });
 test('family projection contains only selected source status and programme callers confirm the immutable heard checkpoint',async t=>{
  const h=await fixture(t);await h.prepare();const game=await h.read(),view=playerGame(game,'family');assert.deepEqual(view.programBroadcast,{enabled:true,state:'prepared'});assert(!JSON.stringify(view).includes('ingressId'));assert(!JSON.stringify(view).includes(h.configuration.apiKey));
