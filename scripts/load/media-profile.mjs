@@ -14,6 +14,17 @@ export const MEDIA_PROFILE = Object.freeze({width:1280,height:720,fps:30,videoBp
 // lk 2.20.1 starts --duration after group.Wait(), not before its join ramp.
 // Reserve a little extra for the first independent full-room observation.
 export const cliDurationSeconds = stage => stage.seconds+15;
+export function validateMixedRetryReport(prior,config){
+  if(prior?.format!=='milo-media-load-result-v1'||prior.executed!==true||!prior.finishedAt||!Number.isFinite(Date.parse(prior.finishedAt))||prior.stages?.length!==STAGES.length)throw new Error('Een beëindigd rapport van alle zes oorspronkelijke meetfases is verplicht.');
+  for(let index=0;index<STAGES.length;index++){
+    const stage=prior.stages[index],expected=STAGES[index];
+    if(stage?.name!==expected.name||stage.webrtc!==expected.webrtc||stage.hls!==expected.hls||stage.seconds!==expected.seconds||stage.executed!==true||!stage.endedAt||!(stage.holdSeconds>=expected.seconds)||!['passed','target-missed'].includes(stage.status)||(index<5&&(stage.status!=='passed'||stage.success!==true)))throw new Error('De oorspronkelijke fasen moeten volledig zijn gemeten en alle vijf WebRTC-niveaus, inclusief200, moeten geslaagd zijn.');
+  }
+  const before=prior.preflight,binding=before?.fixtureBinding;
+  if(before?.passed!==true||before.appOrigin!==config.appOrigin||before.livekitHostname!==config.livekitHostname||before.host!==config.inventory.host||before.room!==config.room||!binding||binding.gameId!==config.fixtureGameId||binding.room!==config.room||!binding.marker||!config.testOnly||config.fixturePrivacy!=='no-real-families'||JSON.stringify([...before.targetPublicIps||[]].sort())!==JSON.stringify([...config.targetPublicIps].sort()))throw new Error('De herhaling moet dezelfde gecontroleerde host, origin en besloten technische fixture gebruiken.');
+  for(const key of ['width','height','fps','videoBps','audioBps','totalBps','simulcast'])if(prior.profile?.[key]!==MEDIA_PROFILE[key])throw new Error('Het gemeten mediaprofiel mag bij een herhaling niet worden verlaagd.');
+  return {stage:STAGES.at(-1),previousComplete:prior.complete===true,previousMixedStatus:prior.stages.at(-1).status,previousMixedLatencyMs:prior.stages.at(-1).hlsLatencyMs??null,fixtureMarker:binding.marker};
+}
 export function fullOccupancyHoldSeconds(fullObservedAtMs,finishedAtMs){
   return Number.isFinite(fullObservedAtMs)&&Number.isFinite(finishedAtMs)?Math.max(0,(finishedAtMs-fullObservedAtMs)/1000):0;
 }

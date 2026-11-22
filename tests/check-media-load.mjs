@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,validateMixedRetryReport,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
 import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from '../scripts/load/hls-client.mjs';
 import {sourceCueNumber} from '../scripts/load/source-cue.mjs';
 import {waveByteRange} from '../scripts/load/source-wave.mjs';
 import {sameOriginProbeDocument} from '../scripts/load/probe-origin.mjs';
+import {createHlsEventLog,hlsPlaybackSnapshot} from '../scripts/load/hls-diagnostics.mjs';
 
 let checks=0;
 function check(name,fn){fn();checks++;console.log(`✓ ${name}`);}
@@ -21,6 +22,29 @@ check('Meetduur telt uitsluitend vanaf onafhankelijk vastgestelde volledige beze
   assert.equal(fullOccupancyHoldSeconds(105000,420000),315);
   assert.ok(fullOccupancyHoldSeconds(105000,400000)<300);
   assert.ok(fullOccupancyHoldSeconds(105000,420000)>=300);
+});
+check('Een gemengde herhaling vereist alle zes beëindigde fasen,200PASS en dezelfde besloten fixture; duur en profiel blijven gelijk',()=>{
+  const id='8f78e14c-b9f2-4fd5-a7f0-b2d55f3d8411',marker='7c69e206-ae30-49d8-899f-83562fa11708',c={...config,fixtureGameId:id,room:'programme-'+id,testOnly:true,fixturePrivacy:'no-real-families'};
+  const prior={format:'milo-media-load-result-v1',executed:true,complete:false,finishedAt:new Date().toISOString(),profile:MEDIA_PROFILE,preflight:{passed:true,appOrigin:c.appOrigin,livekitHostname:c.livekitHostname,host:c.inventory.host,room:c.room,targetPublicIps:c.targetPublicIps,fixtureBinding:{gameId:id,room:c.room,marker}},stages:STAGES.map((stage,index)=>({...stage,executed:true,endedAt:new Date().toISOString(),holdSeconds:stage.seconds+5,status:index===5?'target-missed':'passed',success:index<5,hlsLatencyMs:index===5?{p95:8250}:null}))};
+  const result=validateMixedRetryReport(prior,c);assert.deepEqual([result.stage.webrtc,result.stage.hls,result.stage.seconds],[150,50,600]);assert.equal(result.previousComplete,false);assert.equal(result.previousMixedStatus,'target-missed');assert.equal(result.fixtureMarker,marker);
+  const change=fn=>{const copy=structuredClone(prior);fn(copy);assert.throws(()=>validateMixedRetryReport(copy,c));};
+  change(value=>value.stages.pop());change(value=>delete value.finishedAt);change(value=>value.stages[4].status='target-missed');change(value=>value.stages[4].holdSeconds=1199);change(value=>value.stages[5].status='running');change(value=>value.stages[5].holdSeconds=599);change(value=>value.stages[5].seconds=30);change(value=>value.preflight.fixtureBinding.gameId='other');change(value=>value.preflight.room='programme-other');change(value=>value.preflight.appOrigin='https://milo.dgwebservices.nl');change(value=>value.preflight.targetPublicIps=['167.235.202.206']);change(value=>value.profile.width=480);
+  assert.throws(()=>validateMixedRetryReport(prior,{...c,testOnly:false}));assert.throws(()=>validateMixedRetryReport(prior,{...c,fixturePrivacy:'real-families'}));
+});
+check('HLS-diagnostiek bewaart begrensde niet-fatale gebeurtenissen zonder stream-URLs of credentials',()=>{
+  const log=createHlsEventLog(2);
+  log.record({type:'mediaError',details:'bufferStalledError',fatal:false,response:{url:'https://private/token'}},1000);
+  log.record({type:'networkError',details:'fragLoadError',fatal:false,url:'https://private/token',message:'secret'},2000);
+  log.record({type:'mediaError',details:'bufferNudgeOnStall',fatal:false},3000);
+  const result=log.snapshot();assert.equal(result.total,3);assert.equal(result.retained,2);assert.deepEqual(result.events[0],{observedAtMs:2000,type:'networkError',details:'fragLoadError',fatal:false});assert.ok(!JSON.stringify(result).includes('private'));assert.ok(!JSON.stringify(result).includes('secret'));
+  result.events[0].fatal=true;assert.equal(log.snapshot().events[0].fatal,false);assert.throws(()=>createHlsEventLog(1000));
+});
+check('HLS-playheaddiagnostiek toont echte bufferafstand en targetlatency zonder het afspeelbeleid te wijzigen',()=>{
+  const ranges=values=>({length:values.length,start:index=>values[index][0],end:index=>values[index][1]});
+  const video={currentTime:12,paused:false,readyState:4,networkState:2,playbackRate:1,videoWidth:1280,videoHeight:720,buffered:ranges([[5,10],[11,20]]),seekable:ranges([[5,25]])};
+  const hls={latency:4,targetLatency:2,maxLatency:8,liveSyncPosition:23,config:{lowLatencyMode:false,maxLiveSyncPlaybackRate:1,liveSyncOnStallIncrease:1}};
+  const result=hlsPlaybackSnapshot(video,hls);assert.equal(result.currentTime,12);assert.equal(result.forwardBufferSeconds,8);assert.equal(result.latencySeconds,4);assert.equal(result.targetLatencySeconds,2);assert.equal(result.playbackRate,1);assert.equal(result.lowLatencyMode,false);assert.equal(hls.config.maxLiveSyncPlaybackRate,1);assert.deepEqual(result.seekable,[{start:5,end:25}]);
+  assert.equal(hlsPlaybackSnapshot({...video,currentTime:21},hls).forwardBufferSeconds,0);assert.equal(hlsPlaybackSnapshot(video,null).latencySeconds,null);
 });
 check('Alle drie echte browserdecoders moeten gedurende de meetfase720p houden; mediane bitrate/fps maskeert geen480p-kijker',()=>{
   const identities=['a','b','c'],sample=(identity,at,width=1280,height=720)=>({identity,observedAtMs:at,tracks:[{kind:'video',frameWidth:width,frameHeight:height,framesDecoded:100}]});

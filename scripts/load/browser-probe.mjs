@@ -2,6 +2,7 @@ import {Room,RoomEvent,Track,LocalVideoTrack,LocalAudioTrack,setLogLevel} from '
 import Hls from 'hls.js';
 import {drawFrameTime,readFrameTime} from './timecode.mjs';
 import {sourceCueNumber} from './source-cue.mjs';
+import {createHlsEventLog,hlsPlaybackSnapshot} from './hls-diagnostics.mjs';
 
 setLogLevel('silent');
 const video=document.createElement('video');
@@ -13,6 +14,7 @@ const state={connected:false,connectedAt:null,firstVideoAt:null,firstAudioAt:nul
 let room,audioContext,analyser,lastTimecode=null,lastRmsAt=0,sourceTimer,hls,connectStartedAt=Date.now(),sourceAudioAnalyser,sourceVideoPublication,sourceAudioPublication,whipPc,whipSessionUrl,sourceAudioElement,sourceStartedAt,sourceVideoInput,sourceAudioInput,audioObservationTimer;
 const sourceNodes=[];
 const receivingAudioElements=[];
+const hlsEventLog=createHlsEventLog();let hlsActive=false;
 
 function startAudioObservation(){
   clearInterval(audioObservationTimer);
@@ -106,6 +108,7 @@ window.miloMediaProbe={
     state.connected=true;state.connectedAt=Date.now();
   },
   async connectHls({url}){
+    hlsActive=true;
     connectStartedAt=Date.now();
     video.crossOrigin='anonymous';video.muted=false;
     audioContext=new AudioContext();await audioContext.resume();
@@ -114,7 +117,7 @@ window.miloMediaProbe={
     startAudioObservation();
     if(Hls.isSupported()){
       hls=new Hls({lowLatencyMode:false,liveSyncDurationCount:1,liveMaxLatencyDurationCount:4,startPosition:-1});
-      hls.on(Hls.Events.ERROR,(_,event)=>{if(event.fatal)state.error=`hls-${event.type}-${event.details}`;});
+      hls.on(Hls.Events.ERROR,(_,event)=>{hlsEventLog.record(event);if(event.fatal)state.error=`hls-${event.type}-${event.details}`;});
       hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{state.error='hls-audio-activation-required';}));
       hls.loadSource(url);hls.attachMedia(video);
     }else if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;await video.play();}
@@ -136,7 +139,7 @@ window.miloMediaProbe={
     const samples=state.timecodeSamples.splice(0);
     const {tracks:ignored,timecodeSamples:ignoredSamples,...snapshot}=state;
     const quality=video.getVideoPlaybackQuality?.();
-    return {...snapshot,tracks,timecodeSamples:samples,observedAtMs:Date.now(),timeToFirstVideoMs:state.firstVideoAt===null?null:state.firstVideoAt-connectStartedAt,timeToFirstAudioMs:state.firstAudioAt===null?null:state.firstAudioAt-connectStartedAt,audioContextState:audioContext?.state??null,audioPlayoutElements:receivingAudioElements.map(element=>({paused:element.paused,readyState:element.readyState,volume:element.volume,muted:element.muted})),hlsPlaybackQuality:quality?{totalVideoFrames:quality.totalVideoFrames,droppedVideoFrames:quality.droppedVideoFrames}:null};
+    return {...snapshot,tracks,timecodeSamples:samples,observedAtMs:Date.now(),timeToFirstVideoMs:state.firstVideoAt===null?null:state.firstVideoAt-connectStartedAt,timeToFirstAudioMs:state.firstAudioAt===null?null:state.firstAudioAt-connectStartedAt,audioContextState:audioContext?.state??null,audioPlayoutElements:receivingAudioElements.map(element=>({paused:element.paused,readyState:element.readyState,volume:element.volume,muted:element.muted})),hlsPlaybackQuality:quality?{totalVideoFrames:quality.totalVideoFrames,droppedVideoFrames:quality.droppedVideoFrames}:null,hlsPlayback:hlsActive?hlsPlaybackSnapshot(video,hls):null,hlsEvents:hlsActive?hlsEventLog.snapshot():null};
   },
   async disconnect(){clearInterval(audioObservationTimer);for(const element of receivingAudioElements){element.pause();element.srcObject=null;element.remove();}receivingAudioElements.length=0;hls?.destroy();await room?.disconnect();await audioContext?.close();},
   async publish({url,token,announcementsUrl,iceTransportPolicy='all',sourceRoute='direct-sdk-diagnostic-source',whipUrl,whipIceServers}){

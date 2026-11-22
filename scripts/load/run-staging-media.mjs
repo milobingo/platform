@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {createHmac,randomUUID} from 'node:crypto';
+import {createHash,createHmac,randomUUID} from 'node:crypto';
 import {lookup} from 'node:dns/promises';
 import {readFile,lstat,mkdir,writeFile,appendFile} from 'node:fs/promises';
 import http from 'node:http';
@@ -7,7 +7,7 @@ import {cpus,freemem,networkInterfaces,hostname} from 'node:os';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,validateMixedRetryReport,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
 import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from './hls-client.mjs';
 import {waveByteRange} from './source-wave.mjs';
 import {sameOriginProbeDocument} from './probe-origin.mjs';
@@ -16,23 +16,28 @@ import {HARNESS_BROWSER_SIGNAL_OPTIONS} from './browser-runtime.mjs';
 const base=dirname(fileURLToPath(import.meta.url));
 const args=process.argv.slice(2);
 const mode=args[0];
-if(!['--preflight','--run','--source','--connectivity'].includes(mode)||!args[1]||!args[2]){
-  console.error('Gebruik: node scripts/load/run-staging-media.mjs --preflight|--run|--source|--connectivity /privaat/config.json /privaat/resultaatmap');process.exit(2);
+if(!['--preflight','--run','--retry-mixed','--source','--connectivity'].includes(mode)||!args[1]||!args[2]||(mode==='--retry-mixed'&&!args[3])){
+  console.error('Gebruik: node scripts/load/run-staging-media.mjs --preflight|--run|--source|--connectivity /privaat/config.json /privaat/resultaatmap; --retry-mixed vereist als vierde argument het oorspronkelijke zesfasenrapport.');process.exit(2);
 }
 const output=resolve(args[2]);
+const previousReportFile=mode==='--retry-mixed'?resolve(args[3]):null;
+if(previousReportFile){
+  if(output===dirname(previousReportFile))throw new Error('De herhaling moet een nieuwe resultaatmap gebruiken; het eerdere bewijs blijft intact.');
+  try{await lstat(output);throw new Error('De resultaatmap voor de herhaling mag nog niet bestaan.');}catch(error){if(error.code!=='ENOENT')throw error;}
+}
 await mkdir(output,{recursive:true,mode:0o700});
 const report={format:'milo-media-load-result-v1',startedAt:new Date().toISOString(),executed:false,complete:false,profile:MEDIA_PROFILE,stages:[],hardwareTests:{chromecast:{executed:false},airplay:{executed:false}},limitations:[]};
 const file=resolve(output,'report.json');
 const sensitive=[];
 const safeError=error=>String(error?.message||error).replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,'[token verwijderd]').replace(/https?:\/\/\S+/g,'[URL verwijderd]').replace(/wss?:\/\/\S+/g,'[WSS verwijderd]');
 const save=()=>writeFile(file,JSON.stringify(report,null,2)+'\n',{mode:0o600});
-let server,browser,sourcePage;
+let server,browser,sourcePage,previousReportSha256;
 let terminate=false;
 process.on('SIGINT',()=>{terminate=true;});process.on('SIGTERM',()=>{terminate=true;});
 
-async function privateJson(path){
+async function privateJson(path,maxBytes=65536){
   const metadata=await lstat(path);
-  if(!metadata.isFile()||metadata.isSymbolicLink()||metadata.nlink!==1||metadata.uid!==process.getuid()||metadata.mode&0o077||metadata.size>65536)throw new Error('Configuratie en credentials moeten eigen gewone private bestanden (0600) zijn.');
+  if(!metadata.isFile()||metadata.isSymbolicLink()||metadata.nlink!==1||metadata.uid!==process.getuid()||metadata.mode&0o077||metadata.size>maxBytes)throw new Error('Configuratie en credentials moeten eigen gewone private bestanden (0600) zijn.');
   return JSON.parse(await readFile(path,'utf8'));
 }
 async function execute(command,parameters,{input,env,timeout=12000}={}){
@@ -284,6 +289,12 @@ async function runStage(config,credentials,origin,stage,previous){
 try{
   const config=validateLoadConfiguration(await privateJson(resolve(args[1])),{requireCapacity:mode!=='--connectivity'});
   const fixtureBinding=config.room.startsWith('programme-')?validateFixtureManifest(await privateJson(config.fixtureManifestPath),config):null;
+  if(previousReportFile){
+    const prior=await privateJson(previousReportFile,16000000),binding=validateMixedRetryReport(prior,config);
+    if(binding.fixtureMarker!==fixtureBinding?.marker)throw new Error('Het eerdere rapport hoort bij een andere private fixturemarker.');
+    previousReportSha256=createHash('sha256').update(await readFile(previousReportFile)).digest('hex');
+    report.retry={previousReportFile,previousReportSha256,...binding,scope:'Only the original150 WebRTC+50 HLS phase for at least600seconds; the previous six-phase report is never rewritten.'};
+  }
   const credentials=await privateJson(config.credentialsPath);sensitive.push(credentials.apiKey,credentials.apiSecret);
   if(!credentials.apiKey||!credentials.apiSecret)throw new Error('Eigen staging-LiveKit-credentials ontbreken.');
   const addresses=(await lookup(config.livekitHostname,{all:true})).map(value=>value.address);requireDnsPin(addresses,config.targetPublicIps);
@@ -294,6 +305,12 @@ try{
   if(!version.stdout.includes('2.20.1'))throw new Error('Gebruik de exact gecontroleerde lk-CLI 2.20.1.');
   let previous=await observeSafety(config,null);await delay(5000);previous=await observeSafety(config,previous);
   report.preflight={passed:true,capacityGateChecked:mode!=='--connectivity',forceRelay:config.forceRelay===true,appOrigin:config.appOrigin,livekitHostname:config.livekitHostname,targetPublicIps:config.targetPublicIps,dnsAnswers:addresses,host:config.inventory.host,room:config.room,fixtureBinding,inventoryReference:config.inventory.reference,generator:{host:hostname(),cpuCount:cpus().length,freeMemoryBytes:freemem(),network:config.generator.networkDescription,publicIp:config.generator.publicIp,availableIngressMbps:config.generator.availableIngressMbps,clockErrorBoundMs:config.generator.clockErrorBoundMs},sourceRoute:config.sourceRoute||'externally-published',cliVersion:version.stdout.trim()};
+  report.receiverSourceSha256=createHash('sha256').update(await readFile(resolve(base,'browser-probe.mjs'))).digest('hex');
+  if(previousReportFile){
+    const room=await observeRoom(config,credentials);
+    if(room.viewerCount!==0)throw new Error('De eerdere testkijkers zijn nog niet uit de technische room verdwenen.');
+    report.retry.noRemainingLoadClientsObservedAtMs=room.observedAtMs;
+  }
   await save();
   if(mode==='--preflight'){console.log('Read-only stagingpreflight geslaagd. Er is geen mediabelasting gestart.');}
   else{
@@ -329,7 +346,7 @@ try{
       await sourcePage.evaluate(()=>window.miloMediaProbe.stopPublishing());
     }else{
       report.executed=true;await save();
-      for(const stage of STAGES){
+      for(const stage of previousReportFile?[STAGES.at(-1)]:STAGES){
         const outcome=await runStage(config,credentials,origin,stage,previous);previous=outcome.previous;
         console.log(`${stage.name}: ${report.stages.at(-1).status}`);
         if(!outcome.success)throw new Error('Opschaling gestopt: het vorige niveau haalt de gemeten doelen niet.');
@@ -340,4 +357,10 @@ try{
     }
   }
 }catch(error){report.error=safeError(error);if(error.diagnosticSample&&report.connectivity)report.connectivity.sample=error.diagnosticSample;report.complete=false;process.exitCode=1;console.error(report.error);}
-finally{report.finishedAt=new Date().toISOString();await save();if(sourcePage)await sourcePage.evaluate(()=>window.miloMediaProbe.stopPublishing()).catch(()=>{});await browser?.close();await new Promise(accept=>server?server.close(accept):accept());}
+finally{
+  if(previousReportSha256){
+    try{const after=createHash('sha256').update(await readFile(previousReportFile)).digest('hex');report.retry.previousReportUnchanged=after===previousReportSha256;}catch{report.retry.previousReportUnchanged=false;}
+    if(!report.retry.previousReportUnchanged){report.complete=false;report.error='Het oorspronkelijke rapport is tijdens de herhaling gewijzigd.';process.exitCode=1;}
+  }
+  report.finishedAt=new Date().toISOString();await save();if(sourcePage)await sourcePage.evaluate(()=>window.miloMediaProbe.stopPublishing()).catch(()=>{});await browser?.close();await new Promise(accept=>server?server.close(accept):accept());
+}

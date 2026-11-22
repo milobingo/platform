@@ -22,6 +22,16 @@ node scripts/load/run-staging-media.mjs --source /private/config.json /private/s
 node scripts/load/run-staging-media.mjs --run /private/config.json /private/capacity-results
 ```
 
+Na een gerichte verbetering mag uitsluitend de oorspronkelijke gemengde fase opnieuw worden gemeten:
+
+```bash
+node scripts/load/run-staging-media.mjs --retry-mixed /private/config.json /private/new-mixed-results /private/capacity-results/report.json
+```
+
+Dit vereist een beëindigd rapport met alle zes volledige meetfases, vijf geslaagde WebRTC-niveaus inclusief twintig minuten bij 200 kijkers, dezelfde host/origin/private fixture en nul achtergebleven testkijkers. Alle verse inventaris-, DNS-, netwerk- en hostveiligheidscontroles blijven gelden. De resultaatmap moet nieuw zijn. Het oude rapport blijft ongewijzigd en zijn SHA-256 wordt vóór en na de proef gecontroleerd. De herhaling is altijd 150 WebRTC + 50 HLS gedurende minstens tien minuten; hij bewijst alleen die nieuwe gemengde meting. Een nieuwe HLS-generatie binnen dezelfde fixture kan nodig zijn na een encoderwijziging en wordt opnieuw tegen de private manifest gevalideerd.
+
+De HLS-browser bewaart daarbij actuele afspeeltijd, bufferbereiken, voorwaartse buffer, werkelijke `latency`/`targetLatency` en maximaal 32 recente HLS-foutgebeurtenissen, inclusief niet-fatale bufferonderbrekingen. Eventgegevens bevatten uitsluitend tijd, type, detailcode en fataliteit; geen stream-URL, headers of fouttekst. Het afspeelbeleid en de catchupinstellingen worden door deze diagnostiek niet gewijzigd. De algemene `stalls`-teller met een drempel van drie seconden sluit kortere beeldonderbrekingen niet uit; de beeldtijdcodes en HLS-events moeten ook worden beoordeeld.
+
 `announcementsPath` moet naar een vooraf opgenomen technische WAV met Nederlandse nummeraankondigingen wijzen om gesproken nummers te testen. Zonder dit bestand levert de bron uitsluitend een herkenbaar gelabelde diagnostische toon. Er worden geen echte gezinnen gebeld en geen spraak-API's gebruikt.
 
 De reproduceerbare offline bron kan met eSpeak NG 1.51 worden gemaakt:
