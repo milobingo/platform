@@ -3,7 +3,9 @@ port 6381
 protected-mode yes
 requirepass REPLACE_PRIVATE_REDIS_PASSWORD
 save ""
-appendonly no
+dir /data
+appendonly yes
+appendfsync everysec
 maxmemory 64mb
 maxmemory-policy noeviction
 loglevel warning

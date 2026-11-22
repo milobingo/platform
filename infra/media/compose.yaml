@@ -7,7 +7,9 @@ services:
     network_mode: host
     restart: unless-stopped
     user: "65532:65532"
-    volumes: ["/etc/milobingo-media/redis.conf:/config/redis.conf:ro"]
+    volumes:
+      - /etc/milobingo-media/redis.conf:/config/redis.conf:ro
+      - /var/lib/milobingo-media/redis:/data
     mem_limit: 128m
     cpus: 0.2
     cap_drop: [ALL]

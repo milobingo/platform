@@ -54,6 +54,18 @@ write(backup / "caddy-before.json", json.dumps(inventory, indent=2))
 
 config.mkdir(mode=0o700, exist_ok=True)
 install.mkdir(mode=0o755, exist_ok=True)
+state = Path("/var/lib/milobingo-media")
+state.mkdir(mode=0o700, exist_ok=True)
+if state.is_symlink():
+    raise SystemExit("Media state directory must not be a symlink.")
+os.chown(state, 0, 0)
+state.chmod(0o700)
+redis_state = state / "redis"
+redis_state.mkdir(mode=0o700, exist_ok=True)
+if redis_state.is_symlink():
+    raise SystemExit("Redis state directory must not be a symlink.")
+os.chown(redis_state, 65532, 65532)
+redis_state.chmod(0o700)
 secret_file = config / "credentials.json"
 if secret_file.exists():
     credentials = json.loads(secret_file.read_text())

@@ -104,6 +104,14 @@ zonder echte secrets staan in Git. De app leest
 `MILO_BROADCAST_CONFIG`. Bestandsrechten zijn root:appgroep 0640, bovenliggende
 map 0750. Hiervoor zijn geen extra GitHub-variabelen of secrets nodig.
 
+Redis bewaart Ingress-metadata, waaronder de WHIP-sleutels, in een beschermd
+AOF-volume onder `/var/lib/milobingo-media/redis` (UID 65532, mode 0700; de
+bovenliggende map is root-only). Een gewone container- of hostherstart behoudt
+die metadata. `appendfsync everysec` begrenst het mogelijke verlies bij een
+abrupte hostcrash tot ongeveer de laatste seconde. Verwijder dit volume niet
+bij een herstart of rollback. Een verdwenen providerresource wordt door de
+app opnieuw opgezocht voordat een nieuwe wordt aangemaakt.
+
 De Egress-image wordt met `Egress.Dockerfile` afgeleid van de vastgepinde
 upstreamdigest. Alleen de gebruikers-ID en bijbehorende homerechten veranderen
 naar 63001. De standaard image-UID 1001 is op deze VPS al de native CI-runner;
