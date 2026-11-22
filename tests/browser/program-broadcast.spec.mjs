@@ -1,19 +1,22 @@
 import {test,expect} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {makeGame,generateBooks,playerGame} from '../../server/bingo-model.js';
+import {CAST_RECEIVER_MARKER} from '../../frontend/program-cast.js';
 
-async function fixture(page,testInfo){
+async function fixture(page,testInfo,{restoring=false}={}){
  const origin=new URL(testInfo.project.use.baseURL).origin,account='programme-browser-family',family={ownerName:'Fictieve ouder',email:'programme@example.invalid',profiles:[{id:'fictitious-child',name:'Fictieve speler',age:9}],blocked:false,blockedGames:{},cooldowns:{}},game=makeGame({brandId:'milo',title:'Afgeschermde spelercontrole',date:'2027-11-22T19:00:00Z'},'fixture-host',origin);
  generateBooks(game,1,'programme-browser-fixture');Object.assign(game.books[0],{accountId:account,profileId:family.profiles[0].id,name:family.profiles[0].name});
  game.status='running';game.programBroadcast={version:1,enabled:true,status:'prepared'};Object.assign(game.state,{phase:'running',roundIndex:0,blockIndex:game.plan.blocks.findIndex(block=>block.type==='round'),goalIndex:0,epoch:'programme-browser-epoch',drawn:[7,19,41]});
  const proof={errors:[],external:[],unexpected:[],writes:[]};page.on('pageerror',error=>proof.errors.push(error.message));
- await page.addInitScript(()=>{
+ await page.addInitScript(({gameId,restoring,markerKey})=>{
   class Emitter{constructor(){this.events=new Map();}addEventListener(name,fn){if(!this.events.has(name))this.events.set(name,new Set());this.events.get(name).add(fn);}removeEventListener(name,fn){this.events.get(name)?.delete(fn);}emit(name,event){for(const fn of this.events.get(name)||[])fn(event);}}
   const context=new Emitter(),controller=new Emitter(),remote={isConnected:false,isMediaLoaded:false},session={media:null,getMediaSession(){return this.media;},async loadMedia(request){this.media={media:request.media,playerState:'PLAYING'};remote.isConnected=true;remote.isMediaLoaded=true;controller.emit('player');},endSession(){this.media=null;remote.isConnected=false;remote.isMediaLoaded=false;context.emit('session',{sessionState:'ENDED',session:this});}};
-  Object.assign(context,{setOptions(){},getCastState:()=> 'AVAILABLE',requestSession:async()=>{},getCurrentSession:()=>session});
+  let sessionAvailable=!restoring;if(restoring)localStorage.setItem(markerKey,gameId);
+  Object.assign(context,{setOptions(){},getCastState:()=> 'AVAILABLE',requestSession:async()=>{},getCurrentSession:()=>sessionAvailable?session:null});
+  window.__qaResumeCast=()=>{sessionAvailable=true;session.media={media:{customData:{miloBroadcastGameId:gameId}},playerState:'PLAYING'};remote.isConnected=true;remote.isMediaLoaded=true;context.emit('session',{sessionState:'RESUMED',session});};
   window.cast={framework:{CastContext:{getInstance:()=>context},RemotePlayer:class{constructor(){return remote;}},RemotePlayerController:class{constructor(){return controller;}},CastContextEventType:{SESSION_STATE_CHANGED:'session',CAST_STATE_CHANGED:'cast'},SessionState:{SESSION_ENDED:'ENDED',SESSION_START_FAILED:'FAILED'},RemotePlayerEventType:{IS_CONNECTED_CHANGED:'connected',IS_MEDIA_LOADED_CHANGED:'loaded',PLAYER_STATE_CHANGED:'player'},CastState:{NO_DEVICES_AVAILABLE:'NONE'}}};
   window.chrome??={};window.chrome.cast={AutoJoinPolicy:{ORIGIN_SCOPED:'origin'},media:{DEFAULT_MEDIA_RECEIVER_APP_ID:'CC1AD845',StreamType:{LIVE:'LIVE'},PlayerState:{PLAYING:'PLAYING',BUFFERING:'BUFFERING',PAUSED:'PAUSED',IDLE:'IDLE'},MediaInfo:class{constructor(contentId,contentType){Object.assign(this,{contentId,contentType});}},LoadRequest:class{constructor(media){this.media=media;}}}};
- });
+ },{gameId:game.id,restoring,markerKey:CAST_RECEIVER_MARKER});
  const identity=()=>({accountId:account,family,host:false,serverTime:Date.now()});
  await page.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());if(url.origin!==origin){proof.external.push(url.origin+url.pathname);return route.abort('blockedbyclient');}
@@ -50,4 +53,13 @@ for(const width of [390,1366])test(`native family programme ${width}px: existing
  expect(h.proof.errors).toEqual([]);expect(h.proof.external).toEqual([]);expect(h.proof.unexpected).toEqual([]);
  expect(h.proof.writes.every(path=>path.startsWith('/api/broadcast/'))).toBe(true);
  await mkdir('verification/media/browser',{recursive:true});await page.screenshot({path:`verification/media/browser/family-programme-${width}.png`,fullPage:false});await writeFile(`verification/media/browser/family-programme-${width}.json`,JSON.stringify({actualReactBrowserRendering:true,actualLiveKitMediaDecoded:false,castSDKSimulated:true,physicalCastOrAirPlayTested:false,providerOrRealParticipantTraffic:false,...h.proof},null,2)+'\n');
+});
+
+test('family reload keeps the TV ball board hidden during delayed Cast resume, without claiming PLAYING before the receiver is discovered',async({page},testInfo)=>{
+ await page.setViewportSize({width:390,height:844});const h=await fixture(page,testInfo,{restoring:true});await page.goto('/spelen?spel='+h.game.id);await page.addStyleTag({content:'nextjs-portal{pointer-events:none!important}'});
+ const player=page.getByLabel('Rechtstreekse showuitzending');await expect(player).toContainText('Vorige tv-verbinding herstellen…');await expect(player.getByText('Cast speelt op tv',{exact:true})).toHaveCount(0);await expect(page.locator('.fam-number-ball.is-drawn')).toHaveCount(0);await expect(page.locator('.fam-tv-board-sync')).toBeVisible();
+ await page.reload();await page.addStyleTag({content:'nextjs-portal{pointer-events:none!important}'});await expect(player).toContainText('Vorige tv-verbinding herstellen…');await expect(page.locator('.fam-number-ball.is-drawn')).toHaveCount(0);await expect(player.getByText('Cast speelt op tv',{exact:true})).toHaveCount(0);
+ await player.getByRole('button',{name:'Stop casten',exact:true}).click();expect(await page.evaluate(key=>localStorage.getItem(key),CAST_RECEIVER_MARKER)).toBe(h.game.id);await expect(page.locator('.fam-number-ball.is-drawn')).toHaveCount(0);
+ await page.evaluate(()=>window.__qaResumeCast());await expect(player.getByRole('button',{name:'Cast naar tv',exact:true})).toBeVisible();await expect(page.locator('.fam-number-ball.is-drawn')).toHaveCount(3);expect(await page.evaluate(key=>localStorage.getItem(key),CAST_RECEIVER_MARKER)).toBe(null);
+ expect(h.proof.errors).toEqual([]);expect(h.proof.external).toEqual([]);expect(h.proof.unexpected).toEqual([]);
 });

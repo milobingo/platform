@@ -1,0 +1,84 @@
+{
+  "format": "milo-current-source-audio-proof-v1",
+  "observedAt": "2026-11-22T15:49:07.109Z",
+  "source": "scripts/load/browser-probe.mjs",
+  "sourceSha256": "781df1d49eba58d154de8c1af96121994a5bd9ed8e86ed2be68ad85da9dd50ba",
+  "method": "Exact current browser source bundled with a networkless Room.connect stub that stays pending; actual Chromium WebAudio and actual captured MediaStreamDestination PCM are measured.",
+  "scope": "Local media generator only. No public AV, encoder, ingress, LiveKit subscription or physical audio-speaker claim.",
+  "sdkConnectionStubbed": true,
+  "loadStageExecuted": false,
+  "realRoomCreated": false,
+  "samples": [
+    {
+      "sourceRms": 0.05660222608103077,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.056649854176188785,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.05662840654872271,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05656644116744773,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.056526135256989046,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05648889515411598,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.0566577451262069,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.0566360655668251,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.05653330784362586,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05648642280855693,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    }
+  ],
+  "capturedDestination": {
+    "trackState": "live",
+    "trackEnabled": true,
+    "trackMuted": false,
+    "settings": {
+      "channelCount": 2,
+      "deviceId": "WebAudio-ae014dd8-a1bd-4b3d-8e5a-f8af1ff1a592",
+      "latency": 0.01,
+      "sampleRate": 44100,
+      "sampleSize": 16
+    },
+    "destinationCount": 1
+  },
+  "passed": true,
+  "cleanup": {
+    "sourceDisconnectInvoked": true,
+    "capturedContextState": "closed"
+  },
+  "externalNetworkRequests": [],
+  "publicNetworkUsed": false,
+  "finishedAt": "2026-11-22T15:49:09.860Z"
+}

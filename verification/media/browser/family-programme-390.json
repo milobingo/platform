@@ -8,8 +8,8 @@
   "external": [],
   "unexpected": [],
   "writes": [
-    "/api/broadcast/242a6cff-1201-48d1-9663-7a5d8d90cb3d/token",
-    "/api/broadcast/242a6cff-1201-48d1-9663-7a5d8d90cb3d/cast",
-    "/api/broadcast/242a6cff-1201-48d1-9663-7a5d8d90cb3d/token"
+    "/api/broadcast/c91dba36-cfec-476f-95fa-a0086a55f7de/token",
+    "/api/broadcast/c91dba36-cfec-476f-95fa-a0086a55f7de/cast",
+    "/api/broadcast/c91dba36-cfec-476f-95fa-a0086a55f7de/token"
   ]
 }

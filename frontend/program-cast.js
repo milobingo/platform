@@ -1,6 +1,9 @@
 // Google Cast Web Sender, Default Media Receiver: no receiver account or paid
 // service is required. Actual receiver playback, not loadMedia(), mutes local sound.
 const sdkLoads=new WeakMap();
+export const CAST_RECEIVER_MARKER='milo-programme-cast-receiver-v1';
+const browserStorage=()=>{try{return globalThis.localStorage;}catch{return null;}};
+export function castReceiverMayBeActive(storage=browserStorage()){try{return !!storage?.getItem(CAST_RECEIVER_MARKER);}catch{return false;}}
 export function loadCastSDK(win=globalThis.window,doc=globalThis.document){
  if(win?.cast?.framework&&win?.chrome?.cast)return Promise.resolve({framework:win.cast.framework,cast:win.chrome.cast});
  if(!win||!doc||!win.isSecureContext)return Promise.reject(Error('Cast is op dit apparaat niet beschikbaar. Gebruik scherm spiegelen.'));
@@ -16,7 +19,7 @@ export function loadCastSDK(win=globalThis.window,doc=globalThis.document){
 }
 
 export class ProgramCast{
- constructor({gameId,getAccess,onChange=()=>{},loadSDK=loadCastSDK,stopTimeoutMs=7000}={}){Object.assign(this,{gameId,getAccess,onChange,loadSDK,stopTimeoutMs});this.listeners=[];this.active=false;this.disposed=false;this.attempt=0;this.operations=new Set();this.sessions=new Map();this.ended=new Set();this.endListeners=new Set();}
+ constructor({gameId,getAccess,onChange=()=>{},loadSDK=loadCastSDK,stopTimeoutMs=7000,storage=browserStorage()}={}){Object.assign(this,{gameId,getAccess,onChange,loadSDK,stopTimeoutMs,storage});this.listeners=[];this.active=false;this.disposed=false;this.attempt=0;this.operations=new Set();this.sessions=new Map();this.ended=new Set();this.endListeners=new Set();this.discoveryListeners=new Set();this.possible=castReceiverMayBeActive(storage);this.emit({castMayBeActive:this.possible,castRestoring:this.possible,...(this.possible?{castPhase:'restoring'}:{})});}
  emit(patch){if(!this.disposed)this.onChange(patch);}
  async initialize(){
   if(this.sdk)return this.sdk;
@@ -33,13 +36,27 @@ export class ProgramCast{
   bind(context,framework.CastContextEventType.SESSION_STATE_CHANGED,event=>{
    // A disconnected RemotePlayer, a failed launch, or a load acknowledgement
    // does not prove that the receiver app stopped. Bind proof to its session.
-   if(event.sessionState===framework.SessionState.SESSION_ENDED&&event.session){const key=this.sessionKey(event.session);this.ended.add(key);this.sessions.delete(key);for(const listener of this.endListeners)listener();}
+   if(event.sessionState===framework.SessionState.SESSION_ENDED&&event.session){const key=this.sessionKey(event.session),known=this.sessions.has(key);this.ended.add(key);this.sessions.delete(key);for(const listener of this.endListeners)listener();if(known&&!this.operations.size&&!this.sessions.size){this.attempt++;this.markReceiver(false);}}
    if([framework.SessionState.SESSION_ENDED,framework.SessionState.SESSION_START_FAILED].includes(event.sessionState)){this.setActive(false);this.emit({castPhase:'idle'});}
-   else this.observe();
+   else{this.remember(event.session);this.observe();}
+   for(const listener of this.discoveryListeners)listener(event);
   });
   for(const type of ['IS_CONNECTED_CHANGED','IS_MEDIA_LOADED_CHANGED','PLAYER_STATE_CHANGED'])bind(this.remoteController,framework.RemotePlayerEventType[type],()=>this.observe());
   bind(context,framework.CastContextEventType.CAST_STATE_CHANGED,event=>this.emit({castAvailable:event.castState!==framework.CastState.NO_DEVICES_AVAILABLE}));
   this.emit({castAvailable:context.getCastState?.()!==framework.CastState.NO_DEVICES_AVAILABLE});this.observe();return sdk;
+ }
+ receiverMayBeActive(){return this.possible||castReceiverMayBeActive(this.storage);}
+ markReceiver(possible,{required=false}={}){
+  const previous=this.possible;this.possible=possible;
+  try{if(!this.storage)throw Error('storage unavailable');if(possible)this.storage.setItem(CAST_RECEIVER_MARKER,this.gameId);else this.storage.removeItem(CAST_RECEIVER_MARKER);}
+  catch{if(required){this.possible=previous;throw Error('De tv-status kan op dit apparaat niet worden bewaard. Sta websiteopslag toe voordat je Cast start.');}}
+  this.emit({castMayBeActive:possible,...(!possible?{castRestoring:false}:{})});
+ }
+ async discoverReceiver(deadline){
+  const current=this.remember(this.context?.getCurrentSession());if(current||!this.receiverMayBeActive())return current;
+  let listener;
+  try{return await this.bounded(new Promise(resolve=>{listener=event=>{const session=this.remember(this.context?.getCurrentSession()||event?.session);if(session)resolve(session);};this.discoveryListeners.add(listener);listener();}),deadline);}
+  finally{this.discoveryListeners.delete(listener);}
  }
  sessionKey(session){return session?.getSessionId?.()||session;}
  remember(session){if(session&&!this.ended.has(this.sessionKey(session)))this.sessions.set(this.sessionKey(session),session);return session;}
@@ -51,6 +68,7 @@ export class ProgramCast{
  observe(){
   const media=this.context?.getCurrentSession()?.getMediaSession?.(),ours=media?.media?.customData?.miloBroadcastGameId===this.gameId;
   if(!ours||this.remote?.isConnected===false||this.remote?.isMediaLoaded===false){this.setActive(false);return;}
+  this.remember(this.context.getCurrentSession());this.markReceiver(true);
   const state=media.playerState||this.remote.playerState,states=this.sdk.cast.media.PlayerState;
   if(state===states.PLAYING){this.setActive(true);this.emit({castPhase:'playing'});}
   else if(this.active&&state===states.BUFFERING)this.emit({castPhase:'buffering'});
@@ -67,7 +85,21 @@ export class ProgramCast{
   let session;
   try{
    const {cast}=await this.initialize();if(this.disposed||attempt!==this.attempt)return;
-   await this.operation(async()=>{try{await this.context.requestSession();}finally{const created=this.remember(this.context.getCurrentSession());if(created&&(this.disposed||attempt!==this.attempt)){try{this.requestEnd(created,{fresh:true});}catch{}}}});if(this.disposed||attempt!==this.attempt)return;
+   // Only a non-secret possible-receiver flag survives reload; never a media
+   // URL or token. An unknown prior receiver must be stopped explicitly.
+   if(this.receiverMayBeActive()&&!this.context.getCurrentSession())throw Error('De vorige tv-verbinding wordt nog hersteld. Stop die verbinding eerst voordat je opnieuw Cast start.');
+   const freshReceiver=!this.receiverMayBeActive()&&!this.context.getCurrentSession()&&!this.sessions.size&&!this.active;
+   this.markReceiver(true,{required:true});
+   await this.operation(async()=>{
+    try{await this.context.requestSession();}
+    catch(error){
+     // Only explicit picker/prelaunch failures prove that a fresh request
+     // created no receiver. A timeout/channel/unknown error is ambiguous.
+     const code=typeof error==='string'?error:error?.code,noReceiver=['CANCEL','API_NOT_INITIALIZED','INVALID_PARAMETER','EXTENSION_NOT_COMPATIBLE','EXTENSION_MISSING','RECEIVER_UNAVAILABLE'].some(name=>cast.ErrorCode?.[name]!==undefined&&code===cast.ErrorCode[name]);
+     if(freshReceiver&&noReceiver&&!this.context.getCurrentSession()&&!this.sessions.size&&!this.active)this.markReceiver(false);
+     throw error;
+    }finally{const created=this.remember(this.context.getCurrentSession());if(created&&(this.disposed||attempt!==this.attempt)){try{this.requestEnd(created,{fresh:true});}catch{}}}
+   });if(this.disposed||attempt!==this.attempt)return;
    const access=await this.getAccess();if(this.disposed||attempt!==this.attempt)return;
    session=this.remember(this.context.getCurrentSession());if(!session)throw Error('Er is nog geen tv verbonden.');
    const info=new cast.media.MediaInfo(access.url,access.mimeType||'application/x-mpegURL');info.streamType=cast.media.StreamType.LIVE;info.customData={miloBroadcastGameId:this.gameId};
@@ -84,7 +116,11 @@ export class ProgramCast{
   this.stopPromise=this.stopOnce();try{return await this.stopPromise;}finally{this.stopPromise=null;}
  }
  async stopOnce(){
-  this.attempt++;const deadline=Date.now()+this.stopTimeoutMs,pending=[...this.operations],initial=this.remember(this.context?.getCurrentSession());
+  this.attempt++;const deadline=Date.now()+this.stopTimeoutMs;
+  if(this.receiverMayBeActive()&&!this.sdk)await this.bounded(this.initialize(),deadline);
+  else if(this.initializing)try{await this.bounded(this.initializing,deadline);}catch(error){if(this.receiverMayBeActive())throw error;}
+  const pending=[...this.operations];let initial=this.remember(this.context?.getCurrentSession());
+  if(!initial&&!pending.length&&this.receiverMayBeActive())initial=await this.discoverReceiver(deadline);
   if(!initial&&!this.sessions.size&&!pending.length&&!this.active)return;
   this.emit({castPhase:'stopping'});
   // End immediately, then wait for every already-issued request/load to settle.
@@ -97,7 +133,7 @@ export class ProgramCast{
   for(const session of sessions)this.requestEnd(session,{fresh:pending.length>0});
   if(this.active&&!sessions.length)throw Error('De actieve tv-sessie kon niet worden vastgesteld. Stop Cast op de tv en probeer opnieuw.');
   await Promise.all(sessions.map(session=>this.waitEnded(session,deadline)));
-  this.setActive(false);this.emit({castPhase:'idle'});
+  this.setActive(false);this.markReceiver(false);this.emit({castPhase:'idle'});
  }
  dispose(){this.disposed=true;this.attempt++;for(const remove of this.listeners)remove();this.listeners=[];}
 }

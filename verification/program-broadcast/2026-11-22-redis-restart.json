@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "environment": "staging",
+  "host": "dg-nxttrack-01",
+  "purpose": "Verify protected Redis AOF preserves one isolated WHIP ingress across a Redis-only restart",
+  "before": {
+    "observedAt": "2026-11-22T15:42:29.126Z",
+    "rooms": {
+      "total": 0,
+      "own": []
+    },
+    "ingress": {
+      "total": 0,
+      "own": []
+    },
+    "egress": {
+      "total": 0,
+      "own": []
+    },
+    "readOnly": true
+  },
+  "createdAt": "2026-11-22T15:43:01.807Z",
+  "verification": {
+    "format": 1,
+    "observedAt": "2026-11-22T15:43:23.834Z",
+    "phase": "verify",
+    "room": "milo-staging-load-redis-77575b3f-c8f0-4feb-9ef8-b8cc77a98d4c",
+    "id": "IN_NFjMqaNGp5ae",
+    "sameIngressId": true,
+    "sameStreamKey": true,
+    "sameRoomAndPublisher": true,
+    "noMediaPublished": true,
+    "realShowsModified": false
+  },
+  "cleanup": {
+    "format": 1,
+    "observedAt": "2026-11-22T15:43:27.685Z",
+    "phase": "cleanup",
+    "room": "milo-staging-load-redis-77575b3f-c8f0-4feb-9ef8-b8cc77a98d4c",
+    "id": "IN_NFjMqaNGp5ae",
+    "sameIngressId": true,
+    "sameStreamKey": true,
+    "sameRoomAndPublisher": true,
+    "noMediaPublished": true,
+    "realShowsModified": false,
+    "ingressDeleted": true,
+    "roomDeleted": true
+  },
+  "finalInventory": {
+    "observedAt": "2026-11-22T15:43:38.147Z",
+    "rooms": 0,
+    "ingress": 0,
+    "activeEgress": 0
+  },
+  "apiRecoveredAfterRestart": true,
+  "credentialsPrinted": false,
+  "privateProbeStateDeleted": true,
+  "realShowsModified": false,
+  "realCallsPlaced": false,
+  "actualMediaVerified": false,
+  "capacityVerified": false,
+  "limits": [
+    "Only API metadata persistence was tested; no media was published or decoded.",
+    "The independent public ICE/firewall and physical Cast/AirPlay tests remain open."
+  ]
+}

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {setTimeout as delay} from 'node:timers/promises';
 import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
-import {runHlsViewer} from '../scripts/load/hls-client.mjs';
+import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from '../scripts/load/hls-client.mjs';
 
 let checks=0;
 function check(name,fn){fn();checks++;console.log(`✓ ${name}`);}
@@ -92,6 +92,35 @@ check('CLI-bewijs vereist audio én video met echte RTP-pakketten, ook met exter
   const raw='Track loading:\n┌─────────┬───────────┬───────┬───────┬──────────┬───────────┐\n│ Sub 0   │ TR_audio1 │ audio │ 12345 │ 64.0kbps │ 0 (0%)    │\n│         │ TR_video1 │ video │ 54321 │ 1.2mbps  │ 2 (0.01%) │\n│ Sub 1   │ TR_audio2 │ audio │ 23456 │ 63.9kbps │ 0 (0%)    │\nSubscriber summaries:\n│ Sub 0 │ 2/0 │ 1.3mbps │ 0 (0%) │ - │';
   const parsed=parseCliTrackResults(raw);assert.equal(parsed.receivingAudioAndVideo,1);assert.equal(parsed.subscribers.length,2);assert.equal(parsed.subscribers[0].tracks[1].bitrateBps,1200000);
   assert.equal(parseCliTrackResults('connected successfully').receivingAudioAndVideo,0);
+});
+check('49 éénmalige HLS-downloads gevolgd door uitval bewijzen geen gemengde meetduur',()=>{
+  const ids=Array.from({length:49},(_,index)=>`hls-${index}`),tracker=createHlsContinuityTracker(ids);
+  for(const identity of ids)tracker.record({kind:'hls-http',identity,observedAtMs:1000,sequence:0,segmentSeconds:2,segments:1,errors:0,stalls:0});
+  assert.equal(tracker.snapshot(1000).ready,true);
+  for(const identity of ids)tracker.record({kind:'hls-http-error',identity,observedAtMs:3000,errors:1});
+  const final=tracker.snapshot(601000);
+  assert.equal(final.ready,false);assert.equal(final.freshViewers,0);assert.ok(final.viewers.every(viewer=>viewer.continuousHoldSeconds===0&&viewer.errors===1));
+  const silentLoss=createHlsContinuityTracker(ids);
+  for(const identity of ids)silentLoss.record({kind:'hls-http',identity,observedAtMs:1000,sequence:0,segmentSeconds:2,segments:1,errors:0,stalls:0});
+  assert.equal(silentLoss.snapshot(601000).ready,false);
+});
+check('Alle 49 HLS-kijkers moeten op kijktempo verse segmenten blijven halen en elk 600 seconden volhouden',()=>{
+  const ids=Array.from({length:49},(_,index)=>`hls-${index}`),tracker=createHlsContinuityTracker(ids);
+  for(let sequence=0;sequence<=300;sequence++)for(const identity of ids)tracker.record({kind:'hls-http',identity,observedAtMs:1000+sequence*2000,sequence,segmentSeconds:2,segments:sequence+1,errors:0,stalls:0});
+  const final=tracker.snapshot(601000);
+  assert.equal(final.ready,true);assert.equal(final.freshViewers,49);assert.ok(final.viewers.every(viewer=>viewer.continuousHoldSeconds===600&&viewer.continuousMediaSeconds===602&&viewer.errors===0&&viewer.stalls===0));
+  const change=tracker.record({kind:'hls-http-error',identity:'hls-7',observedAtMs:601001,errors:1});
+  assert.equal(change.discontinuity,true);assert.equal(tracker.snapshot(601001).ready,false);
+  tracker.record({kind:'hls-http',identity:'hls-7',observedAtMs:603000,sequence:302,segmentSeconds:2,segments:302,errors:1,stalls:1});
+  const recovered=tracker.snapshot(603000).viewers.find(viewer=>viewer.identity==='hls-7');
+  assert.equal(recovered.continuousHoldSeconds,0);assert.equal(recovered.continuousMediaSeconds,2);assert.equal(recovered.errors,1);assert.equal(recovered.stalls,1);
+});
+check('Een HLS-browser moet recent beeld én recent geluid houden; historische audioactivatie volstaat niet',()=>{
+  const sample={connected:true,error:null,frames:300,lastFrameAt:600000,lastAudioAt:590000};
+  assert.equal(hlsBrowserIsFresh(sample,601000),true);
+  assert.equal(hlsBrowserIsFresh({...sample,lastFrameAt:580000},601000),false);
+  assert.equal(hlsBrowserIsFresh({...sample,lastAudioAt:500000,audioRmsMax:.06},601000),false);
+  assert.equal(hlsBrowserIsFresh({...sample,lastAudioAt:null},601000),false);
 });
 
 const requests=[];let sequence=0;

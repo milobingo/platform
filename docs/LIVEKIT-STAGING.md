@@ -90,7 +90,10 @@ sudo apt-get install --no-install-recommends \
 sudo python3 /opt/milobingo-media-source/install-staging.py
 ```
 
-Kopieer eerst deze map naar `/opt/milobingo-media-source`. De installer weigert
+Kopieer eerst deze map naar `/opt/milobingo-media-source` als root:root,
+zonder schrijfbare bestanden of directories voor de CI-runner. Gebruik bij
+uitpakken als root `tar --no-same-owner`, zodat een lokale gebruikers-ID niet
+als eigenaar op de doel-VPS terechtkomt. De installer weigert
 een andere host/IP en een afwijkende Docker-daemonconfiguratie. Hij verandert
 alleen het Milo-stagingfragment van Caddy, valideert het geheel vóór reload en
 controleert de hashes van alle andere sitefragmenten. Een backup staat onder
@@ -178,7 +181,8 @@ een opgeslagen showinstelling niet automatisch terug.
 
 Rollback van de media-infra:
 
-1. Stop/disable `milo-media-staging.service` en `milo-media-maintenance.timer`.
+1. Stop/disable `milo-media-staging.service`, `milo-media-maintenance.timer`
+   en `milo-media-observe.service`.
 2. Herstel het Milo-staging-Caddyfragment uit de backup van vóór installatie.
    De eerste backup van deze proef is `20261122T150551Z`; controleer de
    daadwerkelijke directory en inhoud. Gebruik geen latere backup die de
@@ -187,7 +191,7 @@ Rollback van de media-infra:
    toegevoegde Milo-mediapoortregels als geen andere dienst die inmiddels gebruikt.
 4. Verwijder alleen de staging-`media.conf`-drop-in als die niet meer nodig is;
    daemon-reload en een geplande appherstart passen het proces aan.
-5. Bewaar beschermde credentials en HLS-data voor herstel of wis ze apart na
+5. Bewaar beschermde credentials en Redis-/HLS-data voor herstel of wis ze apart na
    controle. Verwijder Docker of gedeelde pakketafhankelijkheden niet automatisch.
 
 ## Werkelijke proef en vrijgave

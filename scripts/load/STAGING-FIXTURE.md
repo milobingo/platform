@@ -10,11 +10,57 @@ HTTP-authomweg en maakt geen Supabase Auth-account of beheerdersrol.
 zijn of een echte uitzending dezelfde VPS gebruikt.** Een succesvolle API-call
 bewijst geen mediadoorgifte. Alle helperacties hieronder vereisen root.
 
-Gebruik een beoordeelde checkout met de projectdependencies en de vastgelegde
-Node-toolchain. De fixture blijft een concept; begin geen gewone showrunner:
+De immutable Next-release bevat geen ruwe `server/`-modules of deze helper.
+Bundel hem daarom vanuit een beoordeelde commit met de bestaande, vastgelegde
+projectdependencies. De bundel bevat `pg` en zijn JavaScript-dependencies;
+op de VPS is geen dependency-installatie en geen kopie van secrets nodig.
+De `createRequire`-banner laat de gebundelde CommonJS-code Node-builtins
+laden. De optionele native PostgreSQL-driver wordt niet gebruikt.
+
+Voer lokaal uit vanuit de repository. Begin met een schone, beoordeelde
+versie van de helper, `server/`, `package.json` en `pnpm-lock.yaml`:
 
 ```sh
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs create
+set -eu
+git diff --exit-code HEAD -- scripts/load/staging-fixture.mjs server package.json pnpm-lock.yaml
+fixture_source_sha=$(git rev-parse --verify HEAD)
+fixture_bundle_dir=$(mktemp -d /tmp/milo-fixture.XXXXXX)
+fixture_bundle="$fixture_bundle_dir/staging-fixture-$fixture_source_sha.mjs"
+pnpm exec esbuild scripts/load/staging-fixture.mjs \
+  --bundle --platform=node --format=esm --target=node24 \
+  --banner:js='import {createRequire as fixtureCreateRequire} from "node:module"; const require = fixtureCreateRequire(import.meta.url);' \
+  --outfile="$fixture_bundle"
+chmod 600 "$fixture_bundle"
+sha256sum "$fixture_bundle"
+```
+
+Verplaats alleen die codebundel via de bestaande geautoriseerde SSH-route.
+Bij de huidige beheerverbinding is dat:
+
+```sh
+scp -F /home/codex/.ssh/dg-nxttrack-admin.conf "$fixture_bundle" \
+  "dg-nxttrack-01-admin:/tmp/staging-fixture-$fixture_source_sha.mjs"
+ssh -F /home/codex/.ssh/dg-nxttrack-admin.conf dg-nxttrack-01-admin \
+  sudo -n install -d -o root -g root -m 0700 /opt/milobingo-media-tools
+ssh -F /home/codex/.ssh/dg-nxttrack-admin.conf dg-nxttrack-01-admin \
+  sudo -n install -o root -g root -m 0600 \
+  "/tmp/staging-fixture-$fixture_source_sha.mjs" \
+  "/opt/milobingo-media-tools/staging-fixture-$fixture_source_sha.mjs"
+ssh -F /home/codex/.ssh/dg-nxttrack-admin.conf dg-nxttrack-01-admin \
+  sudo -n sha256sum "/opt/milobingo-media-tools/staging-fixture-$fixture_source_sha.mjs"
+ssh -F /home/codex/.ssh/dg-nxttrack-admin.conf dg-nxttrack-01-admin \
+  rm -- "/tmp/staging-fixture-$fixture_source_sha.mjs"
+```
+
+Controleer dat de twee SHA-256-checksums gelijk zijn. Start pas een fixture
+nadat de bijbehorende stagingversie is uitgerold, inclusief het verbergen
+van technische fixtures in de gewone catalogi. Gebruik op de VPS de exacte
+versiegebonden tool als `<tool>`. De lege procesomgeving voorkomt afwijkende
+Node-/PostgreSQL-loaderopties; de helper leest zelf het beschermde staging-
+runtimebestand. De fixture blijft een concept; begin geen gewone showrunner:
+
+```sh
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> create
 ```
 
 Dit maakt precies één nieuwe Milo-show met een willekeurige fictieve owner,
@@ -51,8 +97,8 @@ Maak niet steeds nieuwe fixtures bij een fout; controleer het gemelde ID.
 Vervang `<manifest>` hieronder door het ontvangen absolute manifestpad:
 
 ```sh
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs inspect --manifest <manifest>
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs prepare --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> inspect --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> prepare --manifest <manifest>
 ```
 
 `prepare` gebruikt dezelfde programme-controle als de app en maakt of hergebruikt
@@ -65,8 +111,8 @@ Laat de testencoder vervolgens exact `programme-video` en `programme-audio`
 publiceren als `programme-<game-uuid>`. Zodra echte AV-tracks binnenkomen:
 
 ```sh
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs start-hls --manifest <manifest>
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs access --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> start-hls --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> access --manifest <manifest>
 ```
 
 `start-hls` werkt de actuele generatie in het manifest bij. Daarna ververst
@@ -87,8 +133,8 @@ vrije roomnaam of een productie-origin als uitzondering.
 Afronden en opruimen:
 
 ```sh
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs stop --manifest <manifest>
-sudo /opt/node-v24.18.0-linux-x64/bin/node scripts/load/staging-fixture.mjs remove --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> stop --manifest <manifest>
+sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> remove --manifest <manifest>
 ```
 
 `remove` controleert opnieuw tag, owner, marker, conceptstatus, nul echte

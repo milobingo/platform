@@ -34,6 +34,9 @@ gaven HTTP 200. Geen andere projectconfiguratie is vervangen.
 | --- | --- | --- |
 | Host/SSH/TLS/API-inventaris | Bestaande admin- en deployroute, juiste instance/IP, Caddy 2.11.8, huidige sites/firewall/listeners | Gecontroleerd |
 | Room/WHIP/API-contract | Nieuwe besloten tijdelijke room; CreateRoom, ListParticipants, CreateIngress zonder transcode, ListIngress, foutieve SDP op echte publieke WHIP-route, ListEgress, cleanup | Acht controles geslaagd; geen echte media-encoder gestart |
+| Egress-schema/toelating | Exacte `StartEgress`-MediaSource met bewust ontbrekende tracks | Aanvraag geaccepteerd als `EGRESS_STARTING`; verwachte terminale 404 door ontbrekende tracks. Geen encodingbewijs; stopresponse time-out, cleanup afzonderlijk gecontroleerd |
+| Herstartbestendige OBS-ingang | Eén tijdelijke Ingress aangemaakt; alleen eigen Redis herstart; daarna ID, streamkey, room en publisher vergeleken | Ongewijzigd teruggevonden; API hersteld; ingang en room opgeruimd; geen media of show aangemaakt |
+| Lokale testbron-audio | Vijf echte Chromium-WebAudio-metingen vóór en na de MediaStreamDestination, zonder netwerkverbinding | Circa 0,0566 RMS, actieve audiotrack. Bewijst de audiogenerator, geen publieke overdracht of hoorbaar tv-geluid |
 | HTTPS-bandbreedtemarge | 15 seconden bron op maximaal 400 Mbit/s; target → externe generator via publieke HTTPS 443 | 750.000.000 bytes in 15,13084 s: **396,54 Mbit/s**; tijdelijke route/server opgeruimd |
 | Nieuwe TCP/TURN-poorten | Externe TCP- en UDP-pogingen; lokale allowregels; packet capture op target eth0 | Nieuwe TCP 7881/5349 time-out; geen bijbehorende pakketten gezien op target; extra netwerkfilter moet worden gecontroleerd |
 | Publieke WebRTC, één bron/browser | Nieuwe afgeschermde room; eth0-only ICE; echte SDK-publisher | ICE mislukt: `could not establish pc connection`; geen publieke AV-acceptatie |
@@ -41,6 +44,10 @@ gaven HTTP 200. Geen andere projectconfiguratie is vervangen.
 
 Het API-contractbewijs staat in
 [`verification/program-broadcast/2026-11-22-api-contract.json`](../verification/program-broadcast/2026-11-22-api-contract.json).
+Het [Egress-schemabewijs](../verification/program-broadcast/2026-11-22-egress-schema.json),
+de [Redis-herstartproef](../verification/program-broadcast/2026-11-22-redis-restart.json)
+en de [lokale audiometingen](../verification/program-broadcast/2026-11-22-source-audio.json)
+vermelden hun beperkte scope afzonderlijk.
 Netwerk-, status- en verbindingsbewijzen staan in
 [`verification/media/load/2026-11-22`](../verification/media/load/2026-11-22).
 De browserbeelden staan in [`verification/media/browser`](../verification/media/browser).

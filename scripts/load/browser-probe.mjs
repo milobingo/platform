@@ -8,7 +8,7 @@ video.width=1280;video.height=720;video.autoplay=true;video.playsInline=true;vid
 document.body.append(video);
 const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;
 const canvasContext=canvas.getContext('2d',{willReadFrequently:true});
-const state={connected:false,connectedAt:null,firstVideoAt:null,firstAudioAt:null,frames:0,reconnects:0,disconnects:0,stalls:0,audioRmsMax:0,timecodeSamples:[],invalidTimecodes:0,lastFrameAt:null,tracks:[],error:null};
+const state={connected:false,connectedAt:null,firstVideoAt:null,firstAudioAt:null,lastAudioAt:null,frames:0,reconnects:0,disconnects:0,stalls:0,audioRmsMax:0,timecodeSamples:[],invalidTimecodes:0,lastFrameAt:null,tracks:[],error:null};
 let room,audioContext,analyser,lastTimecode=null,lastRmsAt=0,sourceTimer,hls,connectStartedAt=Date.now(),sourceAudioAnalyser,sourceVideoPublication,sourceAudioPublication,whipPc,whipSessionUrl;
 const sourceNodes=[];
 
@@ -55,7 +55,7 @@ function observeFrames() {
       const ms=readFrameTime(canvasContext,video);
       if(ms!==null&&ms!==lastTimecode&&now-ms>=-20&&now-ms<120000){state.timecodeSamples.push({displayAtMs:now,sourceAtMs:ms,latencyMs:now-ms});lastTimecode=ms;}
       else if(ms===null)state.invalidTimecodes++;
-      if(analyser){const data=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(data);const rms=Math.sqrt(data.reduce((sum,value)=>sum+value*value,0)/data.length);state.audioRmsMax=Math.max(state.audioRmsMax,rms);if(rms>.0001)state.firstAudioAt??=now;}
+      if(analyser){const data=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(data);const rms=Math.sqrt(data.reduce((sum,value)=>sum+value*value,0)/data.length);state.audioRmsMax=Math.max(state.audioRmsMax,rms);if(rms>.0001){state.firstAudioAt??=now;state.lastAudioAt=now;}}
     }
     observeFrames();
   });

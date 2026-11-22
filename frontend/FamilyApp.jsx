@@ -91,7 +91,7 @@ export default function FamilyApp(){
  const programEnabled=!demoMode&&game?.brandId==='milo'&&game?.programBroadcast?.enabled===true;
  const broadcast=programEnabled?programme:youtube;
  const programPlayback=useSyncExternalStore(programme.subscribe,programme.getSnapshot);
- const remoteTv=programEnabled&&programme.gameId===game?.id&&(programPlayback.castActive||programPlayback.airplayActive);
+ const remoteTv=programEnabled&&(programPlayback.castMayBeActive||programme.gameId===game?.id&&(programPlayback.castActive||programPlayback.airplayActive));
  const visibleDrawn=programVisibleDrawn(game,remoteTv,heardTvBall);
  useEffect(()=>{
   if(!programEnabled||stage!=='ready')return;

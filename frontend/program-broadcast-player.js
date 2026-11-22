@@ -1,8 +1,8 @@
 import {programBroadcastRequest} from './program-broadcast-api.js';
-import {ProgramCast} from './program-cast.js';
+import {ProgramCast,castReceiverMayBeActive} from './program-cast.js';
 
 const loadClient=()=>import('livekit-client');
-const idle=()=>({source:'livekit',phase:'waiting',ready:false,playing:false,muted:true,volume:100,currentTime:null,duration:null,framePresent:false,suspended:false,autoplayBlocked:false,error:'',castActive:false,castAvailable:null,castPhase:'idle',castError:'',airplayAvailable:false,airplayPrepared:false,airplayActive:false,airplayPhase:'idle',airplayError:'',simulated:false});
+const idle=()=>({source:'livekit',phase:'waiting',ready:false,playing:false,muted:true,volume:100,currentTime:null,duration:null,framePresent:false,suspended:false,autoplayBlocked:false,error:'',castActive:false,castMayBeActive:castReceiverMayBeActive(),castRestoring:castReceiverMayBeActive(),castAvailable:null,castPhase:castReceiverMayBeActive()?'restoring':'idle',castError:'',airplayAvailable:false,airplayPrepared:false,airplayActive:false,airplayPhase:'idle',airplayError:'',simulated:false});
 
 /** Receive only the two server-approved programme tracks; never request a mic. */
 export class ProgramBroadcastController{
@@ -30,15 +30,17 @@ export class ProgramBroadcastController{
   this.cast=new this.Cast({gameId,getAccess:()=>this.castAccess(),onChange:patch=>{
    const wasRemote=this.remoteActive;this.update(patch);this.syncMute();if(wasRemote&&!this.remoteActive&&!this.state.suspended)void this.restore({play:this.requestedAudio});
   }});
-  if(config.hls?.available)void this.cast.initialize().catch(()=>{});
+  if(config.hls?.available||this.state.castMayBeActive)this.discoverCast();
   if(config.state!=='ended')void this.connect();
   return()=>this.unmount();
  }
  configure(config){
   this.config=config;
+  if((config.hls?.available||this.state.castMayBeActive)&&this.cast&&!this.cast.sdk&&!this.cast.initializing)this.discoverCast();
   if(config.state==='ended'){this.generation++;this.connecting=false;void this.closeRoom();this.update({phase:'ended',playing:false,ready:false});}
   else if(this.state.phase==='ended'&&this.container)void this.connect();
  }
+ discoverCast(){void this.cast.initialize().catch(()=>{if(this.state.castMayBeActive)this.update({castError:'De vorige tv-verbinding kon nog niet worden hersteld. Verbind de tv opnieuw en stop Cast voordat je een gesprek opneemt.'});});}
  permitted(publication,participant){
   if(participant?.identity!==this.credentials?.publisherIdentity)return false;
   const names=this.credentials?.programTrackNames||{},kind=publication?.kind||publication?.track?.kind,name=publication?.trackName||publication?.name;
@@ -81,13 +83,13 @@ export class ProgramBroadcastController{
  }
  detach(sid){const entry=this.tracks.get(sid);if(!entry)return;this.tracks.delete(sid);try{entry.track.detach(entry.element);}catch{}if(entry.element!==this.video)entry.element.remove();else{this.video.srcObject=null;this.update({phase:'waiting',playing:false});}}
  syncMute(){
-  const mute=this.state.suspended||this.remoteActive||!this.requestedAudio;
+  const mute=this.state.suspended||this.remoteActive||this.state.castRestoring||!this.requestedAudio;
   for(const {track,element}of this.tracks.values())if(track.kind==='audio')element.muted=mute;
   this.update({muted:mute});
  }
  mute(){this.requestedAudio=false;this.syncMute();}
  async activateAudio(){
-  this.requestedAudio=true;if(this.remoteActive||this.state.suspended){this.syncMute();return this.getInfo();}
+  this.requestedAudio=true;if(this.remoteActive||this.state.castRestoring||this.state.suspended){this.syncMute();return this.getInfo();}
   try{
    await this.room?.startAudio?.();this.syncMute();
    const audio=[...this.tracks.values()].filter(entry=>entry.track.kind==='audio');

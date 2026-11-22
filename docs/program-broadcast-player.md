@@ -32,6 +32,24 @@ dempt de lokale mix; een geslaagde `loadMedia()` alleen is onvoldoende.
 Stoppen of verlies van de Cast-sessie herstelt de lokale WebRTC-weergave,
 waarbij een browserblokkade opnieuw een geluidsknop oplevert.
 
+Vóór een Cast-aanvraag bewaart de browser alleen een lokale marker met de
+show-ID, zonder feed-URL of token. Na herladen staat **Vorige tv-verbinding
+herstellen…** totdat de SDK de eerdere ontvanger heeft teruggevonden. Dit
+is geen bevestiging dat de tv afspeelt. Een nog onbekende ontvanger houdt
+lokale audio, nieuwe ballen en de overstap naar een privégesprek tegen.
+Een bevestigde beëindiging van de betrokken sessie wist de marker pas als
+uitgegeven aanvragen zijn afgehandeld. Een expliciet geannuleerde nieuwe
+tv-keuze of fout vóór het maken van een ontvanger wist alleen die verse,
+ongebruikte marker. Een onbekende fout, SDK-initialisatie of timeout doet dat
+niet. Een apparaat waarop nooit Cast is gestart kan zonder Cast-SDK aan een
+gesprek deelnemen.
+
+Kan de SDK een eerdere ontvanger niet terugvinden, koppel die dan via het
+Cast-menu in Chrome opnieuw op hetzelfde netwerk en kies **Stop casten** in
+de familiepagina. De app geeft privéaudio en het bord pas vrij na de echte
+eindbevestiging. Een onbereikbare oude ontvanger kan dus om herstel op dat
+apparaat vragen; alleen wachten of een fout wegklikken bewijst geen stop.
+
 Safari gebruikt native HLS voor AirPlay. **AirPlay voorbereiden** haalt de
 beperkte feed op, waarna **Kies AirPlay-apparaat** de native keuzelijst vanuit
 een bewuste gebruikersactie opent. De daadwerkelijke wireless-status van
@@ -42,7 +60,8 @@ van beide mag op basis van een timer als geslaagd worden gemeld.
 
 ## Ballen en privégesprekken
 
-Zolang Cast of AirPlay actief is, loopt het ballenbord op de telefoon niet
+Zolang Cast of AirPlay actief is, of een eerdere Cast-ontvanger na herladen
+nog wordt teruggevonden, loopt het ballenbord op de telefoon niet
 vooruit met nieuwe servernummers. Het gezin vult de laatst op tv gehoorde bal
 in en werkt het bord daarmee bij tot dat officiële nummer. De invoer toont
 geen lijst met toekomstige of ongehoorde getrokken nummers. Een volgende
@@ -62,19 +81,30 @@ het Milo/YouTube- en Vlampie-belgedrag blijven verder behouden.
 
 ## Uitgevoerde lokale controles en grenzen
 
-- `node tests/check-program-player.mjs`: veertien controller-/API-tests voor
+- `node tests/check-program-player.mjs`: tweeëntwintig controller-/API-tests voor
   kijkersisolatie, autoplay, reconnect, daadwerkelijke Cast-status,
   AirPlay-ontkoppeling en het ballenbord. Daaronder vallen gerichte races met
   een nog lopende Cast-sessieaanvraag of `loadMedia`, een verloren antwoord,
   een vroegere eindmelding en een eindmelding van een andere sessie. Een
   privé-overgang wacht op afgehandelde oude aanvragen en een passende nieuwe
   `SESSION_ENDED`-bevestiging; een fout of timeout blijft blokkeren.
+  Herladen met vertraagde `SESSION_RESUMED`, privé opnemen vóór SDK-discovery
+  en de eerste HLS-statuswijziging van onbekend naar beschikbaar zijn apart
+  afgedekt. De herstellende marker houdt het bord tegen zonder PLAYING te
+  veinzen; een onbevestigde ontvanger blijft ook na de timeout bewaard.
+  Een verse geannuleerde tv-keuze en een bevestigde natuurlijke ontvangerstop
+  herstellen het bord en staan een later privégesprek toe. Ambigue fouten,
+  toch aangemaakte ontvangers en late loads behouden de blokkade. Een stop
+  tijdens het ophalen van de feed voorkomt een latere media-aanvraag.
 - `node scripts/check-player-live-call.mjs`: bestaande routes plus een
   afzonderlijke Milo/LiveKit-proef waarin een onbevestigde tv-stop geen
   antwoord of privémicrofoon mag openen.
 - `tests/browser/program-broadcast.spec.mjs`: de werkelijke React-interface
   op 390 en 1366 pixels, bestaande kaart en chat, herstelactie, Cast-overdracht
-  en stoppen, gehoorde-balbediening en geen horizontale overflow. De Google
+  en stoppen, gehoorde-balbediening en geen horizontale overflow. Een derde
+  proef herlaadt de mobiele pagina met een eerdere Cast-marker, houdt nieuwe
+  ballen verborgen en wacht op een vertraagde hervatting plus eindbevestiging.
+  De Google
   SDK is hierbij een herkenbare fixture; er is geen echte tv of mediadecode
   bewezen door deze interfaceproef. Bewijs staat in `verification/media/browser/`.
 - `node tests/check-program-claim-latency.mjs`: vier canonieke model-/API-proeven

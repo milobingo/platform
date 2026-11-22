@@ -8,7 +8,7 @@ import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
-import {runHlsViewer} from './hls-client.mjs';
+import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from './hls-client.mjs';
 
 const base=dirname(fileURLToPath(import.meta.url));
 const args=process.argv.slice(2);
@@ -133,7 +133,9 @@ async function runStage(config,credentials,origin,stage,previous){
   requireDnsPin((await lookup(config.livekitHostname,{all:true})).map(value=>value.address),config.targetPublicIps);
   const result={...stage,status:'running',startedAt:new Date().toISOString(),executed:true,browserViewers:3,cliViewers:stage.webrtc-3,hlsHttpViewers:Math.max(0,stage.hls-1),hlsBrowserViewers:stage.hls?1:0};
   report.stages.push(result);await save();
-  const probes=[],samples=[],hlsSamples=[],hlsPlaybackSamples=[],hostSamples=[],roomSamples=[],hlsAbort=new AbortController();let cli,hls=[],hlsProbe,fullOccupancyAtMs=null;
+  const probes=[],samples=[],hlsSamples=[],hlsPlaybackSamples=[],hostSamples=[],roomSamples=[],hlsAbort=new AbortController();let cli,hls=[],hlsProbe,fullOccupancyAtMs=null,hlsFailure=null;
+  const hlsContinuity=createHlsContinuityTracker(Array.from({length:Math.max(0,stage.hls-1)},(_,index)=>`hls-${index}`));
+  const recordHls=sample=>{hlsSamples.push(sample);const change=hlsContinuity.record(sample);if(change.discontinuity&&fullOccupancyAtMs!==null)hlsFailure=`HLS-kijker ${sample.identity} verloor de ononderbroken segmentontvangst.`;};
   try{
     for(let index=0;index<3;index++)probes.push(await probe(config,credentials,origin,`milo-load-${stage.name}-browser-${index}`));
     if(stage.hls){
@@ -142,7 +144,7 @@ async function runStage(config,credentials,origin,stage,previous){
       if(playlist.protocol!=='https:'||playlist.origin!==config.appOrigin||!config.hlsPathPrefix?.startsWith('/api/broadcast/hls/')||!playlist.pathname.startsWith(config.hlsPathPrefix)||!config.hlsRoomBindingReference)throw new Error('HLS-testdoel mist de gecontroleerde binding aan de eigen stagingtestroom.');
       // Small stagger avoids synchronized segment bursts unrelated to real viewing.
       hlsProbe=await probe(config,credentials,origin,`milo-load-${stage.name}-hls-browser`,{hls:true});
-      for(let i=0;i<stage.hls-1;i++){hls.push(runHlsViewer({playlistUrl:playlist.href,signal:hlsAbort.signal,identity:`hls-${i}`,onSample:sample=>hlsSamples.push(sample)}));await delay(20);}
+      for(let i=0;i<stage.hls-1;i++){hls.push(runHlsViewer({playlistUrl:playlist.href,signal:hlsAbort.signal,identity:`hls-${i}`,onSample:recordHls}));await delay(20);}
     }
     cli=spawnCli(config,credentials,stage,stage.webrtc-3);
     let finished=null;cli.done.then(value=>{finished=value;},error=>{finished={code:-1,raw:safeError(error),readyAt:null,finishedAt:Date.now()};});
@@ -157,8 +159,6 @@ async function runStage(config,credentials,origin,stage,previous){
       if(finished)break;
       await appendFile(resolve(output,`${stage.name}-room.jsonl`),JSON.stringify(roomSample)+'\n',{mode:0o600});
       if(cli.readyAt&&roomSample.viewerCount<Math.ceil(stage.webrtc*.99))throw new Error('Minder dan 99% van de testkijkers blijft verbonden.');
-      if(cli.readyAt&&roomSample.viewerCount===stage.webrtc)fullOccupancyAtMs??=Date.now();
-      else fullOccupancyAtMs=null;
       if(previous.cpuCount!==config.inventory.cpuCount)throw new Error('Hostinventaris is gewijzigd.');
       for(const item of probes){
         const sample=await item.page.evaluate(()=>window.miloMediaProbe.sample());
@@ -166,11 +166,18 @@ async function runStage(config,credentials,origin,stage,previous){
         await appendFile(resolve(output,`${stage.name}-browser.jsonl`),JSON.stringify(sample)+'\n',{mode:0o600});
         if(sample.error||!sample.connected||Date.now()-sample.lastFrameAt>10000)throw new Error('Browserplayer verliest de werkelijke programmaweergave.');
       }
+      let hlsReady=!stage.hls;
       if(hlsProbe){
         const sample=await hlsProbe.page.evaluate(()=>window.miloMediaProbe.sample());hlsPlaybackSamples.push(sample);
         await appendFile(resolve(output,`${stage.name}-hls-browser.jsonl`),JSON.stringify(sample)+'\n',{mode:0o600});
-        if(sample.error||Date.now()-sample.lastFrameAt>15000)throw new Error('De echte HLS-browserweergave valt weg.');
+        const now=Date.now();
+        const browserReady=hlsBrowserIsFresh(sample,now);
+        const continuity=hlsContinuity.snapshot(now);
+        hlsReady=browserReady&&continuity.ready;
+        if(hlsFailure||(fullOccupancyAtMs!==null&&!hlsReady))throw new Error(hlsFailure||'Niet alle HLS-kijkers houden recente segmentontvangst en echte browserweergave vast.');
       }
+      if(cli.readyAt&&roomSample.viewerCount===stage.webrtc&&hlsReady)fullOccupancyAtMs??=Date.now();
+      else fullOccupancyAtMs=null;
       if(!cli.readyAt&&Date.now()-Date.parse(result.startedAt)>120000)throw new Error('Niet alle testclients verbinden binnen twee minuten.');
       await delay(5000);
     }
@@ -178,6 +185,11 @@ async function runStage(config,credentials,origin,stage,previous){
     for(const value of sensitive)if(log.includes(value))throw new Error('CLI-output bevat een geheim en is niet opgeslagen.');
     await writeFile(resolve(output,`${stage.name}-cli.log`),log,{mode:0o600});
     const parsed=parseCliTrackResults(log);
+    if(hlsProbe){
+      const sample=await hlsProbe.page.evaluate(()=>window.miloMediaProbe.sample());hlsPlaybackSamples.push(sample);
+      await appendFile(resolve(output,`${stage.name}-hls-browser.jsonl`),JSON.stringify(sample)+'\n',{mode:0o600});
+      if(!hlsBrowserIsFresh(sample,Date.now()))hlsFailure='De echte HLS-browserweergave of recente audio viel weg aan het einde van de meetfase.';
+    }
     result.cli=parsed;result.cliDurationSeconds=cliDurationSeconds(stage);result.connectedWaitSeconds=finished.readyAt?(finished.finishedAt-finished.readyAt)/1000:0;
     result.fullOccupancyObservedAtMs=fullOccupancyAtMs;
     result.holdSeconds=fullOccupancyHoldSeconds(fullOccupancyAtMs,finished.finishedAt);
@@ -209,9 +221,11 @@ async function runStage(config,credentials,origin,stage,previous){
     result.sfuPrometheusSamples=hostSamples.filter(sample=>sample.livekitPrometheus?.measured).length;
     result.hlsLatencyMs=summarize(hlsPlaybackSamples.flatMap(sample=>sample.timecodeSamples.map(value=>value.latencyMs)));
     result.hlsTimeToFirstFrameMs=summarize(hlsPlaybackSamples.slice(0,1).map(sample=>sample.timeToFirstVideoMs));
-    result.hlsPlaybackVerified=hlsPlaybackSamples.some(sample=>sample.frames>0&&sample.audioRmsMax>.0001);
-    result.successfulHlsHttpViewers=new Set(hlsSamples.filter(sample=>sample.kind==='hls-http'&&sample.segments>0).map(sample=>sample.identity)).size;
-    const hlsSuccess=!stage.hls||(result.successfulHlsHttpViewers===stage.hls-1&&result.hlsPlaybackVerified&&result.hlsLatencyMs.samples>=stage.seconds/2&&result.hlsLatencyMs.p95<=8000);
+    result.hlsPlaybackVerified=hlsBrowserIsFresh(hlsPlaybackSamples.at(-1),Date.now());
+    result.hlsHttpContinuity=hlsContinuity.snapshot(Date.now());
+    result.successfulHlsHttpViewers=result.hlsHttpContinuity.freshViewers;
+    result.sustainedHlsHttpViewers=result.hlsHttpContinuity.viewers.filter(viewer=>viewer.fresh&&viewer.continuousHoldSeconds>=stage.seconds&&viewer.continuousMediaSeconds>=stage.seconds).length;
+    const hlsSuccess=!stage.hls||(!hlsFailure&&result.hlsHttpContinuity.ready&&result.sustainedHlsHttpViewers===stage.hls-1&&result.hlsPlaybackVerified&&result.hlsLatencyMs.samples>=stage.seconds/2&&result.hlsLatencyMs.p95<=8000);
     const profileLoaded=result.browserMediaBitrateBps.p50>=MEDIA_PROFILE.totalBps*.8;
     result.profileBitrateAdequate=profileLoaded;
     result.profileFpsAdequate=result.browserDecodedFps.p50>=27;
@@ -222,6 +236,7 @@ async function runStage(config,credentials,origin,stage,previous){
   }catch(error){result.status='stopped';result.reason=safeError(error);result.endedAt=new Date().toISOString();throw error;}
   finally{
     hlsAbort.abort();cli?.stop();
+    result.hlsHttpContinuity??=hlsContinuity.snapshot(Date.now());
     if(cli)await cli.done.catch(()=>{});
     const settled=await Promise.allSettled(hls);result.hlsHttpResults=settled.map(value=>value.status==='fulfilled'?value.value:{error:safeError(value.reason)});
     if(hlsSamples.length)await writeFile(resolve(output,`${stage.name}-hls.json`),JSON.stringify(hlsSamples,null,2)+'\n',{mode:0o600});
