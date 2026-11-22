@@ -10,7 +10,10 @@ import {brandId} from './show-brands.js';
 // This distribution room never shares credentials, participants or tracks with
 // the private backstage/live-call rooms. Only the programme encoder publishes.
 export const PROGRAM_PROFILE=Object.freeze({width:1280,height:720,fps:30,videoBitrate:1186000,audioBitrate:64000,totalBitrate:1250000,simulcast:false});
-export const PROGRAM_TRACK_NAMES=Object.freeze({video:'programme-video',audio:'programme-audio'});
+// LiveKit 1.13.11 native WHIP bypass synthesizes these names in
+// ParticipantImpl.synthesizeAddTrackRequests; CreateIngress track-name options
+// are not forwarded by Ingress 1.6.0's proxy WHIP path. Keep one exact pair.
+export const PROGRAM_TRACK_NAMES=Object.freeze({video:'synthesized-camera',audio:'synthesized-microphone'});
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value);
 const generation=value=>typeof value==='string'&&/^[a-f0-9]{32}$/.test(value);
 const problem=(message,status=409,code='broadcast')=>Object.assign(Error(message),{status,code});

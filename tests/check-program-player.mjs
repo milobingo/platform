@@ -46,6 +46,12 @@ test('viewer subscribes only to named programme tracks; rejected private audio n
  await h.controller.activateAudio();assert.equal(audio.track.element.muted,false);assert.equal(h.controller.getSnapshot().muted,false);assert.equal(h.controller.room.audioStarted,true);assert.equal(h.controller.getSnapshot().simulated,false);
 });
 
+test('the viewer uses server-issued native WHIP names and rejects old or backstage names even when the publisher is correct',async t=>{
+ const h=mediaFixture();t.after(()=>h.controller.dispose());await until(()=>h.controller.room?.connection);h.credentials.programTrackNames={video:'synthesized-camera',audio:'synthesized-microphone'};
+ const obsolete=h.publish('audio','programme-audio'),backstage=h.publish('audio','synthesized-microphone','private-host');assert.equal(obsolete.publication.subscribed,false);assert.equal(backstage.publication.subscribed,false);assert.equal(obsolete.track.element,undefined);assert.equal(backstage.track.element,undefined);
+ const video=h.publish('video'),audio=h.publish('audio');assert.equal(video.track.element,h.controller.video);assert(audio.track.element);assert.equal(h.controller.tracks.size,2);await h.controller.activateAudio();assert.equal(audio.track.element.muted,false);
+});
+
 test('autoplay rejection remains visible and local audio is restored only after a successful play attempt',async t=>{
  const h=mediaFixture();t.after(()=>h.controller.dispose());await until(()=>h.controller.room?.connection);h.publish('video');const audio=h.publish('audio');audio.track.element.rejectPlay=true;
  await assert.rejects(h.controller.activateAudio(),/blocked/);assert.equal(h.controller.getSnapshot().muted,true);assert.equal(h.controller.getSnapshot().autoplayBlocked,true);assert.equal(audio.track.element.muted,true);

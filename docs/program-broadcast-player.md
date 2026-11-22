@@ -18,6 +18,12 @@ verborgen. De ontvangers krijgen uitsluitend korte kijkertokens.
 De familiepagina verbindt met de uitzendroom en ontvangt alleen de twee door
 de server benoemde tracks van de verwachte programmapublisher. De browser
 vraagt hiervoor geen camera of microfoon en publiceert geen media of data.
+De huidige providerbinding is native WHIP-bypass op LiveKit 1.13.11 met
+Ingress 1.6.0. Die route maakt de vaste namen `synthesized-camera` en
+`synthesized-microphone`; de ingestelde CreateIngress-namen worden in deze
+bypassroute niet aan de SFU doorgegeven. De server levert daarom exact deze
+twee geverifieerde namen en de gereserveerde publisheridentiteit aan de
+speler en HLS-selectie. Namen van andere publishers blijven geweigerd.
 Geluid begint met **Geluid aanzetten**. Een geweigerde `play()`-aanvraag houdt
 de knop en uitleg zichtbaar. Wachten op de bron, verbinden, tijdelijk verlies,
 opnieuw verbinden en einde hebben afzonderlijke zichtbare statussen. Herstel
@@ -81,7 +87,7 @@ het Milo/YouTube- en Vlampie-belgedrag blijven verder behouden.
 
 ## Uitgevoerde lokale controles en grenzen
 
-- `node tests/check-program-player.mjs`: tweeëntwintig controller-/API-tests voor
+- `node tests/check-program-player.mjs`: drieëntwintig controller-/API-tests voor
   kijkersisolatie, autoplay, reconnect, daadwerkelijke Cast-status,
   AirPlay-ontkoppeling en het ballenbord. Daaronder vallen gerichte races met
   een nog lopende Cast-sessieaanvraag of `loadMedia`, een verloren antwoord,
@@ -131,6 +137,8 @@ claimt geen nog niet gemeten lagere kwaliteitslaag of ondertiteltrack.
 
 Primaire documentatie: [LiveKit-verbinding](https://docs.livekit.io/intro/basics/connect/),
 [LiveKit-abonnementen](https://docs.livekit.io/transport/media/subscribe/),
+[native WHIP-tracknamen in LiveKit 1.13.11](https://github.com/livekit/livekit/blob/v1.13.11/pkg/rtc/participant.go),
+[Ingress 1.6.0 WHIP-proxy](https://github.com/livekit/ingress/blob/v1.6.0/pkg/whip/whip_proxy_handler.go),
 [Google Cast Web Sender](https://developers.google.com/cast/docs/web_sender/integrate),
 [Cast-playerstatus](https://developers.google.com/cast/docs/reference/web_sender/cast.framework.RemotePlayerController),
 [Apple AirPlay-bediening](https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)

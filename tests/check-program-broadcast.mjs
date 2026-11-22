@@ -76,6 +76,17 @@ test('one HLS encoder uses only the programme publisher AV, survives refresh, an
  assert.equal((await h.control('stop-hls')).status,200);assert.equal(h.egresses.at(-1).status,'EGRESS_COMPLETE');assert.equal((await h.read()).programBroadcast.enabled,true);assert.equal((await h.read()).programBroadcast.egressId,null);assert.equal((await h.invoke('token',{}, {user:'family',admin:false})).status,200,'stopping tv leaves direct WebRTC enabled');
  assert.equal((await h.control('stop')).status,200);assert.equal((await h.read()).programBroadcast.enabled,true);assert.equal((await h.read()).programBroadcast.status,'stopped');assert.equal((await h.invoke('token',{}, {user:'family',admin:false})).status,409);assert.deepEqual((await h.read()).state,before.state,'stop cannot release a call hold or alter a draw clock');
 });
+test('captured native WHIP provider names reach viewer status/tokens and select only the reserved publisher for HLS',async t=>{
+ const h=await fixture(t);await h.prepare();
+ // Shape observed on real LiveKit 1.13.11 + Ingress 1.6.0 WHIP bypass.
+ // Names are literal provider evidence, independent of PROGRAM_TRACK_NAMES.
+ const nativeTracks=[{sid:'TR_native_video',type:'VIDEO',name:'synthesized-camera',source:'CAMERA',mime_type:'video/H264',muted:false,width:0,height:0},{sid:'TR_native_audio',type:'AUDIO',name:'synthesized-microphone',source:'MICROPHONE',mime_type:'audio/opus',muted:false}];
+ h.setParticipants([{identity:'private-backstage-host',tracks:nativeTracks.map(track=>({...track,sid:'TR_private_'+track.type}))},{identity:'programme-'+h.game.id,tracks:nativeTracks}]);
+ const state=await h.invoke();assert.equal(state.data.state,'live');assert.deepEqual(state.data.programTrackNames,{video:'synthesized-camera',audio:'synthesized-microphone'});
+ const viewer=await h.invoke('token',{}, {user:'family',admin:false});assert.equal(viewer.status,200);assert.deepEqual(viewer.data.programTrackNames,state.data.programTrackNames);assert.equal(viewer.data.publisherIdentity,'programme-'+h.game.id);
+ assert.equal(h.ingresses[0].video.name,'synthesized-camera');assert.equal(h.ingresses[0].audio.name,'synthesized-microphone');assert.equal(h.ingresses[0].enable_transcoding,false);
+ assert.equal((await h.control('start-hls')).status,200);assert.equal(h.egresses[0].media.video_track_id,'TR_native_video');assert.equal(h.egresses[0].media.audio.routes[0].track_id,'TR_native_audio');assert.equal(h.egresses[0].media.audio.capture_all,false);
+});
 test('a provider timeout retains a bounded durable lease and a deliberate later retry reconciles instead of creating again',async t=>{
  const h=await fixture(t);h.setFailure(method=>method==='CreateIngress');assert.equal((await h.prepare()).status,503);assert.equal((await h.prepare()).status,409);assert((await h.read()).programBroadcast.control.until>Date.now());
  h.setFailure(null);h.ingresses.push({ingress_id:'IN_created-before-disconnect',name:'milo-programme-'+h.game.id,participant_identity:'programme-'+h.game.id,url:'https://ingress.example.test/whip',stream_key:'recovered-private-bearer'});
