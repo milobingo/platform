@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,encodeFrameTime,decodeFrameTime,percentile,parseLivePlaylist,pressureReasons,parseCliTrackResults} from '../scripts/load/media-profile.mjs';
 import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from '../scripts/load/hls-client.mjs';
+import {sourceCueNumber} from '../scripts/load/source-cue.mjs';
+import {waveByteRange} from '../scripts/load/source-wave.mjs';
+import {sameOriginProbeDocument} from '../scripts/load/probe-origin.mjs';
 
 let checks=0;
 function check(name,fn){fn();checks++;console.log(`✓ ${name}`);}
@@ -18,6 +21,30 @@ check('Meetduur telt uitsluitend vanaf onafhankelijk vastgestelde volledige beze
   assert.equal(fullOccupancyHoldSeconds(105000,420000),315);
   assert.ok(fullOccupancyHoldSeconds(105000,400000)<300);
   assert.ok(fullOccupancyHoldSeconds(105000,420000)>=300);
+});
+check('Alle drie echte browserdecoders moeten gedurende de meetfase720p houden; mediane bitrate/fps maskeert geen480p-kijker',()=>{
+  const identities=['a','b','c'],sample=(identity,at,width=1280,height=720)=>({identity,observedAtMs:at,tracks:[{kind:'video',frameWidth:width,frameHeight:height,framesDecoded:100}]});
+  const samples=identities.flatMap(identity=>[sample(identity,1000),sample(identity,2000)]);
+  assert.equal(videoResolutionEvidence(samples,identities,1000,2000).adequate,true);
+  for(const dimensions of [[480,270],[undefined,undefined],[1280,undefined]]){
+    const changed=samples.map((item,index)=>index===3?{...item,tracks:[{...item.tracks[0],frameWidth:dimensions[0],frameHeight:dimensions[1]}]}:item);
+    assert.equal(videoResolutionEvidence(changed,identities,1000,2000).adequate,false);
+  }
+  assert.equal(videoResolutionEvidence(samples.filter(item=>item.identity!=='c'),identities,1000,2000).adequate,false);
+  assert.equal(videoResolutionEvidence(samples,identities,null,2000).adequate,false);
+  assert.equal(videoResolutionEvidence([...samples,sample('a',0,480,270)],identities,1000,2000).adequate,true);
+});
+check('WebRTC-audio moet recent werkelijk hoorbaar zijn; oudePCMenergie of stilleOpuspakketten volstaan niet',()=>{
+  assert.equal(hasRecentDecodedAudio({lastAudioAt:1000},21000),true);
+  assert.equal(hasRecentDecodedAudio({lastAudioAt:1000,audioRmsMax:.2},21001),false);
+  for(const lastAudioAt of [null,undefined,NaN,22000])assert.equal(hasRecentDecodedAudio({lastAudioAt},21000),false);
+});
+check('De lokale HLS-bundel krijgt de echte stagingorigin voor ongewijzigde capability/CORS-requests',()=>{
+  const document=sameOriginProbeDocument('https://milo-staging.dgwebservices.nl','12345678-1234-4567-8912-123456789abc');
+  assert.equal(new URL(document.documentUrl).origin,'https://milo-staging.dgwebservices.nl');
+  assert.equal(new URL(document.scriptUrl).origin,new URL(document.documentUrl).origin);assert.ok(document.html.includes(document.scriptUrl));
+  for(const origin of ['http://127.0.0.1:1234','https://milo.dgwebservices.nl','https://foreign.example'])assert.throws(()=>sameOriginProbeDocument(origin,'12345678-1234-4567-8912-123456789abc'));
+  assert.throws(()=>sameOriginProbeDocument('https://milo-staging.dgwebservices.nl','unsafe\"html'));
 });
 check('TURN-belasting komt uit echte tellerdelta’s; ontbrekende of geresette tellers zijn geen nulmeting',()=>{
   const observation=(at,bytes)=>({observedAtMs:at,turnNetwork:{measured:true,counters:Object.fromEntries(['udp_in','udp_out','tls_in','tls_out'].map(name=>[name,{packets:bytes/100,bytes}]))}});
@@ -71,6 +98,23 @@ check('Frame-tijdcode bewaart milliseconden en verwerpt corruptie met CRC',()=>{
     for(let index=0;index<64;index++){const broken=bits.slice();broken[index]^=1;assert.equal(decodeFrameTime(broken),null);}
   }
   assert.equal(decodeFrameTime([1]),null);
+});
+check('Het uitgelichte bronnummer volgt uitsluitend dezelfde 15-seconden WAV-cue als de Nederlandse spraak',()=>{
+  for(let number=1;number<=75;number++){
+    assert.equal(sourceCueNumber((number-1)*15),number);
+    assert.equal(sourceCueNumber(number*15-.001),number);
+  }
+  assert.equal(sourceCueNumber(1125),1);assert.equal(sourceCueNumber(1140),2);
+  for(const value of [null,undefined,NaN,Infinity,-.001])assert.throws(()=>sourceCueNumber(value));
+});
+check('De lokale WAV ondersteunt echte bytebereiken voor herhalen en zoeken naar een latere cijfercue',()=>{
+  const size=49612544;
+  assert.deepEqual(waveByteRange(undefined,size),{status:200,start:0,end:size-1});
+  assert.deepEqual(waveByteRange('bytes=0-',size),{status:206,start:0,end:size-1});
+  assert.deepEqual(waveByteRange('bytes=44-999',size),{status:206,start:44,end:999});
+  assert.deepEqual(waveByteRange('bytes=-100',size),{status:206,start:size-100,end:size-1});
+  assert.deepEqual(waveByteRange('bytes=48688544-',size),{status:206,start:48688544,end:size-1});
+  for(const header of ['bytes=49612544-','bytes=500-100','bytes=-0','bytes=-','bytes=0-1,4-5'])assert.equal(waveByteRange(header,size).status,416);
 });
 check('Percentielen worden uitsluitend uit daadwerkelijk aanwezige metingen afgeleid',()=>{
   assert.equal(percentile([], .95),null);assert.equal(percentile([10,20,30,40,50],.5),30);assert.equal(percentile([10,20,30,40,50],.95),50);

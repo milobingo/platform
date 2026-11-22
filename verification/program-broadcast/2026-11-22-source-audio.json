@@ -1,8 +1,8 @@
 {
   "format": "milo-current-source-audio-proof-v1",
-  "observedAt": "2026-11-22T15:49:07.109Z",
+  "observedAt": "2026-11-22T16:33:05.599Z",
   "source": "scripts/load/browser-probe.mjs",
-  "sourceSha256": "781df1d49eba58d154de8c1af96121994a5bd9ed8e86ed2be68ad85da9dd50ba",
+  "sourceSha256": "29da4dd2d1c362ee90e921a7ce12f48f0c3b6b8cbd76a01199b0e88895987804",
   "method": "Exact current browser source bundled with a networkless Room.connect stub that stays pending; actual Chromium WebAudio and actual captured MediaStreamDestination PCM are measured.",
   "scope": "Local media generator only. No public AV, encoder, ingress, LiveKit subscription or physical audio-speaker claim.",
   "sdkConnectionStubbed": true,
@@ -20,7 +20,7 @@
       }
     },
     {
-      "sourceRms": 0.05662840654872271,
+      "sourceRms": 0.05659381322629016,
       "sourceContextState": "running",
       "capturedDestinationRms": 0.05656644116744773,
       "capturedContextState": "running",
@@ -32,7 +32,7 @@
     {
       "sourceRms": 0.056526135256989046,
       "sourceContextState": "running",
-      "capturedDestinationRms": 0.05648889515411598,
+      "capturedDestinationRms": 0.05659184592739483,
       "capturedContextState": "running",
       "stubState": {
         "connectInvoked": true,
@@ -50,7 +50,7 @@
       }
     },
     {
-      "sourceRms": 0.05653330784362586,
+      "sourceRms": 0.05665690535034558,
       "sourceContextState": "running",
       "capturedDestinationRms": 0.05648642280855693,
       "capturedContextState": "running",
@@ -66,7 +66,7 @@
     "trackMuted": false,
     "settings": {
       "channelCount": 2,
-      "deviceId": "WebAudio-ae014dd8-a1bd-4b3d-8e5a-f8af1ff1a592",
+      "deviceId": "WebAudio-02a928c8-0b53-49c3-831b-d2ae2c00aee6",
       "latency": 0.01,
       "sampleRate": 44100,
       "sampleSize": 16
@@ -80,5 +80,5 @@
   },
   "externalNetworkRequests": [],
   "publicNetworkUsed": false,
-  "finishedAt": "2026-11-22T15:49:09.860Z"
+  "finishedAt": "2026-11-22T16:33:08.374Z"
 }

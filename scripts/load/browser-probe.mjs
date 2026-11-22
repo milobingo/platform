@@ -1,6 +1,7 @@
 import {Room,RoomEvent,Track,LocalVideoTrack,LocalAudioTrack,setLogLevel} from 'livekit-client';
 import Hls from 'hls.js';
 import {drawFrameTime,readFrameTime} from './timecode.mjs';
+import {sourceCueNumber} from './source-cue.mjs';
 
 setLogLevel('silent');
 const video=document.createElement('video');
@@ -8,9 +9,21 @@ video.width=1280;video.height=720;video.autoplay=true;video.playsInline=true;vid
 document.body.append(video);
 const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;
 const canvasContext=canvas.getContext('2d',{willReadFrequently:true});
-const state={connected:false,connectedAt:null,firstVideoAt:null,firstAudioAt:null,lastAudioAt:null,frames:0,reconnects:0,disconnects:0,stalls:0,audioRmsMax:0,timecodeSamples:[],invalidTimecodes:0,lastFrameAt:null,tracks:[],error:null};
-let room,audioContext,analyser,lastTimecode=null,lastRmsAt=0,sourceTimer,hls,connectStartedAt=Date.now(),sourceAudioAnalyser,sourceVideoPublication,sourceAudioPublication,whipPc,whipSessionUrl;
+const state={connected:false,connectedAt:null,firstVideoAt:null,firstAudioAt:null,lastAudioAt:null,frames:0,reconnects:0,disconnects:0,stalls:0,audioRmsMax:0,audioRmsLatest:0,audioSamples:0,timecodeSamples:[],invalidTimecodes:0,lastFrameAt:null,tracks:[],error:null};
+let room,audioContext,analyser,lastTimecode=null,lastRmsAt=0,sourceTimer,hls,connectStartedAt=Date.now(),sourceAudioAnalyser,sourceVideoPublication,sourceAudioPublication,whipPc,whipSessionUrl,sourceAudioElement,sourceStartedAt,sourceVideoInput,sourceAudioInput,audioObservationTimer;
 const sourceNodes=[];
+const receivingAudioElements=[];
+
+function startAudioObservation(){
+  clearInterval(audioObservationTimer);
+  const data=new Float32Array(analyser.fftSize);
+  const observe=()=>{
+    analyser.getFloatTimeDomainData(data);const rms=Math.sqrt(data.reduce((sum,value)=>sum+value*value,0)/data.length),now=Date.now();
+    state.audioSamples++;state.audioRmsLatest=rms;state.audioRmsMax=Math.max(state.audioRmsMax,rms);
+    if(rms>.0001){state.firstAudioAt??=now;state.lastAudioAt=now;}
+  };
+  observe();audioObservationTimer=setInterval(observe,50);
+}
 
 async function waitRtc(predicate,timeout=15000){
   const until=Date.now()+timeout;
@@ -43,6 +56,9 @@ async function publishWhip({url,iceServers=[],iceTransportPolicy='all'},videoTra
   const answer=await response.text();
   if(answer.length>1000000)throw new Error('WHIP-SDP overschrijdt de veilige limiet.');
   await whipPc.setRemoteDescription({type:'answer',sdp:answer});
+  const videoParameters=video.sender.getParameters();
+  videoParameters.degradationPreference='maintain-resolution';
+  await video.sender.setParameters(videoParameters);
   await waitRtc(()=>whipPc.connectionState==='connected',15000);
   return {whipHttpStatus:response.status,route:'browser-whip-test'};
 }
@@ -55,7 +71,6 @@ function observeFrames() {
       const ms=readFrameTime(canvasContext,video);
       if(ms!==null&&ms!==lastTimecode&&now-ms>=-20&&now-ms<120000){state.timecodeSamples.push({displayAtMs:now,sourceAtMs:ms,latencyMs:now-ms});lastTimecode=ms;}
       else if(ms===null)state.invalidTimecodes++;
-      if(analyser){const data=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(data);const rms=Math.sqrt(data.reduce((sum,value)=>sum+value*value,0)/data.length);state.audioRmsMax=Math.max(state.audioRmsMax,rms);if(rms>.0001){state.firstAudioAt??=now;state.lastAudioAt=now;}}
     }
     observeFrames();
   });
@@ -73,11 +88,17 @@ window.miloMediaProbe={
       if(participant.identity!==publisherIdentity){await publication.setSubscribed(false);state.error='unexpected-publisher';return;}
       if(track.kind===Track.Kind.Video){track.attach(video);await video.play().catch(()=>{state.error='video-playback-blocked';});}
       else if(track.kind===Track.Kind.Audio){
-        // Decode the real audio track. Keep this test generator silent locally.
+        // Chromium needs an actively playing media sink before it pulls remote
+        // RTP audio into WebAudio. Volume zero keeps the test generator silent;
+        // the analyser reads the actual received track before that output gain.
+        const element=track.attach();element.autoplay=true;element.muted=false;element.volume=0;
+        document.body.append(element);receivingAudioElements.push(element);
+        await element.play().catch(()=>{state.error='audio-decoder-activation-blocked';});
         audioContext=new AudioContext();await audioContext.resume();
         const source=audioContext.createMediaStreamSource(new MediaStream([track.mediaStreamTrack]));
         analyser=audioContext.createAnalyser();analyser.fftSize=2048;
         const mute=audioContext.createGain();mute.gain.value=0;source.connect(analyser);analyser.connect(mute);mute.connect(audioContext.destination);
+        startAudioObservation();
       }
       state.tracks.push(track);
     });
@@ -90,6 +111,7 @@ window.miloMediaProbe={
     audioContext=new AudioContext();await audioContext.resume();
     const source=audioContext.createMediaElementSource(video),mute=audioContext.createGain();
     analyser=audioContext.createAnalyser();analyser.fftSize=2048;mute.gain.value=0;source.connect(analyser);analyser.connect(mute);mute.connect(audioContext.destination);
+    startAudioObservation();
     if(Hls.isSupported()){
       hls=new Hls({lowLatencyMode:false,liveSyncDurationCount:1,liveMaxLatencyDurationCount:4,startPosition:-1});
       hls.on(Hls.Events.ERROR,(_,event)=>{if(event.fatal)state.error=`hls-${event.type}-${event.details}`;});
@@ -114,11 +136,12 @@ window.miloMediaProbe={
     const samples=state.timecodeSamples.splice(0);
     const {tracks:ignored,timecodeSamples:ignoredSamples,...snapshot}=state;
     const quality=video.getVideoPlaybackQuality?.();
-    return {...snapshot,tracks,timecodeSamples:samples,observedAtMs:Date.now(),timeToFirstVideoMs:state.firstVideoAt===null?null:state.firstVideoAt-connectStartedAt,timeToFirstAudioMs:state.firstAudioAt===null?null:state.firstAudioAt-connectStartedAt,audioContextState:audioContext?.state??null,hlsPlaybackQuality:quality?{totalVideoFrames:quality.totalVideoFrames,droppedVideoFrames:quality.droppedVideoFrames}:null};
+    return {...snapshot,tracks,timecodeSamples:samples,observedAtMs:Date.now(),timeToFirstVideoMs:state.firstVideoAt===null?null:state.firstVideoAt-connectStartedAt,timeToFirstAudioMs:state.firstAudioAt===null?null:state.firstAudioAt-connectStartedAt,audioContextState:audioContext?.state??null,audioPlayoutElements:receivingAudioElements.map(element=>({paused:element.paused,readyState:element.readyState,volume:element.volume,muted:element.muted})),hlsPlaybackQuality:quality?{totalVideoFrames:quality.totalVideoFrames,droppedVideoFrames:quality.droppedVideoFrames}:null};
   },
-  async disconnect(){hls?.destroy();await room?.disconnect();await audioContext?.close();},
+  async disconnect(){clearInterval(audioObservationTimer);for(const element of receivingAudioElements){element.pause();element.srcObject=null;element.remove();}receivingAudioElements.length=0;hls?.destroy();await room?.disconnect();await audioContext?.close();},
   async publish({url,token,announcementsUrl,iceTransportPolicy='all',sourceRoute='direct-sdk-diagnostic-source',whipUrl,whipIceServers}){
     document.body.replaceChildren(canvas);canvas.hidden=false;
+    sourceStartedAt=performance.now();sourceAudioElement=null;
     audioContext=new AudioContext();await audioContext.resume();
     const destination=audioContext.createMediaStreamDestination();
     sourceAudioAnalyser=audioContext.createAnalyser();sourceAudioAnalyser.fftSize=2048;
@@ -127,6 +150,7 @@ window.miloMediaProbe={
     sourceNodes.push(destination,sourceAudioAnalyser,silentMonitor);
     if(announcementsUrl){
       const audio=new Audio(announcementsUrl);audio.loop=true;audio.crossOrigin='anonymous';
+      sourceAudioElement=audio;
       const source=audioContext.createMediaElementSource(audio);source.connect(sourceAudioAnalyser);sourceNodes.push(audio,source);await audio.play();
     }else{
       // Explicitly labelled diagnostic tone, never evidence of spoken announcements.
@@ -134,7 +158,10 @@ window.miloMediaProbe={
       const gain=audioContext.createGain();gain.gain.value=.08;oscillator.connect(gain);gain.connect(sourceAudioAnalyser);oscillator.start();sourceNodes.push(oscillator,gain);
     }
     const paint=()=>{
-      const now=Date.now();const n=1+Math.floor(now/15000)%75;
+      const now=Date.now();
+      // Highlight and spoken number follow the same decoded WAV clock. UTC
+      // remains independent and is used only by the latency timecode below.
+      const n=sourceCueNumber(sourceAudioElement?.currentTime??(performance.now()-sourceStartedAt)/1000);
       canvasContext.fillStyle='#241331';canvasContext.fillRect(0,0,1280,720);
       canvasContext.fillStyle='#f1cc7c';canvasContext.font='bold 42px sans-serif';canvasContext.fillText('Milo · afgeschermde technische proef',40,60);
       canvasContext.fillStyle='#64d1cf';canvasContext.beginPath();canvasContext.arc(100+((now/6)%1080),125,26,0,Math.PI*2);canvasContext.fill();
@@ -148,6 +175,7 @@ window.miloMediaProbe={
       canvasContext.fillStyle='white';canvasContext.font='bold 42px monospace';canvasContext.fillText(new Date(now).toISOString(),40,595);drawFrameTime(canvasContext,now);
     };
     const sourceVideo=canvas.captureStream(0).getVideoTracks()[0];
+    sourceVideoInput=sourceVideo;sourceAudioInput=destination.stream.getAudioTracks()[0];
     const tick=()=>{paint();sourceVideo.requestFrame();};tick();sourceTimer=setInterval(tick,1000/30);
     let result={route:'direct-sdk-diagnostic-source'};
     if(sourceRoute==='browser-whip-test')result=await publishWhip({url:whipUrl,iceServers:whipIceServers,iceTransportPolicy},sourceVideo,destination.stream.getAudioTracks()[0]);
@@ -164,12 +192,14 @@ window.miloMediaProbe={
     const stats=new Map();
     const reports=whipPc?[await whipPc.getStats()]:await Promise.all([sourceVideoPublication?.track?.getRTCStatsReport(),sourceAudioPublication?.track?.getRTCStatsReport()]);
     reports.forEach(report=>report?.forEach((value,key)=>stats.set(key,value)));
-    const video=[],audio=[],transport=[];stats?.forEach(value=>{
-      if(value.type==='outbound-rtp'&&value.kind==='video')video.push({codec:stats.get(value.codecId)?.mimeType,bytesSent:value.bytesSent,framesEncoded:value.framesEncoded,framesPerSecond:value.framesPerSecond,qualityLimitationReason:value.qualityLimitationReason});
+    const video=[],audio=[],transport=[],mediaSources=[];stats?.forEach(value=>{
+      if(value.type==='media-source')mediaSources.push({kind:value.kind,trackIdentifier:value.trackIdentifier,audioLevel:value.audioLevel,totalAudioEnergy:value.totalAudioEnergy,totalSamplesDuration:value.totalSamplesDuration,width:value.width,height:value.height,framesPerSecond:value.framesPerSecond});
+      if(value.type==='outbound-rtp'&&value.kind==='video')video.push({codec:stats.get(value.codecId)?.mimeType,bytesSent:value.bytesSent,framesEncoded:value.framesEncoded,framesPerSecond:value.framesPerSecond,frameWidth:value.frameWidth,frameHeight:value.frameHeight,qualityLimitationReason:value.qualityLimitationReason});
       if(value.type==='outbound-rtp'&&value.kind==='audio')audio.push({codec:stats.get(value.codecId)?.mimeType,bytesSent:value.bytesSent,packetsSent:value.packetsSent});
       if(value.type==='candidate-pair'&&value.state==='succeeded'&&value.nominated){const local=stats.get(value.localCandidateId),remote=stats.get(value.remoteCandidateId);transport.push({protocol:local?.protocol,localAddress:local?.address,localPort:local?.port,remoteAddress:remote?.address,remotePort:remote?.port,localCandidateType:local?.candidateType,remoteCandidateType:remote?.candidateType});}
     });
-    return {observedAtMs:Date.now(),audioRms,audioContextState:audioContext.state,video,audio,transport};
+    const trackState=track=>track?{enabled:track.enabled,muted:track.muted,readyState:track.readyState,settings:track.getSettings()}:null;
+    return {observedAtMs:Date.now(),audioRms,audioContextState:audioContext.state,sourceCueNumber:sourceCueNumber(sourceAudioElement?.currentTime??(performance.now()-sourceStartedAt)/1000),sourceAudioTimeSeconds:sourceAudioElement?.currentTime??null,sourceTracks:{audio:trackState(sourceAudioInput),video:trackState(sourceVideoInput)},mediaSources,video,audio,transport};
   },
   async stopPublishing(){
     clearInterval(sourceTimer);whipPc?.close();

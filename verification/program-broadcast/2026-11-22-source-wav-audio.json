@@ -1,0 +1,349 @@
+{
+  "format": "milo-current-source-audio-proof-v1",
+  "observedAt": "2026-11-22T16:33:08.851Z",
+  "source": "scripts/load/browser-probe.mjs",
+  "sourceSha256": "29da4dd2d1c362ee90e921a7ce12f48f0c3b6b8cbd76a01199b0e88895987804",
+  "method": "Exact current browser source bundled with a networkless Room.connect stub that stays pending; actual Chromium WebAudio and actual captured MediaStreamDestination PCM are measured.",
+  "scope": "Local media generator only. No public AV, encoder, ingress, LiveKit subscription or physical audio-speaker claim.",
+  "sdkConnectionStubbed": true,
+  "loadStageExecuted": false,
+  "realRoomCreated": false,
+  "samples": [
+    {
+      "sourceRms": 0.19535947161733463,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.131621,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.1371857349439329,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.01022708462509377,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.2322,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.03501324647861361,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.08047108073085299,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.336689,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05130014910879212,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.06000909138120478,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.437918,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.04985980547417945,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.07549664213826197,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.544987,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.1379714623137922,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.033594607136245305,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.650418,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.02572456954030208,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.08995803149676662,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.751407,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05699670785158249,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.10703415664938118,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.852707,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.12974639492039877,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.008555752485237057,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.952018,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.007500176054011766,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.057916,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 1.4508956115884659e-05,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.159119,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.265488,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 3.480734897689293e-09,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.364172,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.1691062416046699,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.469467,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.11746793239426459,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.07440800926469289,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.572568,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.05421811455575008,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.0330254609838062,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.671837,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.07582888419350195,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.1981310304348618,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.776702,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.11569541354488967,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.1047477474490035,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.885141,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.147829981203448,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.06083044520568904,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.985306,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.07293841068334056,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "sourceRms": 0.20574090795384287,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 2.090153,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.17158576482566903,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    }
+  ],
+  "capturedDestination": {
+    "trackState": "live",
+    "trackEnabled": true,
+    "trackMuted": false,
+    "settings": {
+      "channelCount": 2,
+      "deviceId": "WebAudio-9bcd0bb4-c28e-40f7-b286-863a50a153e1",
+      "latency": 0.01,
+      "sampleRate": 44100,
+      "sampleSize": 16
+    },
+    "destinationCount": 1
+  },
+  "alignment": [
+    {
+      "expectedNumber": 1,
+      "actualNumber": 1,
+      "sourceAudioTimeSeconds": 0.314589,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 2,
+      "actualNumber": 2,
+      "sourceAudioTimeSeconds": 15.321905,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 15,
+      "actualNumber": 15,
+      "sourceAudioTimeSeconds": 210.30661,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 70,
+      "actualNumber": 70,
+      "sourceAudioTimeSeconds": 1035.310295,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 75,
+      "actualNumber": 75,
+      "sourceAudioTimeSeconds": 1110.32866,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    }
+  ],
+  "loop": {
+    "actualNumber": 1,
+    "sourceAudioTimeSeconds": 0.388898,
+    "highlightPixel": [
+      241,
+      204,
+      124,
+      255
+    ],
+    "passed": true
+  },
+  "passed": true,
+  "audioSource": "offline-dutch-number-announcements-75x15s",
+  "waveSha256": "7f2e257eeed80b11ac4fd4f5a9665fe18881f53dbe6847bd5afab94afffa4c9a",
+  "cleanup": {
+    "sourceDisconnectInvoked": true,
+    "capturedContextState": "closed"
+  },
+  "externalNetworkRequests": [],
+  "publicNetworkUsed": false,
+  "finishedAt": "2026-11-22T16:33:12.631Z"
+}

@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {createHmac} from 'node:crypto';
+import {createHmac,randomUUID} from 'node:crypto';
 import {lookup} from 'node:dns/promises';
 import {readFile,lstat,mkdir,writeFile,appendFile} from 'node:fs/promises';
 import http from 'node:http';
@@ -7,8 +7,11 @@ import {cpus,freemem,networkInterfaces,hostname} from 'node:os';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
-import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
+import {STAGES,MEDIA_PROFILE,cliDurationSeconds,fullOccupancyHoldSeconds,hasRecentDecodedAudio,videoResolutionEvidence,summarizeTurnBurden,validateLoadConfiguration,validateFixtureManifest,requireDnsPin,viewerToken,pressureReasons,parseCliTrackResults,summarize} from './media-profile.mjs';
 import {runHlsViewer,createHlsContinuityTracker,hlsBrowserIsFresh} from './hls-client.mjs';
+import {waveByteRange} from './source-wave.mjs';
+import {sameOriginProbeDocument} from './probe-origin.mjs';
+import {HARNESS_BROWSER_SIGNAL_OPTIONS} from './browser-runtime.mjs';
 
 const base=dirname(fileURLToPath(import.meta.url));
 const args=process.argv.slice(2);
@@ -67,18 +70,28 @@ async function localServer(config){
   const {build}=await import('esbuild');
   const bundle=await build({entryPoints:[resolve(base,'browser-probe.mjs')],bundle:true,write:false,format:'esm',target:'es2022',logLevel:'silent'});
   const payload=bundle.outputFiles[0].contents;
+  const announcements=config.announcementsPath?await readFile(config.announcementsPath):null;
   const html='<!doctype html><html lang="nl"><meta charset="utf-8"><title>Afgeschermde Milo-mediaproef</title><style>body{margin:0;background:#160e21}video,canvas{width:100%;height:auto}</style><script type="module" src="/probe.js"></script></html>';
   server=http.createServer(async(req,res)=>{
     res.setHeader('Cache-Control','no-store');
     if(req.url==='/probe.js'){res.setHeader('Content-Type','text/javascript');res.end(payload);}
-    else if(req.url==='/announcements'&&config.announcementsPath){res.setHeader('Content-Type','audio/wav');res.end(await readFile(config.announcementsPath));}
+    else if(req.url==='/announcements'&&announcements){
+      const range=waveByteRange(req.headers.range,announcements.length);
+      res.setHeader('Content-Type','audio/wav');res.setHeader('Accept-Ranges','bytes');
+      if(range.status===416){res.writeHead(416,{'Content-Range':`bytes */${announcements.length}`});res.end();}
+      else{
+        res.statusCode=range.status;
+        if(range.status===206)res.setHeader('Content-Range',`bytes ${range.start}-${range.end}/${announcements.length}`);
+        res.setHeader('Content-Length',range.end-range.start+1);res.end(req.method==='HEAD'?undefined:announcements.subarray(range.start,range.end+1));
+      }
+    }
     else if(req.url==='/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html);}
     else{res.writeHead(404);res.end();}
   });
   await new Promise(accept=>server.listen(0,'127.0.0.1',accept));
   const origin=`http://127.0.0.1:${server.address().port}`;
   const {chromium}=await import('@playwright/test');
-  browser=await chromium.launch({headless:true,...(config.chromiumPath?{executablePath:config.chromiumPath}:{}),args:['--autoplay-policy=no-user-gesture-required','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows']});
+  browser=await chromium.launch({headless:true,...HARNESS_BROWSER_SIGNAL_OPTIONS,...(config.chromiumPath?{executablePath:config.chromiumPath}:{}),args:['--autoplay-policy=no-user-gesture-required','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows']});
   return origin;
 }
 function publisherToken(config,credentials){
@@ -107,7 +120,17 @@ async function startSource(config,credentials,origin){
 }
 async function probe(config,credentials,origin,identity,{hls=false}={}){
   const context=await browser.newContext({viewport:{width:1280,height:720}});
-  const page=await context.newPage();await page.goto(origin);await page.waitForFunction(()=>window.miloMediaProbe);
+  let documentUrl=origin;
+  if(hls){
+    const document=sameOriginProbeDocument(config.appOrigin,randomUUID());
+    const response=await fetch(origin+'/probe.js',{redirect:'error',signal:AbortSignal.timeout(8000)});
+    if(!response.ok)throw new Error('De eigen lokale probebundle is niet beschikbaar.');
+    const payload=Buffer.from(await response.arrayBuffer());
+    await context.route(document.documentUrl,route=>route.fulfill({status:200,contentType:'text/html',body:document.html}));
+    await context.route(document.scriptUrl,route=>route.fulfill({status:200,contentType:'text/javascript',body:payload}));
+    documentUrl=document.documentUrl;
+  }
+  const page=await context.newPage();await page.goto(documentUrl);await page.waitForFunction(()=>window.miloMediaProbe);
   if(hls)await page.evaluate(params=>window.miloMediaProbe.connectHls(params),{url:config.hlsMediaPlaylistUrl});
   else await page.evaluate(params=>window.miloMediaProbe.connect(params),{url:config.livekitUrl,token:viewerToken({...credentials,room:config.room,identity,publisherIdentity:config.publisherIdentity,fixtureGameId:config.fixtureGameId,testOnly:config.testOnly}),publisherIdentity:config.publisherIdentity,iceTransportPolicy:config.forceRelay===true?'relay':'all'});
   // waitForFunction with a returned Promise is insufficient here: explicitly
@@ -119,7 +142,7 @@ async function probe(config,credentials,origin,identity,{hls=false}={}){
     await delay(500);
   }
   if(!ready){const error=new Error('Browser ontvangt geen gedecodeerd beeld én niet-stille audio binnen 30 seconden.');error.diagnosticSample=lastSample;await context.close();throw error;}
-  return {context,page,identity};
+  return {context,page,identity,documentDelivery:hls?'Exact probe bundle locally fulfilled at the owned app origin; HLS requests and CORS remain unmodified. No family-UI/login claim.':'Local loopback probe document.'};
 }
 function spawnCli(config,credentials,stage,subscribers){
   const child=spawn(config.lkPath,['perf','load-test','--room',config.room,'--subscribers',String(subscribers),'--video-publishers','0','--audio-publishers','0','--duration',`${cliDurationSeconds(stage)}s`,'--num-per-second','5','--layout','speaker','--identity-prefix',`milo-load-${stage.name}`],{stdio:['ignore','pipe','pipe'],env:{...process.env,LIVEKIT_URL:config.livekitUrl,LIVEKIT_API_KEY:credentials.apiKey,LIVEKIT_API_SECRET:credentials.apiSecret,NO_COLOR:'1',TERM:'dumb'}});
@@ -144,6 +167,7 @@ async function runStage(config,credentials,origin,stage,previous){
       if(playlist.protocol!=='https:'||playlist.origin!==config.appOrigin||!config.hlsPathPrefix?.startsWith('/api/broadcast/hls/')||!playlist.pathname.startsWith(config.hlsPathPrefix)||!config.hlsRoomBindingReference)throw new Error('HLS-testdoel mist de gecontroleerde binding aan de eigen stagingtestroom.');
       // Small stagger avoids synchronized segment bursts unrelated to real viewing.
       hlsProbe=await probe(config,credentials,origin,`milo-load-${stage.name}-hls-browser`,{hls:true});
+      result.hlsBrowserDocumentDelivery=hlsProbe.documentDelivery;
       for(let i=0;i<stage.hls-1;i++){hls.push(runHlsViewer({playlistUrl:playlist.href,signal:hlsAbort.signal,identity:`hls-${i}`,onSample:recordHls}));await delay(20);}
     }
     cli=spawnCli(config,credentials,stage,stage.webrtc-3);
@@ -165,6 +189,7 @@ async function runStage(config,credentials,origin,stage,previous){
         sample.identity=item.identity;samples.push(sample);
         await appendFile(resolve(output,`${stage.name}-browser.jsonl`),JSON.stringify(sample)+'\n',{mode:0o600});
         if(sample.error||!sample.connected||Date.now()-sample.lastFrameAt>10000)throw new Error('Browserplayer verliest de werkelijke programmaweergave.');
+        if(!hasRecentDecodedAudio(sample,Date.now()))throw new Error('De WebRTC-browser decodeert geen recente hoorbare programma-audio; historische activatie of stille RTP-pakketten zijn geen afspeelbewijs.');
       }
       let hlsReady=!stage.hls;
       if(hlsProbe){
@@ -213,6 +238,7 @@ async function runStage(config,credentials,origin,stage,previous){
       const frames=sample=>sample.tracks.filter(track=>track.kind==='video').reduce((sum,track)=>sum+(track.framesDecoded||0),0);
       return elapsed>0?(frames(last)-frames(first))/elapsed:null;
     }));
+    result.browserResolution=videoResolutionEvidence(samples,probes.map(item=>item.identity),fullOccupancyAtMs,finished.finishedAt);
     result.hostCpuPercent=summarize(hostSamples.map(sample=>sample.cpuPercent));
     result.hostEgressMbps=summarize(hostSamples.map(sample=>sample.egressMbps));
     result.hostAvailableMemoryMinBytes=Math.min(...hostSamples.map(sample=>sample.memAvailableBytes));
@@ -229,7 +255,18 @@ async function runStage(config,credentials,origin,stage,previous){
     const profileLoaded=result.browserMediaBitrateBps.p50>=MEDIA_PROFILE.totalBps*.8;
     result.profileBitrateAdequate=profileLoaded;
     result.profileFpsAdequate=result.browserDecodedFps.p50>=27;
-    result.success=finished.code===0&&result.holdSeconds>=stage.seconds&&result.connectionSuccessRate>=.99&&result.webrtcLatencyMs.samples>=stage.seconds&&result.webrtcLatencyMs.p95<=1000&&hlsSuccess&&profileLoaded&&result.profileFpsAdequate&&result.turnBurden.measured&&result.sfuPrometheusSamples>=2;
+    result.profileResolutionAdequate=result.browserResolution.adequate;
+    result.success=finished.code===0&&result.holdSeconds>=stage.seconds&&result.connectionSuccessRate>=.99&&result.webrtcLatencyMs.samples>=stage.seconds&&result.webrtcLatencyMs.p95<=1000&&hlsSuccess&&profileLoaded&&result.profileFpsAdequate&&result.profileResolutionAdequate&&result.turnBurden.measured&&result.sfuPrometheusSamples>=2;
+    if(result.success){
+      const viewerScreenshot=`${stage.name}-decoder.png`;
+      await probes[0].page.screenshot({path:resolve(output,viewerScreenshot)});
+      result.decoderScreenshot={file:viewerScreenshot,source:'Actual first receiving WebRTC browser page after the measured hold; not the publisher canvas.'};
+      if(hlsProbe){
+        const hlsScreenshot=`${stage.name}-hls-decoder.png`;
+        await hlsProbe.page.screenshot({path:resolve(output,hlsScreenshot)});
+        result.hlsDecoderScreenshot={file:hlsScreenshot,source:'Actual receiving HLS browser page after the measured hold; not the publisher canvas.'};
+      }
+    }
     result.status=result.success?'passed':'target-missed';
     result.endedAt=new Date().toISOString();
     return {previous,success:result.success};
@@ -256,7 +293,7 @@ try{
   const version=await execute(config.lkPath,['--version']);
   if(!version.stdout.includes('2.20.1'))throw new Error('Gebruik de exact gecontroleerde lk-CLI 2.20.1.');
   let previous=await observeSafety(config,null);await delay(5000);previous=await observeSafety(config,previous);
-  report.preflight={passed:true,capacityGateChecked:mode!=='--connectivity',forceRelay:config.forceRelay===true,appOrigin:config.appOrigin,livekitHostname:config.livekitHostname,targetPublicIps:addresses,host:config.inventory.host,room:config.room,fixtureBinding,inventoryReference:config.inventory.reference,generator:{host:hostname(),cpuCount:cpus().length,freeMemoryBytes:freemem(),network:config.generator.networkDescription,publicIp:config.generator.publicIp,availableIngressMbps:config.generator.availableIngressMbps,clockErrorBoundMs:config.generator.clockErrorBoundMs},sourceRoute:config.sourceRoute||'externally-published',cliVersion:version.stdout.trim()};
+  report.preflight={passed:true,capacityGateChecked:mode!=='--connectivity',forceRelay:config.forceRelay===true,appOrigin:config.appOrigin,livekitHostname:config.livekitHostname,targetPublicIps:config.targetPublicIps,dnsAnswers:addresses,host:config.inventory.host,room:config.room,fixtureBinding,inventoryReference:config.inventory.reference,generator:{host:hostname(),cpuCount:cpus().length,freeMemoryBytes:freemem(),network:config.generator.networkDescription,publicIp:config.generator.publicIp,availableIngressMbps:config.generator.availableIngressMbps,clockErrorBoundMs:config.generator.clockErrorBoundMs},sourceRoute:config.sourceRoute||'externally-published',cliVersion:version.stdout.trim()};
   await save();
   if(mode==='--preflight'){console.log('Read-only stagingpreflight geslaagd. Er is geen mediabelasting gestart.');}
   else{

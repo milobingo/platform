@@ -17,6 +17,22 @@ export const cliDurationSeconds = stage => stage.seconds+15;
 export function fullOccupancyHoldSeconds(fullObservedAtMs,finishedAtMs){
   return Number.isFinite(fullObservedAtMs)&&Number.isFinite(finishedAtMs)?Math.max(0,(finishedAtMs-fullObservedAtMs)/1000):0;
 }
+export function hasRecentDecodedAudio(sample,now){
+  return Number.isFinite(sample?.lastAudioAt)&&Number.isFinite(now)&&now>=sample.lastAudioAt&&now-sample.lastAudioAt<=20000;
+}
+export function videoResolutionEvidence(samples,identities,startAtMs,endAtMs){
+  const windowValid=Number.isFinite(startAtMs)&&Number.isFinite(endAtMs)&&endAtMs>=startAtMs;
+  const browsers=identities.map(identity=>{
+    const held=windowValid?samples.filter(sample=>sample.identity===identity&&sample.observedAtMs>=startAtMs&&sample.observedAtMs<=endAtMs):[];
+    const invalid=held.filter(sample=>{
+      const tracks=sample.tracks.filter(track=>track.kind==='video');
+      return !tracks.length||tracks.some(track=>track.frameWidth!==MEDIA_PROFILE.width||track.frameHeight!==MEDIA_PROFILE.height||!(track.framesDecoded>0));
+    });
+    const dimensions=[...new Set(held.flatMap(sample=>sample.tracks.filter(track=>track.kind==='video').map(track=>`${track.frameWidth??'missing'}x${track.frameHeight??'missing'}`)))];
+    return {identity,samples:held.length,invalidSamples:invalid.length,observedDimensions:dimensions,adequate:held.length>=2&&invalid.length===0};
+  });
+  return {expected:{width:MEDIA_PROFILE.width,height:MEDIA_PROFILE.height},scope:'All independently observed full-occupancy samples, separately for each real browser decoder.',adequate:windowValid&&browsers.length>0&&browsers.every(browser=>browser.adequate),browsers};
+}
 export function summarizeTurnBurden(observations){
   const values=observations.filter(value=>value?.turnNetwork?.measured===true);
   if(values.length<2)return {measured:false,samples:values.length,reason:'Twee volledige waarnemingen van de eigen TURN-kerneltellers ontbreken.'};

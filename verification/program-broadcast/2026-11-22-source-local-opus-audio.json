@@ -1,0 +1,742 @@
+{
+  "format": "milo-current-source-audio-proof-v1",
+  "observedAt": "2026-11-22T16:33:13.137Z",
+  "source": "scripts/load/browser-probe.mjs",
+  "sourceSha256": "29da4dd2d1c362ee90e921a7ce12f48f0c3b6b8cbd76a01199b0e88895987804",
+  "method": "Exact current browser source bundled with a networkless Room.connect stub that stays pending; actual Chromium WebAudio and actual captured MediaStreamDestination PCM are measured.",
+  "scope": "Local media generator only. No public AV, encoder, ingress, LiveKit subscription or physical audio-speaker claim.",
+  "sdkConnectionStubbed": true,
+  "loadStageExecuted": false,
+  "realRoomCreated": false,
+  "samples": [
+    {
+      "localPeerRms": 0.1700425166650177,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 624,
+          "packetsReceived": 4,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 4320
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.46143986327707753,
+          "totalAudioEnergy": 0.06829043389631936,
+          "totalSamplesDuration": 0.3100000000000001
+        }
+      ],
+      "sourceRms": 0.07839305318531423,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.198685,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.14111267788913867,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.007910781213081381,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 1668,
+          "packetsReceived": 29,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 9120
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.6536454359569078,
+          "totalAudioEnergy": 0.11741746052473367,
+          "totalSamplesDuration": 0.4300000000000002
+        }
+      ],
+      "sourceRms": 0.04774410441539351,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.306709,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.02208422200329838,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.0630984020741531,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 2526,
+          "packetsReceived": 35,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 14400
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.16339609973448896,
+          "totalAudioEnergy": 0.12008728906557795,
+          "totalSamplesDuration": 0.5300000000000002
+        }
+      ],
+      "sourceRms": 0.04318688135315897,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.407664,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.09003380136775271,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.033009869885463866,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 3509,
+          "packetsReceived": 41,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 19200
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.3414105655079806,
+          "totalAudioEnergy": 0.13201038934371026,
+          "totalSamplesDuration": 0.6400000000000003
+        }
+      ],
+      "sourceRms": 0.14392492936854773,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.513719,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.11236515840783347,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.13803144176309182,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 4108,
+          "packetsReceived": 46,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 24480
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.6170842616046632,
+          "totalAudioEnergy": 0.16744736981893057,
+          "totalSamplesDuration": 0.7400000000000004
+        }
+      ],
+      "sourceRms": 0.019125027971123386,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.616644,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.013074487832851535,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.010940942951454669,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 4981,
+          "packetsReceived": 51,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 29280
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.17557298501541185,
+          "totalAudioEnergy": 0.17783755811338403,
+          "totalSamplesDuration": 0.8500000000000005
+        }
+      ],
+      "sourceRms": 0.05532151524279917,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.724241,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.03955531479873456,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.057544221788000505,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 5822,
+          "packetsReceived": 56,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 34560
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.3128147221289712,
+          "totalAudioEnergy": 0.18530378910137224,
+          "totalSamplesDuration": 0.9400000000000006
+        }
+      ],
+      "sourceRms": 0.14390484344176943,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.825624,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.1598700713025847,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.1213878357060938,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 6660,
+          "packetsReceived": 61,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 39360
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.44599749748222295,
+          "totalAudioEnergy": 0.2051310125374297,
+          "totalSamplesDuration": 1.0600000000000007
+        }
+      ],
+      "sourceRms": 0.007267967089312607,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 0.930154,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.03097432001756782,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.006342464690907018,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 7545,
+          "packetsReceived": 67,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 44160
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.11148411511581774,
+          "totalAudioEnergy": 0.21196843512486285,
+          "totalSamplesDuration": 1.1600000000000008
+        }
+      ],
+      "sourceRms": 0.0015792534046324338,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.03857,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.006397309685567558,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 1.3185721595897974e-05,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 7922,
+          "packetsReceived": 72,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 49440
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.027863399151585436,
+          "totalAudioEnergy": 0.212512165582526,
+          "totalSamplesDuration": 1.260000000000001
+        }
+      ],
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.139093,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 2.186168638292961e-06,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 8297,
+          "packetsReceived": 77,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 54240
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.00695822016052736,
+          "totalAudioEnergy": 0.21255388904280823,
+          "totalSamplesDuration": 1.370000000000001
+        }
+      ],
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.244937,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 2.444211142874762e-06,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 8672,
+          "packetsReceived": 82,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 59520
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.00173955504013184,
+          "totalAudioEnergy": 0.2125564611867852,
+          "totalSamplesDuration": 1.470000000000001
+        }
+      ],
+      "sourceRms": 0,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.348073,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.03290251380383779,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 9575,
+          "packetsReceived": 88,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 64320
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.18109683523056733,
+          "totalAudioEnergy": 0.21419644593641582,
+          "totalSamplesDuration": 1.5800000000000012
+        }
+      ],
+      "sourceRms": 0.1213988181762182,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.454406,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.08414380326530387,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.18644416584916465,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 10353,
+          "packetsReceived": 93,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 69600
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.7037873470259712,
+          "totalAudioEnergy": 0.23597687495360173,
+          "totalSamplesDuration": 1.6800000000000013
+        }
+      ],
+      "sourceRms": 0.04967479658660163,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.557011,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.11760026332449713,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.09828055441372462,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 11011,
+          "packetsReceived": 97,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 74400
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.6151310769981994,
+          "totalAudioEnergy": 0.27821676387975086,
+          "totalSamplesDuration": 1.7700000000000014
+        }
+      ],
+      "sourceRms": 0.0726060088387823,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.655737,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.11817425621906034,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.03573239649130614,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 11945,
+          "packetsReceived": 103,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 79200
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.3569444868312632,
+          "totalAudioEnergy": 0.31609380665013487,
+          "totalSamplesDuration": 1.8900000000000015
+        }
+      ],
+      "sourceRms": 0.13428815177266423,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.76355,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.04085178020315057,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.20865323897660945,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 12736,
+          "packetsReceived": 108,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 84480
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.750205999938963,
+          "totalAudioEnergy": 0.3375427368313618,
+          "totalSamplesDuration": 1.9900000000000015
+        }
+      ],
+      "sourceRms": 0.12710755527805787,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.870522,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.19269496650134935,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.08957404657214985,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 13661,
+          "packetsReceived": 114,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 89280
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.3084505752739036,
+          "totalAudioEnergy": 0.39009838579009565,
+          "totalSamplesDuration": 2.099999999999999
+        }
+      ],
+      "sourceRms": 0.06588840414914957,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 1.976885,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.07656010125797977,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.049435435558879436,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 14411,
+          "packetsReceived": 119,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 94560
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.6788842432935576,
+          "totalAudioEnergy": 0.4032699821128305,
+          "totalSamplesDuration": 2.199999999999997
+        }
+      ],
+      "sourceRms": 0.19493577764425335,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 2.078755,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.10097791079196385,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    },
+    {
+      "localPeerRms": 0.21314046699909303,
+      "localPeerReceived": [
+        {
+          "kind": "audio",
+          "bytesReceived": 15230,
+          "packetsReceived": 124,
+          "totalAudioEnergy": 0,
+          "totalSamplesReceived": 99360
+        }
+      ],
+      "localPeerSent": [
+        {
+          "kind": "audio",
+          "audioLevel": 0.6788842432935576,
+          "totalAudioEnergy": 0.4493583636920573,
+          "totalSamplesDuration": 2.299999999999995
+        }
+      ],
+      "sourceRms": 0.1328422715268451,
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 2.178186,
+      "sourceContextState": "running",
+      "capturedDestinationRms": 0.16995610588185595,
+      "capturedContextState": "running",
+      "stubState": {
+        "connectInvoked": true,
+        "disconnectInvoked": false
+      }
+    }
+  ],
+  "capturedDestination": {
+    "trackState": "live",
+    "trackEnabled": true,
+    "trackMuted": false,
+    "settings": {
+      "channelCount": 2,
+      "deviceId": "WebAudio-d0b463a7-30e3-4210-a887-fc5434047be6",
+      "latency": 0.01,
+      "sampleRate": 44100,
+      "sampleSize": 16
+    },
+    "destinationCount": 1
+  },
+  "localPeerSetup": {
+    "senderState": "connecting",
+    "receiverState": "connecting",
+    "sourceTrackSettings": {
+      "channelCount": 2,
+      "deviceId": "WebAudio-d0b463a7-30e3-4210-a887-fc5434047be6",
+      "latency": 0.01,
+      "sampleRate": 44100,
+      "sampleSize": 16
+    },
+    "receivedTrackState": "live"
+  },
+  "alignment": [
+    {
+      "expectedNumber": 1,
+      "actualNumber": 1,
+      "sourceAudioTimeSeconds": 0.313369,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 2,
+      "actualNumber": 2,
+      "sourceAudioTimeSeconds": 15.321905,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 15,
+      "actualNumber": 15,
+      "sourceAudioTimeSeconds": 210.305923,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 70,
+      "actualNumber": 70,
+      "sourceAudioTimeSeconds": 1035.309437,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "expectedNumber": 75,
+      "actualNumber": 75,
+      "sourceAudioTimeSeconds": 1110.321905,
+      "highlightPixel": [
+        241,
+        204,
+        124,
+        255
+      ],
+      "passed": true
+    }
+  ],
+  "loop": {
+    "actualNumber": 1,
+    "sourceAudioTimeSeconds": 0.386082,
+    "highlightPixel": [
+      241,
+      204,
+      124,
+      255
+    ],
+    "passed": true
+  },
+  "realLocalWebRtcAudio": {
+    "source": "real generator destination MediaStreamTrack \u2192 local browser peer pair forced Opus \u2192 received-track PCM",
+    "peakRms": 0.21314046699909303,
+    "lastReceivedStats": [
+      {
+        "kind": "audio",
+        "bytesReceived": 15230,
+        "packetsReceived": 124,
+        "totalAudioEnergy": 0,
+        "totalSamplesReceived": 99360
+      }
+    ],
+    "lastSenderMediaSourceStats": [
+      {
+        "kind": "audio",
+        "audioLevel": 0.6788842432935576,
+        "totalAudioEnergy": 0.4493583636920573,
+        "totalSamplesDuration": 2.299999999999995
+      }
+    ]
+  },
+  "passed": true,
+  "audioSource": "offline-dutch-number-announcements-75x15s",
+  "waveSha256": "7f2e257eeed80b11ac4fd4f5a9665fe18881f53dbe6847bd5afab94afffa4c9a",
+  "cleanup": {
+    "sourceDisconnectInvoked": true,
+    "capturedContextState": "closed"
+  },
+  "externalNetworkRequests": [],
+  "publicNetworkUsed": false,
+  "finishedAt": "2026-11-22T16:33:17.165Z"
+}
