@@ -1,0 +1,11 @@
+--- a/pkg/service/roommanager.go
++++ b/pkg/service/roommanager.go
+@@ -1081,7 +1081,7 @@
+ 			}
+ 		}
+ 		if r.config.TURN.TLSPort > 0 {
+-			urls = append(urls, fmt.Sprintf("turns:%s:443?transport=tcp", r.config.TURN.Domain))
++			urls = append(urls, fmt.Sprintf("turns:%s?transport=tcp", net.JoinHostPort(r.config.TURN.Domain, strconv.Itoa(r.config.TURN.TLSPort))))
+ 		}
+ 		if len(urls) > 0 {
+ 			username, expiry := r.turnAuthHandler.CreateUsername(apiKey, participant.ID(), r.config.TURN.TTLSeconds)

@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import pwd
+import re
 from pathlib import Path
 import secrets
 import shutil
@@ -30,10 +31,47 @@ def write(path, value, mode=0o600, uid=0, gid=0):
     path.chmod(mode)
 
 
+def verify_external_livekit_image():
+    """Fail before host changes; never build Go or silently use upstream 443."""
+    image_name = "milo-livekit-staging:1.13.11-turn-tls-port-v1"
+    manifest = Path("/etc/milobingo-media/livekit-image.json")
+    if not manifest.exists():
+        raise SystemExit("Load the externally built LiveKit image and install its protected build report first.")
+    if manifest.is_symlink():
+        raise SystemExit("The external LiveKit build report must not be a symlink.")
+    info = manifest.stat()
+    if info.st_uid != 0 or info.st_mode & 0o077 or info.st_nlink != 1 or info.st_size > 64000:
+        raise SystemExit("The external LiveKit build report must be root-owned 0600.")
+    report = json.loads(manifest.read_text())
+    if (report.get("format") != 1 or report.get("passed") is not True
+            or report.get("targetedGoTestPassed") is not True
+            or report.get("upstreamVersion") != "1.13.11"
+            or report.get("upstreamCommit") != "385aa40f9292fe1db8caad87301e4b285b7c198a"
+            or report.get("runtimeUser") != "65532:65532" or report.get("image") != image_name
+            or not re.fullmatch(r"sha256:[a-f0-9]{64}", report.get("imageId", ""))
+            or not re.fullmatch(r"[a-f0-9]{64}", report.get("binarySha256", ""))):
+        raise SystemExit("The external LiveKit build report does not match the pinned staging patch.")
+    image = json.loads(subprocess.check_output(["docker", "image", "inspect", image_name], text=True))[0]
+    labels = image["Config"].get("Labels", {})
+    if (image["Id"] != report["imageId"] or image["Config"]["User"] != "65532:65532"
+            or labels.get("org.opencontainers.image.revision") != report["upstreamCommit"]
+            or labels.get("org.opencontainers.image.version") != "1.13.11"
+            or labels.get("nl.dgwebservices.milo.patch") != "embedded-turn-configured-tls-port-v1"
+            or labels.get("nl.dgwebservices.milo.binary-sha256") != report["binarySha256"]):
+        raise SystemExit("The loaded LiveKit image differs from the approved external build.")
+    actual = subprocess.check_output(["docker", "run", "--rm", "--network=none", "--read-only",
+                                      "--cpus=0.5", "--memory=64m", "--cap-drop=ALL",
+                                      "--security-opt=no-new-privileges:true", "--entrypoint=sha256sum",
+                                      image_name, "/livekit-server"], text=True, timeout=30).split()[0]
+    if actual != report["binarySha256"]:
+        raise SystemExit("The loaded LiveKit binary digest differs from the approved build.")
+
+
 if os.geteuid() != 0 or socket.gethostname() != "dg-nxttrack-01":
     raise SystemExit("Only root on verified dg-nxttrack-01 is supported.")
 if "128.140.93.95" not in subprocess.check_output(["ip", "-4", "addr"], text=True):
     raise SystemExit("Confirmed staging public IP is missing.")
+verify_external_livekit_image()
 try:
     pwd.getpwuid(63001)
 except KeyError:
@@ -129,7 +167,7 @@ write("/etc/sysctl.d/90-milo-media.conf", "".join(f"{key} = {value}\n" for key, 
 run("sysctl", "-p", "/etc/sysctl.d/90-milo-media.conf")
 run("systemctl", "start", "milo-media.slice")
 run("/usr/local/sbin/milo-media-sync-cert")
-run("docker", "compose", "-f", str(install / "compose.yaml"), "pull", "--ignore-buildable", "--quiet")
+run("docker", "compose", "-f", str(install / "compose.yaml"), "pull", "--quiet", "redis", "ingress")
 run("docker", "compose", "-f", str(install / "compose.yaml"), "build", "egress")
 
 for port, protocol in [(7881, "tcp"), (7882, "udp"), (7885, "udp"), (3480, "udp"), (5349, "tcp")]:

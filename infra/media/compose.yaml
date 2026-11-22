@@ -18,7 +18,10 @@ services:
     cgroup_parent: milo-media.slice
     logging: &logging {driver: local, options: {max-size: 10m, max-file: "2"}}
   livekit:
-    image: livekit/livekit-server:v1.13.11@sha256:25cd902de7cacbd5f1f779f6a6ac1eae20ba8f56b0935934ce6b0ab80d1e3d20
+    # Built and tested on the external generator, transferred and loaded first.
+    # install-staging.py binds this tag to its exact image ID and binary digest.
+    image: milo-livekit-staging:1.13.11-turn-tls-port-v1
+    pull_policy: never
     command: [--config, /config/livekit.yaml]
     network_mode: host
     restart: unless-stopped
