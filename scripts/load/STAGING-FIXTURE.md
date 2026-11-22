@@ -107,8 +107,10 @@ staan uitsluitend in `<game-uuid>-session.json` naast het manifest, mode `0600`.
 Bewaar of kopieer dit bestand uitsluitend via de geautoriseerde private
 beheerroute. Toon het niet in terminaluitvoer, screenshots of testlogs.
 
-Laat de testencoder vervolgens exact `programme-video` en `programme-audio`
-publiceren als `programme-<game-uuid>`. Zodra echte AV-tracks binnenkomen:
+Verbind de testencoder via de private WHIP-URL. De native WHIP-route van
+LiveKit 1.13.11 publiceert `synthesized-camera` en `synthesized-microphone`
+als `programme-<game-uuid>`; de app selecteert uitsluitend deze twee tracks
+van die programmapublisher. Zodra echte AV-tracks binnenkomen:
 
 ```sh
 sudo -n env -i PATH=/usr/bin:/bin /opt/node-v24.18.0-linux-x64/bin/node <tool> start-hls --manifest <manifest>
@@ -155,4 +157,7 @@ node tests/check-staging-programme-fixture.mjs
 ```
 
 De fixture is tijdens de eerste implementatie niet op de VPS aangemaakt,
-omdat de externe mediapoorten nog geblokkeerd waren.
+omdat de externe mediapoorten nog geblokkeerd waren. De latere echte proef
+na de firewallaanpassing staat in het
+[hertestrapport](../../docs/LIVEKIT-FIREWALL-HERTEST-2026-11-22.md), inclusief
+de afzonderlijke meetresultaten en het bewijs van opruiming.

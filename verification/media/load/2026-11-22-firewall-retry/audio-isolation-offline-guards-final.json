@@ -1,0 +1,221 @@
+{
+  "format": "milo-technical-private-programme-audio-isolation-v1",
+  "startedAt": "2026-11-22T18:36:03.621Z",
+  "offlineOnly": true,
+  "executed": true,
+  "complete": true,
+  "maximumRuntimeSeconds": 90,
+  "actualApplicationCallFlow": false,
+  "actualFamilyAccounts": false,
+  "realChildren": false,
+  "privateAiOrPaidApi": false,
+  "physicalObsOrTv": false,
+  "scope": "Actual existing call grants, LiveKitMedia routing and LiveCallAudio production mixer with explicit synthetic frequency tracks. This is not consent/UI/showrunner/draw-hold or physical OBS rehearsal.",
+  "sourceSha256": {
+    "livekitMedia": "fb9d8e9087a65c9fcfa4107ecb2e3004ad4872d474af40c304ff559d10fcc649",
+    "liveCallAudio": "6ddb54025d0c0a83e142ebb3b2773da752d540193848a90234b441c6730b4701",
+    "callGrants": "77958bbcc418de3b4b876066489377543fb595fae4dd30bedf6cf4f162c04603",
+    "browserProbe": "057d5869995234b7fde8fa042004f0ab4580184e376aabe7fb2792172cd96ba0"
+  },
+  "callRooms": {
+    "backstage": "bs-2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+    "live": "live-2f2f1785-07c5-4c75-a74b-35a27b1fe790"
+  },
+  "callId": "2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+  "programmeSourceIdentity": "milo-load-audio-mix-2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+  "programmeViewerIdentity": "milo-load-audio-listener-2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+  "exactOwnedTechnicalRooms": [
+    "bs-2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+    "live-2f2f1785-07c5-4c75-a74b-35a27b1fe790",
+    "milo-staging-load-audio-isolation-2f2f1785-07c5-4c75-a74b-35a27b1fe790"
+  ],
+  "offlineRpcGuards": {
+    "create404Rejected": true,
+    "foreignRoomRejected": true,
+    "realNetworkRequests": 0
+  },
+  "grantChecks": {
+    "allCallTracksMicrophoneOnly": true,
+    "liveHostCannotPublish": true,
+    "privateOutputTokenGenerated": false,
+    "callRoomsDifferentFromProgramme": true
+  },
+  "browser": {
+    "info": {
+      "sampleRate": 48000,
+      "audioContextState": "running",
+      "frequencies": {
+        "show": 127,
+        "director": 317,
+        "guest": 503,
+        "presenter": 733
+      },
+      "thresholds": {
+        "presentMinimumAmplitude": 0.015,
+        "absentMaximumAmplitude": 0.004
+      },
+      "productionMixer": true
+    },
+    "guard": {
+      "blockedBeforeToken": true,
+      "tokenRequests": 0
+    },
+    "measurements": [
+      {
+        "name": "offline-private-programme",
+        "seconds": 0.73,
+        "samples": 8,
+        "present": [
+          "show"
+        ],
+        "absent": [
+          "director",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.07979412199524849,
+            "mean": 0.08004689234964438,
+            "maximum": 0.08021266827518894
+          },
+          "director": {
+            "minimum": 0.00007954440332111833,
+            "mean": 0.00019052757959604402,
+            "maximum": 0.00032863805628823543
+          },
+          "guest": {
+            "minimum": 0.00016118272440360427,
+            "mean": 0.00017165253363079545,
+            "maximum": 0.00018726528781086538
+          },
+          "presenter": {
+            "minimum": 0.000043655984516493396,
+            "mean": 0.00008474587496312317,
+            "maximum": 0.00013774033574333444
+          }
+        },
+        "rmsMaximum": 0.0566436471201449,
+        "passed": true
+      },
+      {
+        "name": "offline-live-programme",
+        "seconds": 0.728,
+        "samples": 8,
+        "present": [
+          "show",
+          "guest",
+          "presenter"
+        ],
+        "absent": [
+          "director"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.07975669520989584,
+            "mean": 0.07999468672721485,
+            "maximum": 0.08030595628354702
+          },
+          "director": {
+            "minimum": 0.00032546838598361246,
+            "mean": 0.00045823096486345596,
+            "maximum": 0.0005888088469573268
+          },
+          "guest": {
+            "minimum": 0.0754935678177071,
+            "mean": 0.07592453030945512,
+            "maximum": 0.07637518374277699
+          },
+          "presenter": {
+            "minimum": 0.07959636633873111,
+            "mean": 0.07993323857538798,
+            "maximum": 0.0802511128924782
+          }
+        },
+        "rmsMaximum": 0.0965635272768813,
+        "passed": true
+      },
+      {
+        "name": "offline-mix-minus",
+        "seconds": 0.728,
+        "samples": 8,
+        "present": [
+          "presenter"
+        ],
+        "absent": [
+          "show",
+          "director",
+          "guest"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.000029683474795262527,
+            "mean": 0.00009290467929911665,
+            "maximum": 0.00013954093777441496
+          },
+          "director": {
+            "minimum": 0.0000646298871402787,
+            "mean": 0.00006755073862142047,
+            "maximum": 0.00007038824737404183
+          },
+          "guest": {
+            "minimum": 0.0003035365247589559,
+            "mean": 0.0003238808838573869,
+            "maximum": 0.00034347135277829717
+          },
+          "presenter": {
+            "minimum": 0.07995587796064062,
+            "mean": 0.0800017728604792,
+            "maximum": 0.08004808164211352
+          }
+        },
+        "rmsMaximum": 0.05658553935023382,
+        "passed": true
+      },
+      {
+        "name": "offline-prepared-ai-input",
+        "seconds": 0.728,
+        "samples": 8,
+        "present": [],
+        "absent": [
+          "show",
+          "director",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "director": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "guest": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "presenter": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          }
+        },
+        "rmsMaximum": 0,
+        "passed": true
+      }
+    ],
+    "networkMedia": false
+  },
+  "forbiddenExternalRequests": 0,
+  "localCleanup": {
+    "allLocalRoomsDisconnected": true,
+    "allLocalTracksStopped": true
+  },
+  "finishedAt": "2026-11-22T18:36:10.258Z",
+  "totalSeconds": 6.637
+}

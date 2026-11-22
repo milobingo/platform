@@ -1,0 +1,110 @@
+{
+  "format": "milo-turn-network-cleanup-final-v1",
+  "nonce": "5b8a410f2e93",
+  "checkedAt": "2026-11-22T18:27:32.373Z",
+  "cut": {
+    "format": "milo-turn-network-cut-v1",
+    "nonce": "5b8a410f2e93",
+    "appliedAtMs": 1795371948939,
+    "expiresAtMs": 1795371963939,
+    "maximumDropSeconds": 15,
+    "cleanupUnit": "milo-turn-cleanup-5b8a410f2e93",
+    "table": "milo_recovery_5b8a410f2e93",
+    "nftBatchSha256": "42f1cbdf26ab1e6355936ce97bb20f0c37d2fafa49096fd414797b3887045aa3",
+    "independentCleanupSeconds": 25,
+    "allNonException5349PeersFromGenerator": true,
+    "localEgressException": {
+      "client": {
+        "ip": "128.140.93.95",
+        "port": 38970,
+        "pid": 1423016
+      },
+      "server": {
+        "ip": "128.140.93.95",
+        "port": 5349,
+        "pid": 1337468
+      },
+      "matchedByDropRules": false
+    },
+    "peerCount": 2,
+    "otherRulesDigestBefore": "a739cd042ad517315ab63c5f22d5379e35bc9dc340f2d5b51bd5a9a3e240435c"
+  },
+  "droppedPackets": 139,
+  "droppedBytes": 229584,
+  "cleanup": {
+    "format": "milo-turn-network-cleanup-v1",
+    "nonce": "5b8a410f2e93",
+    "checkedAtMs": 1795371981527,
+    "tableAbsent": true,
+    "timerAbsent": true,
+    "serviceAbsent": true,
+    "otherRulesDigestBefore": "a739cd042ad517315ab63c5f22d5379e35bc9dc340f2d5b51bd5a9a3e240435c",
+    "otherRulesDigestAfter": "3ca80d5d963555fcafc6b34cc30abd894a6b55f4823a045484b39b105fbd7299",
+    "otherStatelessRulesUnchanged": false,
+    "onlyOwnTableAndUnitTouched": true,
+    "passed": false
+  },
+  "ruleStructure": {
+    "format": "milo-turn-rules-structural-comparison-v1",
+    "nonce": "5b8a410f2e93",
+    "checkedAtMs": 1795372041992,
+    "baselineObjects": 396,
+    "currentObjects": 396,
+    "rawDigestBefore": "a739cd042ad517315ab63c5f22d5379e35bc9dc340f2d5b51bd5a9a3e240435c",
+    "rawDigestAfter": "3ca80d5d963555fcafc6b34cc30abd894a6b55f4823a045484b39b105fbd7299",
+    "rawJsonUnchanged": false,
+    "normalization": "Only top-level named counter runtime packets and bytes omitted; every rule, address, verdict, interface, timer, set and counter definition retained.",
+    "normalizedDigestBefore": "47a7434697e991f9a722f9d933a90f9ae60c96abe021975e05b57dc01622232c",
+    "normalizedDigestAfter": "47a7434697e991f9a722f9d933a90f9ae60c96abe021975e05b57dc01622232c",
+    "allRuleDefinitionsUnchanged": true,
+    "counterChanges": [
+      {
+        "index": 388,
+        "name": "tls_in",
+        "fieldsChanged": [
+          "packets",
+          "bytes"
+        ],
+        "packetsBefore": 154861,
+        "packetsAfter": 156215,
+        "bytesBefore": 12029041,
+        "bytesAfter": 12147533
+      },
+      {
+        "index": 389,
+        "name": "tls_out",
+        "fieldsChanged": [
+          "packets",
+          "bytes"
+        ],
+        "packetsBefore": 149738,
+        "packetsAfter": 152239,
+        "bytesBefore": 25086160,
+        "bytesAfter": 27792062
+      }
+    ],
+    "originalRawMismatchPreserved": true,
+    "rawBaselinePath": "/var/lib/milobingo-media/proofs/turn-network-5b8a410f2e93.json",
+    "exactlyFourRuntimeCounterFieldsChanged": true,
+    "structuralComparisonPassed": true
+  },
+  "providerStop": {
+    "checkedAt": "2026-11-22T18:27:32.373Z",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "egressId": "EG_AKpD3Jxt3zps",
+    "terminalStatus": "EGRESS_COMPLETE",
+    "ownActiveEgresses": 0,
+    "ownRoomParticipants": 0,
+    "databaseWrites": 0,
+    "ingressModified": false,
+    "credentialsReturned": false
+  },
+  "scope": "Only own generator TURN/TLS interruption and own fixture encoder stopped; fixture/Ingress retained for next staging retest.",
+  "rawHashMismatchPreserved": true,
+  "rawMismatchExplanation": "Exactly four existing named-counter runtime values changed from traffic, with all 396 other-object definitions retained; original raw comparison remains false.",
+  "networkScopeCleanupVerified": true,
+  "fixtureEncoderStoppedAndRoomEmpty": true,
+  "databaseMutations": 0,
+  "productionMutations": 0,
+  "credentialsIncluded": false
+}

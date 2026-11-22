@@ -1,0 +1,1556 @@
+{
+  "format": "milo-single-viewer-network-recovery-v1",
+  "startedAt": "2026-11-22T17:48:29.285Z",
+  "executed": true,
+  "capacityTest": false,
+  "sourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "scope": "One technical viewer, exact media probe only. Emulated WebRTC packet loss in that browser, no provider/firewall or fixture/source changes. Not a physical cable, family UI, TV or call rehearsal.",
+  "protocol": {
+    "command": "Network.emulateNetworkConditions",
+    "packetLossPercent": 100,
+    "primarySource": "https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-emulateNetworkConditions",
+    "installedTypes": "playwright-core1.64.1 protocol Network.emulateNetworkConditionsParameters.packetLoss"
+  },
+  "capacityPrecondition": {
+    "allSixPhasesFinished": true,
+    "capacityComplete": false,
+    "soleMeasuredHlsLatencyMiss": true,
+    "mixedHlsP95Ms": 8271,
+    "remainingLoadClientCheck": "performed read-only before joining"
+  },
+  "roomConnectCalls": 1,
+  "samples": {
+    "baseline": [
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369710481,
+        "frames": 7,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.2005085634690493,
+        "audioRmsLatest": 0.05206739864228559,
+        "audioSamples": 11,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369710483,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 4000,
+            "packetsReceived": 25,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 110406,
+            "packetsReceived": 97,
+            "packetsLost": 0,
+            "jitter": 0.012,
+            "framesDecoded": 7,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [],
+        "observedAtMs": 1795369710490,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 7,
+          "droppedVideoFrames": 0
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369711481,
+        "frames": 30,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.2005085634690493,
+        "audioRmsLatest": 0.16289225561687753,
+        "audioSamples": 31,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369711483,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.036
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 12000,
+            "packetsReceived": 75,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.036
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 209426,
+            "packetsReceived": 193,
+            "packetsLost": 0,
+            "jitter": 0.003,
+            "framesDecoded": 31,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369711217,
+            "sourceAtMs": 1795369711149,
+            "latencyMs": 68
+          }
+        ],
+        "observedAtMs": 1795369711495,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 31,
+          "droppedVideoFrames": 1
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712481,
+        "frames": 58,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.02589251813114422,
+        "audioSamples": 51,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369712466,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 20160,
+            "packetsReceived": 126,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 355435,
+            "packetsReceived": 331,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "framesDecoded": 61,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369712266,
+            "sourceAtMs": 1795369712172,
+            "latencyMs": 94
+          }
+        ],
+        "observedAtMs": 1795369712500,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 61,
+          "droppedVideoFrames": 1
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 87,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002444223612993898,
+        "audioSamples": 71,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369713467,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 28160,
+            "packetsReceived": 176,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 503469,
+            "packetsReceived": 471,
+            "packetsLost": 0,
+            "jitter": 0.002,
+            "framesDecoded": 92,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369713268,
+            "sourceAtMs": 1795369713195,
+            "latencyMs": 73
+          }
+        ],
+        "observedAtMs": 1795369713504,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 92,
+          "droppedVideoFrames": 1
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      }
+    ],
+    "cut": [
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 114,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.0000024442236311686046,
+        "audioSamples": 91,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369714500,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 36160,
+            "packetsReceived": 226,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 649731,
+            "packetsReceived": 608,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 121,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369714300,
+            "sourceAtMs": 1795369714219,
+            "latencyMs": 81
+          }
+        ],
+        "observedAtMs": 1795369714512,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 121,
+          "droppedVideoFrames": 3
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 143,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.0000024442236126954068,
+        "audioSamples": 111,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369715516,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 44160,
+            "packetsReceived": 276,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 803435,
+            "packetsReceived": 755,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 152,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369715349,
+            "sourceAtMs": 1795369715274,
+            "latencyMs": 75
+          }
+        ],
+        "observedAtMs": 1795369715518,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 152,
+          "droppedVideoFrames": 3
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 172,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.0000024442236131866304,
+        "audioSamples": 131,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369716516,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 52320,
+            "packetsReceived": 327,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 951660,
+            "packetsReceived": 897,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 183,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369716349,
+            "sourceAtMs": 1795369716297,
+            "latencyMs": 52
+          }
+        ],
+        "observedAtMs": 1795369716522,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 183,
+          "droppedVideoFrames": 3
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 201,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002444223561619985,
+        "audioSamples": 151,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369717516,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 60320,
+            "packetsReceived": 377,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1099448,
+            "packetsReceived": 1037,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "framesDecoded": 212,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369717366,
+            "sourceAtMs": 1795369717287,
+            "latencyMs": 79
+          }
+        ],
+        "observedAtMs": 1795369717526,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 212,
+          "droppedVideoFrames": 3
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 227,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.0000024442235620958748,
+        "audioSamples": 171,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369718483,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 68320,
+            "packetsReceived": 427,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1243014,
+            "packetsReceived": 1174,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 242,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369718366,
+            "sourceAtMs": 1795369718310,
+            "latencyMs": 56
+          }
+        ],
+        "observedAtMs": 1795369718530,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 242,
+          "droppedVideoFrames": 3
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 256,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.0000021861683987213378,
+        "audioSamples": 192,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369719499,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 76320,
+            "packetsReceived": 477,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1391521,
+            "packetsReceived": 1314,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 273,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369719416,
+            "sourceAtMs": 1795369719333,
+            "latencyMs": 83
+          }
+        ],
+        "observedAtMs": 1795369719535,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 273,
+          "droppedVideoFrames": 4
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 285,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002186168419553745,
+        "audioSamples": 212,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369720516,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 84320,
+            "packetsReceived": 527,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1542368,
+            "packetsReceived": 1457,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 303,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369720433,
+            "sourceAtMs": 1795369720356,
+            "latencyMs": 77
+          }
+        ],
+        "observedAtMs": 1795369720538,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 303,
+          "droppedVideoFrames": 4
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 312,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002186168478056424,
+        "audioSamples": 232,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369721532,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 92480,
+            "packetsReceived": 578,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1685349,
+            "packetsReceived": 1595,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 333,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369721466,
+            "sourceAtMs": 1795369721379,
+            "latencyMs": 87
+          }
+        ],
+        "observedAtMs": 1795369721541,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 333,
+          "droppedVideoFrames": 5
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 338,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.00000218616845388297,
+        "audioSamples": 252,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369722499,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 100480,
+            "packetsReceived": 628,
+            "packetsLost": 0,
+            "jitter": 0.001,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1833989,
+            "packetsReceived": 1736,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 363,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369722484,
+            "sourceAtMs": 1795369722402,
+            "latencyMs": 82
+          }
+        ],
+        "observedAtMs": 1795369722545,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 363,
+          "droppedVideoFrames": 5
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 367,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002186168436731853,
+        "audioSamples": 272,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369723549,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 108480,
+            "packetsReceived": 678,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 1978538,
+            "packetsReceived": 1873,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 394,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369723516,
+            "sourceAtMs": 1795369723425,
+            "latencyMs": 91
+          }
+        ],
+        "observedAtMs": 1795369723550,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 394,
+          "droppedVideoFrames": 5
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369712681,
+        "frames": 393,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.000002186168437861537,
+        "audioSamples": 292,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369724533,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 116480,
+            "packetsReceived": 728,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 2117433,
+            "packetsReceived": 2008,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 423,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369724516,
+            "sourceAtMs": 1795369724448,
+            "latencyMs": 68
+          }
+        ],
+        "observedAtMs": 1795369724555,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 423,
+          "droppedVideoFrames": 5
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      },
+      {
+        "connected": true,
+        "connectedAt": 1795369709975,
+        "firstVideoAt": 1795369710205,
+        "firstAudioAt": 1795369710031,
+        "lastAudioAt": 1795369725531,
+        "frames": 421,
+        "reconnects": 0,
+        "disconnects": 0,
+        "stalls": 0,
+        "audioRmsMax": 0.20199692728653323,
+        "audioRmsLatest": 0.13831882208287097,
+        "audioSamples": 312,
+        "invalidTimecodes": 0,
+        "lastFrameAt": 1795369725533,
+        "error": null,
+        "tracks": [
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "audio",
+            "codec": "audio/opus",
+            "bytesReceived": 124480,
+            "packetsReceived": 778,
+            "packetsLost": 0,
+            "jitter": 0,
+            "totalAudioEnergy": 0
+          },
+          {
+            "kind": "transport",
+            "protocol": "udp",
+            "localCandidateType": "host",
+            "remoteCandidateType": "host",
+            "localAddress": "",
+            "localPort": 50019,
+            "remoteAddress": "2a01:4f8:c015:60a6::1",
+            "remotePort": 7882,
+            "currentRoundTripTime": 0.035
+          },
+          {
+            "kind": "video",
+            "codec": "video/H264",
+            "bytesReceived": 2270817,
+            "packetsReceived": 2155,
+            "packetsLost": 0,
+            "jitter": 0,
+            "framesDecoded": 453,
+            "framesDropped": 0,
+            "freezeCount": 0,
+            "totalFreezesDuration": 0,
+            "frameWidth": 1280,
+            "frameHeight": 720
+          }
+        ],
+        "timecodeSamples": [
+          {
+            "displayAtMs": 1795369725516,
+            "sourceAtMs": 1795369725438,
+            "latencyMs": 78
+          }
+        ],
+        "observedAtMs": 1795369725560,
+        "timeToFirstVideoMs": 573,
+        "timeToFirstAudioMs": 399,
+        "audioContextState": "running",
+        "audioPlayoutElements": [
+          {
+            "paused": false,
+            "readyState": 4,
+            "volume": 0,
+            "muted": false
+          }
+        ],
+        "hlsPlaybackQuality": {
+          "totalVideoFrames": 453,
+          "droppedVideoFrames": 5
+        },
+        "hlsPlayback": null,
+        "hlsEvents": null
+      }
+    ],
+    "recovered": []
+  },
+  "completed": false,
+  "remainingLoadClientsBeforeJoin": 0,
+  "sourceRtpIdsBefore": [
+    "TR_AMkGx9Sp6tESca",
+    "TR_VCzvmxFvrn6CRf"
+  ],
+  "readiness": {
+    "connected": true,
+    "connectedAt": 1795369709975,
+    "firstVideoAt": 1795369710205,
+    "firstAudioAt": 1795369710031,
+    "lastAudioAt": 1795369710481,
+    "frames": 7,
+    "reconnects": 0,
+    "disconnects": 0,
+    "stalls": 0,
+    "audioRmsMax": 0.2005085634690493,
+    "audioRmsLatest": 0.05206739864228559,
+    "audioSamples": 11,
+    "invalidTimecodes": 0,
+    "lastFrameAt": 1795369710483,
+    "error": null,
+    "tracks": [
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "host",
+        "remoteCandidateType": "host",
+        "localAddress": "",
+        "localPort": 50019,
+        "remoteAddress": "2a01:4f8:c015:60a6::1",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.035
+      },
+      {
+        "kind": "audio",
+        "codec": "audio/opus",
+        "bytesReceived": 4000,
+        "packetsReceived": 25,
+        "packetsLost": 0,
+        "jitter": 0,
+        "totalAudioEnergy": 0
+      },
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "host",
+        "remoteCandidateType": "host",
+        "localAddress": "",
+        "localPort": 50019,
+        "remoteAddress": "2a01:4f8:c015:60a6::1",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.035
+      },
+      {
+        "kind": "video",
+        "codec": "video/H264",
+        "bytesReceived": 110406,
+        "packetsReceived": 97,
+        "packetsLost": 0,
+        "jitter": 0.012,
+        "framesDecoded": 7,
+        "framesDropped": 0,
+        "freezeCount": 0,
+        "totalFreezesDuration": 0,
+        "frameWidth": 1280,
+        "frameHeight": 720
+      }
+    ],
+    "timecodeSamples": [
+      {
+        "displayAtMs": 1795369710205,
+        "sourceAtMs": 1795369710027,
+        "latencyMs": 178
+      }
+    ],
+    "observedAtMs": 1795369710488,
+    "timeToFirstVideoMs": 573,
+    "timeToFirstAudioMs": 399,
+    "audioContextState": "running",
+    "audioPlayoutElements": [
+      {
+        "paused": false,
+        "readyState": 4,
+        "volume": 0,
+        "muted": false
+      }
+    ],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 7,
+      "droppedVideoFrames": 0
+    },
+    "hlsPlayback": null,
+    "hlsEvents": null
+  },
+  "cutAtMs": 1795369714511,
+  "interruptionEvidence": {
+    "postDrainSeconds": 9.038,
+    "rtpBytesAfterDrain": 1391317,
+    "decodedFramesAfterDrain": 249,
+    "lastFrameAgeMs": 27
+  },
+  "interruptionEffective": false,
+  "restoredAtMs": 1795369726566,
+  "error": "CDP did not actually stop WebRTC RTP/frame reception; no outage/recovery claim.",
+  "viewerDisconnected": true,
+  "networkEmulationCleared": true,
+  "finishedAt": "2026-11-22T17:48:46.655Z",
+  "actualTotalSeconds": 17.37
+}

@@ -1,0 +1,4282 @@
+{
+  "format": "milo-media-load-result-v1",
+  "startedAt": "2026-11-22T18:46:35.260Z",
+  "executed": true,
+  "complete": true,
+  "profile": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoBps": 1186000,
+    "audioBps": 64000,
+    "totalBps": 1250000,
+    "simulcast": false
+  },
+  "stages": [
+    {
+      "name": "mixed-150-50",
+      "webrtc": 150,
+      "hls": 50,
+      "seconds": 600,
+      "status": "passed",
+      "startedAt": "2026-11-22T18:46:42.560Z",
+      "executed": true,
+      "browserViewers": 3,
+      "cliViewers": 147,
+      "hlsHttpViewers": 49,
+      "hlsBrowserViewers": 1,
+      "hlsBrowserDocumentDelivery": "Exact probe bundle locally fulfilled at the owned app origin; HLS requests and CORS remain unmodified. No family-UI/login claim.",
+      "cli": {
+        "subscribers": [
+          {
+            "subscriber": "Sub 0",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32196,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 89133,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 1",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32195,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 89133,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 10",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32107,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88821,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 100",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31206,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86448,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 101",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31197,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86370,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 102",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31186,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86369,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 103",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31176,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86288,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 104",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31166,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86286,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 105",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31156,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86284,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 106",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31146,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86205,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 107",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31136,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86203,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 108",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31126,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86201,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 109",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31116,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86126,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 11",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32097,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88819,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 110",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31105,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86123,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 111",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31096,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86121,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 112",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31086,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86120,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 113",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31078,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86041,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 114",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31065,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86038,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 115",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31056,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86037,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 116",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31046,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85960,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 117",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31036,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85958,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 118",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31027,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85956,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 119",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31016,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85876,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 12",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32086,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88817,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 120",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31005,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85874,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 121",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30996,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85792,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 122",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30986,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85790,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 123",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30976,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85788,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 124",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30966,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85786,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 125",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30957,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85691,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 126",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30946,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85689,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 127",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30936,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85619,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 128",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30926,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85618,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 129",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30916,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85616,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 13",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32076,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88738,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 130",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30907,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85614,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 131",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30897,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85534,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 132",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30885,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85532,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 133",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30877,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85530,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 134",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30866,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85447,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 135",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30856,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85445,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 136",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30846,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85443,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 137",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30834,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85367,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 138",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30826,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85366,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 139",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30816,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85364,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 14",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32067,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88736,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 140",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30806,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85285,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 141",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30796,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85283,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 142",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30786,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85281,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 143",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30776,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85205,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 144",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30766,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85203,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 145",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30756,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85201,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 146",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 30746,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 85122,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 15",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32056,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88734,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 16",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32046,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88654,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 17",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32036,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88652,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 18",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32027,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88650,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 19",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32016,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88568,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 2",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32186,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 89059,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 20",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32006,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88566,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 21",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31995,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88564,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 22",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31986,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88488,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 23",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31976,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88486,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 24",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31966,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88484,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 25",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31956,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88368,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 26",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31946,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88366,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 27",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31936,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88364,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 28",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31927,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88362,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 29",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31917,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88269,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 3",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32176,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 89056,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 30",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31906,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88267,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 31",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31896,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88265,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 32",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31887,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88196,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 33",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31876,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88194,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 34",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31867,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88192,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 35",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31856,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88132,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 36",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31846,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88130,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 37",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31836,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88128,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 38",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31826,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88058,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 39",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31817,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88056,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 4",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32166,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88982,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 40",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31807,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88055,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 41",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31796,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87989,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 42",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31786,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87988,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 43",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31776,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87912,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 44",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31766,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87910,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 45",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31756,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87908,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 46",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31746,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87906,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 47",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31736,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87833,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 48",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31726,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87831,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 49",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31716,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87829,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 5",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32156,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88980,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 50",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31706,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87751,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 51",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31696,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87749,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 52",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31685,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87667,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 53",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31676,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87665,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 54",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31666,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87664,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 55",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31657,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87583,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 56",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31646,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87581,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 57",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31638,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87580,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 58",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31627,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87495,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 59",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31616,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87493,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 6",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32145,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88978,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 60",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31606,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87491,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 61",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31596,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87392,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 62",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31586,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87390,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 63",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31575,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87388,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 64",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31567,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87386,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 65",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31556,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87308,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 66",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31546,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87306,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 67",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31536,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87304,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 68",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31526,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87246,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 69",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31515,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87244,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 7",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32136,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88976,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 70",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31506,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87242,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 71",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31496,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87171,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 72",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31486,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87169,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 73",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31475,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87107,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 74",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31465,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87105,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 75",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31456,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87103,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 76",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31447,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87024,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 77",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31436,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87022,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 78",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31426,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87020,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 79",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31417,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 87018,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 8",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32127,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88900,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 80",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31406,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86947,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 81",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31396,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86945,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 82",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31386,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86867,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 83",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31376,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86865,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 84",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31367,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86862,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 85",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31356,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86861,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 86",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31346,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86786,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 87",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31336,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86784,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 88",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31326,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86706,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 89",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31317,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86704,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 9",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 32116,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 88898,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 90",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31307,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86702,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 91",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31297,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86624,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 92",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31286,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86622,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 93",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31276,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86620,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 94",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31266,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86618,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 95",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31256,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86542,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 96",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31247,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86541,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 97",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31236,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86539,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 98",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31225,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86452,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          },
+          {
+            "subscriber": "Sub 99",
+            "tracks": [
+              {
+                "trackId": "TR_AMKoMVN6x4aY5E",
+                "kind": "audio",
+                "packets": 31216,
+                "bitrateBps": 64000,
+                "packetLossPercent": 0
+              },
+              {
+                "trackId": "TR_VCF35NQE3jrzUa",
+                "kind": "video",
+                "packets": 86450,
+                "bitrateBps": 1200000,
+                "packetLossPercent": 0
+              }
+            ]
+          }
+        ],
+        "receivingAudioAndVideo": 147
+      },
+      "cliDurationSeconds": 615,
+      "connectedWaitSeconds": 615.094,
+      "fullOccupancyObservedAtMs": 1795373240428,
+      "holdSeconds": 613.702,
+      "successfulWebrtcViewers": 150,
+      "connectionSuccessRate": 1,
+      "webrtcTimeToFirstFrameMs": {
+        "samples": 3,
+        "p50": 552,
+        "p95": 553,
+        "max": 553
+      },
+      "webrtcLatencyMs": {
+        "samples": 1896,
+        "p50": 167,
+        "p95": 192,
+        "max": 331
+      },
+      "latencyMethod": "CRC-gecontroleerde UTC-tijdcode in werkelijk gedecodeerde videoframes, één sample/seconde/browser; geen netwerk-RTT als beeldvertraging.",
+      "browserReconnects": 0,
+      "browserFreezeCount": 14,
+      "browserMediaBitrateBps": {
+        "samples": 3,
+        "p50": 1233563.1685951422,
+        "p95": 1233563.1685951422,
+        "max": 1233563.1685951422
+      },
+      "browserDecodedFps": {
+        "samples": 3,
+        "p50": 29.195549455107187,
+        "p95": 29.19559514940557,
+        "max": 29.19559514940557
+      },
+      "browserResolution": {
+        "expected": {
+          "width": 1280,
+          "height": 720
+        },
+        "scope": "All independently observed full-occupancy samples, separately for each real browser decoder.",
+        "adequate": true,
+        "browsers": [
+          {
+            "identity": "milo-load-mixed-150-50-browser-0",
+            "samples": 103,
+            "invalidSamples": 0,
+            "observedDimensions": [
+              "1280x720"
+            ],
+            "adequate": true
+          },
+          {
+            "identity": "milo-load-mixed-150-50-browser-1",
+            "samples": 103,
+            "invalidSamples": 0,
+            "observedDimensions": [
+              "1280x720"
+            ],
+            "adequate": true
+          },
+          {
+            "identity": "milo-load-mixed-150-50-browser-2",
+            "samples": 103,
+            "invalidSamples": 0,
+            "observedDimensions": [
+              "1280x720"
+            ],
+            "adequate": true
+          }
+        ]
+      },
+      "hostCpuPercent": {
+        "samples": 109,
+        "p50": 54.68680586406042,
+        "p95": 58.133333333333326,
+        "max": 61.14058355437666
+      },
+      "hostEgressMbps": {
+        "samples": 109,
+        "p50": 276.61211424685484,
+        "p95": 280.34941663837014,
+        "max": 282.4576327913279
+      },
+      "hostAvailableMemoryMinBytes": 4071043072,
+      "roomViewerCount": {
+        "samples": 109,
+        "p50": 150,
+        "p95": 150,
+        "max": 150
+      },
+      "turnBurden": {
+        "measured": true,
+        "samples": 109,
+        "counterResetDetected": false,
+        "scope": "Alleen eigen eth0 TURN-listeners UDP3480/TCP5349; hostbreed, niet per room.",
+        "includesProtocolOverhead": true,
+        "counters": {
+          "udp_in": {
+            "bytes": 726144,
+            "packets": 4012
+          },
+          "udp_out": {
+            "bytes": 337592,
+            "packets": 4012
+          },
+          "tls_in": {
+            "bytes": 2040914,
+            "packets": 26773
+          },
+          "tls_out": {
+            "bytes": 2826707,
+            "packets": 25600
+          }
+        },
+        "combinedIngressAndEgressMbps": {
+          "samples": 108,
+          "p50": 0.03443824970434195,
+          "p95": 0.11104199696407488,
+          "max": 0.7720298913043478
+        },
+        "reason": null
+      },
+      "sfuPrometheusSamples": 109,
+      "hlsLatencyMs": {
+        "samples": 638,
+        "p50": 4331,
+        "p95": 4379,
+        "max": 4400
+      },
+      "hlsTimeToFirstFrameMs": {
+        "samples": 1,
+        "p50": 590,
+        "p95": 590,
+        "max": 590
+      },
+      "hlsPlaybackVerified": true,
+      "hlsHttpContinuity": {
+        "ready": true,
+        "freshViewers": 49,
+        "expectedViewers": 49,
+        "viewers": [
+          {
+            "identity": "hls-0",
+            "firstSuccessAtMs": 1795373209359,
+            "lastSuccessAtMs": 1795373853501,
+            "continuousSinceMs": 1795373209359,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.216
+          },
+          {
+            "identity": "hls-1",
+            "firstSuccessAtMs": 1795373209332,
+            "lastSuccessAtMs": 1795373853512,
+            "continuousSinceMs": 1795373209332,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.243
+          },
+          {
+            "identity": "hls-2",
+            "firstSuccessAtMs": 1795373209172,
+            "lastSuccessAtMs": 1795373853600,
+            "continuousSinceMs": 1795373209172,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.403
+          },
+          {
+            "identity": "hls-3",
+            "firstSuccessAtMs": 1795373209409,
+            "lastSuccessAtMs": 1795373853602,
+            "continuousSinceMs": 1795373209409,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.166
+          },
+          {
+            "identity": "hls-4",
+            "firstSuccessAtMs": 1795373209184,
+            "lastSuccessAtMs": 1795373853593,
+            "continuousSinceMs": 1795373209184,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.391
+          },
+          {
+            "identity": "hls-5",
+            "firstSuccessAtMs": 1795373209356,
+            "lastSuccessAtMs": 1795373853629,
+            "continuousSinceMs": 1795373209356,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.219
+          },
+          {
+            "identity": "hls-6",
+            "firstSuccessAtMs": 1795373209398,
+            "lastSuccessAtMs": 1795373853589,
+            "continuousSinceMs": 1795373209398,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.177
+          },
+          {
+            "identity": "hls-7",
+            "firstSuccessAtMs": 1795373209274,
+            "lastSuccessAtMs": 1795373853650,
+            "continuousSinceMs": 1795373209274,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.301
+          },
+          {
+            "identity": "hls-8",
+            "firstSuccessAtMs": 1795373209440,
+            "lastSuccessAtMs": 1795373853725,
+            "continuousSinceMs": 1795373209440,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.135
+          },
+          {
+            "identity": "hls-9",
+            "firstSuccessAtMs": 1795373209236,
+            "lastSuccessAtMs": 1795373853648,
+            "continuousSinceMs": 1795373209236,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.339
+          },
+          {
+            "identity": "hls-10",
+            "firstSuccessAtMs": 1795373209500,
+            "lastSuccessAtMs": 1795373853664,
+            "continuousSinceMs": 1795373209500,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.075
+          },
+          {
+            "identity": "hls-11",
+            "firstSuccessAtMs": 1795373209374,
+            "lastSuccessAtMs": 1795373853664,
+            "continuousSinceMs": 1795373209374,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.201
+          },
+          {
+            "identity": "hls-12",
+            "firstSuccessAtMs": 1795373209360,
+            "lastSuccessAtMs": 1795373853721,
+            "continuousSinceMs": 1795373209360,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.215
+          },
+          {
+            "identity": "hls-13",
+            "firstSuccessAtMs": 1795373209565,
+            "lastSuccessAtMs": 1795373853781,
+            "continuousSinceMs": 1795373209565,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.01
+          },
+          {
+            "identity": "hls-14",
+            "firstSuccessAtMs": 1795373209433,
+            "lastSuccessAtMs": 1795373853795,
+            "continuousSinceMs": 1795373209433,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.142
+          },
+          {
+            "identity": "hls-15",
+            "firstSuccessAtMs": 1795373209304,
+            "lastSuccessAtMs": 1795373853769,
+            "continuousSinceMs": 1795373209304,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.271
+          },
+          {
+            "identity": "hls-16",
+            "firstSuccessAtMs": 1795373209399,
+            "lastSuccessAtMs": 1795373854496,
+            "continuousSinceMs": 1795373209399,
+            "segmentSeconds": 1,
+            "segments": 646,
+            "continuousMediaSeconds": 646,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 794,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.176
+          },
+          {
+            "identity": "hls-17",
+            "firstSuccessAtMs": 1795373209406,
+            "lastSuccessAtMs": 1795373853336,
+            "continuousSinceMs": 1795373209406,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.169
+          },
+          {
+            "identity": "hls-18",
+            "firstSuccessAtMs": 1795373209430,
+            "lastSuccessAtMs": 1795373853347,
+            "continuousSinceMs": 1795373209430,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.145
+          },
+          {
+            "identity": "hls-19",
+            "firstSuccessAtMs": 1795373209336,
+            "lastSuccessAtMs": 1795373853337,
+            "continuousSinceMs": 1795373209336,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.239
+          },
+          {
+            "identity": "hls-20",
+            "firstSuccessAtMs": 1795373209403,
+            "lastSuccessAtMs": 1795373853382,
+            "continuousSinceMs": 1795373209403,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.172
+          },
+          {
+            "identity": "hls-21",
+            "firstSuccessAtMs": 1795373209424,
+            "lastSuccessAtMs": 1795373853443,
+            "continuousSinceMs": 1795373209424,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.151
+          },
+          {
+            "identity": "hls-22",
+            "firstSuccessAtMs": 1795373209506,
+            "lastSuccessAtMs": 1795373853374,
+            "continuousSinceMs": 1795373209506,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.069
+          },
+          {
+            "identity": "hls-23",
+            "firstSuccessAtMs": 1795373209401,
+            "lastSuccessAtMs": 1795373853429,
+            "continuousSinceMs": 1795373209401,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.174
+          },
+          {
+            "identity": "hls-24",
+            "firstSuccessAtMs": 1795373209430,
+            "lastSuccessAtMs": 1795373853429,
+            "continuousSinceMs": 1795373209430,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.145
+          },
+          {
+            "identity": "hls-25",
+            "firstSuccessAtMs": 1795373209505,
+            "lastSuccessAtMs": 1795373853467,
+            "continuousSinceMs": 1795373209505,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.07
+          },
+          {
+            "identity": "hls-26",
+            "firstSuccessAtMs": 1795373209515,
+            "lastSuccessAtMs": 1795373853586,
+            "continuousSinceMs": 1795373209515,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.06
+          },
+          {
+            "identity": "hls-27",
+            "firstSuccessAtMs": 1795373209475,
+            "lastSuccessAtMs": 1795373853564,
+            "continuousSinceMs": 1795373209475,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.1
+          },
+          {
+            "identity": "hls-28",
+            "firstSuccessAtMs": 1795373209548,
+            "lastSuccessAtMs": 1795373853534,
+            "continuousSinceMs": 1795373209548,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.027
+          },
+          {
+            "identity": "hls-29",
+            "firstSuccessAtMs": 1795373209502,
+            "lastSuccessAtMs": 1795373853529,
+            "continuousSinceMs": 1795373209502,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.073
+          },
+          {
+            "identity": "hls-30",
+            "firstSuccessAtMs": 1795373209520,
+            "lastSuccessAtMs": 1795373853537,
+            "continuousSinceMs": 1795373209520,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.055
+          },
+          {
+            "identity": "hls-31",
+            "firstSuccessAtMs": 1795373209498,
+            "lastSuccessAtMs": 1795373853612,
+            "continuousSinceMs": 1795373209498,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.077
+          },
+          {
+            "identity": "hls-32",
+            "firstSuccessAtMs": 1795373209552,
+            "lastSuccessAtMs": 1795373853611,
+            "continuousSinceMs": 1795373209552,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.023
+          },
+          {
+            "identity": "hls-33",
+            "firstSuccessAtMs": 1795373209532,
+            "lastSuccessAtMs": 1795373853653,
+            "continuousSinceMs": 1795373209532,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 645.043
+          },
+          {
+            "identity": "hls-34",
+            "firstSuccessAtMs": 1795373209665,
+            "lastSuccessAtMs": 1795373853654,
+            "continuousSinceMs": 1795373209665,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.91
+          },
+          {
+            "identity": "hls-35",
+            "firstSuccessAtMs": 1795373209612,
+            "lastSuccessAtMs": 1795373853679,
+            "continuousSinceMs": 1795373209612,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.963
+          },
+          {
+            "identity": "hls-36",
+            "firstSuccessAtMs": 1795373209599,
+            "lastSuccessAtMs": 1795373853765,
+            "continuousSinceMs": 1795373209599,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.976
+          },
+          {
+            "identity": "hls-37",
+            "firstSuccessAtMs": 1795373209655,
+            "lastSuccessAtMs": 1795373853653,
+            "continuousSinceMs": 1795373209655,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.92
+          },
+          {
+            "identity": "hls-38",
+            "firstSuccessAtMs": 1795373209667,
+            "lastSuccessAtMs": 1795373853758,
+            "continuousSinceMs": 1795373209667,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.908
+          },
+          {
+            "identity": "hls-39",
+            "firstSuccessAtMs": 1795373209663,
+            "lastSuccessAtMs": 1795373853755,
+            "continuousSinceMs": 1795373209663,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.912
+          },
+          {
+            "identity": "hls-40",
+            "firstSuccessAtMs": 1795373209684,
+            "lastSuccessAtMs": 1795373853721,
+            "continuousSinceMs": 1795373209684,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.891
+          },
+          {
+            "identity": "hls-41",
+            "firstSuccessAtMs": 1795373209808,
+            "lastSuccessAtMs": 1795373853795,
+            "continuousSinceMs": 1795373209808,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.767
+          },
+          {
+            "identity": "hls-42",
+            "firstSuccessAtMs": 1795373209736,
+            "lastSuccessAtMs": 1795373853795,
+            "continuousSinceMs": 1795373209736,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.839
+          },
+          {
+            "identity": "hls-43",
+            "firstSuccessAtMs": 1795373209738,
+            "lastSuccessAtMs": 1795373853794,
+            "continuousSinceMs": 1795373209738,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.837
+          },
+          {
+            "identity": "hls-44",
+            "firstSuccessAtMs": 1795373209761,
+            "lastSuccessAtMs": 1795373853781,
+            "continuousSinceMs": 1795373209761,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.814
+          },
+          {
+            "identity": "hls-45",
+            "firstSuccessAtMs": 1795373209784,
+            "lastSuccessAtMs": 1795373853865,
+            "continuousSinceMs": 1795373209784,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.791
+          },
+          {
+            "identity": "hls-46",
+            "firstSuccessAtMs": 1795373209847,
+            "lastSuccessAtMs": 1795373853854,
+            "continuousSinceMs": 1795373209847,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.728
+          },
+          {
+            "identity": "hls-47",
+            "firstSuccessAtMs": 1795373209829,
+            "lastSuccessAtMs": 1795373853837,
+            "continuousSinceMs": 1795373209829,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.746
+          },
+          {
+            "identity": "hls-48",
+            "firstSuccessAtMs": 1795373209838,
+            "lastSuccessAtMs": 1795373853851,
+            "continuousSinceMs": 1795373209838,
+            "segmentSeconds": 1,
+            "segments": 645,
+            "continuousMediaSeconds": 645,
+            "errors": 0,
+            "stalls": 0,
+            "lastSequence": 793,
+            "failed": false,
+            "fresh": true,
+            "freshnessLimitMs": 5000,
+            "continuousHoldSeconds": 644.737
+          }
+        ]
+      },
+      "successfulHlsHttpViewers": 49,
+      "sustainedHlsHttpViewers": 49,
+      "profileBitrateAdequate": true,
+      "profileFpsAdequate": true,
+      "profileResolutionAdequate": true,
+      "success": true,
+      "decoderScreenshot": {
+        "file": "mixed-150-50-decoder.png",
+        "source": "Actual first receiving WebRTC browser page after the measured hold; not the publisher canvas."
+      },
+      "hlsDecoderScreenshot": {
+        "file": "mixed-150-50-hls-decoder.png",
+        "source": "Actual receiving HLS browser page after the measured hold; not the publisher canvas."
+      },
+      "endedAt": "2026-11-22T18:57:34.775Z",
+      "hlsHttpResults": [
+        {
+          "identity": "hls-0",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 652,
+          "decoded": false
+        },
+        {
+          "identity": "hls-1",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 603,
+          "decoded": false
+        },
+        {
+          "identity": "hls-2",
+          "bytes": 114720654,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 421,
+          "decoded": false
+        },
+        {
+          "identity": "hls-3",
+          "bytes": 114720654,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 636,
+          "decoded": false
+        },
+        {
+          "identity": "hls-4",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 390,
+          "decoded": false
+        },
+        {
+          "identity": "hls-5",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 541,
+          "decoded": false
+        },
+        {
+          "identity": "hls-6",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 562,
+          "decoded": false
+        },
+        {
+          "identity": "hls-7",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 417,
+          "decoded": false
+        },
+        {
+          "identity": "hls-8",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 562,
+          "decoded": false
+        },
+        {
+          "identity": "hls-9",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 337,
+          "decoded": false
+        },
+        {
+          "identity": "hls-10",
+          "bytes": 114720654,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 580,
+          "decoded": false
+        },
+        {
+          "identity": "hls-11",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 433,
+          "decoded": false
+        },
+        {
+          "identity": "hls-12",
+          "bytes": 114720654,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 398,
+          "decoded": false
+        },
+        {
+          "identity": "hls-13",
+          "bytes": 114537918,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 582,
+          "decoded": false
+        },
+        {
+          "identity": "hls-14",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 429,
+          "decoded": false
+        },
+        {
+          "identity": "hls-15",
+          "bytes": 114720654,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 279,
+          "decoded": false
+        },
+        {
+          "identity": "hls-16",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 354,
+          "decoded": false
+        },
+        {
+          "identity": "hls-17",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 340,
+          "decoded": false
+        },
+        {
+          "identity": "hls-18",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 343,
+          "decoded": false
+        },
+        {
+          "identity": "hls-19",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 227,
+          "decoded": false
+        },
+        {
+          "identity": "hls-20",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 273,
+          "decoded": false
+        },
+        {
+          "identity": "hls-21",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 273,
+          "decoded": false
+        },
+        {
+          "identity": "hls-22",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 334,
+          "decoded": false
+        },
+        {
+          "identity": "hls-23",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 208,
+          "decoded": false
+        },
+        {
+          "identity": "hls-24",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 217,
+          "decoded": false
+        },
+        {
+          "identity": "hls-25",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 271,
+          "decoded": false
+        },
+        {
+          "identity": "hls-26",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 261,
+          "decoded": false
+        },
+        {
+          "identity": "hls-27",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 200,
+          "decoded": false
+        },
+        {
+          "identity": "hls-28",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 252,
+          "decoded": false
+        },
+        {
+          "identity": "hls-29",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 185,
+          "decoded": false
+        },
+        {
+          "identity": "hls-30",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 183,
+          "decoded": false
+        },
+        {
+          "identity": "hls-31",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 141,
+          "decoded": false
+        },
+        {
+          "identity": "hls-32",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 176,
+          "decoded": false
+        },
+        {
+          "identity": "hls-33",
+          "bytes": 114718932,
+          "segments": 646,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 135,
+          "decoded": false
+        },
+        {
+          "identity": "hls-34",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 248,
+          "decoded": false
+        },
+        {
+          "identity": "hls-35",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 175,
+          "decoded": false
+        },
+        {
+          "identity": "hls-36",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 141,
+          "decoded": false
+        },
+        {
+          "identity": "hls-37",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 176,
+          "decoded": false
+        },
+        {
+          "identity": "hls-38",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 167,
+          "decoded": false
+        },
+        {
+          "identity": "hls-39",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 143,
+          "decoded": false
+        },
+        {
+          "identity": "hls-40",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 144,
+          "decoded": false
+        },
+        {
+          "identity": "hls-41",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 248,
+          "decoded": false
+        },
+        {
+          "identity": "hls-42",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 156,
+          "decoded": false
+        },
+        {
+          "identity": "hls-43",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 137,
+          "decoded": false
+        },
+        {
+          "identity": "hls-44",
+          "bytes": 114536196,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 140,
+          "decoded": false
+        },
+        {
+          "identity": "hls-45",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 143,
+          "decoded": false
+        },
+        {
+          "identity": "hls-46",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 185,
+          "decoded": false
+        },
+        {
+          "identity": "hls-47",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 147,
+          "decoded": false
+        },
+        {
+          "identity": "hls-48",
+          "bytes": 114534474,
+          "segments": 645,
+          "errors": 0,
+          "stalls": 0,
+          "timeToFirstSegmentMs": 136,
+          "decoded": false
+        }
+      ]
+    }
+  ],
+  "hardwareTests": {
+    "chromecast": {
+      "executed": false
+    },
+    "airplay": {
+      "executed": false
+    }
+  },
+  "limitations": [
+    "Fysieke Cast/AirPlay-metingen en echte besloten regie/beller-audio moeten afzonderlijk worden vastgelegd; HLS-HTTP-ontvangst en Chromium-decode bewijzen geen tv-weergave."
+  ],
+  "retry": {
+    "previousReportFile": "/home/codex/repos/milobingo/.local/media-retry/results/capacity/report.json",
+    "previousReportSha256": "928fd625fed1735a6ed6a1dd304aecf91df82e5594dee983ec0801963c7a01a5",
+    "stage": {
+      "name": "mixed-150-50",
+      "webrtc": 150,
+      "hls": 50,
+      "seconds": 600
+    },
+    "previousComplete": false,
+    "previousMixedStatus": "target-missed",
+    "previousMixedLatencyMs": {
+      "samples": 636,
+      "p50": 8229,
+      "p95": 8271,
+      "max": 8283
+    },
+    "fixtureMarker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4",
+    "scope": "Only the original150 WebRTC+50 HLS phase for at least600seconds; the previous six-phase report is never rewritten.",
+    "noRemainingLoadClientsObservedAtMs": 1795373202081,
+    "previousReportUnchanged": true
+  },
+  "preflight": {
+    "passed": true,
+    "capacityGateChecked": true,
+    "forceRelay": false,
+    "appOrigin": "https://milo-staging.dgwebservices.nl",
+    "livekitHostname": "milo-staging.dgwebservices.nl",
+    "targetPublicIps": [
+      "128.140.93.95",
+      "2a01:4f8:c015:60a6::1"
+    ],
+    "dnsAnswers": [
+      "128.140.93.95"
+    ],
+    "host": "dg-nxttrack-01",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "fixtureBinding": {
+      "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "generation": "e86e7f15c1d73c5f5e56f6e3a18cd778",
+      "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+    },
+    "inventoryReference": ".local/media-retry/results/truncate-preflight-audit.json",
+    "generator": {
+      "host": "codex-worker-01",
+      "cpuCount": 12,
+      "freeMemoryBytes": 10937577472,
+      "network": "Afzonderlijke Hetzner HEL1-generator65.108.158.112 naar FSN1-staging128.140.93.95; publiekeHTTPS margeproef393.90Mbps/15.23s; dezelfde bron-/viewerklok, relatieve fout0ms. Geen wifi/mobiele of tv-meting.",
+      "publicIp": "65.108.158.112",
+      "availableIngressMbps": 393.89507873397525,
+      "clockErrorBoundMs": 0
+    },
+    "sourceRoute": "browser-whip-test",
+    "cliVersion": "lk version 2.20.1"
+  },
+  "receiverSourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "finishedAt": "2026-11-22T18:57:45.775Z"
+}

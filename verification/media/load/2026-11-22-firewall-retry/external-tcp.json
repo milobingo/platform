@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-11-22T16:23:01Z",
+  "source": "65.108.158.112",
+  "target": "128.140.93.95",
+  "tcp": [
+    {
+      "port": 443,
+      "connected": true,
+      "ms": 39
+    },
+    {
+      "port": 7881,
+      "connected": true,
+      "ms": 39
+    },
+    {
+      "port": 5349,
+      "connected": true,
+      "ms": 39
+    }
+  ]
+}

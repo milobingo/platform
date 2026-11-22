@@ -1,0 +1,17 @@
+{
+  "format": "milo-truncate-r4-private-binding-ready-v1",
+  "checkedAt": "2026-11-22T18:46:09.487Z",
+  "fixtureGameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "generation": "e86e7f15c1d73c5f5e56f6e3a18cd778",
+  "correctHarnessField": "hlsMediaPlaylistUrl",
+  "actualPlaylistHttpStatus": 200,
+  "actualPlaylistTargetDuration": 1,
+  "pathPrefixDerivedFromSameActualUrl": true,
+  "exactRunStage172GuardPassed": true,
+  "capabilityGameAndGenerationMatchManifest": true,
+  "fixtureConfigurationValidationPassed": true,
+  "priorEncodingProof": ".local/media-retry/results/truncate-hls-ready.json",
+  "r3AbortPreserved": true,
+  "secretsReturned": false
+}

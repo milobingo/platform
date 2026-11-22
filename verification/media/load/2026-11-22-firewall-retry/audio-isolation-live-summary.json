@@ -1,0 +1,182 @@
+{
+  "format": "milo-real-technical-audio-isolation-summary-v1",
+  "derivedAt": "2026-11-22T19:03:43.285669+00:00",
+  "sourceEvidence": ".local/media-retry/results/audio-isolation-live.json",
+  "sourceEvidenceSha256": "5666f0091c9f5dede09556fb5ed0d11fd74b00c27daa943b290f17df040ac186",
+  "readOnlyAnalysis": true,
+  "newMediaClients": 0,
+  "passed": true,
+  "elapsedSeconds": 27.295,
+  "productionClasses": [
+    "frontend/livekit-media.js",
+    "frontend/live-call-audio.js",
+    "server/livekit.js callRoomToken/callRooms/callIdentities"
+  ],
+  "sourceSha256": {
+    "livekitMedia": "fb9d8e9087a65c9fcfa4107ecb2e3004ad4872d474af40c304ff559d10fcc649",
+    "liveCallAudio": "6ddb54025d0c0a83e142ebb3b2773da752d540193848a90234b441c6730b4701",
+    "callGrants": "77958bbcc418de3b4b876066489377543fb595fae4dd30bedf6cf4f162c04603",
+    "browserProbe": "057d5869995234b7fde8fa042004f0ab4580184e376aabe7fb2792172cd96ba0"
+  },
+  "scope": "Real self-hosted Opus transport plus existing production media-routing/mixer. Synthetic frequency tracks only, not family/auth/consent/appcall/Cloudprovider/physical OBS/Cast rehearsal.",
+  "testFrequenciesHz": {
+    "show": 127,
+    "director": 317,
+    "guest": 503,
+    "presenter": 733
+  },
+  "measurementThresholds": {
+    "presentMinimumAmplitude": 0.015,
+    "absentMaximumAmplitude": 0.004
+  },
+  "measurements": [
+    {
+      "name": "private-host-hears-guest",
+      "passed": true,
+      "measuredSeconds": 2.398,
+      "samples": 24,
+      "minimumPresentAmplitude": {
+        "guest": 0.07834335376500551
+      },
+      "maximumAbsentAmplitude": {
+        "show": 0.00026660832453737066,
+        "director": 0.000488528396350823,
+        "presenter": 0.0006302350379733515
+      }
+    },
+    {
+      "name": "private-guest-hears-director",
+      "passed": true,
+      "measuredSeconds": 2.497,
+      "samples": 25,
+      "minimumPresentAmplitude": {
+        "director": 0.07930331110914665
+      },
+      "maximumAbsentAmplitude": {
+        "show": 0.0003500915901129978,
+        "guest": 0.0004345018009293618,
+        "presenter": 7.28621189064679e-05
+      }
+    },
+    {
+      "name": "private-programme-excludes-conversation",
+      "passed": true,
+      "measuredSeconds": 2.396,
+      "samples": 24,
+      "minimumPresentAmplitude": {
+        "show": 0.07942622925737164
+      },
+      "maximumAbsentAmplitude": {
+        "director": 0.00034060774671038194,
+        "guest": 0.0001907167095158642,
+        "presenter": 0.00014249741404621921
+      }
+    },
+    {
+      "name": "live-programme-includes-selected-guest-presenter",
+      "passed": true,
+      "measuredSeconds": 2.496,
+      "samples": 25,
+      "minimumPresentAmplitude": {
+        "show": 0.07831641234365243,
+        "guest": 0.07654138430064479,
+        "presenter": 0.07969096773407398
+      },
+      "maximumAbsentAmplitude": {
+        "director": 0.0007877199973471647
+      }
+    },
+    {
+      "name": "live-guest-mix-minus-return",
+      "passed": true,
+      "measuredSeconds": 2.497,
+      "samples": 25,
+      "minimumPresentAmplitude": {
+        "presenter": 0.07951293633138355
+      },
+      "maximumAbsentAmplitude": {
+        "show": 0.00014087406449855985,
+        "director": 7.164752669393028e-05,
+        "guest": 0.0003444846908762418
+      }
+    },
+    {
+      "name": "prepared-live-ai-input-remains-closed",
+      "passed": true,
+      "measuredSeconds": 0.936,
+      "samples": 10,
+      "minimumPresentAmplitude": {},
+      "maximumAbsentAmplitude": {
+        "show": 0,
+        "director": 0,
+        "guest": 0,
+        "presenter": 0
+      }
+    },
+    {
+      "name": "ended-programme-clears-guest-and-presenter",
+      "passed": true,
+      "measuredSeconds": 2.494,
+      "samples": 25,
+      "minimumPresentAmplitude": {
+        "show": 0.07989715220887801
+      },
+      "maximumAbsentAmplitude": {
+        "director": 0.0003421624069273098,
+        "guest": 0.00019096980436367116,
+        "presenter": 0.00014261760335166387
+      }
+    }
+  ],
+  "actualTransport": {
+    "codecs": [
+      "audio/opus"
+    ],
+    "allMeasuredInboundPacketsPositive": true,
+    "allMeasuredInboundLossZero": true,
+    "programmeReceivedBytes": 335822,
+    "programmeReceivedPackets": 1026,
+    "someRtcStatsReportZeroAudioEnergy": true,
+    "decodedAudioProof": "Positive matched-frequency amplitudes were measured from the actually received remote Opus tracks/programme track using WebAudio. Zero totalAudioEnergy in some RTCstats rows is preserved in the source; no claim that this stats field was positive on every route."
+  },
+  "grants": {
+    "outputPrivateRejectedBeforeTokenRequest": {
+      "blockedBeforeToken": true,
+      "tokenRequests": 0
+    },
+    "liveHostCanPublishFalse": true,
+    "productionPrivateMicGuardRejected": true,
+    "publicationAttemptRejectedUnderServerIssuedGrant": true,
+    "wireLevel403Captured": false,
+    "clarification": "SDK publication rejection under server-issued canPublish:false and zero host publications; no separate server RPC/wire403 claimed."
+  },
+  "cleanup": {
+    "privateRoomClosedBeforeLive": {
+      "room": "bs-28f345df-3249-4566-9016-9271fee447b9",
+      "participantsRevoked": 0,
+      "remainingParticipants": 0
+    },
+    "finalOtherTwoRooms": [
+      {
+        "room": "milo-staging-load-audio-isolation-28f345df-3249-4566-9016-9271fee447b9",
+        "participantsRevoked": 0,
+        "remainingParticipants": 0
+      },
+      {
+        "room": "live-28f345df-3249-4566-9016-9271fee447b9",
+        "participantsRevoked": 0,
+        "remainingParticipants": 0
+      }
+    ],
+    "local": {
+      "allLocalRoomsDisconnected": true,
+      "allLocalTracksStopped": true
+    },
+    "existingSourceUntouched": true,
+    "fixtureLoadViewersBeforeAfter": [
+      0,
+      0
+    ]
+  },
+  "forbiddenCloudOrOpenAIRequests": 0
+}

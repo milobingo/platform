@@ -1,0 +1,38 @@
+{
+  "format": "milo-final-own-watchers-stopped-v1",
+  "checkedAt": "2026-11-22T19:03:52.912880+00:00",
+  "stoppedExactLocalProcesses": [
+    {
+      "pid": 765808,
+      "script": ".local/media-retry/watch-real-activity.mjs"
+    },
+    {
+      "pid": 765809,
+      "script": ".local/media-retry/watch-production-activity.mjs"
+    }
+  ],
+  "sessions": [
+    81211,
+    60414
+  ],
+  "finalIndependentStagingSample": ".local/media-retry/results/final-staging-activity.json",
+  "finalIndependentProductionSample": ".local/media-retry/results/final-production-readonly.json",
+  "logs": {
+    "real-activity-watch": {
+      "checks": 105,
+      "alerts": 0,
+      "firstCheck": "2026-11-22T16:53:09.031Z",
+      "lastCheck": "2026-11-22T19:03:04.781Z",
+      "allChecksNoActualRealShow": true
+    },
+    "production-activity-watch": {
+      "checks": 98,
+      "alerts": 0,
+      "firstCheck": "2026-11-22T17:02:46.536Z",
+      "lastCheck": "2026-11-22T19:03:00.925Z",
+      "allChecksNoActualRealShow": true
+    }
+  },
+  "localProcessesOnly": true,
+  "hostMutations": 0
+}

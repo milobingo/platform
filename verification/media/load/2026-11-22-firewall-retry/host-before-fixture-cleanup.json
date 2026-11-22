@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-11-22T17:33:43Z",
+  "hostname": "dg-nxttrack-01",
+  "caddyHashes": {
+    "/etc/caddy/sites/dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+    "/etc/caddy/sites/dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+    "/etc/caddy/sites/milobingo-production.caddy": "994df7cc27ec166c1051d47c8f2bad547e08f7afddee3d5f0c89e9e75f8fa9c0",
+    "/etc/caddy/sites/milobingo-staging.caddy": "84b850212fb5601f9f9e70ca4bb14084d9d9fcb81b91ef63c0a0f21fa60da76c",
+    "/etc/caddy/sites/rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c",
+    "/etc/caddy/sites/rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+    "/etc/caddy/sites/socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+    "/etc/caddy/sites/socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159"
+  },
+  "originalBackupPresent": true,
+  "originalBackupReference": "/var/backups/milo-media/20261122T150551Z/caddy-before.json",
+  "originalNeighbourCount": 7,
+  "unchangedOriginalNeighbours": 7,
+  "allOriginalNeighboursUnchanged": true,
+  "units": {
+    "milobingo-production.service": {
+      "MainPID": "545053",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "milobingo-staging.service": {
+      "MainPID": "1338237",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "caddy.service": {
+      "MainPID": "3243",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "milo-media-staging.service": {
+      "MainPID": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "milo-media-observe.service": {
+      "MainPID": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "milo-media-maintenance.timer": {
+      "ActiveState": "active",
+      "SubState": "waiting"
+    }
+  },
+  "mediaContainers": [
+    {
+      "name": "/milo-media-staging-livekit-1",
+      "id": "d645a46ea8145135c4b42bd760875f18dbfff0a47e9959ae18e2624c0cddbf54",
+      "running": true,
+      "image": "sha256:da859cfc55bdf8a1f8bddc86f61647323114236f8bdde15a9aed944648459472",
+      "uid": "65532:65532",
+      "restarts": 0
+    },
+    {
+      "name": "/milo-media-staging-ingress-1",
+      "id": "44c89a4c24dab49f8b50c029d7d061556f5185ca6b6c2373b635892ee85dca1f",
+      "running": true,
+      "image": "sha256:8417446ede56ed378a83fc97bcdc335a328d62b5fb5b1061377f56741b3c276e",
+      "uid": "65532:65532",
+      "restarts": 0
+    },
+    {
+      "name": "/milo-media-staging-egress-1",
+      "id": "57cec58fd5d0fd7bc6a892a6d22df572564e4ae79f4d0169af9013aa16d101f9",
+      "running": true,
+      "image": "sha256:e91d8fe80b523c3f21a6a109201eb3a9a5cd60e693857380b7184689506daaa5",
+      "uid": "63001:0",
+      "restarts": 0
+    },
+    {
+      "name": "/milo-media-staging-redis-1",
+      "id": "41feb07d0033f6e5b5c627805174eae144435054bc967d39d8d6c10aa30ef488",
+      "running": true,
+      "image": "sha256:02f2cc4882f8bf87c79a220ac958f58c700bdec0dfb9b9ea61b62fb0e8f1bfcf",
+      "uid": "65532:65532",
+      "restarts": 0
+    }
+  ],
+  "productionRelease": {
+    "sha": "aab35f80b96422a617f7fd9d247d498753757442",
+    "releaseId": null
+  },
+  "stagingRelease": {
+    "sha": "556ccfab07f5e76c9e87b307e70bc00591a43238",
+    "releaseId": null
+  },
+  "expectedProductionPid": 545053,
+  "productionPidUnchanged": true,
+  "configurationValuesReturned": false,
+  "secretsReturned": false
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://dartflow.nl/api/health",
+    "status": 200
+  },
+  {
+    "url": "https://staging.dartflow.nl/api/health",
+    "status": 200
+  },
+  {
+    "url": "https://socialhero.dgwebservices.nl/api/health",
+    "status": 200
+  },
+  {
+    "url": "https://socialhero-staging.dgwebservices.nl/api/health",
+    "status": 200
+  },
+  {
+    "url": "https://rondio.org/api/health",
+    "status": 200
+  },
+  {
+    "url": "https://staging.rondio.org/api/health",
+    "status": 200
+  }
+]

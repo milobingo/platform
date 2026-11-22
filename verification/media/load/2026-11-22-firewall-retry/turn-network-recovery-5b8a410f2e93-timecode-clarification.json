@@ -1,0 +1,23 @@
+{
+  "format": "milo-turn-tls-recovery-timecode-clarification-v1",
+  "derivedAt": "2026-11-22T18:30:43.042024+00:00",
+  "sourceEvidence": ".local/media-retry/results/turn-network-recovery-5b8a410f2e93-complete.json",
+  "newMediaClients": 0,
+  "readOnlyAnalysis": true,
+  "kernelExpiryAtMs": 1795371963939,
+  "firstReceivedVideoAndRtpAfterExpirySeconds": 0.917,
+  "firstDecodedTimecodeAfterExpiry": {
+    "displayAtMs": 1795371964846,
+    "sourceAtMs": 1795371948958,
+    "latencyMs": 15888,
+    "secondsAfterExpiry": 0.907
+  },
+  "firstObservedCurrentLiveTimecodeAfterExpiry": {
+    "displayAtMs": 1795371968159,
+    "sourceAtMs": 1795371967966,
+    "latencyMs": 193,
+    "secondsAfterExpiry": 4.22
+  },
+  "currentLiveCriterion": "CRC-validated source/display timecode latency between0and1000ms. This is first observed current code, not proof that all intervening frames were current.",
+  "clarification": "RTP/decoded frames returning after~0.917s initially delivered an old buffered frame. The first observed current live timecode returned after4.220s. The later11.999s combined recovery waited for audible sparse WAV speech; none of these observations is a physicaldevice/UI rehearsal."
+}

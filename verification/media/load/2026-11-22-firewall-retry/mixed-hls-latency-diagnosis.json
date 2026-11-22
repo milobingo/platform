@@ -1,0 +1,322 @@
+{
+  "format": "milo-mixed-hls-latency-diagnosis-v1",
+  "observedThrough": "2026-11-22T17:42:42.196000+00:00",
+  "executed": true,
+  "extraClientsCreated": 0,
+  "scope": "Read-only analysis of current exact browser receiving signed app HLS. Stage stillrunning; not a capacity pass.",
+  "minutes": [
+    {
+      "minute": 1,
+      "timecodes": 59,
+      "p50Ms": 6124,
+      "p95Ms": 6245
+    },
+    {
+      "minute": 2,
+      "timecodes": 60,
+      "p50Ms": 6239,
+      "p95Ms": 6259
+    },
+    {
+      "minute": 3,
+      "timecodes": 58,
+      "p50Ms": 6257,
+      "p95Ms": 8243
+    },
+    {
+      "minute": 4,
+      "timecodes": 59,
+      "p50Ms": 8229,
+      "p95Ms": 8253
+    },
+    {
+      "minute": 5,
+      "timecodes": 59,
+      "p50Ms": 8224,
+      "p95Ms": 8250
+    },
+    {
+      "minute": 6,
+      "timecodes": 21,
+      "p50Ms": 8222,
+      "p95Ms": 8248
+    }
+  ],
+  "events": [
+    {
+      "observedAt": "2026-11-22T17:37:52.250000+00:00",
+      "medianTimecodeLatencyMs": 5518,
+      "medianLatencyDeltaMs": 13.0,
+      "droppedFrameDelta": 5,
+      "generatorCpuNearMax": 52.03280404815913,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.087,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:37:58.103000+00:00",
+      "medianTimecodeLatencyMs": 6177.5,
+      "medianLatencyDeltaMs": 659.5,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 50.383475684155485,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 3.54,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:03.993000+00:00",
+      "medianTimecodeLatencyMs": 6235.5,
+      "medianLatencyDeltaMs": 58.0,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 58.158193075782684,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 9.43,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:10.231000+00:00",
+      "medianTimecodeLatencyMs": 6230.0,
+      "medianLatencyDeltaMs": -5.5,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 58.158193075782684,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 1.268,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:16.143000+00:00",
+      "medianTimecodeLatencyMs": 6225.5,
+      "medianLatencyDeltaMs": -4.5,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 58.158193075782684,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 7.18,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:22.049000+00:00",
+      "medianTimecodeLatencyMs": 6226.5,
+      "medianLatencyDeltaMs": 1.0,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 58.158193075782684,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.036,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:27.938000+00:00",
+      "medianTimecodeLatencyMs": 6245,
+      "medianLatencyDeltaMs": 18.5,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 50.98193244304792,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 3.475,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:33.833000+00:00",
+      "medianTimecodeLatencyMs": 6234.0,
+      "medianLatencyDeltaMs": -11.0,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 50.98193244304792,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 9.37,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:39.733000+00:00",
+      "medianTimecodeLatencyMs": 6245.0,
+      "medianLatencyDeltaMs": 11.0,
+      "droppedFrameDelta": 7,
+      "generatorCpuNearMax": 50.98193244304792,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.02,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:45.647000+00:00",
+      "medianTimecodeLatencyMs": 6243.0,
+      "medianLatencyDeltaMs": -2.0,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 60.63156068361239,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 5.934,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:51.533000+00:00",
+      "medianTimecodeLatencyMs": 6241.0,
+      "medianLatencyDeltaMs": -2.0,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 60.63156068361239,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.02,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:38:57.420000+00:00",
+      "medianTimecodeLatencyMs": 6246.5,
+      "medianLatencyDeltaMs": 5.5,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 60.63156068361239,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 2.807,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:03.329000+00:00",
+      "medianTimecodeLatencyMs": 6236.0,
+      "medianLatencyDeltaMs": -10.5,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 60.63156068361239,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 8.716,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:09.221000+00:00",
+      "medianTimecodeLatencyMs": 6229,
+      "medianLatencyDeltaMs": -7.0,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 59.10864475851903,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.008,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:15.093000+00:00",
+      "medianTimecodeLatencyMs": 6244.5,
+      "medianLatencyDeltaMs": 15.5,
+      "droppedFrameDelta": 7,
+      "generatorCpuNearMax": 49.07723257237821,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 5.48,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:21.010000+00:00",
+      "medianTimecodeLatencyMs": 6232.5,
+      "medianLatencyDeltaMs": -12.0,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 49.07723257237821,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 11.397,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:26.894000+00:00",
+      "medianTimecodeLatencyMs": 6248.0,
+      "medianLatencyDeltaMs": 15.5,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 49.24812030075187,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 2.131,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:32.806000+00:00",
+      "medianTimecodeLatencyMs": 6229.0,
+      "medianLatencyDeltaMs": -19.0,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 49.24812030075187,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 8.043,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:38.710000+00:00",
+      "medianTimecodeLatencyMs": 6261,
+      "medianLatencyDeltaMs": 32.0,
+      "droppedFrameDelta": 8,
+      "generatorCpuNearMax": 51.4643260623968,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.047,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:44.611000+00:00",
+      "medianTimecodeLatencyMs": 6255.0,
+      "medianLatencyDeltaMs": -6.0,
+      "droppedFrameDelta": 9,
+      "generatorCpuNearMax": 51.4643260623968,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 4.898,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:50.505000+00:00",
+      "medianTimecodeLatencyMs": 6255.0,
+      "medianLatencyDeltaMs": 0.0,
+      "droppedFrameDelta": 5,
+      "generatorCpuNearMax": 51.4643260623968,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 10.792,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:39:56.493000+00:00",
+      "medianTimecodeLatencyMs": 6254.0,
+      "medianLatencyDeltaMs": -1.0,
+      "droppedFrameDelta": 7,
+      "generatorCpuNearMax": 64.42906574394463,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 1.63,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:40:02.451000+00:00",
+      "medianTimecodeLatencyMs": 6249.0,
+      "medianLatencyDeltaMs": -5.0,
+      "droppedFrameDelta": 7,
+      "generatorCpuNearMax": 64.42906574394463,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 7.588,
+      "probeStalls": 0
+    },
+    {
+      "observedAt": "2026-11-22T17:40:08.437000+00:00",
+      "medianTimecodeLatencyMs": 8208.0,
+      "medianLatencyDeltaMs": 1959.0,
+      "droppedFrameDelta": 3,
+      "generatorCpuNearMax": 64.42906574394463,
+      "generatorMemoryPressureNearMax": 0.0,
+      "lastPcmAgeSeconds": 0.024,
+      "probeStalls": 0
+    }
+  ],
+  "last": {
+    "frames": 9464,
+    "reconnects": 0,
+    "disconnects": 0,
+    "stalls": 0,
+    "audioRmsMax": 0.28803070874152303,
+    "audioSamples": 6499,
+    "error": null,
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 9657,
+      "droppedVideoFrames": 185
+    }
+  },
+  "hypotheses": [
+    "One ~2second step is consistent with additional segment/buffer distance, but no livebuffer/playhead/nonfatalHLS event telemetry exists in this frozen run, so cause is unconfirmed.",
+    "Pinned hls.js1.7.4 targetLatency increases up to one targetduration on BUFFER_STALLED_ERROR by default(liveSyncOnStallIncrease1); onlyfatalerrors are currently recorded.",
+    "With lowLatencyModefalse, hls.js1.7.4 adaptiveplaybackrate catchup is disabled. No changes made during this run."
+  ],
+  "generatorCausalityEstablished": false,
+  "playbackInterruptionEvidence": {
+    "lastTimecodeBefore": {
+      "displayAtMs": 1795369202070,
+      "sourceAtMs": 1795369195821
+    },
+    "firstTimecodeAfter": {
+      "displayAtMs": 1795369204644,
+      "sourceAtMs": 1795369196415
+    },
+    "displayGapMs": 2574,
+    "sourceProgressMs": 594,
+    "additionalPlaybackLagMs": 1980,
+    "decodedFramesInContaining5point986SecondWindow": 117,
+    "probeStallCounterLimitation": "Probe records stalls only after3s; zero stall counter does not exclude this~2s interruption.",
+    "causeEstablished": false
+  }
+}

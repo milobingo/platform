@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-11-22T18:27:32.373Z",
+  "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "egressId": "EG_AKpD3Jxt3zps",
+  "terminalStatus": "EGRESS_COMPLETE",
+  "ownActiveEgresses": 0,
+  "ownRoomParticipants": 0,
+  "databaseWrites": 0,
+  "ingressModified": false,
+  "credentialsReturned": false
+}

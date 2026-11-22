@@ -1,0 +1,74 @@
+{
+  "checkedAt": "2026-11-22T17:43:15Z",
+  "playlist": {
+    "targetDuration": 2,
+    "mediaSequence": 1550,
+    "discontinuityCount": 0,
+    "programDateTimeCount": 5,
+    "segments": [
+      {
+        "name": "segment_01550.ts",
+        "duration": 2.0,
+        "bytes": 364156,
+        "mtime": "2026-11-22T17:43:03Z",
+        "ageSeconds": 9.191
+      },
+      {
+        "name": "segment_01551.ts",
+        "duration": 2.0,
+        "bytes": 362088,
+        "mtime": "2026-11-22T17:43:05Z",
+        "ageSeconds": 7.169
+      },
+      {
+        "name": "segment_01552.ts",
+        "duration": 2.0,
+        "bytes": 354004,
+        "mtime": "2026-11-22T17:43:07Z",
+        "ageSeconds": 5.184
+      },
+      {
+        "name": "segment_01553.ts",
+        "duration": 2.0,
+        "bytes": 364720,
+        "mtime": "2026-11-22T17:43:09Z",
+        "ageSeconds": 3.17
+      },
+      {
+        "name": "segment_01554.ts",
+        "duration": 2.0,
+        "bytes": 356824,
+        "mtime": "2026-11-22T17:43:11Z",
+        "ageSeconds": 1.19
+      }
+    ]
+  },
+  "cpuSampleSeconds": 3,
+  "egressCpuStatDelta": {
+    "usage_usec": 1561346,
+    "user_usec": 1315740,
+    "system_usec": 245605,
+    "core_sched.force_idle_usec": 0,
+    "nr_periods": 30,
+    "nr_throttled": 0,
+    "throttled_usec": 0,
+    "nr_bursts": 0,
+    "burst_usec": 0
+  },
+  "cpuMax": "150000 100000",
+  "healthStatus": 200,
+  "logWindow": "17:39:40Z--17:40:30Z",
+  "logLineCount": 1,
+  "logCategories": {
+    "warning": 0,
+    "error": 0,
+    "queue": 0,
+    "discontinuity": 0,
+    "drop": 0,
+    "latency": 0,
+    "rtpLoss": 0,
+    "pipeline": 0
+  },
+  "sanitizedRelevantMessages": [],
+  "secretValuesReturned": false
+}

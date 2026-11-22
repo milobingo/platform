@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-11-22T18:18:03.291792+00:00",
+  "durationSeconds": 5.0,
+  "cpuSeconds": 0.739,
+  "openToFstatDelayMicroseconds": 200,
+  "opens": 15687,
+  "uniqueInodes": 1,
+  "unlinkedOpenDescriptors": 0,
+  "unlinkObservations": [],
+  "unsafeOtherFileObservations": 0,
+  "writes": 0,
+  "extraViewers": 0
+}

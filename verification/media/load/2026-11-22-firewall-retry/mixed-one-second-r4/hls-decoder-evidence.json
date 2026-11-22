@@ -1,0 +1,121 @@
+{
+  "format": "milo-mixed-retry-hls-decoder-evidence-v1",
+  "observedAt": "2026-11-22T18:58:02.769110+00:00",
+  "readOnlyAnalysis": true,
+  "extraMediaClients": 0,
+  "reportComplete": true,
+  "mixedStatus": "passed",
+  "receiverSourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "scope": "One real HLS browser decoder;49other HLS clients fetch real segments at normal pace. No all50-renderer, physical Cast/AirPlay, OBS or privatecall rehearsal claim.",
+  "hold": {
+    "start": "2026-11-22T18:47:20.428000+00:00",
+    "end": "2026-11-22T18:57:34.130000+00:00",
+    "requiredSeconds": 600,
+    "actualSeconds": 613.702,
+    "firstDecoderSnapshot": "2026-11-22T18:47:26.321000+00:00",
+    "lastDecoderSnapshot": "2026-11-22T18:57:29.562000+00:00",
+    "sampledSnapshotSpanSeconds": 603.241,
+    "samples": 103,
+    "leadingSnapshotGapSeconds": 5.893,
+    "trailingSnapshotGapSeconds": 4.568
+  },
+  "dimensions": {
+    "expected": [
+      1280,
+      720
+    ],
+    "observed": [
+      "1280x720"
+    ],
+    "missingSamples": 0,
+    "invalidSamples": 0,
+    "allSnapshots720p": true,
+    "invalidExamples": []
+  },
+  "audio": {
+    "invalidFreshPcmSnapshots": 0,
+    "allSnapshotsFreshPcm": true,
+    "pcmAgeSeconds": {
+      "samples": 103,
+      "min": 0.002,
+      "p50": 4.387,
+      "p95": 10.907,
+      "max": 12.489
+    },
+    "rmsMaximum": 0.2841721406115624,
+    "lastAudioContextState": "running",
+    "invalidExamples": []
+  },
+  "frames": {
+    "renderedCallbackFrames": 17699,
+    "renderedCallbackFps": 29.339849247647294,
+    "qualityTotalFrameDelta": 18075,
+    "qualityDroppedFrameDelta": 373,
+    "qualityPresentedFps": 29.34482238442016,
+    "wholePhaseFinalQuality": {
+      "totalVideoFrames": 19363,
+      "droppedVideoFrames": 450
+    },
+    "probeStalls": 0,
+    "probeStallLimitation": "Counter threshold3s; source/display timecodes and nonfatalHLS events also expose shorter interruptions.",
+    "reconnects": 0,
+    "disconnects": 0,
+    "finalError": null
+  },
+  "timecodeLatencyMs": {
+    "samples": 602,
+    "min": 3416,
+    "p50": 4335,
+    "p95": 4379,
+    "max": 4400
+  },
+  "playbackLagIncreaseIntervals": [
+    {
+      "from": "2026-11-22T18:51:52.848000+00:00",
+      "to": "2026-11-22T18:51:54.449000+00:00",
+      "displayGapMs": 1601,
+      "sourceAdvanceMs": 759,
+      "additionalPlaybackLagMs": 842
+    }
+  ],
+  "hlsNonfatalEvents": [
+    {
+      "observedAtMs": 1795373513602,
+      "type": "mediaError",
+      "details": "bufferStalledError",
+      "fatal": false
+    }
+  ],
+  "hlsFatalEvents": [],
+  "hlsEventTotals": {
+    "uniqueWholePhase": 2,
+    "held": 1,
+    "lastTotalReported": 2
+  },
+  "hlsBuffer": {
+    "forwardBufferSeconds": {
+      "samples": 103,
+      "min": 0.11795000000000755,
+      "p50": 1.0589029999999866,
+      "p95": 1.8745040000000017,
+      "max": 1.953597000000002
+    },
+    "latencySeconds": {
+      "samples": 103,
+      "min": 1.2128933212833743,
+      "p50": 2.130164552584688,
+      "p95": 2.152102014614343,
+      "max": 2.1587750259162704
+    },
+    "targetLatencySeconds": {
+      "samples": 103,
+      "min": 2,
+      "p50": 2,
+      "p95": 2,
+      "max": 2
+    }
+  },
+  "playbackPolicyObservations": [
+    "{\"liveSyncOnStallIncrease\": 1, \"lowLatencyMode\": false, \"maxLiveSyncPlaybackRate\": 1, \"playbackRate\": 1}"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "format": "milo-one-cli-av-smoke-v1",
+  "startedAt": "2026-11-22T16:41:08.017Z",
+  "executed": true,
+  "capacityTest": false,
+  "subscribers": 1,
+  "publishers": 0,
+  "requestedDurationSeconds": 10,
+  "scope": "One external real CLI AV subscriber in the dedicated staging fixture only; no 25/200 viewer capacity claim.",
+  "publicCandidateEvidence": null,
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "elapsedSeconds": 10.262,
+  "av": {
+    "subscribers": [
+      {
+        "subscriber": "Sub 0",
+        "tracks": [
+          {
+            "trackId": "TR_AM6Xp9bDUYz9Fy",
+            "kind": "audio",
+            "packets": 493,
+            "bitrateBps": 64099.99999999999,
+            "packetLossPercent": 0
+          },
+          {
+            "trackId": "TR_VC6BMi8ok5Xna9",
+            "kind": "video",
+            "packets": 1381,
+            "bitrateBps": 1200000,
+            "packetLossPercent": 0
+          }
+        ]
+      }
+    ],
+    "receivingAudioAndVideo": 1
+  },
+  "cleanup": {
+    "ownSubscribersRemainingAfterExit": 0,
+    "explicitlyRemoved": 0,
+    "finalOwnSubscribers": 0
+  },
+  "success": true,
+  "finishedAt": "2026-11-22T16:41:18.484Z"
+}

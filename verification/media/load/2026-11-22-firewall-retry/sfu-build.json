@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "startedAt": "2026-11-22T16:43:18Z",
+  "host": "codex-worker-01",
+  "upstreamVersion": "1.13.11",
+  "upstreamCommit": "385aa40f9292fe1db8caad87301e4b285b7c198a",
+  "sourceSha256": "3e55849d55ddb01df0407f0896d564d09e9b2b6697be1a827c9f4854e963dbff",
+  "builder": "golang:1.27.3-alpine3.24@sha256:f2c872bcee949b7be9c490efd02b48a8a2fbf947cdf533f1c58525ec9d8170fd",
+  "runtimeBase": "livekit/livekit-server:v1.13.11@sha256:25cd902de7cacbd5f1f779f6a6ac1eae20ba8f56b0935934ce6b0ab80d1e3d20",
+  "image": "milo-livekit-staging:1.13.11-turn-tls-port-v1",
+  "credentialsRead": false,
+  "hostServicesChanged": false,
+  "patchSha256": "2768aca451b105856d311d74cc0366dd4da0a9062a7b7bd6d630aaf2bc1cfa67",
+  "testSha256": "20adb165f811ee4164c249d067bb20d0f7f852eb9e4f39b842961458132e5e76",
+  "compilerLimits": {
+    "memoryBytes": 2147483648,
+    "nanoCpus": 2000000000,
+    "pidsLimit": 256,
+    "innerCgroupLimitsChecked": true
+  },
+  "binarySha256": "4c2fb55fd6b065a292c03c8f84fca248d7fa268ca9a04fe279f250e7af69e1ed",
+  "targetedGoTestPassed": true,
+  "imageId": "sha256:da859cfc55bdf8a1f8bddc86f61647323114236f8bdde15a9aed944648459472",
+  "runtimeUser": "65532:65532",
+  "versionOutput": "livekit-server version 1.13.11",
+  "imageArchiveSha256": "e00f428b88ff909c02ed597483e68464d3082fd39729df58c84ea2f0bc212b3f",
+  "imageArchive": "/home/codex/repos/milobingo/.local/media-retry/build-sfu-r3/livekit-staging-image.tar",
+  "finishedAt": "2026-11-22T16:45:08Z",
+  "passed": true
+}

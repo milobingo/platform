@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-11-22T16:51:34.335Z",
+  "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "generation": "f55efba230e5519f789c1da5da34cc1c",
+  "activeEgress": [
+    {
+      "id": "EG_5Ve3ArpYjy7g",
+      "status": "EGRESS_ACTIVE",
+      "error": null
+    }
+  ],
+  "httpStatus": 200,
+  "validM3u8": true,
+  "segmentCount": 5,
+  "targetDuration": 2,
+  "live": true,
+  "privateWhipPreserved": true
+}

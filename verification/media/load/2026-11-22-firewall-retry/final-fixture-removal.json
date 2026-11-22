@@ -1,0 +1,23 @@
+{
+  "format": "milo-final-own-fixture-removal-v1",
+  "checkedAt": "2026-11-22T19:02:24.976383+00:00",
+  "helperSourceSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "helperSha256": "d1c35fbe2d9c2c5fa3ac420587a2cc165e9e7334d51f819b551692432818e869",
+  "fixtureId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "stop": {
+    "action": "stop",
+    "status": "ended",
+    "hlsAvailable": false
+  },
+  "remove": {
+    "action": "remove",
+    "removed": true,
+    "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "realAccountsModified": 0
+  },
+  "removedAuditManifestPreserved": true,
+  "localManifestMarkedRemoved": true,
+  "permanentRootProviderConfigPreserved": true,
+  "realAccountsModified": 0,
+  "privateLocalCredentialsRetainedPendingGuardedExport": true
+}

@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-11-22T16:47:17Z",
+  "image": "milo-livekit-staging:1.13.11-turn-tls-port-v1",
+  "imageId": "sha256:da859cfc55bdf8a1f8bddc86f61647323114236f8bdde15a9aed944648459472",
+  "expectedImageId": "sha256:da859cfc55bdf8a1f8bddc86f61647323114236f8bdde15a9aed944648459472",
+  "sameImageId": true,
+  "binarySha256": "4c2fb55fd6b065a292c03c8f84fca248d7fa268ca9a04fe279f250e7af69e1ed",
+  "runtimeUser": "65532:65532",
+  "running": true,
+  "otherMediaContainerIdsUnchanged": true,
+  "caddyHashesUnchanged": true,
+  "onlyServiceRecreated": "livekit",
+  "productionServiceRestarted": false
+}

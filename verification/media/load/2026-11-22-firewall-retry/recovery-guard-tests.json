@@ -1,0 +1,61 @@
+{
+  "executed": true,
+  "networkRequests": 0,
+  "actualMediaTest": false,
+  "cases": [
+    {
+      "name": "completed mixed HLS latency miss",
+      "expected": true,
+      "allowed": true,
+      "passed": true
+    },
+    {
+      "name": "full success",
+      "expected": true,
+      "allowed": true,
+      "passed": true
+    },
+    {
+      "name": "missing phase",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "200 missed",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "short mixed hold",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "no fresh HLS PCM",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "HLS clients not sustained",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "another mixed resolution target missed",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    },
+    {
+      "name": "still running",
+      "expected": false,
+      "allowed": false,
+      "passed": true
+    }
+  ]
+}

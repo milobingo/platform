@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-22T19:03:28Z",
+  "ownRecoveryTables": [],
+  "ownCleanupUnits": {
+    "milo-turn-cleanup-5b8a410f2e93.timer": "not-found",
+    "milo-turn-cleanup-5b8a410f2e93.service": "not-found"
+  },
+  "permanentRootProviderConfigurationPresentAndProtected": true,
+  "configurationValuesRead": false,
+  "rootNetworkMutations": 0,
+  "passed": true
+}

@@ -1,0 +1,272 @@
+{
+  "format": "milo-natural-source-wave-wrap-v1",
+  "observedAt": "2026-11-22T17:10:22.440Z",
+  "scope": "Read-only existing source and actual 150-viewer-run samples; no seeking, additional AV clients or source/fixture changes.",
+  "sourceFile": ".local/media-retry/results/source-capacity/source-observations.jsonl",
+  "sourceBefore": {
+    "observedAtMs": 1795367365612,
+    "sourceAudioTimeSeconds": 1120.751746,
+    "sourceCueNumber": 75,
+    "audioRms": 0,
+    "audioContextState": "running",
+    "mediaSources": [
+      {
+        "kind": "audio",
+        "trackIdentifier": "b04a7a68-ccb8-45a0-a890-5fd4862170aa",
+        "audioLevel": 0,
+        "totalAudioEnergy": 50.929270471409275,
+        "totalSamplesDuration": 1120.7299999991258
+      },
+      {
+        "kind": "video",
+        "trackIdentifier": "70bd63bc-adc3-4acf-828b-eb087c3080cf",
+        "width": 1280,
+        "height": 720,
+        "framesPerSecond": 31
+      }
+    ],
+    "sourceTracks": {
+      "audio": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "channelCount": 2,
+          "deviceId": "WebAudio-5da8c351-4912-47bb-909f-674b1790e21f",
+          "latency": 0.01,
+          "sampleRate": 44100,
+          "sampleSize": 16
+        }
+      },
+      "video": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "aspectRatio": 1.7777777777777777,
+          "deviceId": "aT308TYESiUL8VdGjDe/e6HwsDdRysktVDScbrmvucFF9DLRyBiZHxc12qkOQ29JnZJyjm5KJroBvATnr/RgFQ==",
+          "frameRate": 0,
+          "height": 720,
+          "resizeMode": "none",
+          "width": 1280
+        }
+      }
+    },
+    "video": [
+      {
+        "codec": "video/H264",
+        "bytesSent": 163738562,
+        "framesEncoded": 32901,
+        "framesPerSecond": 22,
+        "frameWidth": 1280,
+        "frameHeight": 720,
+        "qualityLimitationReason": "none"
+      }
+    ],
+    "audio": [
+      {
+        "codec": "audio/opus",
+        "bytesSent": 8961280,
+        "packetsSent": 56008
+      }
+    ]
+  },
+  "sourceAfter": {
+    "observedAtMs": 1795367371459,
+    "sourceAudioTimeSeconds": 1.590567,
+    "sourceCueNumber": 1,
+    "audioRms": 0.12396978755507504,
+    "audioContextState": "running",
+    "mediaSources": [
+      {
+        "kind": "audio",
+        "trackIdentifier": "b04a7a68-ccb8-45a0-a890-5fd4862170aa",
+        "audioLevel": 0.7037873470259712,
+        "totalAudioEnergy": 51.11920629495249,
+        "totalSamplesDuration": 1126.5799999991204
+      },
+      {
+        "kind": "video",
+        "trackIdentifier": "70bd63bc-adc3-4acf-828b-eb087c3080cf",
+        "width": 1280,
+        "height": 720,
+        "framesPerSecond": 28
+      }
+    ],
+    "sourceTracks": {
+      "audio": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "channelCount": 2,
+          "deviceId": "WebAudio-5da8c351-4912-47bb-909f-674b1790e21f",
+          "latency": 0.01,
+          "sampleRate": 44100,
+          "sampleSize": 16
+        }
+      },
+      "video": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "aspectRatio": 1.7777777777777777,
+          "deviceId": "aT308TYESiUL8VdGjDe/e6HwsDdRysktVDScbrmvucFF9DLRyBiZHxc12qkOQ29JnZJyjm5KJroBvATnr/RgFQ==",
+          "frameRate": 0,
+          "height": 720,
+          "resizeMode": "none",
+          "width": 1280
+        }
+      }
+    },
+    "video": [
+      {
+        "codec": "video/H264",
+        "bytesSent": 164587651,
+        "framesEncoded": 33070,
+        "framesPerSecond": 29,
+        "frameWidth": 1280,
+        "frameHeight": 720,
+        "qualityLimitationReason": "none"
+      }
+    ],
+    "audio": [
+      {
+        "codec": "audio/opus",
+        "bytesSent": 9008000,
+        "packetsSent": 56300
+      }
+    ]
+  },
+  "sourceLater": {
+    "observedAtMs": 1795367383484,
+    "sourceAudioTimeSeconds": 13.613353,
+    "sourceCueNumber": 1,
+    "audioRms": 0,
+    "audioContextState": "running",
+    "mediaSources": [
+      {
+        "kind": "audio",
+        "trackIdentifier": "b04a7a68-ccb8-45a0-a890-5fd4862170aa",
+        "audioLevel": 0,
+        "totalAudioEnergy": 51.36331479942926,
+        "totalSamplesDuration": 1138.6099999991095
+      },
+      {
+        "kind": "video",
+        "trackIdentifier": "70bd63bc-adc3-4acf-828b-eb087c3080cf",
+        "width": 1280,
+        "height": 720,
+        "framesPerSecond": 31
+      }
+    ],
+    "sourceTracks": {
+      "audio": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "channelCount": 2,
+          "deviceId": "WebAudio-5da8c351-4912-47bb-909f-674b1790e21f",
+          "latency": 0.01,
+          "sampleRate": 44100,
+          "sampleSize": 16
+        }
+      },
+      "video": {
+        "enabled": true,
+        "muted": false,
+        "readyState": "live",
+        "settings": {
+          "aspectRatio": 1.7777777777777777,
+          "deviceId": "aT308TYESiUL8VdGjDe/e6HwsDdRysktVDScbrmvucFF9DLRyBiZHxc12qkOQ29JnZJyjm5KJroBvATnr/RgFQ==",
+          "frameRate": 0,
+          "height": 720,
+          "resizeMode": "none",
+          "width": 1280
+        }
+      }
+    },
+    "video": [
+      {
+        "codec": "video/H264",
+        "bytesSent": 166356246,
+        "framesEncoded": 33424,
+        "framesPerSecond": 30,
+        "frameWidth": 1280,
+        "frameHeight": 720,
+        "qualityLimitationReason": "none"
+      }
+    ],
+    "audio": [
+      {
+        "codec": "audio/opus",
+        "bytesSent": 9104160,
+        "packetsSent": 56901
+      }
+    ]
+  },
+  "sourceInputTrackIdsUnchanged": true,
+  "publishedRtpTrackIds": {
+    "beforeFromHundredSubscriberResults": [
+      "TR_AMkGx9Sp6tESca",
+      "TR_VCzvmxFvrn6CRf"
+    ],
+    "afterReadOnlyRoom": [
+      "TR_AMkGx9Sp6tESca",
+      "TR_VCzvmxFvrn6CRf"
+    ],
+    "unchanged": true
+  },
+  "audioEnergyIncreased": true,
+  "rtpContinued": true,
+  "recentViewers": [
+    {
+      "identity": "milo-load-webrtc-150-browser-0",
+      "observedAtMs": 1795367417350,
+      "connected": true,
+      "lastAudioAt": 1795367417334,
+      "lastAudioAgeMs": 16,
+      "audioRmsMax": 0.22882134704293922,
+      "audioSamples": 847,
+      "videoDimensions": [
+        {
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "identity": "milo-load-webrtc-150-browser-1",
+      "observedAtMs": 1795367417353,
+      "connected": true,
+      "lastAudioAt": 1795367417307,
+      "lastAudioAgeMs": 46,
+      "audioRmsMax": 0.22567941728634092,
+      "audioSamples": 636,
+      "videoDimensions": [
+        {
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "identity": "milo-load-webrtc-150-browser-2",
+      "observedAtMs": 1795367417356,
+      "connected": true,
+      "lastAudioAt": 1795367417312,
+      "lastAudioAgeMs": 44,
+      "audioRmsMax": 0.21240213885543824,
+      "audioSamples": 617,
+      "videoDimensions": [
+        {
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

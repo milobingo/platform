@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-11-22T19:02:56.944Z",
+  "environment": "staging",
+  "transactionReadOnly": true,
+  "tls": {
+    "ssl": true,
+    "version": "TLSv1.3"
+  },
+  "fixtureId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "manifestStatus": "removed",
+  "gameRows": 11,
+  "baselineRows": 11,
+  "unchangedOriginalRows": 11,
+  "allOriginalRowsUnchanged": true,
+  "fixtureAbsent": true,
+  "relatedRecordCounts": {
+    "bingo_codes": 0,
+    "bingo_chat_events": 0,
+    "bingo_chat_members": 0,
+    "bingo_chat_messages": 0,
+    "bingo_chat_operations": 0,
+    "bingo_chat_rooms": 0,
+    "bingo_payment_receipts": 0
+  },
+  "ownerRecordCounts": {
+    "app_user_roles": 0,
+    "bingo_families": 0,
+    "studio_outputs": 0,
+    "studio_calls": 0
+  },
+  "ownProviderResources": {
+    "rooms": 0,
+    "ingresses": 0,
+    "activeEgresses": 0
+  },
+  "privateSessionAbsent": true,
+  "ownHlsDirectoryAbsent": true,
+  "databaseWrites": 0,
+  "rawDocumentsReturned": false,
+  "credentialsPrinted": false,
+  "passed": true
+}

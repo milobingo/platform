@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-11-22T17:59:21.709Z",
+  "activeRealShow": false,
+  "freshRunningRows": 0,
+  "freshProducerOrOutputSessions": 0,
+  "freshCalls": 0,
+  "originalGameRows": 11,
+  "fixtures": 1,
+  "ownRoomParticipants": 0,
+  "activeEgresses": 0,
+  "ingressCount": 1,
+  "databaseWrites": 0,
+  "secretValuesReturned": false,
+  "passed": true
+}

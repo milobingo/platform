@@ -1,0 +1,50 @@
+{
+  "format": "milo-truncate-fix-hls-ready-v1",
+  "checkedAt": "2026-11-22T18:44:40.242815+00:00",
+  "releaseSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "fixtureGameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "generation": "e86e7f15c1d73c5f5e56f6e3a18cd778",
+  "egressId": "EG_LM33hU3S54VL",
+  "activeOwnEgressCount": 1,
+  "expectedTrackNames": [
+    "synthesized-camera",
+    "synthesized-microphone"
+  ],
+  "actualTracks": [
+    {
+      "sid": "TR_VCF35NQE3jrzUa",
+      "name": "synthesized-camera",
+      "type": "VIDEO",
+      "muted": false,
+      "mimeType": null,
+      "mime_type": "video/H264"
+    },
+    {
+      "sid": "TR_AMKoMVN6x4aY5E",
+      "name": "synthesized-microphone",
+      "type": "AUDIO",
+      "muted": false,
+      "mimeType": null,
+      "mime_type": "audio/opus"
+    }
+  ],
+  "playlistHttpStatus": 200,
+  "segmentHeadHttpStatus": 200,
+  "segmentBytes": 175780,
+  "segmentGetHttpStatus": 200,
+  "targetDuration": 1,
+  "segmentDurations": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "hlsPathPrefixDerivedFromActualPlaylistPath": true,
+  "signedCapabilityGenerationValidated": true,
+  "privateConfigAndManifestRefreshed": true,
+  "actualDecodedPlaybackCheckedByThisScript": false,
+  "noActualRealShow": true,
+  "secretsReturned": false
+}

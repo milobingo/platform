@@ -1,0 +1,296 @@
+{
+  "format": "milo-webrtc-200-freeze-analysis-v1",
+  "heldStart": "2026-11-22T17:16:43.043000+00:00",
+  "heldEnd": "2026-11-22T17:36:54.703000+00:00",
+  "scope": "Real decoded Chromium RTC stats on three sampled receivers, not all200 receiver renderers. Generator CPU warnings are context; temporal overlap does not establish causal SFU or network attribution. Freeze events follow browser RTC metric; summed duration is not an outage counter.",
+  "browsers": [
+    {
+      "identity": "milo-load-webrtc-200-browser-0",
+      "baselineSampleAt": "2026-11-22T17:16:43.031000+00:00",
+      "lastSampleAt": "2026-11-22T17:36:54.019000+00:00",
+      "cumulativeFreezeEventsFinal": 18,
+      "heldFreezeEventsDelta": 9,
+      "heldSummedFreezeSeconds": 2.0380000000000003,
+      "heldFramesDroppedDelta": 0,
+      "finalDimension": [
+        1280,
+        720
+      ],
+      "reconnects": 0,
+      "disconnects": 0,
+      "probeStalls": 0,
+      "p95TimecodeMs": 237,
+      "lastAudioAgeSeconds": 5.552,
+      "freezeObservationIntervals": [
+        {
+          "intervalStart": "2026-11-22T17:19:58.183000+00:00",
+          "intervalEnd": "2026-11-22T17:20:04.122000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20799999999999974,
+          "generatorCpuMaxNearInterval": 67.19171525541728,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:23:19.414000+00:00",
+          "intervalEnd": "2026-11-22T17:23:25.315000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20000000000000018,
+          "generatorCpuMaxNearInterval": 73.78499055469689,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:26:40.168000+00:00",
+          "intervalEnd": "2026-11-22T17:26:46.023000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20299999999999985,
+          "generatorCpuMaxNearInterval": 73.30680736960471,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:28:20.196000+00:00",
+          "intervalEnd": "2026-11-22T17:28:26.104000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.2110000000000003,
+          "generatorCpuMaxNearInterval": 43.61899708145397,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:00.743000+00:00",
+          "intervalEnd": "2026-11-22T17:30:06.636000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.3129999999999997,
+          "generatorCpuMaxNearInterval": 53.93228938850494,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:18.484000+00:00",
+          "intervalEnd": "2026-11-22T17:30:24.348000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19700000000000006,
+          "generatorCpuMaxNearInterval": 45.324118624792234,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:33:21.251000+00:00",
+          "intervalEnd": "2026-11-22T17:33:27.139000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.254,
+          "generatorCpuMaxNearInterval": 57.007956631983916,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:35:01.612000+00:00",
+          "intervalEnd": "2026-11-22T17:35:07.626000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.24200000000000044,
+          "generatorCpuMaxNearInterval": 89.72799459368137,
+          "generatorCpuAbove85NearInterval": true
+        },
+        {
+          "intervalStart": "2026-11-22T17:36:42.221000+00:00",
+          "intervalEnd": "2026-11-22T17:36:48.136000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20999999999999996,
+          "generatorCpuMaxNearInterval": 49.646195509740544,
+          "generatorCpuAbove85NearInterval": false
+        }
+      ],
+      "wholePhaseFinalCumulativeFreezeSeconds": 4.424,
+      "heldLongestFreezeDurationIncrementSeconds": 0.3129999999999997,
+      "heldLargestIncrementEventCount": 1
+    },
+    {
+      "identity": "milo-load-webrtc-200-browser-1",
+      "baselineSampleAt": "2026-11-22T17:16:43.037000+00:00",
+      "lastSampleAt": "2026-11-22T17:36:54.024000+00:00",
+      "cumulativeFreezeEventsFinal": 18,
+      "heldFreezeEventsDelta": 9,
+      "heldSummedFreezeSeconds": 2.036,
+      "heldFramesDroppedDelta": 0,
+      "finalDimension": [
+        1280,
+        720
+      ],
+      "reconnects": 0,
+      "disconnects": 0,
+      "probeStalls": 0,
+      "p95TimecodeMs": 234,
+      "lastAudioAgeSeconds": 5.53,
+      "freezeObservationIntervals": [
+        {
+          "intervalStart": "2026-11-22T17:19:58.191000+00:00",
+          "intervalEnd": "2026-11-22T17:20:04.130000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.22199999999999998,
+          "generatorCpuMaxNearInterval": 67.19171525541728,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:23:19.418000+00:00",
+          "intervalEnd": "2026-11-22T17:23:25.322000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19399999999999995,
+          "generatorCpuMaxNearInterval": 73.78499055469689,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:26:40.172000+00:00",
+          "intervalEnd": "2026-11-22T17:26:46.027000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20100000000000007,
+          "generatorCpuMaxNearInterval": 73.30680736960471,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:28:20.199000+00:00",
+          "intervalEnd": "2026-11-22T17:28:26.107000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20900000000000007,
+          "generatorCpuMaxNearInterval": 43.61899708145397,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:00.749000+00:00",
+          "intervalEnd": "2026-11-22T17:30:06.640000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.3179999999999996,
+          "generatorCpuMaxNearInterval": 53.93228938850494,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:18.490000+00:00",
+          "intervalEnd": "2026-11-22T17:30:24.352000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19100000000000028,
+          "generatorCpuMaxNearInterval": 45.324118624792234,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:33:21.255000+00:00",
+          "intervalEnd": "2026-11-22T17:33:27.144000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.254,
+          "generatorCpuMaxNearInterval": 57.007956631983916,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:35:01.624000+00:00",
+          "intervalEnd": "2026-11-22T17:35:07.676000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.2370000000000001,
+          "generatorCpuMaxNearInterval": 89.72799459368137,
+          "generatorCpuAbove85NearInterval": true
+        },
+        {
+          "intervalStart": "2026-11-22T17:36:42.225000+00:00",
+          "intervalEnd": "2026-11-22T17:36:48.140000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20999999999999996,
+          "generatorCpuMaxNearInterval": 49.646195509740544,
+          "generatorCpuAbove85NearInterval": false
+        }
+      ],
+      "wholePhaseFinalCumulativeFreezeSeconds": 4.45,
+      "heldLongestFreezeDurationIncrementSeconds": 0.3179999999999996,
+      "heldLargestIncrementEventCount": 1
+    },
+    {
+      "identity": "milo-load-webrtc-200-browser-2",
+      "baselineSampleAt": "2026-11-22T17:16:43.041000+00:00",
+      "lastSampleAt": "2026-11-22T17:36:54.029000+00:00",
+      "cumulativeFreezeEventsFinal": 19,
+      "heldFreezeEventsDelta": 9,
+      "heldSummedFreezeSeconds": 2.0239999999999996,
+      "heldFramesDroppedDelta": 0,
+      "finalDimension": [
+        1280,
+        720
+      ],
+      "reconnects": 0,
+      "disconnects": 0,
+      "probeStalls": 0,
+      "p95TimecodeMs": 233,
+      "lastAudioAgeSeconds": 5.577,
+      "freezeObservationIntervals": [
+        {
+          "intervalStart": "2026-11-22T17:19:58.195000+00:00",
+          "intervalEnd": "2026-11-22T17:20:04.136000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.22099999999999964,
+          "generatorCpuMaxNearInterval": 67.19171525541728,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:23:19.422000+00:00",
+          "intervalEnd": "2026-11-22T17:23:25.329000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19700000000000006,
+          "generatorCpuMaxNearInterval": 73.78499055469689,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:26:40.176000+00:00",
+          "intervalEnd": "2026-11-22T17:26:46.030000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19799999999999995,
+          "generatorCpuMaxNearInterval": 73.30680736960471,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:28:20.202000+00:00",
+          "intervalEnd": "2026-11-22T17:28:26.111000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.20900000000000007,
+          "generatorCpuMaxNearInterval": 43.61899708145397,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:00.752000+00:00",
+          "intervalEnd": "2026-11-22T17:30:06.643000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.3120000000000003,
+          "generatorCpuMaxNearInterval": 53.93228938850494,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:30:18.494000+00:00",
+          "intervalEnd": "2026-11-22T17:30:24.354000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.19099999999999984,
+          "generatorCpuMaxNearInterval": 45.324118624792234,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:33:21.258000+00:00",
+          "intervalEnd": "2026-11-22T17:33:27.147000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.25400000000000045,
+          "generatorCpuMaxNearInterval": 57.007956631983916,
+          "generatorCpuAbove85NearInterval": false
+        },
+        {
+          "intervalStart": "2026-11-22T17:35:01.629000+00:00",
+          "intervalEnd": "2026-11-22T17:35:07.687000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.23399999999999999,
+          "generatorCpuMaxNearInterval": 89.72799459368137,
+          "generatorCpuAbove85NearInterval": true
+        },
+        {
+          "intervalStart": "2026-11-22T17:36:42.229000+00:00",
+          "intervalEnd": "2026-11-22T17:36:48.143000+00:00",
+          "freezeEvents": 1,
+          "summedFreezeSeconds": 0.2079999999999993,
+          "generatorCpuMaxNearInterval": 49.646195509740544,
+          "generatorCpuAbove85NearInterval": false
+        }
+      ],
+      "wholePhaseFinalCumulativeFreezeSeconds": 4.813,
+      "heldLongestFreezeDurationIncrementSeconds": 0.3120000000000003,
+      "heldLargestIncrementEventCount": 1
+    }
+  ],
+  "totalHeldFreezeEvents": 27,
+  "totalHeldSummedFreezeSecondsAcrossThreeBrowsers": 6.098,
+  "method": "Whole-phase cumulative counters include ramp-up before full200 occupancy. Held counters subtract the firstsample3\u201313ms after fulloccupancy from the lastsample before heldend; no before-start sample wasavailable. Each heldfreeze interval has one newevent; duration increments thus describe that event. Not all200 renderers wereinstrumented."
+}

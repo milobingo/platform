@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-11-22T18:07:20Z",
+  "appRevision": "2224006eafe38b09564b8d144490b90dcf8e4e0d",
+  "fixtureId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "generation": "49570fa7103d91ab171eee4b9619d66c",
+  "previousGeneration": "f55efba230e5519f789c1da5da34cc1c",
+  "egressId": "EG_AKpD3Jxt3zps",
+  "egressStatus": "EGRESS_ACTIVE",
+  "programmePublisherOnly": true,
+  "selectedTrackIds": {
+    "video": "TR_VC3BgghPwJ6va7",
+    "audio": "TR_AMUi5gSAanLLsQ"
+  },
+  "nativeTrackNames": {
+    "video": "synthesized-camera",
+    "audio": "synthesized-microphone"
+  },
+  "encoder": {
+    "width": 1280,
+    "height": 720,
+    "depth": 0,
+    "framerate": 30,
+    "audio_codec": "AAC",
+    "audio_bitrate": 64,
+    "audio_frequency": 0,
+    "video_codec": "H264_MAIN",
+    "video_bitrate": 1186,
+    "key_frame_interval": 1,
+    "audio_quality": 0,
+    "video_quality": 0
+  },
+  "hlsSegmentDuration": 1,
+  "actualPlaylistTargetDuration": 1,
+  "actualSegmentDurations": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "playlistHttpStatus": 200,
+  "segmentHeadHttpStatus": 200,
+  "segmentContentType": "video/mp2t",
+  "segmentBytes": null,
+  "actualMediaProbe": null,
+  "privateConfigurationUpdated": true,
+  "signedCapabilityPrinted": false,
+  "credentialsPrinted": false,
+  "actualMediaProbeAvailable": false,
+  "actualMediaProbeNote": "ffprobe did not provide a result; actual decoding is verified separately by the real browser probe.",
+  "activityCheckedAt": "2026-11-22T18:07:40.527Z"
+}

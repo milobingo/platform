@@ -1,0 +1,1188 @@
+{
+  "format": "milo-external-generator-final-summary-v1",
+  "derivedAt": "2026-11-22T19:03:06.621340+00:00",
+  "readOnlyAnalysis": true,
+  "samplerStoppedOwnPid": 3023094,
+  "samplerSession": 87973,
+  "samplerFileSha256": "ba47bb0d6b736daff383c3bba34ef8dc4340e7b0a99ab9567f9dddf43ad7b9f3",
+  "totalSamples": 774,
+  "host": "codex-worker-01",
+  "logicalCpuCount": 12,
+  "memTotalGiB": 22.90715789794922,
+  "firstSample": "2026-11-22T16:52:42.848000+00:00",
+  "lastSample": "2026-11-22T19:01:35.472000+00:00",
+  "samplingDurationSeconds": 7732.624,
+  "allWarnings": [
+    {
+      "at": "2026-11-22T17:16:43Z",
+      "cpuPercent": 87.86494034018787,
+      "memAvailableGiB": 5.469310760498047,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    },
+    {
+      "at": "2026-11-22T17:16:53Z",
+      "cpuPercent": 88.57022353437368,
+      "memAvailableGiB": 4.856891632080078,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    },
+    {
+      "at": "2026-11-22T17:18:43Z",
+      "cpuPercent": 91.27171529768933,
+      "memAvailableGiB": 4.955482482910156,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    },
+    {
+      "at": "2026-11-22T17:18:53Z",
+      "cpuPercent": 91.20768064679132,
+      "memAvailableGiB": 5.276035308837891,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    },
+    {
+      "at": "2026-11-22T17:35:03Z",
+      "cpuPercent": 85.44696776388534,
+      "memAvailableGiB": 5.5871429443359375,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    },
+    {
+      "at": "2026-11-22T17:35:13Z",
+      "cpuPercent": 89.72799459368137,
+      "memAvailableGiB": 3.8768539428710938,
+      "warnings": [
+        "generator-cpu-over85percent"
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "name": "original/webrtc-25",
+      "status": "passed",
+      "webrtc": 25,
+      "hls": 0,
+      "nominalHoldSeconds": 300,
+      "actualHoldSeconds": 312.491,
+      "wholePhase": {
+        "samples": 30,
+        "windowStart": "2026-11-22T16:52:05.165000+00:00",
+        "windowEnd": "2026-11-22T16:57:37.145000+00:00",
+        "requestedWindowSeconds": 331.98,
+        "firstSample": "2026-11-22T16:52:42.848000+00:00",
+        "lastSample": "2026-11-22T16:57:32.918000+00:00",
+        "sampledSpanSeconds": 290.07,
+        "leadingGapSeconds": 37.683,
+        "trailingGapSeconds": 4.227,
+        "maximumSamplingGapSeconds": 10.004,
+        "cpuPercent": {
+          "samples": 29,
+          "min": 20.04944165032819,
+          "p05": 20.290102389078502,
+          "p50": 21.638422890232476,
+          "p95": 24.195205479452053,
+          "max": 25.442875481386395
+        },
+        "memAvailableGiB": {
+          "samples": 30,
+          "min": 9.083076477050781,
+          "p05": 9.103302001953125,
+          "p50": 9.239849090576172,
+          "p95": 9.354183197021484,
+          "max": 9.369190216064453
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 29,
+            "min": 33.802200359928015,
+            "p05": 33.80737378786364,
+            "p50": 34.149433569929016,
+            "p95": 34.558253149370124,
+            "max": 34.69178606418075
+          },
+          "tx": {
+            "samples": 29,
+            "min": 1.6070058982305309,
+            "p05": 1.6094563630910728,
+            "p50": 1.6565070985802839,
+            "p95": 4.754762371288614,
+            "max": 4.798057188562287
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 30,
+        "windowStart": "2026-11-22T16:52:23.931000+00:00",
+        "windowEnd": "2026-11-22T16:57:36.422000+00:00",
+        "requestedWindowSeconds": 312.491,
+        "firstSample": "2026-11-22T16:52:42.848000+00:00",
+        "lastSample": "2026-11-22T16:57:32.918000+00:00",
+        "sampledSpanSeconds": 290.07,
+        "leadingGapSeconds": 18.917,
+        "trailingGapSeconds": 3.504,
+        "maximumSamplingGapSeconds": 10.004,
+        "cpuPercent": {
+          "samples": 29,
+          "min": 20.04944165032819,
+          "p05": 20.290102389078502,
+          "p50": 21.638422890232476,
+          "p95": 24.195205479452053,
+          "max": 25.442875481386395
+        },
+        "memAvailableGiB": {
+          "samples": 30,
+          "min": 9.083076477050781,
+          "p05": 9.103302001953125,
+          "p50": 9.239849090576172,
+          "p95": 9.354183197021484,
+          "max": 9.369190216064453
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 29,
+            "min": 33.802200359928015,
+            "p05": 33.80737378786364,
+            "p50": 34.149433569929016,
+            "p95": 34.558253149370124,
+            "max": 34.69178606418075
+          },
+          "tx": {
+            "samples": 29,
+            "min": 1.6070058982305309,
+            "p05": 1.6094563630910728,
+            "p50": 1.6565070985802839,
+            "p95": 4.754762371288614,
+            "max": 4.798057188562287
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "original/webrtc-50",
+      "status": "passed",
+      "webrtc": 50,
+      "hls": 0,
+      "nominalHoldSeconds": 300,
+      "actualHoldSeconds": 311.365,
+      "wholePhase": {
+        "samples": 34,
+        "windowStart": "2026-11-22T16:57:48.031000+00:00",
+        "windowEnd": "2026-11-22T17:03:27.070000+00:00",
+        "requestedWindowSeconds": 339.039,
+        "firstSample": "2026-11-22T16:57:52.923000+00:00",
+        "lastSample": "2026-11-22T17:03:23.009000+00:00",
+        "sampledSpanSeconds": 330.086,
+        "leadingGapSeconds": 4.892,
+        "trailingGapSeconds": 4.061,
+        "maximumSamplingGapSeconds": 10.005,
+        "cpuPercent": {
+          "samples": 34,
+          "min": 16.15001266998902,
+          "p05": 20.797624098430212,
+          "p50": 23.885350318471332,
+          "p95": 27.445909835359018,
+          "max": 28.88313928417421
+        },
+        "memAvailableGiB": {
+          "samples": 34,
+          "min": 9.03469467163086,
+          "p05": 9.050724029541016,
+          "p50": 9.21942138671875,
+          "p95": 9.667720794677734,
+          "max": 9.903244018554688
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 34,
+            "min": 2.8715657302809157,
+            "p05": 4.968271918424472,
+            "p50": 67.81299820035993,
+            "p95": 68.44099980003999,
+            "max": 69.1847133859842
+          },
+          "tx": {
+            "samples": 34,
+            "min": 1.7002283315005497,
+            "p05": 1.7501181645506347,
+            "p50": 1.8092428271518546,
+            "p95": 5.364561031690493,
+            "max": 5.418408077576727
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 31,
+        "windowStart": "2026-11-22T16:58:14.962000+00:00",
+        "windowEnd": "2026-11-22T17:03:26.327000+00:00",
+        "requestedWindowSeconds": 311.365,
+        "firstSample": "2026-11-22T16:58:22.930000+00:00",
+        "lastSample": "2026-11-22T17:03:23.009000+00:00",
+        "sampledSpanSeconds": 300.079,
+        "leadingGapSeconds": 7.968,
+        "trailingGapSeconds": 3.318,
+        "maximumSamplingGapSeconds": 10.005,
+        "cpuPercent": {
+          "samples": 31,
+          "min": 22.57091128545564,
+          "p05": 22.613841008489842,
+          "p50": 24.036144578313255,
+          "p95": 27.445909835359018,
+          "max": 28.88313928417421
+        },
+        "memAvailableGiB": {
+          "samples": 31,
+          "min": 9.03469467163086,
+          "p05": 9.050724029541016,
+          "p50": 9.207511901855469,
+          "p95": 9.318927764892578,
+          "max": 9.463573455810547
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 31,
+            "min": 67.11844446666001,
+            "p05": 67.37263587282543,
+            "p50": 67.97616636672664,
+            "p95": 68.44099980003999,
+            "max": 69.1847133859842
+          },
+          "tx": {
+            "samples": 31,
+            "min": 1.7501181645506347,
+            "p05": 1.7695836832633474,
+            "p50": 1.8092428271518546,
+            "p95": 5.364561031690493,
+            "max": 5.418408077576727
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "original/webrtc-100",
+      "status": "passed",
+      "webrtc": 100,
+      "hls": 0,
+      "nominalHoldSeconds": 300,
+      "actualHoldSeconds": 309.874,
+      "wholePhase": {
+        "samples": 35,
+        "windowStart": "2026-11-22T17:03:37.909000+00:00",
+        "windowEnd": "2026-11-22T17:09:23.660000+00:00",
+        "requestedWindowSeconds": 345.751,
+        "firstSample": "2026-11-22T17:03:43.014000+00:00",
+        "lastSample": "2026-11-22T17:09:23.102000+00:00",
+        "sampledSpanSeconds": 340.088,
+        "leadingGapSeconds": 5.105,
+        "trailingGapSeconds": 0.558,
+        "maximumSamplingGapSeconds": 10.004,
+        "cpuPercent": {
+          "samples": 35,
+          "min": 18.66564807741279,
+          "p05": 19.99151463725074,
+          "p50": 29.255456819946513,
+          "p95": 32.737941151091555,
+          "max": 32.784056595634546
+        },
+        "memAvailableGiB": {
+          "samples": 35,
+          "min": 8.703895568847656,
+          "p05": 8.729316711425781,
+          "p50": 8.980052947998047,
+          "p95": 9.692691802978516,
+          "max": 9.863910675048828
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 35,
+            "min": 4.945003698890333,
+            "p05": 14.424512697460505,
+            "p50": 135.91998480303937,
+            "p95": 138.23483035089473,
+            "max": 138.5718276517045
+          },
+          "tx": {
+            "samples": 35,
+            "min": 1.6189703089073277,
+            "p05": 2.052030790762771,
+            "p50": 2.4926953913825853,
+            "p95": 5.79240943622551,
+            "max": 7.027196641007698
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 31,
+        "windowStart": "2026-11-22T17:04:11.906000+00:00",
+        "windowEnd": "2026-11-22T17:09:21.780000+00:00",
+        "requestedWindowSeconds": 309.874,
+        "firstSample": "2026-11-22T17:04:13.021000+00:00",
+        "lastSample": "2026-11-22T17:09:13.099000+00:00",
+        "sampledSpanSeconds": 300.078,
+        "leadingGapSeconds": 1.115,
+        "trailingGapSeconds": 8.681,
+        "maximumSamplingGapSeconds": 10.004,
+        "cpuPercent": {
+          "samples": 31,
+          "min": 26.882090065314546,
+          "p05": 28.10159276797245,
+          "p50": 30.016369432239166,
+          "p95": 32.737941151091555,
+          "max": 32.784056595634546
+        },
+        "memAvailableGiB": {
+          "samples": 31,
+          "min": 8.703895568847656,
+          "p05": 8.729316711425781,
+          "p50": 8.964607238769531,
+          "p95": 9.104557037353516,
+          "max": 9.216789245605469
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 31,
+            "min": 129.93059388122376,
+            "p05": 134.7755648870226,
+            "p50": 136.04358452464263,
+            "p95": 138.23483035089473,
+            "max": 138.5718276517045
+          },
+          "tx": {
+            "samples": 31,
+            "min": 2.052030790762771,
+            "p05": 2.0663678528588565,
+            "p50": 2.4926953913825853,
+            "p95": 4.570267546490702,
+            "max": 5.79240943622551
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "original/webrtc-150",
+      "status": "passed",
+      "webrtc": 150,
+      "hls": 0,
+      "nominalHoldSeconds": 300,
+      "actualHoldSeconds": 314.12,
+      "wholePhase": {
+        "samples": 36,
+        "windowStart": "2026-11-22T17:09:34.539000+00:00",
+        "windowEnd": "2026-11-22T17:15:35.375000+00:00",
+        "requestedWindowSeconds": 360.836,
+        "firstSample": "2026-11-22T17:09:43.107000+00:00",
+        "lastSample": "2026-11-22T17:15:33.264000+00:00",
+        "sampledSpanSeconds": 350.157,
+        "leadingGapSeconds": 8.568,
+        "trailingGapSeconds": 2.111,
+        "maximumSamplingGapSeconds": 10.013,
+        "cpuPercent": {
+          "samples": 36,
+          "min": 17.554592573710593,
+          "p05": 24.890341446632835,
+          "p50": 42.54240251792272,
+          "p95": 80.27401923240576,
+          "max": 82.5798776342624
+        },
+        "memAvailableGiB": {
+          "samples": 36,
+          "min": 4.3217620849609375,
+          "p05": 4.912010192871094,
+          "p50": 8.636383056640625,
+          "p95": 9.57769775390625,
+          "max": 10.076591491699219
+        },
+        "memoryPressureFullAvg10Max": 0.29,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 36,
+            "min": 4.272285542891422,
+            "p05": 16.92259548090382,
+            "p50": 203.46039112177561,
+            "p95": 205.3441958237586,
+            "max": 205.4338332333533
+          },
+          "tx": {
+            "samples": 36,
+            "min": 1.7626218756248748,
+            "p05": 2.461157705376774,
+            "p50": 2.79045566330101,
+            "p95": 6.245551314080144,
+            "max": 6.308860941717485
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 31,
+        "windowStart": "2026-11-22T17:10:17.358000+00:00",
+        "windowEnd": "2026-11-22T17:15:31.478000+00:00",
+        "requestedWindowSeconds": 314.12,
+        "firstSample": "2026-11-22T17:10:23.119000+00:00",
+        "lastSample": "2026-11-22T17:15:23.256000+00:00",
+        "sampledSpanSeconds": 300.137,
+        "leadingGapSeconds": 5.761,
+        "trailingGapSeconds": 8.222,
+        "maximumSamplingGapSeconds": 10.013,
+        "cpuPercent": {
+          "samples": 31,
+          "min": 29.70176506390748,
+          "p05": 32.632588974180045,
+          "p50": 44.432818903130176,
+          "p95": 77.00617283950618,
+          "max": 82.5798776342624
+        },
+        "memAvailableGiB": {
+          "samples": 31,
+          "min": 4.912010192871094,
+          "p05": 5.023525238037109,
+          "p50": 8.607837677001953,
+          "p95": 9.061111450195312,
+          "max": 9.071514129638672
+        },
+        "memoryPressureFullAvg10Max": 0.29,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 31,
+            "min": 170.54912697460506,
+            "p05": 201.36918305355715,
+            "p50": 203.86271929649246,
+            "p95": 205.3441958237586,
+            "max": 205.4338332333533
+          },
+          "tx": {
+            "samples": 31,
+            "min": 2.461157705376774,
+            "p05": 2.468698691700789,
+            "p50": 2.79045566330101,
+            "p95": 6.245551314080144,
+            "max": 6.308860941717485
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "original/webrtc-200",
+      "status": "passed",
+      "webrtc": 200,
+      "hls": 0,
+      "nominalHoldSeconds": 1200,
+      "actualHoldSeconds": 1211.66,
+      "wholePhase": {
+        "samples": 127,
+        "windowStart": "2026-11-22T17:15:46.244000+00:00",
+        "windowEnd": "2026-11-22T17:36:59.163000+00:00",
+        "requestedWindowSeconds": 1272.919,
+        "firstSample": "2026-11-22T17:15:53.270000+00:00",
+        "lastSample": "2026-11-22T17:36:53.959000+00:00",
+        "sampledSpanSeconds": 1260.689,
+        "leadingGapSeconds": 7.026,
+        "trailingGapSeconds": 5.204,
+        "maximumSamplingGapSeconds": 10.035,
+        "cpuPercent": {
+          "samples": 127,
+          "min": 28.396635228141733,
+          "p05": 37.68269061454481,
+          "p50": 57.36919996517802,
+          "p95": 84.12644459551326,
+          "max": 91.27171529768933
+        },
+        "memAvailableGiB": {
+          "samples": 127,
+          "min": 2.8312225341796875,
+          "p05": 4.0002899169921875,
+          "p50": 7.384529113769531,
+          "p95": 8.580097198486328,
+          "max": 9.653778076171875
+        },
+        "memoryPressureFullAvg10Max": 0.24,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 127,
+            "min": 6.192159968006399,
+            "p05": 266.9953911044478,
+            "p50": 271.4611880435869,
+            "p95": 274.4844783043391,
+            "max": 276.7441119552179
+          },
+          "tx": {
+            "samples": 127,
+            "min": 1.7919408118376325,
+            "p05": 2.748152769446111,
+            "p50": 3.3443453582492255,
+            "p95": 6.601186843946816,
+            "max": 8.886697060587881
+          }
+        },
+        "warningSamples": 6,
+        "warnings": [
+          {
+            "at": "2026-11-22T17:16:43Z",
+            "atMs": 1795367803304,
+            "cpuPercent": 87.86494034018787,
+            "memAvailableGiB": 5.469310760498047,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:16:53Z",
+            "atMs": 1795367813319,
+            "cpuPercent": 88.57022353437368,
+            "memAvailableGiB": 4.856891632080078,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:18:43Z",
+            "atMs": 1795367923421,
+            "cpuPercent": 91.27171529768933,
+            "memAvailableGiB": 4.955482482910156,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:18:53Z",
+            "atMs": 1795367933434,
+            "cpuPercent": 91.20768064679132,
+            "memAvailableGiB": 5.276035308837891,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:35:03Z",
+            "atMs": 1795368903912,
+            "cpuPercent": 85.44696776388534,
+            "memAvailableGiB": 5.5871429443359375,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:35:13Z",
+            "atMs": 1795368913917,
+            "cpuPercent": 89.72799459368137,
+            "memAvailableGiB": 3.8768539428710938,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          }
+        ]
+      },
+      "fullOccupancyHold": {
+        "samples": 122,
+        "windowStart": "2026-11-22T17:16:43.043000+00:00",
+        "windowEnd": "2026-11-22T17:36:54.703000+00:00",
+        "requestedWindowSeconds": 1211.66,
+        "firstSample": "2026-11-22T17:16:43.304000+00:00",
+        "lastSample": "2026-11-22T17:36:53.959000+00:00",
+        "sampledSpanSeconds": 1210.655,
+        "leadingGapSeconds": 0.261,
+        "trailingGapSeconds": 0.744,
+        "maximumSamplingGapSeconds": 10.035,
+        "cpuPercent": {
+          "samples": 122,
+          "min": 36.50039588281868,
+          "p05": 38.370357362367194,
+          "p50": 57.36919996517802,
+          "p95": 84.12644459551326,
+          "max": 91.27171529768933
+        },
+        "memAvailableGiB": {
+          "samples": 122,
+          "min": 2.8312225341796875,
+          "p05": 4.0002899169921875,
+          "p50": 7.370853424072266,
+          "p95": 8.57021713256836,
+          "max": 8.760936737060547
+        },
+        "memoryPressureFullAvg10Max": 0.24,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 122,
+            "min": 255.27767136150237,
+            "p05": 268.09938381618383,
+            "p50": 271.5259764141515,
+            "p95": 274.4844783043391,
+            "max": 276.7441119552179
+          },
+          "tx": {
+            "samples": 122,
+            "min": 2.656961311606518,
+            "p05": 2.7503214714114352,
+            "p50": 3.282975926480871,
+            "p95": 6.601186843946816,
+            "max": 8.886697060587881
+          }
+        },
+        "warningSamples": 6,
+        "warnings": [
+          {
+            "at": "2026-11-22T17:16:43Z",
+            "atMs": 1795367803304,
+            "cpuPercent": 87.86494034018787,
+            "memAvailableGiB": 5.469310760498047,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:16:53Z",
+            "atMs": 1795367813319,
+            "cpuPercent": 88.57022353437368,
+            "memAvailableGiB": 4.856891632080078,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:18:43Z",
+            "atMs": 1795367923421,
+            "cpuPercent": 91.27171529768933,
+            "memAvailableGiB": 4.955482482910156,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:18:53Z",
+            "atMs": 1795367933434,
+            "cpuPercent": 91.20768064679132,
+            "memAvailableGiB": 5.276035308837891,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:35:03Z",
+            "atMs": 1795368903912,
+            "cpuPercent": 85.44696776388534,
+            "memAvailableGiB": 5.5871429443359375,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          },
+          {
+            "at": "2026-11-22T17:35:13Z",
+            "atMs": 1795368913917,
+            "cpuPercent": 89.72799459368137,
+            "memAvailableGiB": 3.8768539428710938,
+            "warnings": [
+              "generator-cpu-over85percent"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "original/mixed-150-50",
+      "status": "target-missed",
+      "webrtc": 150,
+      "hls": 50,
+      "nominalHoldSeconds": 600,
+      "actualHoldSeconds": 614.1,
+      "wholePhase": {
+        "samples": 66,
+        "windowStart": "2026-11-22T17:37:10.062000+00:00",
+        "windowEnd": "2026-11-22T17:48:06.626000+00:00",
+        "requestedWindowSeconds": 656.564,
+        "firstSample": "2026-11-22T17:37:13.966000+00:00",
+        "lastSample": "2026-11-22T17:48:04.224000+00:00",
+        "sampledSpanSeconds": 650.258,
+        "leadingGapSeconds": 3.904,
+        "trailingGapSeconds": 2.402,
+        "maximumSamplingGapSeconds": 10.009,
+        "cpuPercent": {
+          "samples": 66,
+          "min": 30.78491335372069,
+          "p05": 37.045751633986924,
+          "p50": 49.075043630017454,
+          "p95": 60.63156068361239,
+          "max": 64.42906574394463
+        },
+        "memAvailableGiB": {
+          "samples": 66,
+          "min": 6.643165588378906,
+          "p05": 6.866817474365234,
+          "p50": 8.18062973022461,
+          "p95": 8.611396789550781,
+          "max": 9.493274688720703
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 66,
+            "min": 5.255147455763271,
+            "p05": 194.82906517393045,
+            "p50": 278.08985525789683,
+            "p95": 280.29390382885134,
+            "max": 295.4036985205918
+          },
+          "tx": {
+            "samples": 66,
+            "min": 3.0332917416516696,
+            "p05": 3.1440471858442467,
+            "p50": 4.709554333699891,
+            "p95": 9.404076377086874,
+            "max": 13.26449350129974
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 62,
+        "windowStart": "2026-11-22T17:37:52.258000+00:00",
+        "windowEnd": "2026-11-22T17:48:06.358000+00:00",
+        "requestedWindowSeconds": 614.1,
+        "firstSample": "2026-11-22T17:37:53.979000+00:00",
+        "lastSample": "2026-11-22T17:48:04.224000+00:00",
+        "sampledSpanSeconds": 610.245,
+        "leadingGapSeconds": 1.721,
+        "trailingGapSeconds": 2.134,
+        "maximumSamplingGapSeconds": 10.009,
+        "cpuPercent": {
+          "samples": 62,
+          "min": 36.38665735242752,
+          "p05": 37.58741258741259,
+          "p50": 49.075043630017454,
+          "p95": 60.63156068361239,
+          "max": 64.42906574394463
+        },
+        "memAvailableGiB": {
+          "samples": 62,
+          "min": 6.643165588378906,
+          "p05": 6.866817474365234,
+          "p50": 8.135509490966797,
+          "p95": 8.440418243408203,
+          "max": 8.611396789550781
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 62,
+            "min": 244.64086382723454,
+            "p05": 276.30290272918126,
+            "p50": 278.17622955408916,
+            "p95": 280.29390382885134,
+            "max": 295.4036985205918
+          },
+          "tx": {
+            "samples": 62,
+            "min": 3.0332917416516696,
+            "p05": 3.1440471858442467,
+            "p50": 4.741258193445244,
+            "p95": 9.404076377086874,
+            "max": 13.26449350129974
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "one-second-R2",
+      "status": "stopped",
+      "nominalHoldSeconds": 600,
+      "actualHoldSeconds": null,
+      "wholePhase": {
+        "samples": 35,
+        "windowStart": "2026-11-22T18:08:53.545000+00:00",
+        "windowEnd": "2026-11-22T18:14:38.798000+00:00",
+        "requestedWindowSeconds": 345.253,
+        "firstSample": "2026-11-22T18:08:54.606000+00:00",
+        "lastSample": "2026-11-22T18:14:34.706000+00:00",
+        "sampledSpanSeconds": 340.1,
+        "leadingGapSeconds": 1.061,
+        "trailingGapSeconds": 4.092,
+        "maximumSamplingGapSeconds": 10.006,
+        "cpuPercent": {
+          "samples": 35,
+          "min": 31.182423665772852,
+          "p05": 35.29102384291725,
+          "p50": 38.28411672199895,
+          "p95": 41.63230240549828,
+          "max": 44.18911780243
+        },
+        "memAvailableGiB": {
+          "samples": 35,
+          "min": 8.134231567382812,
+          "p05": 8.251579284667969,
+          "p50": 8.554454803466797,
+          "p95": 8.649681091308594,
+          "max": 8.6746826171875
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 35,
+            "min": 0.6811102008192627,
+            "p05": 2.942217156568686,
+            "p50": 276.77668539438173,
+            "p95": 305.8793673897831,
+            "max": 331.9334341131774
+          },
+          "tx": {
+            "samples": 35,
+            "min": 1.667412928364472,
+            "p05": 3.2727701689493154,
+            "p50": 4.772887022595481,
+            "p95": 9.961210957808436,
+            "max": 10.90773855686588
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "partialOnlyNotFullHold": true,
+      "observedFullOccupancyBeforeFirstError": {
+        "samples": 30,
+        "windowStart": "2026-11-22T18:09:36.309000+00:00",
+        "windowEnd": "2026-11-22T18:14:35.696000+00:00",
+        "requestedWindowSeconds": 299.387,
+        "firstSample": "2026-11-22T18:09:44.620000+00:00",
+        "lastSample": "2026-11-22T18:14:34.706000+00:00",
+        "sampledSpanSeconds": 290.086,
+        "leadingGapSeconds": 8.311,
+        "trailingGapSeconds": 0.99,
+        "maximumSamplingGapSeconds": 10.006,
+        "cpuPercent": {
+          "samples": 30,
+          "min": 35.29102384291725,
+          "p05": 36.54978469109763,
+          "p50": 38.25332866152769,
+          "p95": 41.631541974007725,
+          "max": 44.18911780243
+        },
+        "memAvailableGiB": {
+          "samples": 30,
+          "min": 8.28322982788086,
+          "p05": 8.364334106445312,
+          "p50": 8.55517578125,
+          "p95": 8.649681091308594,
+          "max": 8.6746826171875
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 30,
+            "min": 249.6933120063981,
+            "p05": 274.3297912834866,
+            "p50": 277.11944011197755,
+            "p95": 305.8793673897831,
+            "max": 331.9334341131774
+          },
+          "tx": {
+            "samples": 30,
+            "min": 3.2727701689493154,
+            "p05": 3.2866770645870824,
+            "p50": 3.662086782643471,
+            "p95": 9.961210957808436,
+            "max": 10.90773855686588
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "one-second-truncate-fixed-R4",
+      "status": "passed",
+      "nominalHoldSeconds": 600,
+      "actualHoldSeconds": 613.702,
+      "wholePhase": {
+        "samples": 65,
+        "windowStart": "2026-11-22T18:46:42.560000+00:00",
+        "windowEnd": "2026-11-22T18:57:34.775000+00:00",
+        "requestedWindowSeconds": 652.215,
+        "firstSample": "2026-11-22T18:46:45.225000+00:00",
+        "lastSample": "2026-11-22T18:57:25.411000+00:00",
+        "sampledSpanSeconds": 640.186,
+        "leadingGapSeconds": 2.665,
+        "trailingGapSeconds": 9.364,
+        "maximumSamplingGapSeconds": 10.007,
+        "cpuPercent": {
+          "samples": 65,
+          "min": 18.247925399948674,
+          "p05": 32.620226308345124,
+          "p50": 37.156888538104006,
+          "p95": 40.39671443551206,
+          "max": 42.598990167419615
+        },
+        "memAvailableGiB": {
+          "samples": 65,
+          "min": 8.22311019897461,
+          "p05": 8.2998046875,
+          "p50": 8.494213104248047,
+          "p95": 8.859062194824219,
+          "max": 9.822036743164062
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 65,
+            "min": 0.8978516296740652,
+            "p05": 213.27218474457663,
+            "p50": 277.1585906818636,
+            "p95": 279.3903093072078,
+            "max": 353.58593641271744
+          },
+          "tx": {
+            "samples": 65,
+            "min": 1.5999160167966406,
+            "p05": 3.295844031193761,
+            "p50": 3.488494301139772,
+            "p95": 6.254146156153154,
+            "max": 7.706139358192543
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "fullOccupancyHold": {
+        "samples": 61,
+        "windowStart": "2026-11-22T18:47:20.428000+00:00",
+        "windowEnd": "2026-11-22T18:57:34.130000+00:00",
+        "requestedWindowSeconds": 613.702,
+        "firstSample": "2026-11-22T18:47:25.236000+00:00",
+        "lastSample": "2026-11-22T18:57:25.411000+00:00",
+        "sampledSpanSeconds": 600.175,
+        "leadingGapSeconds": 4.808,
+        "trailingGapSeconds": 8.719,
+        "maximumSamplingGapSeconds": 10.007,
+        "cpuPercent": {
+          "samples": 61,
+          "min": 33.92983074753173,
+          "p05": 34.64559978815429,
+          "p50": 37.26348983882271,
+          "p95": 40.39671443551206,
+          "max": 42.598990167419615
+        },
+        "memAvailableGiB": {
+          "samples": 61,
+          "min": 8.22311019897461,
+          "p05": 8.2998046875,
+          "p50": 8.491203308105469,
+          "p95": 8.723876953125,
+          "max": 8.754951477050781
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 61,
+            "min": 243.8346288113566,
+            "p05": 274.63470025994803,
+            "p50": 277.1966809957013,
+            "p95": 279.3903093072078,
+            "max": 353.58593641271744
+          },
+          "tx": {
+            "samples": 61,
+            "min": 3.2071358049365446,
+            "p05": 3.296864540637809,
+            "p50": 3.484144742103159,
+            "p95": 4.958569086182763,
+            "max": 6.4930891643342665
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "standalone-one-HLS-sixty",
+      "status": "diagnostic-target-missed-fps",
+      "actualHoldSeconds": 60.204,
+      "actualRenderedFps": 26.94173144641552,
+      "wholePhase": {
+        "samples": 6,
+        "windowStart": "2026-11-22T18:58:32.408000+00:00",
+        "windowEnd": "2026-11-22T18:59:34.124000+00:00",
+        "requestedWindowSeconds": 61.716,
+        "firstSample": "2026-11-22T18:58:35.429000+00:00",
+        "lastSample": "2026-11-22T18:59:25.440000+00:00",
+        "sampledSpanSeconds": 50.011,
+        "leadingGapSeconds": 3.021,
+        "trailingGapSeconds": 8.684,
+        "maximumSamplingGapSeconds": 10.003,
+        "cpuPercent": {
+          "samples": 6,
+          "min": 15.514737291755665,
+          "p05": 15.514737291755665,
+          "p50": 15.818631211113953,
+          "p95": 19.49492364132753,
+          "max": 19.49492364132753
+        },
+        "memAvailableGiB": {
+          "samples": 6,
+          "min": 9.652153015136719,
+          "p05": 9.652153015136719,
+          "p50": 9.80718994140625,
+          "p95": 9.999038696289062,
+          "max": 9.999038696289062
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 6,
+            "min": 1.0126873937818655,
+            "p05": 1.0126873937818655,
+            "p50": 1.9039720083974807,
+            "p95": 2.088963807238552,
+            "max": 2.088963807238552
+          },
+          "tx": {
+            "samples": 6,
+            "min": 1.5030257948410317,
+            "p05": 1.5030257948410317,
+            "p50": 1.9722027391782466,
+            "p95": 4.9583099380123965,
+            "max": 4.9583099380123965
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      },
+      "observedDecoderHold": {
+        "samples": 6,
+        "windowStart": "2026-11-22T18:58:33.713000+00:00",
+        "windowEnd": "2026-11-22T18:59:33.917000+00:00",
+        "requestedWindowSeconds": 60.204,
+        "firstSample": "2026-11-22T18:58:35.429000+00:00",
+        "lastSample": "2026-11-22T18:59:25.440000+00:00",
+        "sampledSpanSeconds": 50.011,
+        "leadingGapSeconds": 1.716,
+        "trailingGapSeconds": 8.477,
+        "maximumSamplingGapSeconds": 10.003,
+        "cpuPercent": {
+          "samples": 6,
+          "min": 15.514737291755665,
+          "p05": 15.514737291755665,
+          "p50": 15.818631211113953,
+          "p95": 19.49492364132753,
+          "max": 19.49492364132753
+        },
+        "memAvailableGiB": {
+          "samples": 6,
+          "min": 9.652153015136719,
+          "p05": 9.652153015136719,
+          "p50": 9.80718994140625,
+          "p95": 9.999038696289062,
+          "max": 9.999038696289062
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 6,
+            "min": 1.0126873937818655,
+            "p05": 1.0126873937818655,
+            "p50": 1.9039720083974807,
+            "p95": 2.088963807238552,
+            "max": 2.088963807238552
+          },
+          "tx": {
+            "samples": 6,
+            "min": 1.5030257948410317,
+            "p05": 1.5030257948410317,
+            "p50": 1.9722027391782466,
+            "p95": 4.9583099380123965,
+            "max": 4.9583099380123965
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    },
+    {
+      "name": "technical-audio-isolation",
+      "status": "passed",
+      "wholePhase": {
+        "samples": 2,
+        "windowStart": "2026-11-22T19:00:27.935000+00:00",
+        "windowEnd": "2026-11-22T19:00:55.230000+00:00",
+        "requestedWindowSeconds": 27.295,
+        "firstSample": "2026-11-22T19:00:35.457000+00:00",
+        "lastSample": "2026-11-22T19:00:45.460000+00:00",
+        "sampledSpanSeconds": 10.003,
+        "leadingGapSeconds": 7.522,
+        "trailingGapSeconds": 9.77,
+        "maximumSamplingGapSeconds": 10.003,
+        "cpuPercent": {
+          "samples": 2,
+          "min": 17.191097467382967,
+          "p05": 17.191097467382967,
+          "p50": 17.191097467382967,
+          "p95": 17.556406981694337,
+          "max": 17.556406981694337
+        },
+        "memAvailableGiB": {
+          "samples": 2,
+          "min": 9.978836059570312,
+          "p05": 9.978836059570312,
+          "p50": 9.978836059570312,
+          "p95": 9.984859466552734,
+          "max": 9.984859466552734
+        },
+        "memoryPressureFullAvg10Max": 0.0,
+        "allEth0TrafficMbps": {
+          "rx": {
+            "samples": 2,
+            "min": 0.7077884634609617,
+            "p05": 0.7077884634609617,
+            "p50": 0.7077884634609617,
+            "p95": 0.7340307938412317,
+            "max": 0.7340307938412317
+          },
+          "tx": {
+            "samples": 2,
+            "min": 5.152027191842447,
+            "p05": 5.152027191842447,
+            "p50": 5.152027191842447,
+            "p95": 5.345131773645271,
+            "max": 5.345131773645271
+          }
+        },
+        "warningSamples": 0,
+        "warnings": []
+      }
+    }
+  ],
+  "limitations": [
+    "Whole-generator-host CPU/RAM/PSI includes unrelated build activity, not per-browser or per-room attribution.",
+    "Eth0 includes unrelated traffic; not a tariff, NIC-line-speed or per-stream measurement.",
+    "10second samples leave explicit leading/trailing gaps and cannot rule out shorter spikes.",
+    "CPUpercent divides by12logicalCPUs; separate cgroup audit found no CPUquota/throttling.",
+    "Initial25viewer phase begins before sampler; leading unsampled interval is explicit.",
+    "R2 is stopped/partial; standaloneHLS misses27fps diagnostic threshold; neither rewritten as success.",
+    "Audio is real transport/productionmixer only, not Cloudprovider/familyauth/consent/UI/OBS."
+  ]
+}

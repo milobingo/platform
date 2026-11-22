@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-11-22T19:03:29.303Z",
+  "existingGameRows": 11,
+  "totalGameRows": 11,
+  "fixtures": 0,
+  "runningStatusRows": 2,
+  "runningRows": [
+    {
+      "gameId": "233c548b-aa55-89bf-bd53-ff9f7cf6ee65",
+      "revision": 866,
+      "phase": "running",
+      "paused": true,
+      "updatedAt": 1794776016217,
+      "updatedAgeSeconds": 598193
+    },
+    {
+      "gameId": "aecbeb1c-7c20-850e-82b8-9174730b21ec",
+      "revision": 1708,
+      "phase": "interlude",
+      "paused": true,
+      "updatedAt": 1794862418241,
+      "updatedAgeSeconds": 511791
+    }
+  ],
+  "freshRunningRows": 0,
+  "freshProducerOrOutputSessions": 0,
+  "freshCalls": 0,
+  "activeRealShow": false,
+  "provider": {
+    "rooms": [],
+    "ingressCount": 0,
+    "activeEgressCount": 0
+  },
+  "tls": {
+    "ssl": true,
+    "version": "TLSv1.3",
+    "cipher": "TLS_AES_256_GCM_SHA384"
+  }
+}

@@ -1,0 +1,472 @@
+{
+  "format": "milo-technical-private-programme-audio-isolation-v1",
+  "startedAt": "2026-11-22T19:00:27.935Z",
+  "offlineOnly": false,
+  "executed": true,
+  "complete": true,
+  "maximumRuntimeSeconds": 90,
+  "actualApplicationCallFlow": false,
+  "actualFamilyAccounts": false,
+  "realChildren": false,
+  "privateAiOrPaidApi": false,
+  "physicalObsOrTv": false,
+  "scope": "Actual existing call grants, LiveKitMedia routing and LiveCallAudio production mixer with explicit synthetic frequency tracks. This is not consent/UI/showrunner/draw-hold or physical OBS rehearsal.",
+  "sourceSha256": {
+    "livekitMedia": "fb9d8e9087a65c9fcfa4107ecb2e3004ad4872d474af40c304ff559d10fcc649",
+    "liveCallAudio": "6ddb54025d0c0a83e142ebb3b2773da752d540193848a90234b441c6730b4701",
+    "callGrants": "77958bbcc418de3b4b876066489377543fb595fae4dd30bedf6cf4f162c04603",
+    "browserProbe": "057d5869995234b7fde8fa042004f0ab4580184e376aabe7fb2792172cd96ba0"
+  },
+  "fixture": {
+    "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "generation": "e86e7f15c1d73c5f5e56f6e3a18cd778",
+    "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+  },
+  "fixtureBefore": {
+    "atMs": 1795374028075,
+    "sourceSid": "PA_F6BJqmxLXJYZ",
+    "sourceTrackSids": [
+      "TR_AMKoMVN6x4aY5E",
+      "TR_VCF35NQE3jrzUa"
+    ],
+    "loadViewers": 0
+  },
+  "callRooms": {
+    "backstage": "bs-28f345df-3249-4566-9016-9271fee447b9",
+    "live": "live-28f345df-3249-4566-9016-9271fee447b9"
+  },
+  "callId": "28f345df-3249-4566-9016-9271fee447b9",
+  "programmeSourceIdentity": "milo-load-audio-mix-28f345df-3249-4566-9016-9271fee447b9",
+  "programmeViewerIdentity": "milo-load-audio-listener-28f345df-3249-4566-9016-9271fee447b9",
+  "exactOwnedTechnicalRooms": [
+    "bs-28f345df-3249-4566-9016-9271fee447b9",
+    "live-28f345df-3249-4566-9016-9271fee447b9",
+    "milo-staging-load-audio-isolation-28f345df-3249-4566-9016-9271fee447b9"
+  ],
+  "grantChecks": {
+    "allCallTracksMicrophoneOnly": true,
+    "liveHostCannotPublish": true,
+    "privateOutputTokenGenerated": false,
+    "callRoomsDifferentFromProgramme": true
+  },
+  "roomAbsenceChecks": [
+    {
+      "atMs": 1795374029317,
+      "room": "milo-staging-load-audio-isolation-28f345df-3249-4566-9016-9271fee447b9",
+      "matchingRooms": 0
+    },
+    {
+      "atMs": 1795374029398,
+      "room": "bs-28f345df-3249-4566-9016-9271fee447b9",
+      "matchingRooms": 0
+    },
+    {
+      "atMs": 1795374041011,
+      "room": "live-28f345df-3249-4566-9016-9271fee447b9",
+      "matchingRooms": 0
+    }
+  ],
+  "privateRoomClosedBeforeLive": {
+    "room": "bs-28f345df-3249-4566-9016-9271fee447b9",
+    "participantsRevoked": 0,
+    "remainingParticipants": 0
+  },
+  "browser": {
+    "info": {
+      "sampleRate": 48000,
+      "audioContextState": "running",
+      "frequencies": {
+        "show": 127,
+        "director": 317,
+        "guest": 503,
+        "presenter": 733
+      },
+      "thresholds": {
+        "presentMinimumAmplitude": 0.015,
+        "absentMaximumAmplitude": 0.004
+      },
+      "productionMixer": true
+    },
+    "outputGuard": {
+      "blockedBeforeToken": true,
+      "tokenRequests": 0
+    },
+    "privateInbound": {
+      "host": [
+        {
+          "identity": "guest-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "backstage",
+          "kind": "participant",
+          "codec": "audio/opus",
+          "bytesReceived": 79825,
+          "packetsReceived": 481,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0.0003120599974430466
+        }
+      ],
+      "guest": [
+        {
+          "identity": "host-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "backstage",
+          "kind": "participant",
+          "codec": "audio/opus",
+          "bytesReceived": 81354,
+          "packetsReceived": 487,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0.000007723324138715348
+        }
+      ]
+    },
+    "liveInbound": {
+      "host": [
+        {
+          "identity": "guest-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "live",
+          "kind": "participant",
+          "codec": "audio/opus",
+          "bytesReceived": 70471,
+          "packetsReceived": 424,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "identity": "output-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "live",
+          "kind": "presenter",
+          "codec": "audio/opus",
+          "bytesReceived": 101789,
+          "packetsReceived": 418,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0.00016745039621527893
+        }
+      ],
+      "guest": [
+        {
+          "identity": "output-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "live",
+          "kind": "presenter",
+          "codec": "audio/opus",
+          "bytesReceived": 101789,
+          "packetsReceived": 418,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0.00016745039621527893
+        }
+      ],
+      "output": [
+        {
+          "identity": "guest-28f345df-3249-4566-9016-9271fee447b9",
+          "target": "live",
+          "kind": "participant",
+          "codec": "audio/opus",
+          "bytesReceived": 70471,
+          "packetsReceived": 424,
+          "packetsLost": 0,
+          "totalAudioEnergy": 0
+        }
+      ]
+    },
+    "receivedProgramme": [
+      {
+        "codec": "audio/opus",
+        "bytesReceived": 335822,
+        "packetsReceived": 1026,
+        "packetsLost": 0,
+        "totalAudioEnergy": 0
+      }
+    ],
+    "productionMicGuard": true,
+    "serverGrantRejected": true,
+    "measurements": [
+      {
+        "name": "private-host-hears-guest",
+        "seconds": 2.398,
+        "samples": 24,
+        "present": [
+          "guest"
+        ],
+        "absent": [
+          "show",
+          "director",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.00006990639610104673,
+            "mean": 0.00017447339066012208,
+            "maximum": 0.00026660832453737066
+          },
+          "director": {
+            "minimum": 0.00023159396553490994,
+            "mean": 0.0004000203360435212,
+            "maximum": 0.000488528396350823
+          },
+          "guest": {
+            "minimum": 0.07834335376500551,
+            "mean": 0.08068917248910568,
+            "maximum": 0.08142344898989069
+          },
+          "presenter": {
+            "minimum": 0.00027280884389574596,
+            "mean": 0.00034393851060815885,
+            "maximum": 0.0006302350379733515
+          }
+        },
+        "rmsMaximum": 0.057570295691126344,
+        "passed": true
+      },
+      {
+        "name": "private-guest-hears-director",
+        "seconds": 2.497,
+        "samples": 25,
+        "present": [
+          "director"
+        ],
+        "absent": [
+          "show",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.000034818951444608616,
+            "mean": 0.00023229669511532554,
+            "maximum": 0.0003500915901129978
+          },
+          "director": {
+            "minimum": 0.07930331110914665,
+            "mean": 0.07981568215780104,
+            "maximum": 0.08045769980515316
+          },
+          "guest": {
+            "minimum": 0.0003707311851037832,
+            "mean": 0.0003978196159608174,
+            "maximum": 0.0004345018009293618
+          },
+          "presenter": {
+            "minimum": 0.00006142075831478421,
+            "mean": 0.00006785274214937075,
+            "maximum": 0.0000728621189064679
+          }
+        },
+        "rmsMaximum": 0.056933275504728105,
+        "passed": true
+      },
+      {
+        "name": "private-programme-excludes-conversation",
+        "seconds": 2.396,
+        "samples": 24,
+        "present": [
+          "show"
+        ],
+        "absent": [
+          "director",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.07942622925737164,
+            "mean": 0.07965781642044129,
+            "maximum": 0.07992303531973735
+          },
+          "director": {
+            "minimum": 0.000010149646642445799,
+            "mean": 0.00021947671965827473,
+            "maximum": 0.00034060774671038194
+          },
+          "guest": {
+            "minimum": 0.0001566265147651667,
+            "mean": 0.0001742416879936143,
+            "maximum": 0.0001907167095158642
+          },
+          "presenter": {
+            "minimum": 0.000029566484863421695,
+            "mean": 0.0000960379334151237,
+            "maximum": 0.00014249741404621921
+          }
+        },
+        "rmsMaximum": 0.0564306483141901,
+        "passed": true
+      },
+      {
+        "name": "live-programme-includes-selected-guest-presenter",
+        "seconds": 2.496,
+        "samples": 25,
+        "present": [
+          "show",
+          "guest",
+          "presenter"
+        ],
+        "absent": [
+          "director"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.07831641234365243,
+            "mean": 0.07977051831463959,
+            "maximum": 0.0812692486200508
+          },
+          "director": {
+            "minimum": 0.00034427597384161814,
+            "mean": 0.0005071154168672688,
+            "maximum": 0.0007877199973471647
+          },
+          "guest": {
+            "minimum": 0.07654138430064479,
+            "mean": 0.07733602143868216,
+            "maximum": 0.07837232388581628
+          },
+          "presenter": {
+            "minimum": 0.07969096773407398,
+            "mean": 0.08049997426839205,
+            "maximum": 0.08135979985292378
+          }
+        },
+        "rmsMaximum": 0.09810830544970023,
+        "passed": true
+      },
+      {
+        "name": "live-guest-mix-minus-return",
+        "seconds": 2.497,
+        "samples": 25,
+        "present": [
+          "presenter"
+        ],
+        "absent": [
+          "show",
+          "director",
+          "guest"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.000029000751865385574,
+            "mean": 0.00010025759298512589,
+            "maximum": 0.00014087406449855985
+          },
+          "director": {
+            "minimum": 0.0000632173423795361,
+            "mean": 0.00006771957889915864,
+            "maximum": 0.00007164752669393028
+          },
+          "guest": {
+            "minimum": 0.0003016853301312925,
+            "mean": 0.0003253876108182203,
+            "maximum": 0.0003444846908762418
+          },
+          "presenter": {
+            "minimum": 0.07951293633138355,
+            "mean": 0.07968315581882293,
+            "maximum": 0.07988286057858683
+          }
+        },
+        "rmsMaximum": 0.056470830532426866,
+        "passed": true
+      },
+      {
+        "name": "prepared-live-ai-input-remains-closed",
+        "seconds": 0.936,
+        "samples": 10,
+        "present": [],
+        "absent": [
+          "show",
+          "director",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "director": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "guest": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          },
+          "presenter": {
+            "minimum": 0,
+            "mean": 0,
+            "maximum": 0
+          }
+        },
+        "rmsMaximum": 0,
+        "passed": true
+      },
+      {
+        "name": "ended-programme-clears-guest-and-presenter",
+        "seconds": 2.494,
+        "samples": 25,
+        "present": [
+          "show"
+        ],
+        "absent": [
+          "director",
+          "guest",
+          "presenter"
+        ],
+        "amplitude": {
+          "show": {
+            "minimum": 0.07989715220887801,
+            "mean": 0.08026164099917917,
+            "maximum": 0.08058748034406842
+          },
+          "director": {
+            "minimum": 0.000009756975090115217,
+            "mean": 0.00020450470543186314,
+            "maximum": 0.0003421624069273098
+          },
+          "guest": {
+            "minimum": 0.00015819949488543556,
+            "mean": 0.00017419824002345497,
+            "maximum": 0.00019096980436367116
+          },
+          "presenter": {
+            "minimum": 0.000029423853712967286,
+            "mean": 0.0000914983529350916,
+            "maximum": 0.00014261760335166387
+          }
+        },
+        "rmsMaximum": 0.05690044399796634,
+        "passed": true
+      }
+    ],
+    "networkMedia": true,
+    "phaseTransitions": "Technical isolated transport transitions only; no app or durable call state created."
+  },
+  "forbiddenExternalRequests": 0,
+  "localCleanup": {
+    "allLocalRoomsDisconnected": true,
+    "allLocalTracksStopped": true
+  },
+  "remoteCleanup": [
+    {
+      "room": "milo-staging-load-audio-isolation-28f345df-3249-4566-9016-9271fee447b9",
+      "participantsRevoked": 0,
+      "remainingParticipants": 0
+    },
+    {
+      "room": "live-28f345df-3249-4566-9016-9271fee447b9",
+      "participantsRevoked": 0,
+      "remainingParticipants": 0
+    }
+  ],
+  "fixtureAfter": {
+    "atMs": 1795374055230,
+    "sourceSid": "PA_F6BJqmxLXJYZ",
+    "sourceTrackSids": [
+      "TR_AMKoMVN6x4aY5E",
+      "TR_VCF35NQE3jrzUa"
+    ],
+    "loadViewers": 0
+  },
+  "existingSourceUntouched": true,
+  "finishedAt": "2026-11-22T19:00:55.230Z",
+  "totalSeconds": 27.295
+}

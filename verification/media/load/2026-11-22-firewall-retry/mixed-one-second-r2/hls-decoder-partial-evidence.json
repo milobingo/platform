@@ -1,0 +1,117 @@
+{
+  "format": "milo-mixed-r2-partial-hls-decoder-evidence-v1",
+  "partialPhase": true,
+  "full600SecondHoldCompleted": false,
+  "windowMeaning": "Observed full 150RTC/50HLS occupancy only until the first HTTP error; not a passing mixed-capacity phase.",
+  "abortReason": "HLS-kijker hls-39 verloor de ononderbroken segmentontvangst.",
+  "observedAt": "2026-11-22T18:27:08.409382+00:00",
+  "readOnlyAnalysis": true,
+  "extraMediaClients": 0,
+  "reportComplete": false,
+  "mixedStatus": "stopped",
+  "receiverSourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "scope": "One real HLS browser decoder;49other HLS clients fetch real segments at normal pace. No all50-renderer, physical Cast/AirPlay, OBS or privatecall rehearsal claim.",
+  "hold": {
+    "start": "2026-11-22T18:09:36.309000+00:00",
+    "end": "2026-11-22T18:14:35.696000+00:00",
+    "requiredSeconds": 600,
+    "actualSeconds": 299.387,
+    "firstDecoderSnapshot": "2026-11-22T18:09:36.322000+00:00",
+    "lastDecoderSnapshot": "2026-11-22T18:14:32.881000+00:00",
+    "sampledSnapshotSpanSeconds": 296.559,
+    "samples": 51,
+    "leadingSnapshotGapSeconds": 0.013,
+    "trailingSnapshotGapSeconds": 2.815
+  },
+  "dimensions": {
+    "expected": [
+      1280,
+      720
+    ],
+    "observed": [
+      "1280x720"
+    ],
+    "missingSamples": 0,
+    "invalidSamples": 0,
+    "allSnapshots720p": true,
+    "invalidExamples": []
+  },
+  "audio": {
+    "invalidFreshPcmSnapshots": 0,
+    "allSnapshotsFreshPcm": true,
+    "pcmAgeSeconds": {
+      "samples": 51,
+      "min": 0.003,
+      "p50": 4.473,
+      "p95": 10.843,
+      "max": 11.383
+    },
+    "rmsMaximum": 0.24032245814866912,
+    "lastAudioContextState": "running",
+    "invalidExamples": []
+  },
+  "frames": {
+    "renderedCallbackFrames": 8897,
+    "renderedCallbackFps": 30.000775562367014,
+    "qualityTotalFrameDelta": 8897,
+    "qualityDroppedFrameDelta": 0,
+    "qualityPresentedFps": 30.000775562367014,
+    "wholePhaseFinalQuality": {
+      "totalVideoFrames": 10053,
+      "droppedVideoFrames": 0
+    },
+    "probeStalls": 0,
+    "probeStallLimitation": "Counter threshold3s; source/display timecodes and nonfatalHLS events also expose shorter interruptions.",
+    "reconnects": 0,
+    "disconnects": 0,
+    "finalError": null
+  },
+  "timecodeLatencyMs": {
+    "samples": 293,
+    "min": 3928,
+    "p50": 3965,
+    "p95": 3989,
+    "max": 4087
+  },
+  "playbackLagIncreaseIntervals": [],
+  "hlsNonfatalEvents": [],
+  "hlsFatalEvents": [],
+  "hlsEventTotals": {
+    "uniqueWholePhase": 0,
+    "held": 0,
+    "lastTotalReported": 0
+  },
+  "hlsBuffer": {
+    "forwardBufferSeconds": {
+      "samples": 51,
+      "min": 0.3251149999999825,
+      "p50": 0.7748199999999912,
+      "p95": 1.2448420000000056,
+      "max": 1.2852049999999906
+    },
+    "latencySeconds": {
+      "samples": 51,
+      "min": 1.4766196543278625,
+      "p50": 1.498319555210088,
+      "p95": 1.514454067115878,
+      "max": 1.5147572446512072
+    },
+    "targetLatencySeconds": {
+      "samples": 51,
+      "min": 1,
+      "p50": 1,
+      "p95": 1,
+      "max": 1
+    }
+  },
+  "playbackPolicyObservations": [
+    "{\"liveSyncOnStallIncrease\": 1, \"lowLatencyMode\": false, \"maxLiveSyncPlaybackRate\": 1, \"playbackRate\": 1}"
+  ],
+  "wholePhaseDimensions": {
+    "snapshots": 57,
+    "observed": [
+      "1280x720"
+    ],
+    "allSnapshots720p": true
+  }
+}

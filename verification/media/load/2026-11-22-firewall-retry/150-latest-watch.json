@@ -1,0 +1,100 @@
+{
+  "observedAt": "2026-11-22T17:16:05Z",
+  "phase150Status": "passed",
+  "browserWindowEndMs": 1795367730275,
+  "browsers": [
+    {
+      "identity": "milo-load-webrtc-150-browser-0",
+      "measuredSeconds": 29.603,
+      "decodedFps": 29.726716886802013,
+      "dimensions": [
+        "1280x720"
+      ],
+      "droppedFrames": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 9082,
+      "timecodeSamples": 35,
+      "latencyP95Ms": 205
+    },
+    {
+      "identity": "milo-load-webrtc-150-browser-1",
+      "measuredSeconds": 29.594,
+      "decodedFps": 29.769547881327295,
+      "dimensions": [
+        "1280x720"
+      ],
+      "droppedFrames": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 9111,
+      "timecodeSamples": 35,
+      "latencyP95Ms": 205
+    },
+    {
+      "identity": "milo-load-webrtc-150-browser-2",
+      "measuredSeconds": 29.588,
+      "decodedFps": 29.741787211031497,
+      "dimensions": [
+        "1280x720"
+      ],
+      "droppedFrames": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 9069,
+      "timecodeSamples": 35,
+      "latencyP95Ms": 193
+    }
+  ],
+  "sourceWindowSeconds": 23.513,
+  "sourceEncodedFps": 29.64317611534045,
+  "windowLatencyP95Ms": 202,
+  "generatorLatest": {
+    "observedAt": "2026-11-22T17:16:03Z",
+    "cpuPercent": 46.15711252653928,
+    "memAvailableBytes": 9610797056,
+    "pressure": {
+      "cpu": {
+        "some": {
+          "avg10": 7.75,
+          "avg60": 16.01,
+          "avg300": 11.83,
+          "total": 12866070389.0
+        },
+        "full": {
+          "avg10": 0.0,
+          "avg60": 0.0,
+          "avg300": 0.0,
+          "total": 0.0
+        }
+      },
+      "memory": {
+        "some": {
+          "avg10": 0.0,
+          "avg60": 0.02,
+          "avg300": 0.0,
+          "total": 2685775780.0
+        },
+        "full": {
+          "avg10": 0.0,
+          "avg60": 0.02,
+          "avg300": 0.0,
+          "total": 2470985601.0
+        }
+      },
+      "io": {
+        "some": {
+          "avg10": 0.43,
+          "avg60": 0.26,
+          "avg300": 0.12,
+          "total": 2715153571.0
+        },
+        "full": {
+          "avg10": 0.4,
+          "avg60": 0.13,
+          "avg300": 0.04,
+          "total": 278685093.0
+        }
+      }
+    },
+    "warnings": []
+  },
+  "generatorWarnings": []
+}

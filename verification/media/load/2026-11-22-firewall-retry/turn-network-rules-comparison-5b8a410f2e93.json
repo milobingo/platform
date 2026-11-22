@@ -1,0 +1,44 @@
+{
+  "format": "milo-turn-rules-structural-comparison-v1",
+  "nonce": "5b8a410f2e93",
+  "checkedAtMs": 1795372041992,
+  "baselineObjects": 396,
+  "currentObjects": 396,
+  "rawDigestBefore": "a739cd042ad517315ab63c5f22d5379e35bc9dc340f2d5b51bd5a9a3e240435c",
+  "rawDigestAfter": "3ca80d5d963555fcafc6b34cc30abd894a6b55f4823a045484b39b105fbd7299",
+  "rawJsonUnchanged": false,
+  "normalization": "Only top-level named counter runtime packets and bytes omitted; every rule, address, verdict, interface, timer, set and counter definition retained.",
+  "normalizedDigestBefore": "47a7434697e991f9a722f9d933a90f9ae60c96abe021975e05b57dc01622232c",
+  "normalizedDigestAfter": "47a7434697e991f9a722f9d933a90f9ae60c96abe021975e05b57dc01622232c",
+  "allRuleDefinitionsUnchanged": true,
+  "counterChanges": [
+    {
+      "index": 388,
+      "name": "tls_in",
+      "fieldsChanged": [
+        "packets",
+        "bytes"
+      ],
+      "packetsBefore": 154861,
+      "packetsAfter": 156215,
+      "bytesBefore": 12029041,
+      "bytesAfter": 12147533
+    },
+    {
+      "index": 389,
+      "name": "tls_out",
+      "fieldsChanged": [
+        "packets",
+        "bytes"
+      ],
+      "packetsBefore": 149738,
+      "packetsAfter": 152239,
+      "bytesBefore": 25086160,
+      "bytesAfter": 27792062
+    }
+  ],
+  "originalRawMismatchPreserved": true,
+  "rawBaselinePath": "/var/lib/milobingo-media/proofs/turn-network-5b8a410f2e93.json",
+  "exactlyFourRuntimeCounterFieldsChanged": true,
+  "structuralComparisonPassed": true
+}

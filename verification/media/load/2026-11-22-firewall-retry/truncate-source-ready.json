@@ -1,0 +1,28 @@
+{
+  "format": "milo-truncate-retry-source-ready-v1",
+  "checkedAt": "2026-11-22T18:42:56.639109+00:00",
+  "release": {
+    "status": "ok",
+    "revision": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+    "releaseId": "45056211553-1",
+    "configVersion": "staging-2026-11-11-v2",
+    "checks": [
+      "http"
+    ]
+  },
+  "helperSourceSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "helperSha256": "d1c35fbe2d9c2c5fa3ac420587a2cc165e9e7334d51f819b551692432818e869",
+  "ownFixture": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "generation": "49570fa7103d91ab171eee4b9619d66c",
+  "prepared": true,
+  "sameWhipIngressReused": true,
+  "whipCredentialsCopiedPrivately": true,
+  "allOriginalNeighboursUnchanged": true,
+  "productionPidUnchanged": true,
+  "noActualRealShow": true,
+  "databaseBusinessRowsModified": false,
+  "secretsReturned": false,
+  "confirmedIngressId": "IN_cH9bc5yLqCfY",
+  "privateConfigurationValidated": true
+}

@@ -1,0 +1,262 @@
+{
+  "format": "milo-external-generator-capacity-context-v1",
+  "source": "Actual10second independent /proc sampler, not SFU telemetry.",
+  "generatorHost": "codex-worker-01",
+  "generatorPublicIp": "65.108.158.112",
+  "logicalCpus": 12,
+  "cgroupReference": "generator-cgroup-context.json",
+  "phases": [
+    {
+      "name": "webrtc-25",
+      "heldSeconds": 312.491,
+      "fullOccupancyAtMs": 1795366343931,
+      "heldEndMs": 1795366656422.0,
+      "observedFrom": "2026-11-22T16:52:42Z",
+      "observedTo": "2026-11-22T16:57:32Z",
+      "leadingUnobservedSeconds": 18.917,
+      "samples": 30,
+      "cpuPercent": {
+        "samples": 29,
+        "p50": 21.638422890232476,
+        "p95": 24.195205479452053,
+        "max": 25.442875481386395
+      },
+      "minimumAvailableMemoryGiB": 9.083076477050781,
+      "maximumMemoryFullPressureAvg10": 0.0,
+      "maximumCpuSomePressureAvg10": 4.18,
+      "rxMbps": {
+        "samples": 29,
+        "p50": 34.149433569929016,
+        "p95": 34.558253149370124,
+        "max": 34.69178606418075
+      },
+      "txMbps": {
+        "samples": 29,
+        "p50": 1.6565070985802839,
+        "p95": 4.754762371288614,
+        "max": 4.798057188562287
+      },
+      "warningSamples": []
+    },
+    {
+      "name": "webrtc-50",
+      "heldSeconds": 311.365,
+      "fullOccupancyAtMs": 1795366694962,
+      "heldEndMs": 1795367006327.0,
+      "observedFrom": "2026-11-22T16:58:22Z",
+      "observedTo": "2026-11-22T17:03:23Z",
+      "leadingUnobservedSeconds": 7.968,
+      "samples": 31,
+      "cpuPercent": {
+        "samples": 31,
+        "p50": 24.036144578313255,
+        "p95": 27.445909835359018,
+        "max": 28.88313928417421
+      },
+      "minimumAvailableMemoryGiB": 9.03469467163086,
+      "maximumMemoryFullPressureAvg10": 0.0,
+      "maximumCpuSomePressureAvg10": 5.14,
+      "rxMbps": {
+        "samples": 31,
+        "p50": 67.97616636672664,
+        "p95": 68.44099980003999,
+        "max": 69.1847133859842
+      },
+      "txMbps": {
+        "samples": 31,
+        "p50": 1.8092428271518546,
+        "p95": 5.364561031690493,
+        "max": 5.418408077576727
+      },
+      "warningSamples": []
+    },
+    {
+      "name": "webrtc-100",
+      "heldSeconds": 309.874,
+      "fullOccupancyAtMs": 1795367051906,
+      "heldEndMs": 1795367361780.0,
+      "observedFrom": "2026-11-22T17:04:13Z",
+      "observedTo": "2026-11-22T17:09:13Z",
+      "leadingUnobservedSeconds": 1.115,
+      "samples": 31,
+      "cpuPercent": {
+        "samples": 31,
+        "p50": 30.016369432239166,
+        "p95": 32.737941151091555,
+        "max": 32.784056595634546
+      },
+      "minimumAvailableMemoryGiB": 8.703895568847656,
+      "maximumMemoryFullPressureAvg10": 0.0,
+      "maximumCpuSomePressureAvg10": 6.1,
+      "rxMbps": {
+        "samples": 31,
+        "p50": 136.04358452464263,
+        "p95": 138.23483035089473,
+        "max": 138.5718276517045
+      },
+      "txMbps": {
+        "samples": 31,
+        "p50": 2.4926953913825853,
+        "p95": 4.570267546490702,
+        "max": 5.79240943622551
+      },
+      "warningSamples": []
+    },
+    {
+      "name": "webrtc-150",
+      "heldSeconds": 314.12,
+      "fullOccupancyAtMs": 1795367417358,
+      "heldEndMs": 1795367731478.0,
+      "observedFrom": "2026-11-22T17:10:23Z",
+      "observedTo": "2026-11-22T17:15:23Z",
+      "leadingUnobservedSeconds": 5.761,
+      "samples": 31,
+      "cpuPercent": {
+        "samples": 31,
+        "p50": 44.432818903130176,
+        "p95": 77.00617283950618,
+        "max": 82.5798776342624
+      },
+      "minimumAvailableMemoryGiB": 4.912010192871094,
+      "maximumMemoryFullPressureAvg10": 0.29,
+      "maximumCpuSomePressureAvg10": 28.97,
+      "rxMbps": {
+        "samples": 31,
+        "p50": 203.86271929649246,
+        "p95": 205.3441958237586,
+        "max": 205.4338332333533
+      },
+      "txMbps": {
+        "samples": 31,
+        "p50": 2.79045566330101,
+        "p95": 6.245551314080144,
+        "max": 6.308860941717485
+      },
+      "warningSamples": []
+    },
+    {
+      "name": "webrtc-200",
+      "heldSeconds": 1211.66,
+      "fullOccupancyAtMs": 1795367803043,
+      "heldEndMs": 1795369014703.0,
+      "observedFrom": "2026-11-22T17:16:43Z",
+      "observedTo": "2026-11-22T17:36:53Z",
+      "leadingUnobservedSeconds": 0.261,
+      "samples": 122,
+      "cpuPercent": {
+        "samples": 122,
+        "p50": 57.36919996517802,
+        "p95": 84.12644459551326,
+        "max": 91.27171529768933
+      },
+      "minimumAvailableMemoryGiB": 2.8312225341796875,
+      "maximumMemoryFullPressureAvg10": 0.24,
+      "maximumCpuSomePressureAvg10": 40.74,
+      "rxMbps": {
+        "samples": 122,
+        "p50": 271.5259764141515,
+        "p95": 274.4844783043391,
+        "max": 276.7441119552179
+      },
+      "txMbps": {
+        "samples": 122,
+        "p50": 3.282975926480871,
+        "p95": 6.601186843946816,
+        "max": 8.886697060587881
+      },
+      "warningSamples": [
+        {
+          "at": "2026-11-22T17:16:43Z",
+          "observedAtMs": 1795367803304,
+          "cpuPercent": 87.86494034018787,
+          "availableMemoryGiB": 5.469310760498047,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        },
+        {
+          "at": "2026-11-22T17:16:53Z",
+          "observedAtMs": 1795367813319,
+          "cpuPercent": 88.57022353437368,
+          "availableMemoryGiB": 4.856891632080078,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        },
+        {
+          "at": "2026-11-22T17:18:43Z",
+          "observedAtMs": 1795367923421,
+          "cpuPercent": 91.27171529768933,
+          "availableMemoryGiB": 4.955482482910156,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        },
+        {
+          "at": "2026-11-22T17:18:53Z",
+          "observedAtMs": 1795367933434,
+          "cpuPercent": 91.20768064679132,
+          "availableMemoryGiB": 5.276035308837891,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        },
+        {
+          "at": "2026-11-22T17:35:03Z",
+          "observedAtMs": 1795368903912,
+          "cpuPercent": 85.44696776388534,
+          "availableMemoryGiB": 5.5871429443359375,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        },
+        {
+          "at": "2026-11-22T17:35:13Z",
+          "observedAtMs": 1795368913917,
+          "cpuPercent": 89.72799459368137,
+          "availableMemoryGiB": 3.8768539428710938,
+          "warnings": [
+            "generator-cpu-over85percent"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mixed-150-50",
+      "heldSeconds": 614.1,
+      "fullOccupancyAtMs": 1795369072258,
+      "heldEndMs": 1795369686358.0,
+      "observedFrom": "2026-11-22T17:37:53Z",
+      "observedTo": "2026-11-22T17:48:04Z",
+      "leadingUnobservedSeconds": 1.721,
+      "samples": 62,
+      "cpuPercent": {
+        "samples": 62,
+        "p50": 49.075043630017454,
+        "p95": 60.63156068361239,
+        "max": 64.42906574394463
+      },
+      "minimumAvailableMemoryGiB": 6.643165588378906,
+      "maximumMemoryFullPressureAvg10": 0.0,
+      "maximumCpuSomePressureAvg10": 21.0,
+      "rxMbps": {
+        "samples": 62,
+        "p50": 278.17622955408916,
+        "p95": 280.29390382885134,
+        "max": 295.4036985205918
+      },
+      "txMbps": {
+        "samples": 62,
+        "p50": 4.741258193445244,
+        "p95": 9.404076377086874,
+        "max": 13.26449350129974
+      },
+      "warningSamples": []
+    }
+  ],
+  "limitations": [
+    "Only observed timestamps are reported; samples before independent sampler startup are absent.",
+    "Generator also hosted unrelated jobs and CI/builds. CPU pressure alone does not establish a media or targetVPS bottleneck.",
+    "Warnings are10second CPU averages, not continuous durations. All12 logical CPUs were available with no cgroup quota or throttling during the audited window."
+  ]
+}

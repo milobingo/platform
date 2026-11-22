@@ -1,0 +1,24 @@
+{
+  "format": "milo-r4-hls-http-continuity-summary-v1",
+  "derivedAt": "2026-11-22T18:58:59.895595+00:00",
+  "readOnlyAnalysis": true,
+  "newMediaClients": 0,
+  "mixedHoldSeconds": 613.702,
+  "clients": 49,
+  "freshClientsAtEnd": 49,
+  "httpErrors": 0,
+  "stalls": 0,
+  "sequenceGapCount": 0,
+  "sequenceGapExamples": [],
+  "totalSuccessfulSegments": 31624,
+  "segmentsPerClientMinMax": [
+    645,
+    646
+  ],
+  "continuousHoldSecondsMinMax": [
+    644.728,
+    645.403
+  ],
+  "failuresAtEnd": 0,
+  "scope": "49pacedHTTPclients continuously downloaded actual1ssegments; they are not49actual video decoders. The50thHLSclient is the separately measured real browser."
+}

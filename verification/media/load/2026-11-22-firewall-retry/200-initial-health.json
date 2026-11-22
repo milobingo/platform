@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-11-22T17:18:15.491936+00:00",
+  "firstIndependentlyObservedFull200At": "2026-11-22T17:16:43.028000+00:00",
+  "currentFullCount": 200,
+  "browsers": [
+    {
+      "identity": "milo-load-webrtc-200-browser-0",
+      "seconds": 29.658,
+      "decodedFps": 29.975048890687166,
+      "dimensions": [
+        "1280x720"
+      ],
+      "drops": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 11470,
+      "p95": 356
+    },
+    {
+      "identity": "milo-load-webrtc-200-browser-1",
+      "seconds": 29.659,
+      "decodedFps": 30.007754813041572,
+      "dimensions": [
+        "1280x720"
+      ],
+      "drops": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 11452,
+      "p95": 291
+    },
+    {
+      "identity": "milo-load-webrtc-200-browser-2",
+      "seconds": 29.665,
+      "decodedFps": 30.001685487948762,
+      "dimensions": [
+        "1280x720"
+      ],
+      "drops": 0,
+      "freezes": 0,
+      "maxAudioAgeMs": 11454,
+      "p95": 374
+    }
+  ],
+  "windowP95Ms": 291,
+  "windowTimecodes": 105
+}

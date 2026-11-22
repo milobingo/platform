@@ -1,0 +1,43 @@
+{
+  "format": "milo-alone-hls-sixty-comparison-v1",
+  "derivedAt": "2026-11-22T19:00:03.874231+00:00",
+  "readOnlyAnalysis": true,
+  "newMediaClients": 0,
+  "actualHoldSeconds": 60.204,
+  "decoderComplete": false,
+  "fpsMinimumGate": 27,
+  "renderedFPS": 26.94173144641552,
+  "qualityTotalFPS": 29.93156600890306,
+  "qualityPresentedFPS": 26.95834163842934,
+  "droppedFramesFirstLast": [
+    0,
+    179
+  ],
+  "droppedFramesDelta": 179,
+  "allDimensions720p": true,
+  "audioAgeMaxSeconds": 11.577,
+  "probeStalls": 0,
+  "reconnects": 0,
+  "heldHlsEvents": [
+    {
+      "observedAtMs": 1795373914306,
+      "type": "mediaError",
+      "details": "bufferStalledError",
+      "fatal": false
+    }
+  ],
+  "startupHlsEvents": [],
+  "bufferMinMax": [
+    0.5334599999999909,
+    0.7359339999999994
+  ],
+  "targetLatencyValues": [
+    1,
+    2
+  ],
+  "sourceSha256MatchesR4": true,
+  "sourceUnchanged": true,
+  "zeroRtcLoadViewersBeforeAfter": true,
+  "baselineReportUnchanged": true,
+  "comparison": "The same untouched browser module/policy also drops frames during one HLS viewer without the150RTC/49pacedHTTP clients. This does not identify whether the reason is encoder/timestamps/client/rendering or another component and is not a TV-device result."
+}

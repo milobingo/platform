@@ -1,0 +1,42 @@
+{
+  "format": "milo-local-private-copies-cleanup-v1",
+  "checkedAt": "2026-11-22T19:05:49.990133+00:00",
+  "scope": "Exact approved nine temporary local credential/capability/diagnostic copies after canonical guarded export.",
+  "approvedAllowlist": [
+    "credentials.json",
+    "worker-config.json",
+    "worker-config-before-truncate-hls.json",
+    "worker-config-r3-binding-abort.json",
+    "whip-session.json",
+    "viewer-hls-session.json",
+    "viewer-hls-session-generation-49570fa7103d91ab171eee4b9619d66c.json",
+    "ingress-diagnostic.log",
+    "livekit-diagnostic.log"
+  ],
+  "removedCount": 9,
+  "absent": {
+    "credentials.json": true,
+    "worker-config.json": true,
+    "worker-config-before-truncate-hls.json": true,
+    "worker-config-r3-binding-abort.json": true,
+    "whip-session.json": true,
+    "viewer-hls-session.json": true,
+    "viewer-hls-session-generation-49570fa7103d91ab171eee4b9619d66c.json": true,
+    "ingress-diagnostic.log": true,
+    "livekit-diagnostic.log": true
+  },
+  "allApprovedPrivateCopiesAbsent": true,
+  "protectedMetadataRetained": {
+    "removedFixtureManifest": true,
+    "gamesBaseline": true,
+    "turnAuditDirectories": [
+      "turn-network-recovery-8a6c493e2d71",
+      "turn-network-recovery-5b8a410f2e93"
+    ]
+  },
+  "permanentRootProviderConfigurationTouched": false,
+  "sshKeysTouched": false,
+  "baseEvidenceReportsOverwritten": false,
+  "contentsReturned": false,
+  "passed": true
+}

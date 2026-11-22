@@ -1,0 +1,167 @@
+{
+  "checkedAt": "2026-11-22T18:18:40.389333+00:00",
+  "durationSeconds": 5.0,
+  "cpuSeconds": 4.985,
+  "snapshots": 366128,
+  "uniqueInodes": 1,
+  "emptyReads": 15,
+  "incompleteReads": 15,
+  "changedDuringRead": 3,
+  "observations": [
+    {
+      "at": "2026-11-22T18:18:35.635000+00:00",
+      "beforeSize": 507,
+      "readBytes": 507,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": true
+    },
+    {
+      "at": "2026-11-22T18:18:35.635074+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:35.635094+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:35.635105+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:35.635116+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:35.635127+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:35.635138+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:36.654751+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:36.654784+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:36.654797+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:37.655744+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:37.655779+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:37.655791+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:37.655802+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:38.635999+00:00",
+      "beforeSize": 0,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    },
+    {
+      "at": "2026-11-22T18:18:38.636088+00:00",
+      "beforeSize": 0,
+      "readBytes": 507,
+      "afterSize": 507,
+      "nlink": 1,
+      "mtimeChangedDuringRead": true,
+      "completeM3u8": true
+    },
+    {
+      "at": "2026-11-22T18:18:39.656876+00:00",
+      "beforeSize": 507,
+      "readBytes": 0,
+      "afterSize": 0,
+      "nlink": 1,
+      "mtimeChangedDuringRead": false,
+      "completeM3u8": false
+    }
+  ],
+  "writes": 0,
+  "extraViewers": 0
+}

@@ -1,0 +1,116 @@
+{
+  "format": "milo-real-turn-tls-network-interruption-v1",
+  "startedAt": "2026-11-22T18:23:59.893Z",
+  "executed": true,
+  "fixture": {
+    "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "generation": "49570fa7103d91ab171eee4b9619d66c",
+    "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+  },
+  "viewerCount": 1,
+  "publisherCreated": false,
+  "capacityTest": false,
+  "physicalDeviceTest": false,
+  "scope": "Actual bounded hostnetwork drop exclusively own TURN/TLS flow; not a physicaldevice, familyUI or TVtest. Source and signaling remainunchanged.",
+  "nonce": "8a6c493e2d71",
+  "roomConnectCalls": 0,
+  "samples": {
+    "baseline": [],
+    "cut": [],
+    "recovered": []
+  },
+  "complete": false,
+  "roomBefore": {
+    "observedAtMs": 1795371840027,
+    "sourceParticipantSid": "PA_LQs7SBNjjm9g",
+    "sourceTracks": [
+      {
+        "sid": "TR_AMUi5gSAanLLsQ",
+        "type": "AUDIO",
+        "source": "MICROPHONE"
+      },
+      {
+        "sid": "TR_VC3BgghPwJ6va7",
+        "type": "VIDEO",
+        "source": "CAMERA"
+      }
+    ],
+    "loadViewers": [],
+    "participants": 2
+  },
+  "tcpBefore": {
+    "host": "dg-nxttrack-01",
+    "observedAtMs": 1795371840755,
+    "connections": [
+      {
+        "local": {
+          "ip": "128.140.93.95",
+          "port": 5349
+        },
+        "peer": {
+          "ip": "128.140.93.95",
+          "port": 38970
+        }
+      }
+    ]
+  },
+  "error": "Another established TCP5349 client ispresent beforethe testviewer.",
+  "roomCleanup": {
+    "observedAtMs": 1795371840825,
+    "sourceParticipantSid": "PA_LQs7SBNjjm9g",
+    "sourceTracks": [
+      {
+        "sid": "TR_AMUi5gSAanLLsQ",
+        "type": "AUDIO",
+        "source": "MICROPHONE"
+      },
+      {
+        "sid": "TR_VC3BgghPwJ6va7",
+        "type": "VIDEO",
+        "source": "CAMERA"
+      }
+    ],
+    "loadViewers": [],
+    "participants": 2
+  },
+  "tcpCleanup": {
+    "host": "dg-nxttrack-01",
+    "observedAtMs": 1795371841573,
+    "connections": [
+      {
+        "local": {
+          "ip": "128.140.93.95",
+          "port": 5349
+        },
+        "peer": {
+          "ip": "128.140.93.95",
+          "port": 38970
+        }
+      }
+    ]
+  },
+  "temporaryViewersRemoved": true,
+  "hostActionApplied": false,
+  "hostActionMarkerSeen": false,
+  "hostCleanupOwner": "broadcast_server/root; independentkernel15s expiry and25s timer",
+  "finishedAt": "2026-11-22T18:24:01.601Z",
+  "totalSeconds": 1.708,
+  "existingPeerReadOnlyDiagnosis": {
+    "source": "sudo ss -Hntp state established (sport=:5349 or dport=:5349)",
+    "clientProcess": "egress",
+    "clientPid": 1423016,
+    "clientFd": 13,
+    "serverProcess": "livekit-server",
+    "serverPid": 1337468,
+    "serverFd": 27,
+    "sourceIp": "128.140.93.95",
+    "sourcePort": 38970,
+    "destinationIp": "128.140.93.95",
+    "destinationPort": 5349,
+    "clientWasTestViewer": false,
+    "scope": "Existing local egress TURN/TLS connection, no media or firewall mutation performed.",
+    "recordedAt": "2026-11-22T18:24:32.574649+00:00",
+    "observationTiming": "Read-only ss was performed immediately after the precondition stop; exact command timestamp was not separately captured."
+  }
+}

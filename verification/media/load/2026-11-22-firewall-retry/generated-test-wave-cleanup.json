@@ -1,0 +1,10 @@
+{
+  "format": "milo-generated-test-wave-cleanup-v1",
+  "checkedAt": "2026-11-22T19:05:37.048726+00:00",
+  "exactGeneratedPath": "/dev/shm/milo-dutch-number-announcements-20261122.wav",
+  "bytesFreed": 49612544,
+  "ordinaryOwnedSingleLinkWaveVerified": true,
+  "removed": true,
+  "sourceHadAlreadyExited": true,
+  "noOtherFileRemoved": true
+}

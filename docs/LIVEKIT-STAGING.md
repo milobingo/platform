@@ -55,7 +55,7 @@ wildcard naar een andere VPS (`167.235.202.206`). Die zijn geen testdoel.
 | LiveKit signal/API | 127.0.0.1:7880 | Alleen via Caddy `/rtc*`, `/twirp/livekit.*` met LiveKit-auth |
 | WebRTC | UDP 7882, TCP 7881 | Nodig voor gezinnen |
 | WHIP HTTP | 8086 | Alleen via Caddy `/whip/*`; geheime stream-URL |
-| WHIP media | UDP 7885 | Nodig voor OBS |
+| WHIP media | UDP 7885 voor workerroute; native bypass via SFU 7882 | Eigen OBS-ingang |
 | Eigen TURN | UDP 3480, TLS/TCP 5349 | Authenticated fallback |
 | Redis | 127.0.0.1:6381 | Nee; eigen wachtwoord |
 | SFU-metrics | 127.0.0.1:6798 | Nee; alleen SSH-sampler |
@@ -77,9 +77,13 @@ contractuele verkeersbundel zijn niet via de beschikbare SSH-toegang zichtbaar.
 
 ## Reproduceerbare installatie
 
-De bestanden staan in [infra/media](../infra/media). LiveKit 1.13.11,
-Ingress 1.6.0, Egress 1.15.0 en Redis 7.4.7 zijn met versie én image-digest
-vastgezet in `compose.yaml`. Op de bevestigde Ubuntu 24.04-host zijn als
+De bestanden staan in [infra/media](../infra/media). De basisimages voor LiveKit
+1.13.11, Ingress 1.6.0, Egress 1.15.0 en Redis 7.4.7 zijn met versie en digest
+vastgezet. LiveKit gebruikt de [geteste poortcorrectie](../infra/media/LIVEKIT-PATCH.md)
+voor TURN/TLS op 5349; bouw die eerst op de externe generator, verifieer en laad
+het imagearchief en plaats het beschermde buildrapport zoals daar beschreven.
+De installer vereist het exacte image-ID en de binarychecksum en bouwt geen Go
+op de show-VPS. Op de bevestigde Ubuntu 24.04-host zijn als
 prerequisites geïnstalleerd:
 
 ```sh
@@ -196,7 +200,8 @@ Rollback van de media-infra:
 
 ## Werkelijke proef en vrijgave
 
-Zie [het meetrapport](LIVEKIT-METING-2026-11-22.md),
+Zie [de hertest na de firewallaanpassing](LIVEKIT-FIREWALL-HERTEST-2026-11-22.md),
+[het oorspronkelijke meetrapport](LIVEKIT-METING-2026-11-22.md),
 [het servercontract](program-broadcast-contract.md),
 [de spelerbediening](program-broadcast-player.md) en
 [het herhaalbare loadharnas](../scripts/load/README.md).

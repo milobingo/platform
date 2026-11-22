@@ -1,0 +1,1757 @@
+{
+  "format": "milo-forced-relay-viewer-diagnostic-v1",
+  "startedAt": "2026-11-22T16:35:40.771Z",
+  "environment": "staging",
+  "target": "milo-staging.dgwebservices.nl",
+  "fixture": {
+    "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "generation": "1e8f6b91023c44aa3330e3e04e60c79a",
+    "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+  },
+  "mode": "tls",
+  "diagnosticIcePortOverride": {
+    "advertised": 443,
+    "listener": 5349,
+    "appliedInMemoryOnly": true,
+    "provesUnchangedAppFallback": false
+  },
+  "viewerCount": 1,
+  "publisherCreated": false,
+  "sourceRoute": "existing-public-whip-source",
+  "actualOBS": false,
+  "capacityTest": false,
+  "complete": true,
+  "samples": [
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365347413,
+      "frames": 103,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.17962651738497779,
+      "audioRmsLatest": 0.009281139773014951,
+      "audioSamples": 81,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365347424,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 31840,
+          "packetsReceived": 199,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 583715,
+          "packetsReceived": 548,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 110,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [],
+      "observedAtMs": 1795365347455,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 112,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 31840,
+          "packetsReceived": 199,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 583715,
+          "packetsReceived": 548,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365348213,
+      "frames": 133,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.17962651738497779,
+      "audioRmsLatest": 0.0000021861914090859366,
+      "audioSamples": 101,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365348457,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 40160,
+          "packetsReceived": 251,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 736762,
+          "packetsReceived": 692,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 142,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365347741,
+          "sourceAtMs": 1795365347653,
+          "latencyMs": 88
+        }
+      ],
+      "observedAtMs": 1795365348460,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 142,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 40160,
+          "packetsReceived": 251,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 736762,
+          "packetsReceived": 692,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349413,
+      "frames": 158,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.02663197260632681,
+      "audioSamples": 121,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365349424,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 48320,
+          "packetsReceived": 302,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 884458,
+          "packetsReceived": 831,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 171,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365348757,
+          "sourceAtMs": 1795365348676,
+          "latencyMs": 81
+        }
+      ],
+      "observedAtMs": 1795365349464,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 171,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 48320,
+          "packetsReceived": 302,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 884458,
+          "packetsReceived": 831,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 185,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000026775264946240557,
+      "audioSamples": 142,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365350424,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 56320,
+          "packetsReceived": 352,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1034141,
+          "packetsReceived": 972,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 201,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365349774,
+          "sourceAtMs": 1795365349699,
+          "latencyMs": 75
+        }
+      ],
+      "observedAtMs": 1795365350467,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 201,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 56320,
+          "packetsReceived": 352,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1034141,
+          "packetsReceived": 972,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 214,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.000002444227905126527,
+      "audioSamples": 162,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365351457,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 64320,
+          "packetsReceived": 402,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1186618,
+          "packetsReceived": 1119,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 233,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365350774,
+          "sourceAtMs": 1795365350689,
+          "latencyMs": 85
+        }
+      ],
+      "observedAtMs": 1795365351470,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 233,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 64320,
+          "packetsReceived": 402,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1186618,
+          "packetsReceived": 1119,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 242,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000026775265677428976,
+      "audioSamples": 182,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365352474,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 72320,
+          "packetsReceived": 452,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1327584,
+          "packetsReceived": 1253,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 262,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365351791,
+          "sourceAtMs": 1795365351712,
+          "latencyMs": 79
+        }
+      ],
+      "observedAtMs": 1795365352475,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 262,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 72320,
+          "packetsReceived": 452,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1327584,
+          "packetsReceived": 1253,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 270,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000024442279709843987,
+      "audioSamples": 202,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365353474,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 80320,
+          "packetsReceived": 502,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1480143,
+          "packetsReceived": 1395,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 292,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365352824,
+          "sourceAtMs": 1795365352735,
+          "latencyMs": 89
+        }
+      ],
+      "observedAtMs": 1795365353479,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 292,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 80320,
+          "packetsReceived": 502,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1480143,
+          "packetsReceived": 1395,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 299,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000026775266874278966,
+      "audioSamples": 222,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365354441,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 88480,
+          "packetsReceived": 553,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1627835,
+          "packetsReceived": 1536,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 323,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365353824,
+          "sourceAtMs": 1795365353758,
+          "latencyMs": 66
+        }
+      ],
+      "observedAtMs": 1795365354482,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 323,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 88480,
+          "packetsReceived": 553,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1627835,
+          "packetsReceived": 1536,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 324,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.000002444228079650625,
+      "audioSamples": 242,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365355457,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 96480,
+          "packetsReceived": 603,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1776439,
+          "packetsReceived": 1677,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 353,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365354857,
+          "sourceAtMs": 1795365354781,
+          "latencyMs": 76
+        }
+      ],
+      "observedAtMs": 1795365355486,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 353,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 96480,
+          "packetsReceived": 603,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1776439,
+          "packetsReceived": 1677,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 351,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000024442279585132234,
+      "audioSamples": 262,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365356474,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 104480,
+          "packetsReceived": 653,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 1925116,
+          "packetsReceived": 1817,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 383,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365355857,
+          "sourceAtMs": 1795365355771,
+          "latencyMs": 86
+        }
+      ],
+      "observedAtMs": 1795365356490,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 383,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 104480,
+          "packetsReceived": 653,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 1925116,
+          "packetsReceived": 1817,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 380,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.000002444229987185881,
+      "audioSamples": 282,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365357474,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 112480,
+          "packetsReceived": 703,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 2070461,
+          "packetsReceived": 1956,
+          "packetsLost": 0,
+          "jitter": 0.001,
+          "framesDecoded": 413,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365356874,
+          "sourceAtMs": 1795365356794,
+          "latencyMs": 80
+        }
+      ],
+      "observedAtMs": 1795365357493,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 413,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 112480,
+          "packetsReceived": 703,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 2070461,
+          "packetsReceived": 1956,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795365343409,
+      "firstVideoAt": 1795365343668,
+      "firstAudioAt": 1795365347263,
+      "lastAudioAt": 1795365349963,
+      "frames": 406,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2227697858257401,
+      "audioRmsLatest": 0.0000024442279916437093,
+      "audioSamples": 302,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365358490,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 120480,
+          "packetsReceived": 753,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "relay",
+          "remoteCandidateType": "host",
+          "localAddress": "128.140.93.95",
+          "localPort": 30177,
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.036
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 2223114,
+          "packetsReceived": 2099,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 443,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365357874,
+          "sourceAtMs": 1795365357784,
+          "latencyMs": 90
+        }
+      ],
+      "observedAtMs": 1795365358496,
+      "timeToFirstVideoMs": 786,
+      "timeToFirstAudioMs": 4381,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 443,
+        "droppedVideoFrames": 1
+      },
+      "selectedInboundTransports": [
+        {
+          "kind": "audio",
+          "bytesReceived": 120480,
+          "packetsReceived": 753,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        },
+        {
+          "kind": "video",
+          "bytesReceived": 2223114,
+          "packetsReceived": 2099,
+          "packetsLost": 0,
+          "selectedPairState": "succeeded",
+          "localCandidateType": "relay",
+          "relayProtocol": "tls",
+          "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+          "candidateProtocol": "udp",
+          "localAddress": "128.140.93.95",
+          "remoteAddress": "128.140.93.95",
+          "remotePort": 7882
+        }
+      ]
+    }
+  ],
+  "waitingSample": {
+    "connected": true,
+    "connectedAt": 1795365343409,
+    "firstVideoAt": 1795365343668,
+    "firstAudioAt": 1795365347263,
+    "lastAudioAt": 1795365347413,
+    "frames": 103,
+    "reconnects": 0,
+    "disconnects": 0,
+    "stalls": 0,
+    "audioRmsMax": 0.17962651738497779,
+    "audioRmsLatest": 0.009281139773014951,
+    "audioSamples": 81,
+    "invalidTimecodes": 0,
+    "lastFrameAt": 1795365347424,
+    "error": null,
+    "tracks": [
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "relay",
+        "remoteCandidateType": "host",
+        "localAddress": "128.140.93.95",
+        "localPort": 30177,
+        "remoteAddress": "128.140.93.95",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.036
+      },
+      {
+        "kind": "audio",
+        "codec": "audio/opus",
+        "bytesReceived": 31840,
+        "packetsReceived": 199,
+        "packetsLost": 0,
+        "jitter": 0,
+        "totalAudioEnergy": 0
+      },
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "relay",
+        "remoteCandidateType": "host",
+        "localAddress": "128.140.93.95",
+        "localPort": 30177,
+        "remoteAddress": "128.140.93.95",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.036
+      },
+      {
+        "kind": "video",
+        "codec": "video/H264",
+        "bytesReceived": 583715,
+        "packetsReceived": 548,
+        "packetsLost": 0,
+        "jitter": 0,
+        "framesDecoded": 110,
+        "framesDropped": 0,
+        "freezeCount": 0,
+        "totalFreezesDuration": 0,
+        "frameWidth": 1280,
+        "frameHeight": 720
+      }
+    ],
+    "timecodeSamples": [],
+    "observedAtMs": 1795365347444,
+    "timeToFirstVideoMs": 786,
+    "timeToFirstAudioMs": 4381,
+    "audioContextState": "running",
+    "audioPlayoutElements": [
+      {
+        "paused": false,
+        "readyState": 4,
+        "volume": 0,
+        "muted": false
+      }
+    ],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 111,
+      "droppedVideoFrames": 1
+    }
+  },
+  "receiverDiagnostics": [
+    {
+      "state": "connected",
+      "receivers": [
+        {
+          "kind": "audio",
+          "enabled": true,
+          "muted": false,
+          "readyState": "live",
+          "settings": {
+            "channelCount": 2,
+            "deviceId": "cd615fa4-e290-4041-b1f4-8863ca250897",
+            "latency": 0.01,
+            "sampleRate": 48000,
+            "sampleSize": 16
+          }
+        },
+        {
+          "kind": "audio",
+          "enabled": true,
+          "muted": true,
+          "readyState": "live",
+          "settings": {
+            "deviceId": "a8f89aa0-fc82-43c5-b298-240a7ebdcf79",
+            "sampleSize": 16
+          }
+        },
+        {
+          "kind": "audio",
+          "enabled": true,
+          "muted": true,
+          "readyState": "live",
+          "settings": {
+            "deviceId": "37a0a679-b7eb-43bf-aa08-c05b4ec72a49",
+            "sampleSize": 16
+          }
+        },
+        {
+          "kind": "video",
+          "enabled": true,
+          "muted": false,
+          "readyState": "live",
+          "settings": {
+            "aspectRatio": 1.7777777777777777,
+            "deviceId": "3f55e84b-1033-4147-9329-072d564b7d85",
+            "frameRate": 30,
+            "height": 720,
+            "resizeMode": "none",
+            "width": 1280
+          }
+        },
+        {
+          "kind": "video",
+          "enabled": true,
+          "muted": true,
+          "readyState": "live",
+          "settings": {
+            "deviceId": "381cb340-14b3-4ca1-b3b1-9e4247fcbedf",
+            "resizeMode": "none"
+          }
+        },
+        {
+          "kind": "video",
+          "enabled": true,
+          "muted": true,
+          "readyState": "live",
+          "settings": {
+            "deviceId": "6f3ad4f2-14e3-4260-b19a-0704199b312a",
+            "resizeMode": "none"
+          }
+        }
+      ],
+      "sdpCodecs": [
+        "a=rtpmap:111 opus/48000/2",
+        "a=fmtp:111 minptime=10;useinbandfec=1",
+        "a=rtpmap:63 red/48000/2",
+        "a=fmtp:63 111/111",
+        "a=rtpmap:0 PCMU/8000",
+        "a=rtpmap:8 PCMA/8000",
+        "a=rtpmap:111 opus/48000/2",
+        "a=fmtp:111 minptime=10;useinbandfec=1",
+        "a=rtpmap:63 red/48000/2",
+        "a=fmtp:63 111/111",
+        "a=rtpmap:0 PCMU/8000",
+        "a=rtpmap:8 PCMA/8000",
+        "a=rtpmap:111 opus/48000/2",
+        "a=fmtp:111 minptime=10;useinbandfec=1",
+        "a=rtpmap:63 red/48000/2",
+        "a=fmtp:63 111/111",
+        "a=rtpmap:0 PCMU/8000",
+        "a=rtpmap:8 PCMA/8000",
+        "a=rtpmap:96 VP8/90000",
+        "a=rtpmap:97 rtx/90000",
+        "a=fmtp:97 apt=96",
+        "a=rtpmap:98 VP9/90000",
+        "a=fmtp:98 profile-id=0",
+        "a=rtpmap:99 rtx/90000",
+        "a=fmtp:99 apt=98",
+        "a=rtpmap:35 VP9/90000",
+        "a=fmtp:35 profile-id=1",
+        "a=rtpmap:36 rtx/90000",
+        "a=fmtp:36 apt=35",
+        "a=rtpmap:108 H264/90000",
+        "a=fmtp:108 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f",
+        "a=rtpmap:109 rtx/90000",
+        "a=fmtp:109 apt=108",
+        "a=rtpmap:114 H264/90000",
+        "a=fmtp:114 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f",
+        "a=rtpmap:115 rtx/90000",
+        "a=fmtp:115 apt=114",
+        "a=rtpmap:45 AV1/90000",
+        "a=fmtp:45 level-idx=5;profile=0;tier=0",
+        "a=rtpmap:46 rtx/90000",
+        "a=fmtp:46 apt=45",
+        "a=rtpmap:96 VP8/90000",
+        "a=rtpmap:98 VP9/90000",
+        "a=fmtp:98 profile-id=0",
+        "a=rtpmap:35 VP9/90000",
+        "a=fmtp:35 profile-id=1",
+        "a=rtpmap:108 H264/90000",
+        "a=fmtp:108 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f",
+        "a=rtpmap:114 H264/90000",
+        "a=fmtp:114 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f",
+        "a=rtpmap:45 AV1/90000",
+        "a=fmtp:45 level-idx=5;profile=0;tier=0",
+        "a=rtpmap:115 rtx/90000",
+        "a=fmtp:115 apt=114",
+        "a=rtpmap:109 rtx/90000",
+        "a=fmtp:109 apt=108",
+        "a=rtpmap:36 rtx/90000",
+        "a=fmtp:36 apt=35",
+        "a=rtpmap:99 rtx/90000",
+        "a=fmtp:99 apt=98",
+        "a=rtpmap:97 rtx/90000",
+        "a=fmtp:97 apt=96",
+        "a=rtpmap:46 rtx/90000",
+        "a=fmtp:46 apt=45",
+        "a=rtpmap:96 VP8/90000",
+        "a=rtpmap:98 VP9/90000",
+        "a=fmtp:98 profile-id=0",
+        "a=rtpmap:35 VP9/90000",
+        "a=fmtp:35 profile-id=1",
+        "a=rtpmap:108 H264/90000",
+        "a=fmtp:108 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f",
+        "a=rtpmap:114 H264/90000",
+        "a=fmtp:114 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f",
+        "a=rtpmap:45 AV1/90000",
+        "a=fmtp:45 level-idx=5;profile=0;tier=0",
+        "a=rtpmap:99 rtx/90000",
+        "a=fmtp:99 apt=98",
+        "a=rtpmap:97 rtx/90000",
+        "a=fmtp:97 apt=96",
+        "a=rtpmap:46 rtx/90000",
+        "a=fmtp:46 apt=45",
+        "a=rtpmap:115 rtx/90000",
+        "a=fmtp:115 apt=114",
+        "a=rtpmap:109 rtx/90000",
+        "a=fmtp:109 apt=108",
+        "a=rtpmap:36 rtx/90000",
+        "a=fmtp:36 apt=35"
+      ]
+    }
+  ],
+  "waitingTransports": [
+    {
+      "kind": "audio",
+      "bytesReceived": 31840,
+      "packetsReceived": 199,
+      "packetsLost": 0,
+      "selectedPairState": "succeeded",
+      "localCandidateType": "relay",
+      "relayProtocol": "tls",
+      "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+      "candidateProtocol": "udp",
+      "localAddress": "128.140.93.95",
+      "remoteAddress": "128.140.93.95",
+      "remotePort": 7882
+    },
+    {
+      "kind": "video",
+      "bytesReceived": 583715,
+      "packetsReceived": 548,
+      "packetsLost": 0,
+      "selectedPairState": "succeeded",
+      "localCandidateType": "relay",
+      "relayProtocol": "tls",
+      "url": "turns:milo-staging.dgwebservices.nl:5349?transport=tcp",
+      "candidateProtocol": "udp",
+      "localAddress": "128.140.93.95",
+      "remoteAddress": "128.140.93.95",
+      "remotePort": 7882
+    }
+  ],
+  "iceConfigurationAudit": [
+    {
+      "iceTransportPolicy": "relay",
+      "servers": []
+    },
+    {
+      "iceTransportPolicy": "relay",
+      "servers": [
+        {
+          "urls": [
+            "turns:milo-staging.dgwebservices.nl:5349?transport=tcp"
+          ],
+          "authenticated": true
+        }
+      ]
+    }
+  ],
+  "turnBurden": {
+    "measured": true,
+    "samples": 2,
+    "counterResetDetected": false,
+    "scope": "Alleen eigen eth0 TURN-listeners UDP3480/TCP5349; hostbreed, niet per room.",
+    "includesProtocolOverhead": true,
+    "counters": {
+      "udp_in": {
+        "bytes": 0,
+        "packets": 0
+      },
+      "udp_out": {
+        "bytes": 0,
+        "packets": 0
+      },
+      "tls_in": {
+        "bytes": 91908,
+        "packets": 1472
+      },
+      "tls_out": {
+        "bytes": 2825101,
+        "packets": 2747
+      }
+    },
+    "combinedIngressAndEgressMbps": {
+      "samples": 1,
+      "p50": 1.2402908317831518,
+      "p95": 1.2402908317831518,
+      "max": 1.2402908317831518
+    },
+    "reason": null
+  },
+  "webrtcLatencyMs": {
+    "samples": 11,
+    "p50": 81,
+    "p95": 90,
+    "max": 90
+  },
+  "connectedSeconds": 11.041,
+  "onlyPermittedAuthenticatedTurn": true,
+  "finishedAt": "2026-11-22T16:36:00.430Z"
+}

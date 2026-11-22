@@ -1,0 +1,5197 @@
+{
+  "format": "milo-public-single-hls-browser-v1",
+  "observedAt": "2026-11-22T18:58:32.408Z",
+  "source": "scripts/load/browser-probe.mjs",
+  "sourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "route": "HTTPS own staging app signed HLS route, exact current browser module",
+  "capacityTest": false,
+  "executed": true,
+  "scope": "One external real Chromium HLS decoder only; no TV/Cast/AirPlay/OBS/hardware or multi-viewer-capacity claim.",
+  "requestedHoldSeconds": 60,
+  "baselineReportSha256": "441c585afaf8b543bfbd72bd2a6fba4ccb7807ebd0b7b91f85075413dfcbb82d",
+  "fixtureBefore": {
+    "atMs": 1795373912283,
+    "sourceSid": "PA_F6BJqmxLXJYZ",
+    "sourceTrackSids": [
+      "TR_AMKoMVN6x4aY5E",
+      "TR_VCF35NQE3jrzUa"
+    ],
+    "loadViewers": 0
+  },
+  "fixtureManifest": {
+    "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "generation": "e86e7f15c1d73c5f5e56f6e3a18cd778",
+    "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+  },
+  "ready": true,
+  "completed": false,
+  "network": {
+    "playlistResponses": 62,
+    "segmentResponses": 61,
+    "httpErrors": [],
+    "blockedExternalRequests": 0
+  },
+  "samples": [
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373913693,
+      "frames": 14,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.07947160365294219,
+      "audioSamples": 21,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373913681,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [],
+      "observedAtMs": 1795373913713,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 18,
+        "droppedVideoFrames": 0
+      },
+      "hlsPlayback": {
+        "currentTime": 4.521234,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 5.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 5.081414
+          }
+        ],
+        "forwardBufferSeconds": 0.5454319999999999,
+        "latencySeconds": 1.21215682765418,
+        "targetLatencySeconds": 1,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 4.081435827654181,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 0,
+        "retained": 0,
+        "limit": 32,
+        "events": []
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 4.521234
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373914543,
+      "frames": 35,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002522786811326588,
+      "audioSamples": 41,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373914698,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373914462,
+          "sourceAtMs": 1795373911081,
+          "latencyMs": 3381
+        }
+      ],
+      "observedAtMs": 1795373914716,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 44,
+        "droppedVideoFrames": 5
+      },
+      "hlsPlayback": {
+        "currentTime": 5.330732,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 6.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 6.081435827654181
+          }
+        ],
+        "forwardBufferSeconds": 0.7359339999999994,
+        "latencySeconds": 1.1965268775303413,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 4.523893877530341,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 5.330877
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373915693,
+      "frames": 61,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.03929107759655497,
+      "audioSamples": 61,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373915698,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373915465,
+          "sourceAtMs": 1795373912038,
+          "latencyMs": 3427
+        }
+      ],
+      "observedAtMs": 1795373915721,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 73,
+        "droppedVideoFrames": 8
+      },
+      "hlsPlayback": {
+        "currentTime": 6.33239,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 7.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 7.079893877530341
+          }
+        ],
+        "forwardBufferSeconds": 0.7342759999999995,
+        "latencySeconds": 1.187819927406502,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 5.526351927406502,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 6.33239
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 88,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000025331134092663162,
+      "audioSamples": 81,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373916698,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373916465,
+          "sourceAtMs": 1795373913028,
+          "latencyMs": 3437
+        }
+      ],
+      "observedAtMs": 1795373916731,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 103,
+        "droppedVideoFrames": 11
+      },
+      "hlsPlayback": {
+        "currentTime": 7.342458,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 8.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 8.078351927406501
+          }
+        ],
+        "forwardBufferSeconds": 0.724208,
+        "latencySeconds": 1.1853189772826616,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 6.53280997728266,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 7.342458
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 116,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000025314107563029495,
+      "audioSamples": 101,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373917731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373917465,
+          "sourceAtMs": 1795373914018,
+          "latencyMs": 3447
+        }
+      ],
+      "observedAtMs": 1795373917735,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 134,
+        "droppedVideoFrames": 14
+      },
+      "hlsPlayback": {
+        "currentTime": 8.351369,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 9.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 9.076809977282661
+          }
+        ],
+        "forwardBufferSeconds": 0.7152969999999996,
+        "latencySeconds": 1.1840590271588223,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 7.532268027158823,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 8.351449
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 143,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000025343261149570406,
+      "audioSamples": 121,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373918731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373918465,
+          "sourceAtMs": 1795373915041,
+          "latencyMs": 3424
+        }
+      ],
+      "observedAtMs": 1795373918738,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 164,
+        "droppedVideoFrames": 17
+      },
+      "hlsPlayback": {
+        "currentTime": 9.350984,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 10.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 10.075268027158822
+          }
+        ],
+        "forwardBufferSeconds": 0.7156819999999993,
+        "latencySeconds": 1.1843390770349824,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 8.540726077034982,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 9.350984
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 170,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000025363417968422957,
+      "audioSamples": 141,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373919731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373919465,
+          "sourceAtMs": 1795373916031,
+          "latencyMs": 3434
+        }
+      ],
+      "observedAtMs": 1795373919741,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 194,
+        "droppedVideoFrames": 20
+      },
+      "hlsPlayback": {
+        "currentTime": 10.352345,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 11.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 11.073726077034982
+          }
+        ],
+        "forwardBufferSeconds": 0.714321,
+        "latencySeconds": 1.1834761269111418,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 9.539184126911142,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 10.352345
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 197,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000022669333624368123,
+      "audioSamples": 162,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373920731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373920465,
+          "sourceAtMs": 1795373917021,
+          "latencyMs": 3444
+        }
+      ],
+      "observedAtMs": 1795373920744,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 224,
+        "droppedVideoFrames": 23
+      },
+      "hlsPlayback": {
+        "currentTime": 11.360328,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 12.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 12.072184126911141
+          }
+        ],
+        "forwardBufferSeconds": 0.7063379999999988,
+        "latencySeconds": 1.1835241767873033,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 10.539642176787302,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 11.360382
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 224,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002278096115482439,
+      "audioSamples": 182,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373921731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373921465,
+          "sourceAtMs": 1795373918044,
+          "latencyMs": 3421
+        }
+      ],
+      "observedAtMs": 1795373921747,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 254,
+        "droppedVideoFrames": 26
+      },
+      "hlsPlayback": {
+        "currentTime": 12.360871,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 13.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 13.070642176787302
+          }
+        ],
+        "forwardBufferSeconds": 0.7057950000000002,
+        "latencySeconds": 1.188572226663462,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 11.544100226663462,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 12.360871
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 251,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.0000022588054631684832,
+      "audioSamples": 202,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373922731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373922465,
+          "sourceAtMs": 1795373919034,
+          "latencyMs": 3431
+        }
+      ],
+      "observedAtMs": 1795373922750,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 284,
+        "droppedVideoFrames": 29
+      },
+      "hlsPlayback": {
+        "currentTime": 13.362231,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 14.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 14.069100226663462
+          }
+        ],
+        "forwardBufferSeconds": 0.7044350000000001,
+        "latencySeconds": 1.1849412765396217,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 12.547558276539622,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 13.362231
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 278,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002266520941529978,
+      "audioSamples": 222,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373923731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373923498,
+          "sourceAtMs": 1795373920057,
+          "latencyMs": 3441
+        }
+      ],
+      "observedAtMs": 1795373923753,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 314,
+        "droppedVideoFrames": 32
+      },
+      "hlsPlayback": {
+        "currentTime": 14.360689,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 15.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 15.089215
+          }
+        ],
+        "forwardBufferSeconds": 0.705976999999999,
+        "latencySeconds": 1.2032092810640638,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 13.566236281064064,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 14.360689
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 305,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002263460439529215,
+      "audioSamples": 242,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373924731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373924498,
+          "sourceAtMs": 1795373921080,
+          "latencyMs": 3418
+        }
+      ],
+      "observedAtMs": 1795373924755,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 344,
+        "droppedVideoFrames": 35
+      },
+      "hlsPlayback": {
+        "currentTime": 15.369522,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 16.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 16.089236281064064
+          }
+        ],
+        "forwardBufferSeconds": 0.6971440000000015,
+        "latencySeconds": 1.1982213309402248,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 14.569694330940223,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 15.369563
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 332,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002265793704158454,
+      "audioSamples": 262,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373925731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373925514,
+          "sourceAtMs": 1795373922070,
+          "latencyMs": 3444
+        }
+      ],
+      "observedAtMs": 1795373925758,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 374,
+        "droppedVideoFrames": 38
+      },
+      "hlsPlayback": {
+        "currentTime": 16.372118,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 17.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 17.087694330940224
+          }
+        ],
+        "forwardBufferSeconds": 0.694548000000001,
+        "latencySeconds": 1.1986943808163844,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 15.572152380816387,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 16.372118
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 359,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.00000226560276533547,
+      "audioSamples": 282,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373926731,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373926531,
+          "sourceAtMs": 1795373923093,
+          "latencyMs": 3438
+        }
+      ],
+      "observedAtMs": 1795373926760,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 404,
+        "droppedVideoFrames": 41
+      },
+      "hlsPlayback": {
+        "currentTime": 17.370576,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 18.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 18.086152380816387
+          }
+        ],
+        "forwardBufferSeconds": 0.6960900000000017,
+        "latencySeconds": 1.2017414306925467,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 16.573610430692547,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 17.370576
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373916193,
+      "frames": 387,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21765014500278412,
+      "audioRmsLatest": 0.000002266605029717686,
+      "audioSamples": 302,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373927770,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373927531,
+          "sourceAtMs": 1795373924083,
+          "latencyMs": 3448
+        }
+      ],
+      "observedAtMs": 1795373927770,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 435,
+        "droppedVideoFrames": 44
+      },
+      "hlsPlayback": {
+        "currentTime": 18.378062,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 19.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 19.084610430692546
+          }
+        ],
+        "forwardBufferSeconds": 0.6886040000000015,
+        "latencySeconds": 1.1921114805687054,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 17.578068480568707,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 18.378148
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373928743,
+      "frames": 414,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21768265636923548,
+      "audioRmsLatest": 0.010414172878559072,
+      "audioSamples": 322,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373928764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373928531,
+          "sourceAtMs": 1795373925106,
+          "latencyMs": 3425
+        }
+      ],
+      "observedAtMs": 1795373928774,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 465,
+        "droppedVideoFrames": 47
+      },
+      "hlsPlayback": {
+        "currentTime": 19.388627,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 20.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 20.083068480568706
+          }
+        ],
+        "forwardBufferSeconds": 0.6780390000000018,
+        "latencySeconds": 1.1951595304448652,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 18.582526530444866,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 19.388663
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373929543,
+      "frames": 441,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21768265636923548,
+      "audioRmsLatest": 0.0000022707795004530556,
+      "audioSamples": 342,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373929764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373929531,
+          "sourceAtMs": 1795373926096,
+          "latencyMs": 3435
+        }
+      ],
+      "observedAtMs": 1795373929777,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 495,
+        "droppedVideoFrames": 50
+      },
+      "hlsPlayback": {
+        "currentTime": 20.392073,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 21.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 21.081526530444865
+          }
+        ],
+        "forwardBufferSeconds": 0.6745930000000016,
+        "latencySeconds": 1.198206580321024,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 19.584984580321024,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 20.392073
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373930743,
+      "frames": 468,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.1274426434781316,
+      "audioSamples": 362,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373930764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373930531,
+          "sourceAtMs": 1795373927086,
+          "latencyMs": 3445
+        }
+      ],
+      "observedAtMs": 1795373930781,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 525,
+        "droppedVideoFrames": 53
+      },
+      "hlsPlayback": {
+        "currentTime": 21.393433,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 22.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 22.079984580321025
+          }
+        ],
+        "forwardBufferSeconds": 0.6732329999999997,
+        "latencySeconds": 1.1888426301971826,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 20.586442630197183,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 21.393433
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 495,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.000002259598721446737,
+      "audioSamples": 382,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373931764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373931547,
+          "sourceAtMs": 1795373928109,
+          "latencyMs": 3438
+        }
+      ],
+      "observedAtMs": 1795373931784,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 555,
+        "droppedVideoFrames": 56
+      },
+      "hlsPlayback": {
+        "currentTime": 22.397856,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 23.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 23.078442630197184
+          }
+        ],
+        "forwardBufferSeconds": 0.6688100000000006,
+        "latencySeconds": 1.1936236800733475,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 21.588900680073348,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 22.397897
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 522,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000022684522848350124,
+      "audioSamples": 402,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373932764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373932564,
+          "sourceAtMs": 1795373929132,
+          "latencyMs": 3432
+        }
+      ],
+      "observedAtMs": 1795373932787,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 585,
+        "droppedVideoFrames": 59
+      },
+      "hlsPlayback": {
+        "currentTime": 23.401959,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 24.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 24.076900680073347
+          }
+        ],
+        "forwardBufferSeconds": 0.6647069999999999,
+        "latencySeconds": 1.1848397299495055,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 22.58835872994951,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 23.401959
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 549,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000022678080468071033,
+      "audioSamples": 422,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373933764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373933564,
+          "sourceAtMs": 1795373930122,
+          "latencyMs": 3442
+        }
+      ],
+      "observedAtMs": 1795373933790,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 615,
+        "droppedVideoFrames": 62
+      },
+      "hlsPlayback": {
+        "currentTime": 24.40332,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 25.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 25.075358729949507
+          }
+        ],
+        "forwardBufferSeconds": 0.6633460000000007,
+        "latencySeconds": 1.1813887798256637,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 23.587816779825665,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 24.40332
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 576,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000022721841137799406,
+      "audioSamples": 442,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373934764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373934564,
+          "sourceAtMs": 1795373931145,
+          "latencyMs": 3419
+        }
+      ],
+      "observedAtMs": 1795373934793,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 645,
+        "droppedVideoFrames": 65
+      },
+      "hlsPlayback": {
+        "currentTime": 25.410487,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 26.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 26.073816779825666
+          }
+        ],
+        "forwardBufferSeconds": 0.6561790000000016,
+        "latencySeconds": 1.1851568297018247,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 24.592274829701825,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 25.410529
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 603,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025389195698932912,
+      "audioSamples": 463,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373935764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373935564,
+          "sourceAtMs": 1795373932135,
+          "latencyMs": 3429
+        }
+      ],
+      "observedAtMs": 1795373935796,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 675,
+        "droppedVideoFrames": 68
+      },
+      "hlsPlayback": {
+        "currentTime": 26.411712,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 27.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 27.072274829701826
+          }
+        ],
+        "forwardBufferSeconds": 0.654954,
+        "latencySeconds": 1.1882048795779845,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 25.594732879577986,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 26.411754
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 631,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025305833053151363,
+      "audioSamples": 483,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373936797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373936564,
+          "sourceAtMs": 1795373933125,
+          "latencyMs": 3439
+        }
+      ],
+      "observedAtMs": 1795373936799,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 706,
+        "droppedVideoFrames": 71
+      },
+      "hlsPlayback": {
+        "currentTime": 27.413206,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 28.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 28.070732879577985
+          }
+        ],
+        "forwardBufferSeconds": 0.6534600000000026,
+        "latencySeconds": 1.182573929454147,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 26.596190929454146,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 27.413206
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 658,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025338552238336624,
+      "audioSamples": 503,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373937797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373937564,
+          "sourceAtMs": 1795373934115,
+          "latencyMs": 3449
+        }
+      ],
+      "observedAtMs": 1795373937803,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 736,
+        "droppedVideoFrames": 74
+      },
+      "hlsPlayback": {
+        "currentTime": 28.411664,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 29.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 29.069190929454145
+          }
+        ],
+        "forwardBufferSeconds": 0.6550020000000032,
+        "latencySeconds": 1.1806219793303079,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 27.595648979330306,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 28.411664
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 684,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025256617578217565,
+      "audioSamples": 523,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373938764,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373938564,
+          "sourceAtMs": 1795373935138,
+          "latencyMs": 3426
+        }
+      ],
+      "observedAtMs": 1795373938807,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 766,
+        "droppedVideoFrames": 77
+      },
+      "hlsPlayback": {
+        "currentTime": 29.421733,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 30.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 30.089305
+          }
+        ],
+        "forwardBufferSeconds": 0.6449330000000018,
+        "latencySeconds": 1.207888983854751,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 28.62332698385475,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 29.421733
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 712,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025335530062631915,
+      "audioSamples": 543,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373939797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373939564,
+          "sourceAtMs": 1795373936128,
+          "latencyMs": 3436
+        }
+      ],
+      "observedAtMs": 1795373939809,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 796,
+        "droppedVideoFrames": 80
+      },
+      "hlsPlayback": {
+        "currentTime": 30.423093,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 31.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 31.08932698385475
+          }
+        ],
+        "forwardBufferSeconds": 0.643573,
+        "latencySeconds": 1.195243033730911,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 29.62078503373091,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 30.423093
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 739,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.000002531641739722946,
+      "audioSamples": 563,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373940797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373940564,
+          "sourceAtMs": 1795373937118,
+          "latencyMs": 3446
+        }
+      ],
+      "observedAtMs": 1795373940813,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 826,
+        "droppedVideoFrames": 83
+      },
+      "hlsPlayback": {
+        "currentTime": 31.421551,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 32.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 32.08778503373091
+          }
+        ],
+        "forwardBufferSeconds": 0.645114999999997,
+        "latencySeconds": 1.2043060836070651,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 30.627243083607063,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 31.421551
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 766,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000025400151760274356,
+      "audioSamples": 583,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373941797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373941564,
+          "sourceAtMs": 1795373938141,
+          "latencyMs": 3423
+        }
+      ],
+      "observedAtMs": 1795373941818,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 856,
+        "droppedVideoFrames": 86
+      },
+      "hlsPlayback": {
+        "currentTime": 32.431619,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 33.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 33.086243083607066
+          }
+        ],
+        "forwardBufferSeconds": 0.6350470000000001,
+        "latencySeconds": 1.1943411334832277,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 31.628701133483226,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 32.431619
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373931643,
+      "frames": 793,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.000002265235024510406,
+      "audioSamples": 603,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373942797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373942564,
+          "sourceAtMs": 1795373939131,
+          "latencyMs": 3433
+        }
+      ],
+      "observedAtMs": 1795373942820,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 886,
+        "droppedVideoFrames": 89
+      },
+      "hlsPlayback": {
+        "currentTime": 33.441687,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 34.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 34.08470113348323
+          }
+        ],
+        "forwardBufferSeconds": 0.6249789999999962,
+        "latencySeconds": 1.1957921833593943,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 32.631159183359394,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 33.441687
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373943793,
+      "frames": 820,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0472667312037536,
+      "audioSamples": 623,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373943797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373943564,
+          "sourceAtMs": 1795373940121,
+          "latencyMs": 3443
+        }
+      ],
+      "observedAtMs": 1795373943822,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 916,
+        "droppedVideoFrames": 92
+      },
+      "hlsPlayback": {
+        "currentTime": 34.443048,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 35.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 35.08315918335939
+          }
+        ],
+        "forwardBufferSeconds": 0.6236180000000004,
+        "latencySeconds": 1.185229233235546,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 33.63061723323555,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 34.443048
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373944493,
+      "frames": 848,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.2298993793078115,
+      "audioRmsLatest": 0.0000022638245860596865,
+      "audioSamples": 643,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373944797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373944597,
+          "sourceAtMs": 1795373941177,
+          "latencyMs": 3420
+        }
+      ],
+      "observedAtMs": 1795373944825,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 946,
+        "droppedVideoFrames": 94
+      },
+      "hlsPlayback": {
+        "currentTime": 35.451915,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 36.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 36.08161723323555
+          }
+        ],
+        "forwardBufferSeconds": 0.6147509999999983,
+        "latencySeconds": 1.1892772831117142,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 34.63507528311171,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 35.451951
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373945793,
+      "frames": 876,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.029001142977297376,
+      "audioSamples": 663,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373945813,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373945613,
+          "sourceAtMs": 1795373942167,
+          "latencyMs": 3446
+        }
+      ],
+      "observedAtMs": 1795373945828,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 976,
+        "droppedVideoFrames": 96
+      },
+      "hlsPlayback": {
+        "currentTime": 36.451574,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 37.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 37.08007528311171
+          }
+        ],
+        "forwardBufferSeconds": 0.6150919999999971,
+        "latencySeconds": 1.183549332987866,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 35.63353333298787,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 36.451574
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946793,
+      "frames": 904,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.021696949496129984,
+      "audioSamples": 683,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373946830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373946630,
+          "sourceAtMs": 1795373943190,
+          "latencyMs": 3440
+        }
+      ],
+      "observedAtMs": 1795373946832,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1007,
+        "droppedVideoFrames": 99
+      },
+      "hlsPlayback": {
+        "currentTime": 37.452934,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 38.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 38.07853333298787
+          }
+        ],
+        "forwardBufferSeconds": 0.6137319999999988,
+        "latencySeconds": 1.1816943828640305,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 36.63499138286403,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 37.452934
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 931,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002265258725082286,
+      "audioSamples": 703,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373947830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373947630,
+          "sourceAtMs": 1795373944213,
+          "latencyMs": 3417
+        }
+      ],
+      "observedAtMs": 1795373947834,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1037,
+        "droppedVideoFrames": 102
+      },
+      "hlsPlayback": {
+        "currentTime": 38.460647,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 39.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 39.07699138286403
+          }
+        ],
+        "forwardBufferSeconds": 0.6060189999999963,
+        "latencySeconds": 1.1867414327401917,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 37.63944943274019,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 38.460685
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 958,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022765127543753686,
+      "audioSamples": 723,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373948830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373948647,
+          "sourceAtMs": 1795373945203,
+          "latencyMs": 3444
+        }
+      ],
+      "observedAtMs": 1795373948838,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1067,
+        "droppedVideoFrames": 105
+      },
+      "hlsPlayback": {
+        "currentTime": 39.46146,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 40.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 40.07544943274019
+          }
+        ],
+        "forwardBufferSeconds": 0.6052059999999955,
+        "latencySeconds": 1.1786694826163497,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 38.63990748261635,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 39.46146
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 984,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002535699775616725,
+      "audioSamples": 743,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373949797,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373949664,
+          "sourceAtMs": 1795373946259,
+          "latencyMs": 3405
+        }
+      ],
+      "observedAtMs": 1795373949841,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1099,
+        "droppedVideoFrames": 109
+      },
+      "hlsPlayback": {
+        "currentTime": 40.454113,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 41.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 41.07390748261635
+          }
+        ],
+        "forwardBufferSeconds": 0.6125529999999983,
+        "latencySeconds": 1.186156532492511,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 39.64036553249251,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 40.454113
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1011,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002537352789857202,
+      "audioSamples": 763,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373950830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373950697,
+          "sourceAtMs": 1795373947249,
+          "latencyMs": 3448
+        }
+      ],
+      "observedAtMs": 1795373950843,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1128,
+        "droppedVideoFrames": 112
+      },
+      "hlsPlayback": {
+        "currentTime": 41.452572,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 42.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 42.07236553249251
+          }
+        ],
+        "forwardBufferSeconds": 0.6140939999999944,
+        "latencySeconds": 1.1863015823686638,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 40.64282358236867,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 41.452572
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1039,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000025319437172163936,
+      "audioSamples": 784,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373951830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373951697,
+          "sourceAtMs": 1795373948272,
+          "latencyMs": 3425
+        }
+      ],
+      "observedAtMs": 1795373951846,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1158,
+        "droppedVideoFrames": 114
+      },
+      "hlsPlayback": {
+        "currentTime": 42.461872,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 43.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 43.07082358236867
+          }
+        ],
+        "forwardBufferSeconds": 0.6047939999999983,
+        "latencySeconds": 1.1873496322448318,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 41.64528163224483,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 42.461901
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1066,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.00000227292371838269,
+      "audioSamples": 804,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373952830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373952697,
+          "sourceAtMs": 1795373949262,
+          "latencyMs": 3435
+        }
+      ],
+      "observedAtMs": 1795373952850,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1188,
+        "droppedVideoFrames": 117
+      },
+      "hlsPlayback": {
+        "currentTime": 43.464,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 44.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 44.06928163224483
+          }
+        ],
+        "forwardBufferSeconds": 0.6026659999999993,
+        "latencySeconds": 1.1826216821209812,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 42.644739682120985,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 43.464
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1093,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002536589576533163,
+      "audioSamples": 824,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373953830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373953713,
+          "sourceAtMs": 1795373950252,
+          "latencyMs": 3461
+        }
+      ],
+      "observedAtMs": 1795373953853,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1218,
+        "droppedVideoFrames": 120
+      },
+      "hlsPlayback": {
+        "currentTime": 44.462458,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 45.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 45.089396
+          }
+        ],
+        "forwardBufferSeconds": 0.6042079999999999,
+        "latencySeconds": 1.2069866866454362,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 43.671417686645434,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 44.462458
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1120,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002279457319722436,
+      "audioSamples": 844,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373954830,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373954730,
+          "sourceAtMs": 1795373951308,
+          "latencyMs": 3422
+        }
+      ],
+      "observedAtMs": 1795373954857,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1248,
+        "droppedVideoFrames": 123
+      },
+      "hlsPlayback": {
+        "currentTime": 45.471962,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 46.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 46.08941768664543
+          }
+        ],
+        "forwardBufferSeconds": 0.5947040000000001,
+        "latencySeconds": 1.1986837365215948,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 44.6718757365216,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 45.471997
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1147,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002536357145822942,
+      "audioSamples": 864,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373955846,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373955730,
+          "sourceAtMs": 1795373952298,
+          "latencyMs": 3432
+        }
+      ],
+      "observedAtMs": 1795373955860,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1278,
+        "droppedVideoFrames": 126
+      },
+      "hlsPlayback": {
+        "currentTime": 46.473887,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 47.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 47.087875736521596
+          }
+        ],
+        "forwardBufferSeconds": 0.5927790000000002,
+        "latencySeconds": 1.2013747863977642,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 45.67533378639776,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 46.473887
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1174,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002269263758620024,
+      "audioSamples": 884,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373956846,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373956730,
+          "sourceAtMs": 1795373953288,
+          "latencyMs": 3442
+        }
+      ],
+      "observedAtMs": 1795373956862,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1308,
+        "droppedVideoFrames": 129
+      },
+      "hlsPlayback": {
+        "currentTime": 47.472345,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 48.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 48.08633378639776
+          }
+        ],
+        "forwardBufferSeconds": 0.5943210000000008,
+        "latencySeconds": 1.194033836273917,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 46.67179183627392,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 47.472345
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373946893,
+      "frames": 1202,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002460639611432214,
+      "audioSamples": 904,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373957863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373957746,
+          "sourceAtMs": 1795373954311,
+          "latencyMs": 3435
+        }
+      ],
+      "observedAtMs": 1795373957865,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1339,
+        "droppedVideoFrames": 132
+      },
+      "hlsPlayback": {
+        "currentTime": 48.480364,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 49.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 49.084791836273915
+          }
+        ],
+        "forwardBufferSeconds": 0.5863019999999963,
+        "latencySeconds": 1.1947918861500781,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 47.67524988615008,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 48.480398
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373958843,
+      "frames": 1229,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.09672916150643872,
+      "audioSamples": 924,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373958863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373958763,
+          "sourceAtMs": 1795373955334,
+          "latencyMs": 3429
+        }
+      ],
+      "observedAtMs": 1795373958868,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1369,
+        "droppedVideoFrames": 135
+      },
+      "hlsPlayback": {
+        "currentTime": 49.483773,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 50.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 50.08324988615008
+          }
+        ],
+        "forwardBufferSeconds": 0.5828929999999986,
+        "latencySeconds": 1.1988389360262417,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 48.67970793602624,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 49.483773
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373959543,
+      "frames": 1256,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022626719613114652,
+      "audioSamples": 944,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373959863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373959763,
+          "sourceAtMs": 1795373956324,
+          "latencyMs": 3439
+        }
+      ],
+      "observedAtMs": 1795373959871,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1399,
+        "droppedVideoFrames": 138
+      },
+      "hlsPlayback": {
+        "currentTime": 50.482231,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 51.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 51.08170793602624
+          }
+        ],
+        "forwardBufferSeconds": 0.5844349999999991,
+        "latencySeconds": 1.1949849859024013,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 49.678165985902396,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 50.482231
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373960843,
+      "frames": 1283,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.12680895970808684,
+      "audioSamples": 964,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373960863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373960763,
+          "sourceAtMs": 1795373957314,
+          "latencyMs": 3449
+        }
+      ],
+      "observedAtMs": 1795373960874,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1429,
+        "droppedVideoFrames": 141
+      },
+      "hlsPlayback": {
+        "currentTime": 51.489708,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 52.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 52.0801659859024
+          }
+        ],
+        "forwardBufferSeconds": 0.5769579999999976,
+        "latencySeconds": 1.1922570357785602,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 50.67962403577856,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 51.489757
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1310,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.00001160420623325542,
+      "audioSamples": 984,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373961863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373961763,
+          "sourceAtMs": 1795373958337,
+          "latencyMs": 3426
+        }
+      ],
+      "observedAtMs": 1795373961878,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1459,
+        "droppedVideoFrames": 144
+      },
+      "hlsPlayback": {
+        "currentTime": 52.49366,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 53.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 53.07862403577856
+          }
+        ],
+        "forwardBufferSeconds": 0.5730059999999995,
+        "latencySeconds": 1.192402085654713,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 51.68308208565472,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 52.49366
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1337,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000025348775271947256,
+      "audioSamples": 1004,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373962863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373962763,
+          "sourceAtMs": 1795373959327,
+          "latencyMs": 3436
+        }
+      ],
+      "observedAtMs": 1795373962882,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1489,
+        "droppedVideoFrames": 147
+      },
+      "hlsPlayback": {
+        "currentTime": 53.492118,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 54.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 54.077082085654716
+          }
+        ],
+        "forwardBufferSeconds": 0.5745480000000001,
+        "latencySeconds": 1.195449135530879,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 52.68754013553088,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 53.492118
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1364,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022602856628533066,
+      "audioSamples": 1024,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373963863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373963763,
+          "sourceAtMs": 1795373960317,
+          "latencyMs": 3446
+        }
+      ],
+      "observedAtMs": 1795373963884,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1519,
+        "droppedVideoFrames": 150
+      },
+      "hlsPlayback": {
+        "currentTime": 54.493479,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 55.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 55.07554013553088
+          }
+        ],
+        "forwardBufferSeconds": 0.5731869999999972,
+        "latencySeconds": 1.1895261854070398,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 53.688998185407044,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 54.493479
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1391,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002536171853545558,
+      "audioSamples": 1044,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373964863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373964763,
+          "sourceAtMs": 1795373961340,
+          "latencyMs": 3423
+        }
+      ],
+      "observedAtMs": 1795373964888,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1549,
+        "droppedVideoFrames": 153
+      },
+      "hlsPlayback": {
+        "currentTime": 55.503547,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 56.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 56.07399818540704
+          }
+        ],
+        "forwardBufferSeconds": 0.5631190000000004,
+        "latencySeconds": 1.1839342352831963,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 54.6874562352832,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 55.503547
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1419,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022682543293235,
+      "audioSamples": 1064,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373965863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373965763,
+          "sourceAtMs": 1795373962330,
+          "latencyMs": 3433
+        }
+      ],
+      "observedAtMs": 1795373965892,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1579,
+        "droppedVideoFrames": 155
+      },
+      "hlsPlayback": {
+        "currentTime": 56.502005,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 57.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 57.0724562352832
+          }
+        ],
+        "forwardBufferSeconds": 0.564661000000001,
+        "latencySeconds": 1.1809772851593578,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 55.68891428515936,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 56.502005
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1447,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000025303428597219997,
+      "audioSamples": 1085,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373966896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373966763,
+          "sourceAtMs": 1795373963320,
+          "latencyMs": 3443
+        }
+      ],
+      "observedAtMs": 1795373966896,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1610,
+        "droppedVideoFrames": 158
+      },
+      "hlsPlayback": {
+        "currentTime": 57.511409,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 58.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 58.07091428515936
+          }
+        ],
+        "forwardBufferSeconds": 0.5552569999999974,
+        "latencySeconds": 1.1822543350355161,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 56.692372335035515,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 57.511454
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1474,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022654724345041162,
+      "audioSamples": 1105,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373967896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373967763,
+          "sourceAtMs": 1795373964343,
+          "latencyMs": 3420
+        }
+      ],
+      "observedAtMs": 1795373967900,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1640,
+        "droppedVideoFrames": 161
+      },
+      "hlsPlayback": {
+        "currentTime": 58.513433,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 59.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 59.06937233503552
+          }
+        ],
+        "forwardBufferSeconds": 0.5532329999999988,
+        "latencySeconds": 1.1813993849116855,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 57.69483038491168,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 58.513433
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1501,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000025329635993364537,
+      "audioSamples": 1125,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373968896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373968763,
+          "sourceAtMs": 1795373965333,
+          "latencyMs": 3430
+        }
+      ],
+      "observedAtMs": 1795373968902,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1670,
+        "droppedVideoFrames": 164
+      },
+      "hlsPlayback": {
+        "currentTime": 59.511891,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 60.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 60.089487
+          }
+        ],
+        "forwardBufferSeconds": 0.5547749999999994,
+        "latencySeconds": 1.2056673894361225,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 58.71850838943612,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 59.511891
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1527,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000022689857747816145,
+      "audioSamples": 1145,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373969863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373969763,
+          "sourceAtMs": 1795373966323,
+          "latencyMs": 3440
+        }
+      ],
+      "observedAtMs": 1795373969905,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1700,
+        "droppedVideoFrames": 167
+      },
+      "hlsPlayback": {
+        "currentTime": 60.519744,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 61.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 61.08950838943612
+          }
+        ],
+        "forwardBufferSeconds": 0.546921999999995,
+        "latencySeconds": 1.2049394393122839,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 59.72196643931228,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 60.519782
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1554,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.0000025363417968422957,
+      "audioSamples": 1165,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373970863,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373970796,
+          "sourceAtMs": 1795373967379,
+          "latencyMs": 3417
+        }
+      ],
+      "observedAtMs": 1795373970909,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1730,
+        "droppedVideoFrames": 170
+      },
+      "hlsPlayback": {
+        "currentTime": 61.52332,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 62.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 62.08796643931228
+          }
+        ],
+        "forwardBufferSeconds": 0.5433459999999997,
+        "latencySeconds": 1.2000844891884412,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 60.720424489188446,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 61.52332
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1582,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002461925661558173,
+      "audioSamples": 1185,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373971896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373971796,
+          "sourceAtMs": 1795373968369,
+          "latencyMs": 3427
+        }
+      ],
+      "observedAtMs": 1795373971912,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1760,
+        "droppedVideoFrames": 173
+      },
+      "hlsPlayback": {
+        "currentTime": 62.52468,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 63.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 63.086424489188445
+          }
+        ],
+        "forwardBufferSeconds": 0.5419860000000014,
+        "latencySeconds": 1.1973645390646013,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 61.7248825390646,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 62.52468
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373961793,
+      "frames": 1609,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.000002536575447139038,
+      "audioSamples": 1205,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373972896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373972812,
+          "sourceAtMs": 1795373969359,
+          "latencyMs": 3453
+        }
+      ],
+      "observedAtMs": 1795373972914,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1790,
+        "droppedVideoFrames": 176
+      },
+      "hlsPlayback": {
+        "currentTime": 63.532468,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 64.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 64.08488253906461
+          }
+        ],
+        "forwardBufferSeconds": 0.5341979999999964,
+        "latencySeconds": 1.1984715889407624,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 62.72734058894076,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 63.53251
+    },
+    {
+      "connected": true,
+      "connectedAt": 1795373912703,
+      "firstVideoAt": 1795373913267,
+      "firstAudioAt": 1795373913393,
+      "lastAudioAt": 1795373973893,
+      "frames": 1636,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.24728500948084922,
+      "audioRmsLatest": 0.07925577161805518,
+      "audioSamples": 1225,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795373973896,
+      "error": null,
+      "tracks": [],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795373973812,
+          "sourceAtMs": 1795373970349,
+          "latencyMs": 3463
+        }
+      ],
+      "observedAtMs": 1795373973917,
+      "timeToFirstVideoMs": 598,
+      "timeToFirstAudioMs": 724,
+      "audioContextState": "running",
+      "audioPlayoutElements": [],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 1820,
+        "droppedVideoFrames": 179
+      },
+      "hlsPlayback": {
+        "currentTime": 64.533206,
+        "paused": false,
+        "readyState": 4,
+        "networkState": 2,
+        "playbackRate": 1,
+        "width": 1280,
+        "height": 720,
+        "buffered": [
+          {
+            "start": 4.082957,
+            "end": 65.066666
+          }
+        ],
+        "seekable": [
+          {
+            "start": 0,
+            "end": 65.08334058894076
+          }
+        ],
+        "forwardBufferSeconds": 0.5334599999999909,
+        "latencySeconds": 1.1906176388169172,
+        "targetLatencySeconds": 2,
+        "maxLatencySeconds": 4,
+        "liveSyncPosition": 63.72179863881692,
+        "lowLatencyMode": false,
+        "maxLiveSyncPlaybackRate": 1,
+        "liveSyncOnStallIncrease": 1
+      },
+      "hlsEvents": {
+        "total": 1,
+        "retained": 1,
+        "limit": 32,
+        "events": [
+          {
+            "observedAtMs": 1795373914306,
+            "type": "mediaError",
+            "details": "bufferStalledError",
+            "fatal": false
+          }
+        ]
+      },
+      "videoDimensions": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoReadyState": 4,
+      "videoPaused": false,
+      "currentTime": 64.533206
+    }
+  ],
+  "documentDelivery": "Exact probe bundle locally fulfilled at owned app origin; actual HLS requests unmodified, no CORS bypass or app mutation.",
+  "readinessSample": {
+    "connected": true,
+    "connectedAt": 1795373912703,
+    "firstVideoAt": 1795373913267,
+    "firstAudioAt": 1795373913393,
+    "lastAudioAt": 1795373913693,
+    "frames": 14,
+    "reconnects": 0,
+    "disconnects": 0,
+    "stalls": 0,
+    "audioRmsMax": 0.21765014500278412,
+    "audioRmsLatest": 0.07947160365294219,
+    "audioSamples": 21,
+    "invalidTimecodes": 0,
+    "lastFrameAt": 1795373913681,
+    "error": null,
+    "tracks": [],
+    "timecodeSamples": [
+      {
+        "displayAtMs": 1795373913267,
+        "sourceAtMs": 1795373910025,
+        "latencyMs": 3242
+      }
+    ],
+    "observedAtMs": 1795373913710,
+    "timeToFirstVideoMs": 598,
+    "timeToFirstAudioMs": 724,
+    "audioContextState": "running",
+    "audioPlayoutElements": [],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 18,
+      "droppedVideoFrames": 0
+    },
+    "hlsPlayback": {
+      "currentTime": 4.521234,
+      "paused": false,
+      "readyState": 4,
+      "networkState": 2,
+      "playbackRate": 1,
+      "width": 1280,
+      "height": 720,
+      "buffered": [
+        {
+          "start": 4.082957,
+          "end": 5.066666
+        }
+      ],
+      "seekable": [
+        {
+          "start": 0,
+          "end": 5.081414
+        }
+      ],
+      "forwardBufferSeconds": 0.5454319999999999,
+      "latencySeconds": 1.21215682765418,
+      "targetLatencySeconds": 1,
+      "maxLatencySeconds": 4,
+      "liveSyncPosition": 4.081435827654181,
+      "lowLatencyMode": false,
+      "maxLiveSyncPlaybackRate": 1,
+      "liveSyncOnStallIncrease": 1
+    },
+    "hlsEvents": {
+      "total": 0,
+      "retained": 0,
+      "limit": 32,
+      "events": []
+    }
+  },
+  "actualHoldSeconds": 60.204,
+  "decodedFps": 26.94173144641552,
+  "videoDimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "playbackQuality": {
+    "totalVideoFrames": 1820,
+    "droppedVideoFrames": 179
+  },
+  "audio": {
+    "maxRms": 0.24728500948084922,
+    "sampleCount": 1204,
+    "audioContextState": "running",
+    "lastAudibleAgeMs": 25
+  },
+  "imageLatencyMs": {
+    "samples": 60,
+    "p50": 3435,
+    "p95": 3449,
+    "max": 3463
+  },
+  "timeToFirstVideoMs": 598,
+  "timeToFirstAudioMs": 724,
+  "cleanup": {
+    "playbackDisconnected": true,
+    "browserClosed": true
+  },
+  "fixtureAfter": {
+    "atMs": 1795373974123,
+    "sourceSid": "PA_F6BJqmxLXJYZ",
+    "sourceTrackSids": [
+      "TR_AMKoMVN6x4aY5E",
+      "TR_VCF35NQE3jrzUa"
+    ],
+    "loadViewers": 0
+  },
+  "existingSourceUnchanged": true,
+  "baselineReportUnchanged": true,
+  "finishedAt": "2026-11-22T18:59:34.124Z"
+}

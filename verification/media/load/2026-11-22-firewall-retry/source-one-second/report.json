@@ -1,0 +1,76 @@
+{
+  "format": "milo-media-load-result-v1",
+  "startedAt": "2026-11-22T18:05:52.540Z",
+  "executed": true,
+  "complete": false,
+  "profile": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoBps": 1186000,
+    "audioBps": 64000,
+    "totalBps": 1250000,
+    "simulcast": false
+  },
+  "stages": [],
+  "hardwareTests": {
+    "chromecast": {
+      "executed": false
+    },
+    "airplay": {
+      "executed": false
+    }
+  },
+  "limitations": [],
+  "preflight": {
+    "passed": true,
+    "capacityGateChecked": true,
+    "forceRelay": false,
+    "appOrigin": "https://milo-staging.dgwebservices.nl",
+    "livekitHostname": "milo-staging.dgwebservices.nl",
+    "targetPublicIps": [
+      "128.140.93.95",
+      "2a01:4f8:c015:60a6::1"
+    ],
+    "dnsAnswers": [
+      "128.140.93.95"
+    ],
+    "host": "dg-nxttrack-01",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "fixtureBinding": {
+      "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "generation": "f55efba230e5519f789c1da5da34cc1c",
+      "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+    },
+    "inventoryReference": ".local/media-retry/results/recovery-preflight-audit.json",
+    "generator": {
+      "host": "codex-worker-01",
+      "cpuCount": 12,
+      "freeMemoryBytes": 9920663552,
+      "network": "Afzonderlijke Hetzner HEL1-generator65.108.158.112 naar FSN1-staging128.140.93.95; publiekeHTTPS margeproef393.90Mbps/15.23s; dezelfde bron-/viewerklok, relatieve fout0ms. Geen wifi/mobiele of tv-meting.",
+      "publicIp": "65.108.158.112",
+      "availableIngressMbps": 393.89507873397525,
+      "clockErrorBoundMs": 0
+    },
+    "sourceRoute": "browser-whip-test",
+    "cliVersion": "lk version 2.20.1"
+  },
+  "receiverSourceSha256": "89cf5fa468a860f0989b0590169bd165d7a3f49a81606bbc15e149ac8142ba6f",
+  "source": {
+    "whipHttpStatus": 201,
+    "route": "browser-whip-test",
+    "published": true,
+    "announcements": true,
+    "audioSource": "recorded-number-announcements",
+    "profile": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "videoBps": 1186000,
+      "audioBps": 64000,
+      "simulcast": false
+    }
+  },
+  "finishedAt": "2026-11-22T18:26:45.410Z"
+}

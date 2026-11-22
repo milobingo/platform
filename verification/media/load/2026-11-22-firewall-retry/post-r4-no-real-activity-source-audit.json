@@ -1,0 +1,80 @@
+{
+  "format": "milo-post-r4-quiet-host-source-audit-v1",
+  "checkedAt": "2026-11-22T18:58:22.884404+00:00",
+  "staging": {
+    "checkedAt": "2026-11-22T18:58:22.146Z",
+    "activeRealShow": false,
+    "freshRunningRows": 0,
+    "freshCalls": 0,
+    "freshProducerOrOutputSessions": 0,
+    "existingGameRows": 11,
+    "fixtures": 1,
+    "provider": {
+      "rooms": [
+        {
+          "name": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+          "participants": 1
+        }
+      ],
+      "ingressCount": 1,
+      "activeEgressCount": 1
+    },
+    "tls": {
+      "ssl": true,
+      "version": "TLSv1.3",
+      "cipher": "TLS_AES_256_GCM_SHA384"
+    }
+  },
+  "production": {
+    "checkedAt": "2026-11-22T18:58:22.122Z",
+    "environment": "production",
+    "releaseSha": "aab35f80b96422a617f7fd9d247d498753757442",
+    "transactionReadOnly": true,
+    "tls": {
+      "ssl": true,
+      "version": "TLSv1.3"
+    },
+    "gameCount": 1,
+    "runningStatusRows": 0,
+    "freshRunningRows": 0,
+    "freshProducerOrOutputSessions": 0,
+    "freshCalls": 0,
+    "lastGameUpdatedAt": "1795113819998",
+    "gameRevisionSum": "26",
+    "activeRealShow": false,
+    "databaseWrites": 0,
+    "rawDocumentsReturned": false,
+    "credentialsPrinted": false
+  },
+  "ownRoom": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "programmeParticipants": 2,
+  "technicalLoadViewers": 0,
+  "sourceParticipantSid": "PA_F6BJqmxLXJYZ",
+  "sourceTracks": [
+    {
+      "sid": "TR_VCF35NQE3jrzUa",
+      "name": "synthesized-camera",
+      "type": "VIDEO",
+      "muted": false
+    },
+    {
+      "sid": "TR_AMKoMVN6x4aY5E",
+      "name": "synthesized-microphone",
+      "type": "AUDIO",
+      "muted": false
+    }
+  ],
+  "sourceTrackSidsUnchanged": true,
+  "providerMutation": false,
+  "databaseWrites": 0,
+  "passed": true,
+  "credentialsReturned": false,
+  "remainingNonPublisherConfirmed": {
+    "identity": "EG_LM33hU3S54VL",
+    "kind": "EGRESS",
+    "hidden": true,
+    "recorder": true,
+    "tracks": 0,
+    "independentlyVerifiedAt": "2026-11-22T18:58:53.190450+00:00"
+  }
+}

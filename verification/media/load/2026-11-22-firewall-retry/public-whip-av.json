@@ -1,0 +1,263 @@
+{
+  "format": "milo-media-load-result-v1",
+  "startedAt": "2026-11-22T16:31:39.776Z",
+  "executed": true,
+  "complete": true,
+  "profile": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoBps": 1186000,
+    "audioBps": 64000,
+    "totalBps": 1250000,
+    "simulcast": false
+  },
+  "stages": [],
+  "hardwareTests": {
+    "chromecast": {
+      "executed": false
+    },
+    "airplay": {
+      "executed": false
+    }
+  },
+  "limitations": [],
+  "preflight": {
+    "passed": true,
+    "capacityGateChecked": false,
+    "forceRelay": false,
+    "appOrigin": "https://milo-staging.dgwebservices.nl",
+    "livekitHostname": "milo-staging.dgwebservices.nl",
+    "targetPublicIps": [
+      "128.140.93.95"
+    ],
+    "host": "dg-nxttrack-01",
+    "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+    "fixtureBinding": {
+      "gameId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "room": "programme-afcb1a82-abb6-47a8-8745-41c4044b7466",
+      "generation": "108ca6bba94f4308b73272936e7df132",
+      "marker": "bb92b307-efc8-4404-a5fd-2f6c759f88a4"
+    },
+    "inventoryReference": "/home/codex/repos/milobingo/.local/media-retry/results/fixture-attestation.json",
+    "generator": {
+      "host": "codex-worker-01",
+      "cpuCount": 12,
+      "freeMemoryBytes": 11307409408,
+      "network": "Afzonderlijke Hetzner HEL1-generator65.108.158.112 naar FSN1-staging128.140.93.95; publiekeHTTPS margeproef393.90Mbps/15.23s; dezelfde bron-/viewerklok, relatieve fout0ms. Geen wifi/mobiele of tv-meting.",
+      "publicIp": "65.108.158.112",
+      "availableIngressMbps": 393.89507873397525,
+      "clockErrorBoundMs": 0
+    },
+    "sourceRoute": "browser-whip-test",
+    "cliVersion": "lk version 2.20.1"
+  },
+  "connectivity": {
+    "attempted": true,
+    "sourceRoute": "browser-whip-test",
+    "capacityTest": false,
+    "receivingAudioAndVideo": true,
+    "sourceSample": {
+      "observedAtMs": 1795365109620,
+      "audioRms": 0.19933972625794638,
+      "audioContextState": "running",
+      "sourceCueNumber": 1,
+      "sourceAudioTimeSeconds": 2.124626,
+      "sourceTracks": {
+        "audio": {
+          "enabled": true,
+          "muted": false,
+          "readyState": "live",
+          "settings": {
+            "channelCount": 2,
+            "deviceId": "WebAudio-459e4d2f-8efa-4d7b-acf9-859114da5f5d",
+            "latency": 0.01,
+            "sampleRate": 44100,
+            "sampleSize": 16
+          }
+        },
+        "video": {
+          "enabled": true,
+          "muted": false,
+          "readyState": "live",
+          "settings": {
+            "aspectRatio": 1.7777777777777777,
+            "deviceId": "IDE1CHgr2fE1Hz2/0rarEuySqX6hcBxky9pYBVGzH7SkvzjLd82OSao5aqnyXTNgdME0WidaushFJCkuE6kbDA==",
+            "frameRate": 0,
+            "height": 720,
+            "resizeMode": "none",
+            "width": 1280
+          }
+        }
+      },
+      "mediaSources": [
+        {
+          "kind": "audio",
+          "trackIdentifier": "f0217a69-d50b-4ce8-ac4a-822fe9275b79",
+          "audioLevel": 0.6788842432935576,
+          "totalAudioEnergy": 0.4488262077379265,
+          "totalSamplesDuration": 2.0899999999999994
+        },
+        {
+          "kind": "video",
+          "trackIdentifier": "bb6b8e71-9ec7-4e84-9fcc-ab954a993670",
+          "width": 1280,
+          "height": 720,
+          "framesPerSecond": 29
+        }
+      ],
+      "video": [
+        {
+          "codec": "video/H264",
+          "bytesSent": 113817,
+          "framesEncoded": 8,
+          "framesPerSecond": 7,
+          "frameWidth": 1280,
+          "frameHeight": 720,
+          "qualityLimitationReason": "none"
+        }
+      ],
+      "audio": [
+        {
+          "codec": "audio/opus",
+          "bytesSent": 12800,
+          "packetsSent": 80
+        }
+      ],
+      "transport": [
+        {
+          "protocol": "udp",
+          "localAddress": "",
+          "localPort": 36736,
+          "remoteAddress": "2a01:4f8:c015:60a6::1",
+          "remotePort": 7882,
+          "localCandidateType": "host",
+          "remoteCandidateType": "host"
+        }
+      ]
+    },
+    "sample": {
+      "connected": true,
+      "connectedAt": 1795365110132,
+      "firstVideoAt": 1795365110384,
+      "firstAudioAt": 1795365122686,
+      "lastAudioAt": 1795365125086,
+      "frames": 468,
+      "reconnects": 0,
+      "disconnects": 0,
+      "stalls": 0,
+      "audioRmsMax": 0.21396013134254843,
+      "audioRmsLatest": 0.0000021861847309477395,
+      "audioSamples": 352,
+      "invalidTimecodes": 0,
+      "lastFrameAt": 1795365127716,
+      "error": null,
+      "tracks": [
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "host",
+          "remoteCandidateType": "host",
+          "localAddress": "",
+          "localPort": 38441,
+          "remoteAddress": "2a01:4f8:c015:60a6::1",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.035
+        },
+        {
+          "kind": "audio",
+          "codec": "audio/opus",
+          "bytesReceived": 140800,
+          "packetsReceived": 880,
+          "packetsLost": 0,
+          "jitter": 0,
+          "totalAudioEnergy": 0
+        },
+        {
+          "kind": "transport",
+          "protocol": "udp",
+          "localCandidateType": "host",
+          "remoteCandidateType": "host",
+          "localAddress": "",
+          "localPort": 38441,
+          "remoteAddress": "2a01:4f8:c015:60a6::1",
+          "remotePort": 7882,
+          "currentRoundTripTime": 0.035
+        },
+        {
+          "kind": "video",
+          "codec": "video/H264",
+          "bytesReceived": 2441865,
+          "packetsReceived": 2311,
+          "packetsLost": 0,
+          "jitter": 0,
+          "framesDecoded": 502,
+          "framesDropped": 0,
+          "freezeCount": 0,
+          "totalFreezesDuration": 0,
+          "frameWidth": 1280,
+          "frameHeight": 720
+        }
+      ],
+      "timecodeSamples": [
+        {
+          "displayAtMs": 1795365123533,
+          "sourceAtMs": 1795365123454,
+          "latencyMs": 79
+        },
+        {
+          "displayAtMs": 1795365124533,
+          "sourceAtMs": 1795365124477,
+          "latencyMs": 56
+        },
+        {
+          "displayAtMs": 1795365125550,
+          "sourceAtMs": 1795365125500,
+          "latencyMs": 50
+        },
+        {
+          "displayAtMs": 1795365126566,
+          "sourceAtMs": 1795365126490,
+          "latencyMs": 76
+        },
+        {
+          "displayAtMs": 1795365127583,
+          "sourceAtMs": 1795365127513,
+          "latencyMs": 70
+        }
+      ],
+      "observedAtMs": 1795365127732,
+      "timeToFirstVideoMs": 626,
+      "timeToFirstAudioMs": 12928,
+      "audioContextState": "running",
+      "audioPlayoutElements": [
+        {
+          "paused": false,
+          "readyState": 4,
+          "volume": 0,
+          "muted": false
+        }
+      ],
+      "hlsPlaybackQuality": {
+        "totalVideoFrames": 502,
+        "droppedVideoFrames": 2
+      }
+    }
+  },
+  "source": {
+    "whipHttpStatus": 201,
+    "route": "browser-whip-test",
+    "published": true,
+    "announcements": true,
+    "audioSource": "recorded-number-announcements",
+    "profile": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "videoBps": 1186000,
+      "audioBps": 64000,
+      "simulcast": false
+    }
+  },
+  "finishedAt": "2026-11-22T16:32:07.805Z"
+}

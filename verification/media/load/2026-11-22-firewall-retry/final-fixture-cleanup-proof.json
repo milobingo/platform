@@ -1,0 +1,123 @@
+{
+  "format": "milo-final-fixture-cleanup-proof-v1",
+  "checkedAt": "2026-11-22T19:02:57.030094+00:00",
+  "fixtureId": "afcb1a82-abb6-47a8-8745-41c4044b7466",
+  "fixtureAbsent": true,
+  "removedAuditManifestPreserved": true,
+  "all11OriginalRowsUnchanged": true,
+  "ownProviderResources": {
+    "rooms": 0,
+    "ingresses": 0,
+    "activeEgresses": 0
+  },
+  "privateRootSessionAbsent": true,
+  "ownHlsDirectoryAbsent": true,
+  "tlsVerified": true,
+  "allBusinessOwnerAndRelatedCountsZero": true,
+  "productionRelease": {
+    "sha": "aab35f80b96422a617f7fd9d247d498753757442",
+    "releaseId": null
+  },
+  "productionPid": "545053",
+  "productionPidUnchanged": true,
+  "productionRevisionSum": "26",
+  "stagingRelease": {
+    "sha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+    "releaseId": null
+  },
+  "stagingPidUnchangedSincePreCleanup": true,
+  "allFourMediaContainerIdsAndImagesUnchanged": true,
+  "allFourMediaContainersRunning": true,
+  "allEightCaddyFragmentsUnchangedSincePreCleanup": true,
+  "originalNeighbourBaselineReference": "/var/backups/milo-media/20261122T150551Z/caddy-before.json",
+  "allSevenOriginalNeighbourHashComparisons": [
+    {
+      "path": "/etc/caddy/sites/dartflow-production.caddy",
+      "originalSha256": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+      "currentSha256": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/dartflow-staging.caddy",
+      "originalSha256": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+      "currentSha256": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/milobingo-production.caddy",
+      "originalSha256": "994df7cc27ec166c1051d47c8f2bad547e08f7afddee3d5f0c89e9e75f8fa9c0",
+      "currentSha256": "994df7cc27ec166c1051d47c8f2bad547e08f7afddee3d5f0c89e9e75f8fa9c0",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/rondio-production.caddy",
+      "originalSha256": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c",
+      "currentSha256": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/rondio-staging.caddy",
+      "originalSha256": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+      "currentSha256": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/socialhero-production.caddy",
+      "originalSha256": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+      "currentSha256": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/caddy/sites/socialhero-staging.caddy",
+      "originalSha256": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159",
+      "currentSha256": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159",
+      "unchanged": true
+    }
+  ],
+  "eightHealthChecksPassed": true,
+  "services": {
+    "milobingo-production.service": {
+      "MainPID": "545053",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "milobingo-staging.service": {
+      "MainPID": "1449078",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "caddy.service": {
+      "MainPID": "3243",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "milo-media-staging.service": {
+      "MainPID": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "milo-media-observe.service": {
+      "MainPID": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "milo-media-maintenance.timer": {
+      "ActiveState": "active",
+      "SubState": "waiting"
+    }
+  },
+  "permanentProviderConfigurationPreserved": true,
+  "databaseProofReadOnly": true,
+  "databaseProofWrites": 0,
+  "realProductionMutations": 0,
+  "privateLocalCredentialsStillRetainedForGuardedExport": true,
+  "passed": true,
+  "secretsReturned": false,
+  "finalStagingNoRealActivity": true,
+  "allProviderRoomsAndIngressesAndActiveEgressesZero": true,
+  "ownNftRecoveryTablesAndCleanupUnitsAbsent": true,
+  "permanentRootProviderConfigurationPresentAndProtected": true,
+  "finalNftProof": ".local/media-retry/results/final-nft-provider-config.json",
+  "ownLocalActivityWatchersStopped": true,
+  "activityWatchSummaryReference": ".local/media-retry/results/final-activity-watch-summary.json"
+}

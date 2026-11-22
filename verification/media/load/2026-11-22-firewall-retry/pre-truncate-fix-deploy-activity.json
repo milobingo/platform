@@ -1,0 +1,39 @@
+{
+  "format": "milo-pre-truncate-fix-deploy-activity-v1",
+  "checkedAt": "2026-11-22T18:37:57.832764+00:00",
+  "staging": {
+    "checkedAt": "2026-11-22T18:37:57.100Z",
+    "activeRealShow": false,
+    "freshRunningRows": 0,
+    "freshProducerOrOutputSessions": 0,
+    "freshCalls": 0,
+    "existingGameRows": 11,
+    "fixtures": 1,
+    "ownRoomParticipants": 0,
+    "providerRoomCount": 0
+  },
+  "production": {
+    "checkedAt": "2026-11-22T18:37:57.087Z",
+    "environment": "production",
+    "releaseSha": "aab35f80b96422a617f7fd9d247d498753757442",
+    "transactionReadOnly": true,
+    "tls": {
+      "ssl": true,
+      "version": "TLSv1.3"
+    },
+    "gameCount": 1,
+    "runningStatusRows": 0,
+    "freshRunningRows": 0,
+    "freshProducerOrOutputSessions": 0,
+    "freshCalls": 0,
+    "lastGameUpdatedAt": "1795113819998",
+    "gameRevisionSum": "26",
+    "activeRealShow": false,
+    "databaseWrites": 0,
+    "rawDocumentsReturned": false,
+    "credentialsPrinted": false
+  },
+  "passed": true,
+  "databaseWrites": 0,
+  "credentialsIncluded": false
+}

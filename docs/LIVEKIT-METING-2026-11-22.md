@@ -1,5 +1,9 @@
 # Milo-uitzending: werkelijke metingen op 22 november 2026
 
+Dit document beschrijft de eerste proef vóór de firewallaanpassing. De actuele
+resultaten en correcties staan in de
+[hertest na de firewallaanpassing](LIVEKIT-FIREWALL-HERTEST-2026-11-22.md).
+
 **Status: stagingopstelling; niet vrijgegeven voor 200 kijkers.** De app,
 versiegebonden media-infra en herhaalbare tests zijn gebouwd. De beschikbare
 publieke mediaproef faalt op ICE. Er is geen geslaagde 200-kijkersproef,
