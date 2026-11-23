@@ -1,0 +1,13 @@
+{
+  "status": "installed",
+  "path": "/etc/dg-sites/milobingo-production/staging-acceptance/d7d14958afe1b000d6da4f4310c0aab02c88da36.json",
+  "sha256": "950d52397f8bb68e1b29ad7d08194e25904eace2cb2fc489d5ddc4db091ddf28",
+  "uid": 0,
+  "gid": 0,
+  "mode": "0600",
+  "source": "user-confirmed-exact-staging-release",
+  "releaseSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "stagingReleaseId": "45056211553-1",
+  "applicationRestarted": false,
+  "runtimeConfigurationChanged": false
+}

@@ -1,0 +1,57 @@
+{
+  "format": "milo-staging-user-acceptance-v1",
+  "observedAt": "2026-11-23T17:38:03Z",
+  "origin": "https://milo-staging.dgwebservices.nl",
+  "releaseSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "stagingRunId": 45056211553,
+  "stagingReleaseId": "45056211553-1",
+  "configVersion": "staging-2026-11-11-v2",
+  "source": "User response in this Codex conversation",
+  "question": "Zijn op de huidige stagingversie d7d1495 gezinslogin, regietoegang, bestellen/PDF, mailontvangst en showaudio/bellen getest en geslaagd?",
+  "userResponse": "Ja ik bevestig alles. Rol uit aub.",
+  "checks": {
+    "familyAuth": {
+      "status": "passed",
+      "scope": "Echte gezinslogin",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "regieAuthorization": {
+      "status": "passed",
+      "scope": "Regietoegang",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "ordersAndPdf": {
+      "status": "passed",
+      "scope": "Bestellen en PDF",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "mailGateway": {
+      "status": "passed",
+      "scope": "Mailontvangst",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    },
+    "showAudioAndLiveCall": {
+      "status": "passed",
+      "scope": "Showaudio en bellen",
+      "reportedBy": "user",
+      "independentlyObservedByCodex": false,
+      "additionalDetailsProvided": false
+    }
+  },
+  "binding": "User confirmation is recorded for exactly the staging source and deployment rechecked above. It authorizes production rollout of this application release.",
+  "productionAuthVerifiedByThisRecord": false,
+  "physicalObsCastAirplayVerifiedByThisRecord": false,
+  "mediaInfrastructurePromotedByThisRecord": false,
+  "notes": [
+    "The user-reported five staging checks do not replace the separately documented physical OBS, Chromecast, AirPlay or full family-call rehearsals.",
+    "Existing production infrastructure and provider settings remain in use; self-hosted programme media configuration is not activated by an application deployment."
+  ]
+}
