@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-11-23T18:03:35.919892+00:00",
+  "status": "failed",
+  "scope": "First production HLS response header check before remediation",
+  "check": "playlist-referrer-policy",
+  "expected": "no-referrer",
+  "observed": "same-origin",
+  "cause": "The application route response header is overridden by the global Next.js header configuration. A scoped production proxy header is being added.",
+  "tokensPrinted": false
+}

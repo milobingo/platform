@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "gate": "protected-production-public",
+  "releaseSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "releaseId": "45229874387-1",
+  "configId": "production-2026-11-15-v1",
+  "profileDigest": "efee2c3639ed1e59e24b3ec6f6bd741b1341a67416f8abaa07c58ce526a429d0",
+  "actualAccountOrProviderRequests": false
+}

@@ -1,5 +1,11 @@
 # Milo productie met beschermde hostconfiguratie
 
+Actuele operationele stand: de
+[applicatie-uitrol van 23 november](PRODUCTIE-RELEASE-2026-11-23.md) is geslaagd.
+De [eigen LiveKit-productieverbinding](LIVEKIT-PRODUCTIE.md) is daarna ingericht
+en technisch beproefd. De hieronder gedateerde inrichtingsnotities blijven
+behouden als overdracht; zij zijn geen actuele blokkade voor de draaiende site.
+
 De productieprocedure is voorbereid voor dezelfde scheiding als staging:
 GitHub start een beoordeelde release, de doel-VPS bewaart infrastructuurgeheimen
 en de Milo-regie beheert OpenAI, LiveKit en Resend. Er is geen lange lijst met

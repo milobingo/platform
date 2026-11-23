@@ -1,0 +1,196 @@
+{
+  "format": "milo-production-media-smoke-v1",
+  "startedAt": "2026-11-23T18:06:08.858Z",
+  "finishedAt": "2026-11-23T18:07:18.741Z",
+  "origin": "https://milo.dgwebservices.nl",
+  "gameId": "dc1f4f97-ac08-4825-899d-a8f775e59467",
+  "generation": "04c1f8d6ee31f5b4aa380a701125c1ca",
+  "initialGeneration": "12c14c93d16e492382e2d3bcfdeeb2d4",
+  "executed": true,
+  "passed": true,
+  "capacityTest": false,
+  "realFamilies": false,
+  "physicalObsOrTv": false,
+  "scope": "One synthetic WHIP programme source, one WebRTC decoder, optional second TURN decoder, one HLS decoder and one paced HTTP HLS receiver. No real account, order or game operation.",
+  "requestedHoldSeconds": 60,
+  "webrtc": {
+    "samples": 61,
+    "holdSeconds": 60.451,
+    "decodedFps": 27.62568030305537,
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "fullResolution": true,
+    "audioRmsMax": 0.05683880152338092,
+    "audioSamples": 1209,
+    "audioFresh": true,
+    "frames": 1807,
+    "reconnects": 0,
+    "disconnects": 0,
+    "timeToFirstVideoMs": 700,
+    "timeToFirstAudioMs": 363,
+    "latencyMs": {
+      "samples": 60,
+      "p50": 93,
+      "p95": 127,
+      "max": 131
+    },
+    "relayVerified": null,
+    "transports": [
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "host",
+        "remoteCandidateType": "host",
+        "localAddress": "",
+        "localPort": 38383,
+        "remoteAddress": "2a01:4f8:c015:60a6::1",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.034
+      },
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "host",
+        "remoteCandidateType": "host",
+        "localAddress": "",
+        "localPort": 38383,
+        "remoteAddress": "2a01:4f8:c015:60a6::1",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.034
+      }
+    ],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 1956,
+      "droppedVideoFrames": 18
+    },
+    "hlsEvents": null,
+    "passed": true
+  },
+  "relay": {
+    "samples": 61,
+    "holdSeconds": 60.451,
+    "decodedFps": 27.64222262659013,
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "fullResolution": true,
+    "audioRmsMax": 0.05684929596204733,
+    "audioSamples": 1209,
+    "audioFresh": true,
+    "frames": 1806,
+    "reconnects": 0,
+    "disconnects": 0,
+    "timeToFirstVideoMs": 663,
+    "timeToFirstAudioMs": 462,
+    "latencyMs": {
+      "samples": 59,
+      "p50": 89,
+      "p95": 112,
+      "max": 114
+    },
+    "relayVerified": true,
+    "transports": [
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "relay",
+        "remoteCandidateType": "host",
+        "localAddress": "128.140.93.95",
+        "localPort": 35418,
+        "remoteAddress": "128.140.93.95",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.035
+      },
+      {
+        "kind": "transport",
+        "protocol": "udp",
+        "localCandidateType": "relay",
+        "remoteCandidateType": "host",
+        "localAddress": "128.140.93.95",
+        "localPort": 35418,
+        "remoteAddress": "128.140.93.95",
+        "remotePort": 7882,
+        "currentRoundTripTime": 0.035
+      }
+    ],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 1953,
+      "droppedVideoFrames": 15
+    },
+    "hlsEvents": null,
+    "passed": true
+  },
+  "hls": {
+    "samples": 61,
+    "holdSeconds": 60.451,
+    "decodedFps": 26.98052968519958,
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "fullResolution": true,
+    "audioRmsMax": 0.056825790205763636,
+    "audioSamples": 1209,
+    "audioFresh": true,
+    "frames": 1636,
+    "reconnects": 0,
+    "disconnects": 0,
+    "timeToFirstVideoMs": 363,
+    "timeToFirstAudioMs": 403,
+    "latencyMs": {
+      "samples": 59,
+      "p50": 3442,
+      "p95": 3468,
+      "max": 3479
+    },
+    "relayVerified": null,
+    "transports": [],
+    "hlsPlaybackQuality": {
+      "totalVideoFrames": 1812,
+      "droppedVideoFrames": 171
+    },
+    "hlsEvents": {
+      "total": 1,
+      "retained": 1,
+      "limit": 32,
+      "events": [
+        {
+          "observedAtMs": 1795457179014,
+          "type": "mediaError",
+          "details": "bufferStalledError",
+          "fatal": false
+        }
+      ]
+    },
+    "passed": true
+  },
+  "hlsHttp": {
+    "identity": "production-smoke-http",
+    "bytes": 11036133,
+    "segments": 61,
+    "errors": 0,
+    "stalls": 0,
+    "timeToFirstSegmentMs": 393,
+    "decoded": false
+  },
+  "network": {
+    "hlsPlaylists": 62,
+    "hlsSegments": 61,
+    "httpErrors": [],
+    "blockedRequests": 1
+  },
+  "cleanup": {
+    "receiverDisconnects": [
+      true,
+      true,
+      true
+    ],
+    "whipClosed": true,
+    "browserClosed": true,
+    "providerResourcesRemovedByThisClient": false
+  },
+  "error": null
+}

@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-11-23T18:00:48.953932+00:00",
+  "turnTls": {
+    "verified": true,
+    "hostname": "milo.dgwebservices.nl",
+    "port": 5349,
+    "protocol": "TLSv1.3",
+    "subjectAltName": [
+      [
+        "DNS",
+        "milo.dgwebservices.nl"
+      ]
+    ],
+    "expires": "Feb 14 13:30:35 2027 GMT"
+  },
+  "health": {
+    "status": "ok",
+    "revision": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+    "releaseId": "45229874387-1",
+    "configVersion": "production-2026-11-15-v1"
+  }
+}

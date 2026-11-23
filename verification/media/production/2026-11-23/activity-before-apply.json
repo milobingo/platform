@@ -1,0 +1,44 @@
+{
+  "format": 1,
+  "host": "dg-nxttrack-01",
+  "checkedAt": "2026-11-23T17:59:03.089Z",
+  "activeRealShow": false,
+  "environments": {
+    "production": {
+      "activeRealShow": false,
+      "gameCount": 1,
+      "runningStatusRows": 0,
+      "freshRunningRows": 0,
+      "freshProducerOrOutputSessions": 0,
+      "freshCalls": 0,
+      "programBroadcastRows": 0,
+      "tls": {
+        "ssl": true,
+        "version": "TLSv1.3"
+      },
+      "databaseWrites": 0,
+      "rawDocumentsReturned": false
+    },
+    "staging": {
+      "activeRealShow": false,
+      "gameCount": 11,
+      "runningStatusRows": 2,
+      "freshRunningRows": 0,
+      "freshProducerOrOutputSessions": 0,
+      "freshCalls": 0,
+      "programBroadcastRows": 0,
+      "tls": {
+        "ssl": true,
+        "version": "TLSv1.3"
+      },
+      "databaseWrites": 0,
+      "rawDocumentsReturned": false
+    }
+  },
+  "namespace": {
+    "sharedGameIds": 0,
+    "productionBroadcastRows": 0
+  },
+  "databaseWrites": 0,
+  "credentialsPrinted": false
+}

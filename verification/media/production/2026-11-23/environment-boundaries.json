@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-11-23T18:10:42.428249+00:00",
+  "stagingSignedCapabilityRejectedOnProduction": true,
+  "httpStatus": 401,
+  "existingMediaCredentialsPreserved": true,
+  "differentHlsSigningSecrets": true,
+  "providerSecretsPrinted": false
+}

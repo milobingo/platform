@@ -1,8 +1,10 @@
 # Eigen uitzending op de bestaande Hetzner-VPS
 
-Dit is een stagingopstelling. Productie gebruikt zijn bestaande release en
-configuratie. Zet een show pas over nadat de echte media- en ontvangerproeven
-zijn afgerond. De app schakelt bestaande shows niet automatisch om.
+Dit document beschrijft de oorspronkelijke stagingopstelling. Op 23 november
+2026 is ook de productieapp op deze gedeelde media-installatie aangesloten;
+zie [LIVEKIT-PRODUCTIE.md](LIVEKIT-PRODUCTIE.md) voor de huidige productieroute,
+afzonderlijke opslag, certificaatkoppeling en uitgevoerde proeven. De app
+schakelt bestaande shows niet automatisch om.
 
 ## Bedieningsroute
 

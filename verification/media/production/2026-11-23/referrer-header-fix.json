@@ -1,0 +1,11 @@
+{
+  "applied": true,
+  "changed": true,
+  "backup": "/var/backups/milo-media-production/20261123T180454Z-f05676f7",
+  "changedFiles": [
+    "/etc/caddy/sites/milobingo-production.caddy"
+  ],
+  "mediaServicesRestarted": [],
+  "productionAppRestarted": false,
+  "unrelatedCaddyUnchanged": true
+}

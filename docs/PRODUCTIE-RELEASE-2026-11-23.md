@@ -33,14 +33,13 @@ documentatie en meetbewijs; er ontbreken geen applicatiewijzigingen.
 - De huidige applicatiecode voor rechtstreekse LiveKit-uitzendingen, HLS en
   Cast/AirPlay, inclusief de op staging geteste herstelwijzigingen, is aanwezig.
 
-De laatste wijziging activeert geen eigen media-infrastructuur op productie.
-Daar ontbreekt bewust nog een afzonderlijke beschermde
-`MILO_BROADCAST_CONFIG`-inrichting. Bestaande shows gebruiken hun bestaande
-YouTube-route en de besloten belverbinding behoudt haar bestaande instellingen.
-De media-installatie en meetopstelling blijven op staging. Voor activering van
-productie-LiveKit zijn de afzonderlijke productieconfiguratie en operationele
-ontvangerproeven nog nodig; zie [LIVEKIT-STAGING.md](LIVEKIT-STAGING.md) en het
-[meetrapport](LIVEKIT-FIREWALL-HERTEST-2026-11-22.md).
+De appuitrol activeerde de eigen media-infrastructuur aanvankelijk nog niet.
+Later op 23 november is ook die productieverbinding ingericht en met echt
+ontvangen synthetisch beeld en testgeluid beproefd; zie
+[LIVEKIT-PRODUCTIE.md](LIVEKIT-PRODUCTIE.md). Een bestaande YouTube-show schakelt
+niet automatisch om: de regie kiest de eigen uitzendroute per show. De besloten
+belverbinding behoudt haar bestaande instellingen. Fysieke OBS-, Chromecast-
+en AirPlay-proeven blijven afzonderlijke controles op de eigen apparatuur.
 
 ## Acceptatie en uitgevoerde controles
 

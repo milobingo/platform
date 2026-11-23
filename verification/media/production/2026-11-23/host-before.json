@@ -1,0 +1,99 @@
+{
+  "observedAt": "2026-11-23T17:54:12.417013+00:00",
+  "activity": {
+    "format": 1,
+    "host": "dg-nxttrack-01",
+    "checkedAt": "2026-11-23T17:53:47.085Z",
+    "activeRealShow": false,
+    "environments": {
+      "production": {
+        "activeRealShow": false,
+        "gameCount": 1,
+        "runningStatusRows": 0,
+        "freshRunningRows": 0,
+        "freshProducerOrOutputSessions": 0,
+        "freshCalls": 0,
+        "programBroadcastRows": 0,
+        "tls": {
+          "ssl": true,
+          "version": "TLSv1.3"
+        },
+        "databaseWrites": 0,
+        "rawDocumentsReturned": false
+      },
+      "staging": {
+        "activeRealShow": false,
+        "gameCount": 11,
+        "runningStatusRows": 2,
+        "freshRunningRows": 0,
+        "freshProducerOrOutputSessions": 0,
+        "freshCalls": 0,
+        "programBroadcastRows": 0,
+        "tls": {
+          "ssl": true,
+          "version": "TLSv1.3"
+        },
+        "databaseWrites": 0,
+        "rawDocumentsReturned": false
+      }
+    },
+    "namespace": {
+      "sharedGameIds": 0,
+      "productionBroadcastRows": 0
+    },
+    "databaseWrites": 0,
+    "credentialsPrinted": false
+  },
+  "provider": {
+    "roomCount": 0,
+    "participants": 0,
+    "ingressCount": 0,
+    "activeEgressCount": 0
+  },
+  "caddyFiles": {
+    "/etc/caddy/sites/dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+    "/etc/caddy/sites/milobingo-staging.caddy": "84b850212fb5601f9f9e70ca4bb14084d9d9fcb81b91ef63c0a0f21fa60da76c",
+    "/etc/caddy/sites/socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159",
+    "/etc/caddy/sites/dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+    "/etc/caddy/sites/socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+    "/etc/caddy/sites/milobingo-production.caddy": "994df7cc27ec166c1051d47c8f2bad547e08f7afddee3d5f0c89e9e75f8fa9c0",
+    "/etc/caddy/sites/rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+    "/etc/caddy/sites/rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c"
+  },
+  "serviceState": {
+    "milobingo-production": "MainPID=1700967\nId=milobingo-production.service\nActiveState=active",
+    "milobingo-staging": "MainPID=1449078\nId=milobingo-staging.service\nActiveState=active",
+    "dartflow-production": "MainPID=1566449\nId=dartflow-production.service\nActiveState=active",
+    "dartflow-staging": "MainPID=1564800\nId=dartflow-staging.service\nActiveState=active",
+    "socialhero-production": "MainPID=0\nId=socialhero-production.service\nActiveState=inactive",
+    "socialhero-staging": "MainPID=0\nId=socialhero-staging.service\nActiveState=inactive",
+    "rondio-production": "MainPID=0\nId=rondio-production.service\nActiveState=inactive",
+    "rondio-staging": "MainPID=0\nId=rondio-staging.service\nActiveState=inactive"
+  },
+  "mediaContainers": [
+    {
+      "ID": "d645a46ea814",
+      "Image": "milo-livekit-staging:1.13.11-turn-tls-port-v1",
+      "Names": "milo-media-staging-livekit-1",
+      "Status": "Up 25 hours"
+    },
+    {
+      "ID": "41feb07d0033",
+      "Image": "redis:7.4.7-alpine",
+      "Names": "milo-media-staging-redis-1",
+      "Status": "Up 26 hours"
+    },
+    {
+      "ID": "57cec58fd5d0",
+      "Image": "milo-egress-staging:1.15.0-uid63001",
+      "Names": "milo-media-staging-egress-1",
+      "Status": "Up 26 hours"
+    },
+    {
+      "ID": "44c89a4c24da",
+      "Image": "livekit/ingress:v1.6.0",
+      "Names": "milo-media-staging-ingress-1",
+      "Status": "Up 27 hours"
+    }
+  ]
+}

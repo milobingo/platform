@@ -1,0 +1,8 @@
+{
+  "action": "create",
+  "created": true,
+  "hidden": true,
+  "realAccountsCreated": 0,
+  "realOrdersCreated": 0,
+  "manifest": "/var/lib/milobingo-media/production-setup/fixture.json"
+}

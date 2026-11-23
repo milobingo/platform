@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {validateProductionSmokeConfiguration,validateProductionSmokeHlsReady,sanitizeProductionSmokeReport,summarizeSmokeSamples} from '../scripts/load/production-smoke.mjs';
+
+const now=1795450000000,gameId='12345678-1234-4567-8123-123456789abc',ownerId='22345678-1234-4567-8123-123456789abc',marker='32345678-1234-4567-8123-123456789abc',generation='a'.repeat(32);
+const encode=value=>Buffer.from(JSON.stringify(value)).toString('base64url');
+const token=(sub='viewer-primary',video={})=>[encode({alg:'HS256',typ:'JWT'}),encode({sub,nbf:Math.floor(now/1000)-5,exp:Math.floor(now/1000)+120,video:{room:'programme-'+gameId,roomJoin:true,canSubscribe:true,canPublish:false,canPublishData:false,canPublishSources:[],canUpdateOwnMetadata:false,...video}}),'synthetic-signature-not-valid-on-a-server'].join('.');
+const cap=encode({v:1,g:gameId,n:generation,e:now+3600000})+'.'+'b'.repeat(43);
+const config={format:'milo-production-media-smoke-v1',origin:'https://milo.dgwebservices.nl',livekitUrl:'wss://milo.dgwebservices.nl',testOnly:true,fixture:{tag:'milo-production-media-smoke-v1',hidden:true,gameId,ownerId,marker,generation,createdAt:now-1000,orderingEnabled:false,realAccounts:0,realOrders:0},whipUrl:'https://milo.dgwebservices.nl/whip/synthetic-key-not-real',viewerToken:token(),relayViewerToken:token('viewer-relay'),hlsUrl:'https://milo.dgwebservices.nl/api/broadcast/hls/'+cap+'/live.m3u8',seconds:60};
+assert.equal(validateProductionSmokeConfiguration(config,{now}).room,'programme-'+gameId);
+for(const change of [{origin:'https://milo-staging.dgwebservices.nl'},{livekitUrl:'wss://somebody.example'},{apiSecret:'forbidden-config-key'},{testOnly:false},{seconds:1},{seconds:91},{whipUrl:'https://foreign.example/whip/abcdefgh'},{hlsUrl:config.hlsUrl+'?session=oops'},{viewerToken:token('viewer-primary',{canPublish:true})},{viewerToken:token('viewer-primary',{canPublishData:true})},{viewerToken:token('viewer-primary',{roomAdmin:true})},{viewerToken:token('viewer-primary',{room:'programme-'+ownerId})},{relayViewerToken:config.viewerToken}])assert.throws(()=>validateProductionSmokeConfiguration({...config,...change},{now}));
+for(const change of [{hidden:false},{realAccounts:1},{realOrders:1},{orderingEnabled:true},{createdAt:now-3600001},{generation:'c'.repeat(32)},{ownerId:gameId},{tag:'milo-staging-media-v1'}])assert.throws(()=>validateProductionSmokeConfiguration({...config,fixture:{...config.fixture,...change}},{now}));
+assert.throws(()=>validateProductionSmokeConfiguration(config,{now:now+150000}));
+const rotatedGeneration='c'.repeat(32),rotatedCap=encode({v:1,g:gameId,n:rotatedGeneration,e:now+3600000})+'.'+'d'.repeat(43),rotated={gameId,generation:rotatedGeneration,hlsUrl:config.hlsUrl.replace(cap,rotatedCap)};
+assert.equal(validateProductionSmokeHlsReady(rotated,config,{now}).generation,rotatedGeneration);
+for(const changed of [{gameId:ownerId},{generation},{hlsUrl:rotated.hlsUrl+'?token=oops'},{hlsUrl:rotated.hlsUrl.replace('milo.dgwebservices.nl','foreign.example')},{unexpected:'field'}])assert.throws(()=>validateProductionSmokeHlsReady({...rotated,...changed},config,{now}));
+assert.throws(()=>validateProductionSmokeHlsReady(rotated,config,{now:now+3500000}));
+const sanitized=sanitizeProductionSmokeReport({error:config.viewerToken,whip:config.whipUrl,hls:config.hlsUrl,nested:{key:config.whipUrl.split('/').at(-1),cap}},config);
+for(const secret of [config.viewerToken,config.whipUrl,config.hlsUrl,cap])assert.ok(!JSON.stringify(sanitized).includes(secret));
+const sample=at=>({observedAtMs:at,frames:at/1000*30,audioRmsMax:.2,audioSamples:at/50,lastAudioAt:at,tracks:[{kind:'video',frameWidth:1280,frameHeight:720},{kind:'transport',localCandidateType:'relay'}],timecodeSamples:[{latencyMs:120}],videoDimensions:{width:1280,height:720}});
+const held=Array.from({length:31},(_,index)=>sample(now+index*2000));
+const passed=summarizeSmokeSamples(held,{relay:true});assert.equal(passed.passed,true);assert.equal(passed.holdSeconds,60);assert.equal(passed.decodedFps,30);assert.equal(passed.relayVerified,true);
+assert.equal(summarizeSmokeSamples([sample(now),sample(now+60000)]).passed,false);
+assert.equal(summarizeSmokeSamples([sample(now),sample(now+1000)]).passed,false);
+assert.equal(summarizeSmokeSamples([sample(now),{...sample(now+60000),tracks:[]}],{relay:true}).passed,false);
+assert.equal(summarizeSmokeSamples([sample(now),{...sample(now+60000),lastAudioAt:now}],{hls:true}).passed,false);
+assert.equal(summarizeSmokeSamples([sample(now),{...sample(now+60000),videoDimensions:{width:640,height:360}}],{hls:true}).passed,false);
+console.log(JSON.stringify({passed:true,checks:'fixed production and fixture bounds, publish/admin grants refused, separate relay identity, expiring access, secret redaction, real decoded media/hold/relay proof',networkRequests:0}));

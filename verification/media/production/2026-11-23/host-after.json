@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-11-23T18:09:26.748635+00:00",
+  "rowComparison": {
+    "production": {
+      "rowsBefore": 1,
+      "rowsAfter": 1,
+      "identicalRows": true
+    },
+    "staging": {
+      "rowsBefore": 11,
+      "rowsAfter": 11,
+      "identicalRows": true
+    }
+  },
+  "provider": {
+    "rooms": 0,
+    "ingresses": 0,
+    "activeEgress": 0
+  },
+  "unrelatedCaddyUnchanged": true,
+  "otherAppServicesUnchanged": true,
+  "caddyFiles": {
+    "/etc/caddy/sites/dartflow-production.caddy": "101ceb128b0d3f8ab9eb1d8aa5a2bcc1a93f197d3232979a8729454d38d1973f",
+    "/etc/caddy/sites/milobingo-staging.caddy": "84b850212fb5601f9f9e70ca4bb14084d9d9fcb81b91ef63c0a0f21fa60da76c",
+    "/etc/caddy/sites/socialhero-staging.caddy": "e156f29a616f8b9ef5a856501803c283e810aafcb5a670c74c27a9d4a67e1159",
+    "/etc/caddy/sites/dartflow-staging.caddy": "28878153ef6ae9425deb47a93b4b2b566fd4f6bf8b707d5fd3698be9c100b196",
+    "/etc/caddy/sites/socialhero-production.caddy": "407d647bae3d3e5d1f73f76047d8d740105bd136cb2bd34d3013d8177f02fac7",
+    "/etc/caddy/sites/milobingo-production.caddy": "099ff1820d215668397e1de1852e81cb1c2aff175e6370abe667489a1560d855",
+    "/etc/caddy/sites/rondio-staging.caddy": "85476c3a09889d70bcabfdcb39c848545ef4883e30c471dae04957705c02425b",
+    "/etc/caddy/sites/rondio-production.caddy": "e929b2f72a3864ab8d6f4242530eccbb29c1e97b831dbb9a99e0df8ba8dd555c"
+  },
+  "serviceState": {
+    "milobingo-production": "MainPID=1705858\nId=milobingo-production.service\nActiveState=active",
+    "milobingo-staging": "MainPID=1449078\nId=milobingo-staging.service\nActiveState=active",
+    "dartflow-production": "MainPID=1566449\nId=dartflow-production.service\nActiveState=active",
+    "dartflow-staging": "MainPID=1564800\nId=dartflow-staging.service\nActiveState=active",
+    "socialhero-production": "MainPID=0\nId=socialhero-production.service\nActiveState=inactive",
+    "socialhero-staging": "MainPID=0\nId=socialhero-staging.service\nActiveState=inactive",
+    "rondio-production": "MainPID=0\nId=rondio-production.service\nActiveState=inactive",
+    "rondio-staging": "MainPID=0\nId=rondio-staging.service\nActiveState=inactive"
+  },
+  "productionMediaConfigured": true,
+  "hlsDirectoryEmpty": true,
+  "privateFixtureCredentialFilesRemoved": true,
+  "cloudLiveCallConfigurationChanged": false
+}

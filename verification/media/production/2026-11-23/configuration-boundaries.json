@@ -1,0 +1,8 @@
+{
+  "productionProviderConfigured": true,
+  "productionConfigMode": "0o640",
+  "hlsRoot": "/srv/sites/milobingo-production/shared/broadcast-hls",
+  "distinctHlsSigningSecret": true,
+  "appCredentialFilesSeparated": true,
+  "livekitMountedConfigMatchesHost": true
+}

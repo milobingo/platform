@@ -1,0 +1,7 @@
+{
+  "action": "prepare",
+  "configured": true,
+  "state": "waiting",
+  "hlsAvailable": false,
+  "credentialsPrinted": false
+}

@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-11-23T18:14:14.315044+00:00",
+  "sourceSha256": {
+    "infra/media/install-production.py": "9ddbcdc4f57c6d8c40bed7e5a0362c3bb9f608e6678d6c5f832bfb65064fba1d",
+    "infra/media/milo-media-sync-production-cert": "9395f789384d162d1ecd30de953f91b56c6f3eec5394d7b6f13dbdfbf2524dba",
+    "scripts/load/production-activity.mjs": "619fa363499c6310ab74c0a8dfcb6844fceb91241a1ff2f78814f199b07373e5",
+    "scripts/load/production-fixture.mjs": "cabb8f1603861b0ce62fa026384caed65c8b9e8344ed79468b5353c8c9d12010",
+    "scripts/load/production-smoke.mjs": "2f2b8a5f36e2b91d12b7a75941bd611141f642eeee83a5f28bf9b81c20c7a6e4",
+    "tests/check-production-media.py": "9dfb6a8d22cfe9cfa358ada75c69e6cc5898b90b08d1472fc6ffb706e3512b62",
+    "tests/check-production-fixture.mjs": "b9826bc765364fcbbdbbb2df5310da787e24df207353ea031c7d4641dfe888aa",
+    "tests/check-production-media-smoke.mjs": "4ce06c02374b699b392fc6a5fc18505cedf0db1b1118de05b19d18fa4f375753"
+  },
+  "installedBundledFixtureSha256": "fcc6e3d2e36ce4e68698b8e8afe5169753ade483727557396f8c2d2e5864f370",
+  "runtimeApplicationSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36"
+}

@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-23T18:09:58.957385+00:00",
+  "generatorHost": "codex-worker-01",
+  "node": "v24.22.1",
+  "pnpm": "11.25.0",
+  "playwright": "1.64.1",
+  "chromium": "Google Chrome for Testing 158.0.8127.18",
+  "sourceProfile": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoCodec": "H264",
+    "videoBitrate": 1186000,
+    "audioCodec": "Opus",
+    "audioBitrate": 64000,
+    "audioContent": "Synthetic 440 Hz diagnostic tone; no real show speech or private call"
+  },
+  "realPhysicalHardwareTest": false
+}

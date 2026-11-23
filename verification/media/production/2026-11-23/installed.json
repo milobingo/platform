@@ -1,0 +1,22 @@
+{
+  "applied": true,
+  "changed": true,
+  "backup": "/var/backups/milo-media-production/20261123T175904Z-2553601a",
+  "changedFiles": [
+    "/opt/milobingo-media/compose.yaml",
+    "/etc/milobingo-media/livekit.yaml",
+    "/etc/caddy/sites/milobingo-production.caddy",
+    "/etc/milobingo-broadcast/production.json",
+    "/usr/local/sbin/milo-media-sync-cert",
+    "/etc/systemd/system/milobingo-production.service.d/media.conf",
+    "/etc/systemd/system/milo-media-maintenance.service.d/production.conf",
+    "/etc/milobingo-media/tls/cert.pem",
+    "/etc/milobingo-media/tls/key.pem"
+  ],
+  "mediaServicesRestarted": [
+    "egress",
+    "livekit"
+  ],
+  "productionAppRestarted": false,
+  "unrelatedCaddyUnchanged": true
+}

@@ -1,0 +1,59 @@
+{
+  "format": "milo-production-media-rollout-v1",
+  "recordedAt": "2026-11-23T18:14:14.315308+00:00",
+  "status": "configured-and-technically-verified",
+  "origin": "https://milo.dgwebservices.nl",
+  "host": "dg-nxttrack-01",
+  "applicationSha": "d7d14958afe1b000d6da4f4310c0aab02c88da36",
+  "applicationReleaseId": "45229874387-1",
+  "configurationVersion": "production-2026-11-15-v1",
+  "applicationRebuilt": false,
+  "databaseMigrations": 0,
+  "newAccounts": 0,
+  "realFamiliesCalled": 0,
+  "ordersCreatedOrChanged": 0,
+  "emailsSent": 0,
+  "newGithubSecrets": 0,
+  "newStreamingSubscriptions": 0,
+  "existingShowRouteChanged": false,
+  "sharedMediaServices": [
+    "livekit",
+    "ingress",
+    "egress",
+    "redis"
+  ],
+  "productionConfig": "/etc/milobingo-broadcast/production.json",
+  "productionHls": "/srv/sites/milobingo-production/shared/broadcast-hls",
+  "evidence": {
+    "configuration": "configuration-boundaries.json",
+    "http": "http-boundaries.json",
+    "smoke": "final-smoke-report.json",
+    "detailedSmoke": "final-smoke-report.json.gz",
+    "cleanup": "host-after.json",
+    "sourcePins": "source-pins.json",
+    "rollback": "rollback-readiness.json"
+  },
+  "tests": {
+    "pythonInstallerAndRollbackTests": 22,
+    "fixtureNegativeCases": 21,
+    "smokeGuards": "passed",
+    "lint": "passed",
+    "productionMediaHoldSeconds": 60.451,
+    "webRtcP95Ms": 127,
+    "turnRelayP95Ms": 112,
+    "hlsP95Ms": 3468,
+    "repeatedCapacityTest": false
+  },
+  "physicalTests": {
+    "obsRecording": false,
+    "chromecastOrGoogleTv": false,
+    "airplay": false,
+    "familyCallRehearsal": false
+  },
+  "limitations": [
+    "Synthetic diagnostic-tone/browser source, not an OBS recording or real show speech.",
+    "HLS technical edge decoder recorded dropped frames and one nonfatal bufferStalledError; physical receiver behaviour remains unmeasured.",
+    "No new 200-viewer or 200-family test was run on production. Existing staging capacity report remains separate.",
+    "Existing shows select own broadcast explicitly in preparation; no existing YouTube show was silently switched."
+  ]
+}

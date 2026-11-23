@@ -1,0 +1,9 @@
+{
+  "action": "remove",
+  "removed": true,
+  "ingresses": 1,
+  "egresses": 1,
+  "roomClosed": true,
+  "realAccountsModified": 0,
+  "realOrdersModified": 0
+}

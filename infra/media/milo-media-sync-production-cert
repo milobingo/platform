@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Copy only Milo production's Caddy certificate; defer live TURN restarts."""
+import base64
+import hashlib
+import hmac
+import json
+import os
+from pathlib import Path
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.request
+
+DOMAIN = 'milo.dgwebservices.nl'
+SOURCE = Path('/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory') / DOMAIN
+TARGET = Path('/etc/milobingo-media/tls')
+CREDENTIALS = Path('/etc/milobingo-media/credentials.json')
+PENDING = Path('/etc/milobingo-media/.tls-restart-pending')
+COMPOSE = '/opt/milobingo-media/compose.yaml'
+
+
+def regular(path, *, root_only=False):
+    if path.is_symlink():
+        raise RuntimeError('Refusing a certificate/configuration symlink.')
+    info = path.stat()
+    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size > 65536:
+        raise RuntimeError('Invalid certificate/configuration file.')
+    if root_only and (info.st_uid != 0 or info.st_mode & 0o077):
+        raise RuntimeError('Credentials must remain root-owned and private.')
+    return path.read_bytes()
+
+
+def idle_provider(credentials):
+    def encode(value):
+        return base64.urlsafe_b64encode(json.dumps(value, separators=(',', ':')).encode()).decode().rstrip('=')
+    now = int(time.time())
+    for service, method, grants, body, field in [
+        ('RoomService', 'ListRooms', {'roomList': True}, {}, 'rooms'),
+        ('Egress', 'ListEgress', {'roomRecord': True}, {'active': True}, 'items'),
+    ]:
+        unsigned = encode({'alg': 'HS256', 'typ': 'JWT'}) + '.' + encode({
+            'iss': credentials['apiKey'], 'sub': 'milo-production-certificate-maintenance',
+            'nbf': now - 5, 'exp': now + 30, 'video': grants,
+        })
+        signature = base64.urlsafe_b64encode(hmac.new(credentials['apiSecret'].encode(), unsigned.encode(), hashlib.sha256).digest()).decode().rstrip('=')
+        request = urllib.request.Request(
+            'http://127.0.0.1:7880/twirp/livekit.' + service + '/' + method,
+            data=json.dumps(body).encode(),
+            headers={'Authorization': 'Bearer ' + unsigned + '.' + signature, 'Content-Type': 'application/json'},
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            value = json.load(response)
+        if not isinstance(value, dict) or not isinstance(value.get(field, []), list):
+            raise RuntimeError('Unconfirmed provider status.')
+        records = value.get(field, [])
+        if service == 'RoomService':
+            if any(int(row.get('numParticipants', row.get('num_participants', 0))) > 0 for row in records):
+                return False
+        elif records:
+            return False
+    return True
+
+
+def atomic_write(path, data, mode, uid=0, gid=0):
+    if path.is_symlink():
+        raise RuntimeError('Refusing a managed-file symlink.')
+    descriptor, temporary = tempfile.mkstemp(prefix='.' + path.name + '-', dir=path.parent)
+    try:
+        with os.fdopen(descriptor, 'wb') as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+            os.fchmod(handle.fileno(), mode)
+            os.fchown(handle.fileno(), uid, gid)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def main():
+    if os.geteuid() != 0 or __import__('socket').gethostname() != 'dg-nxttrack-01':
+        raise RuntimeError('Only root on the verified Milo VPS is supported.')
+    if sys.argv[1:] not in ([], ['--renew']):
+        raise RuntimeError('Use no argument or --renew.')
+    for directory in [SOURCE, TARGET]:
+        if directory.is_symlink() or directory.resolve() != directory:
+            raise RuntimeError('Certificate directory must not contain symlinks.')
+    certificate = regular(SOURCE / (DOMAIN + '.crt'))
+    key = regular(SOURCE / (DOMAIN + '.key'))
+    subprocess.run(['openssl', 'x509', '-checkhost', DOMAIN, '-noout'], input=certificate, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['openssl', 'x509', '-checkend', '3600', '-noout'], input=certificate, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    cert_public = subprocess.check_output(['openssl', 'x509', '-pubkey', '-noout'], input=certificate, stderr=subprocess.DEVNULL)
+    key_public = subprocess.check_output(['openssl', 'pkey', '-pubout'], input=key, stderr=subprocess.DEVNULL)
+    if cert_public != key_public:
+        raise RuntimeError('The production certificate and key do not match.')
+    changed = False
+    for name, data in [('cert.pem', certificate), ('key.pem', key)]:
+        destination = TARGET / name
+        if not destination.exists() or regular(destination) != data:
+            atomic_write(destination, data, 0o400, 65532, 65532)
+            changed = True
+    if changed:
+        atomic_write(PENDING, b'production-certificate\n', 0o600)
+    if PENDING.exists() and sys.argv[1:] == ['--renew']:
+        credentials = json.loads(regular(CREDENTIALS, root_only=True))
+        try:
+            idle = idle_provider(credentials)
+        except Exception:
+            idle = False
+        if idle:
+            subprocess.run(['docker', 'compose', '-f', COMPOSE, 'restart', 'livekit'], check=True, stdout=subprocess.DEVNULL)
+            subprocess.run(['docker', 'compose', '-f', COMPOSE, 'up', '-d', '--wait', 'livekit'], check=True, stdout=subprocess.DEVNULL)
+            PENDING.unlink()
+            print('Milo TURN production certificate activated.')
+        else:
+            print('Milo TURN certificate restart deferred: active media or unavailable provider status.')
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception:
+        print('Milo production certificate maintenance failed; inspect protected host configuration.', file=sys.stderr)
+        raise SystemExit(1)
